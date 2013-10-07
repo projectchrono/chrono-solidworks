@@ -1,4 +1,42 @@
-chrono-solidworks
-=================
+CHRONO::SOLIDWORKS
+==================
 
-Plugin for exporting SolidWorks systems to Chrono::Engine
+Chrono::SolidWorks is a part of [Project Chrono](http://www.projectchrono.org). It is an add-in for the popular [SolidWorks](http://www.solidworks.com) 3D CAD, it allows to export mechanisms modeled in SolidWorks as .py files that can be load and simulated with Chrono::Engine.
+
+
+Main features
+-------------
+
+* add-in for [SolidWorks](http://www.solidworks.com)
+* once installed, the user finds a new panel in the CAD interface, with buttons for exporting mechanical systems into Chrono::Engine 
+* most SolidWorks constraints are converted in Chrono::Engine constraints
+* SolidWorks parts, in assemblies, become rigid bodies in Chrono::Engine
+* sub-assembles are exported as articulated or single bodies
+* inertia and mass properties of parts are correctly exported
+* visualization shapes are exported as .obj meshes, for later editing or asset optimization
+* coordinate systems are exported as markers
+* tool for creating custom collision shapes using SolidWorks interface
+
+For more informations look at http://www.projectchrono.org 
+
+
+How to install and build the library
+------------------------------------
+
+* the project is written in C#, so you must use Microsoft Visual Studio
+* you must have a [SolidWorks](http://www.solidworks.com) license installed on your computer.  
+* load the .sln file in Visual Studio
+* you may need to modify some settings of the solution, in order to reference the .COM assemblies of your SolidWorks. In the Solution Explorer, there should be four references called "SolidWorks....", if thei are not active or are missing, do this: from the Solution Explorer, right-click on the Project and select Add Reference... Go to the Browse tab and navigate to the SolidWorks installation folder (typically C:\Program Files\SolidWorks 20XX\SolidWorks) and add the .dll files: "solidworkstools.dll" "SolidWorks.Interop.sldworks.dll" "SolidWorks.Interop.swcommands.dll" "SolidWorks.Interop.swconst.dll" "SolidWorks.Interop.swpublished.dll". In some releases of Solidorks you may find different names.
+* compile the solution
+* start SolidWorks, enable the add-in with the menu, then you should find the Chrono::Engine panel to the right. 
+
+If you find problems to build the add-in, look at [this tutorial](http://www.angelsix.com/cms/products/tutorials/64-solidworks/67-creating-a-solidworks-add-in-from-scratch) for instructions about how to build add-ins for SolidWorks.
+
+  
+How to use the Chrono::SolidWorks add-in
+----------------------------------------
+
+See the [tutorials](http://www.projectchrono.org/mediawiki/index.php/Tutorials) for examples of C++ code and Python code that load systems exported with this add-in
+
+A place for discussions can be the [projectchrono group](https://groups.google.com/forum/#!forum/projectchrono).
+
