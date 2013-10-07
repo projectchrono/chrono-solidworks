@@ -1,0 +1,33 @@
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\ClassLibrary1.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\ClassLibrary1.pdb
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SldWorks.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SW3DPrinter.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SwCommands.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SwConst.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SwMotionStudy.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SWPublished.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SWRoutingLib.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\Interop.SwVBAClientLib.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\ResolveAssemblyReference.cache
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SldWorks.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SW3DPrinter.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SwCommands.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SwConst.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SwMotionStudy.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SWPublished.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SWRoutingLib.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\Interop.SwVBAClientLib.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\ClassLibrary1.csproj.ResolveComReference.cache
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\ClassLibrary1.dll
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\ClassLibrary1.pdb
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\bin\Release\ClassLibrary1.tlb
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\ClassLibrary1.csproj.GenerateResource.Cache
+C:\Users\tasora\Desktop\ClassLibrary1\ClassLibrary1\obj\Release\AngelSix_SwAddin.SWTaskpaneHost.resources
+C:\tasora\code\dynamics\code\ChronoSolidWorks\ClassLibrary1\obj\Release\ResolveAssemblyReference.cache
+C:\tasora\code\dynamics\code\ChronoSolidWorks\ClassLibrary1\obj\Release\ChronoEngine_SwAddin.SWTaskpaneHost.resources
+C:\tasora\code\dynamics\code\ChronoSolidWorks\ClassLibrary1\obj\Release\ClassLibrary1.csproj.GenerateResource.Cache
+C:\Program Files\SolidWorks Corp\SolidWorks\ChronoEngineAddIn.dll
+C:\Program Files\SolidWorks Corp\SolidWorks\ChronoEngineAddIn.pdb
+C:\Program Files\SolidWorks Corp\SolidWorks\ChronoEngineAddIn.tlb
+C:\tasora\code\dynamics\code\ChronoSolidWorks\ClassLibrary1\obj\Release\ChronoEngineAddIn.dll
+C:\tasora\code\dynamics\code\ChronoSolidWorks\ClassLibrary1\obj\Release\ChronoEngineAddIn.pdb
