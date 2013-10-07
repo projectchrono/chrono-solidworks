@@ -41,12 +41,15 @@
             this.checkBox_saveUV = new System.Windows.Forms.CheckBox();
             this.button_runtest = new System.Windows.Forms.Button();
             this.checkBox_savetest = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.numeric_dt = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
             this.numeric_length = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.numeric_scale_L = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
             this.SuspendLayout();
             // 
             // button_export
@@ -178,16 +181,6 @@
             this.toolTipSavePython.SetToolTip(this.checkBox_savetest, resources.GetString("checkBox_savetest.ToolTip"));
             this.checkBox_savetest.UseVisualStyleBackColor = true;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(91, 233);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(16, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "dt";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // numeric_dt
             // 
             this.numeric_dt.DecimalPlaces = 5;
@@ -216,16 +209,6 @@
             0,
             0,
             131072});
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(67, 255);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Length";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // numeric_length
             // 
@@ -256,11 +239,63 @@
             0,
             0});
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(91, 233);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(16, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "dt";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(67, 255);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Length";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // numeric_scale_L
+            // 
+            this.numeric_scale_L.DecimalPlaces = 3;
+            this.numeric_scale_L.Location = new System.Drawing.Point(113, 343);
+            this.numeric_scale_L.Maximum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            0});
+            this.numeric_scale_L.Name = "numeric_scale_L";
+            this.numeric_scale_L.Size = new System.Drawing.Size(67, 20);
+            this.numeric_scale_L.TabIndex = 14;
+            this.toolTipSavePython.SetToolTip(this.numeric_scale_L, "Scale for lengths. For example, if you set 0.1, an object that is 5m long will be" +
+                    " exported as 0.5m long.");
+            this.numeric_scale_L.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(67, 345);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Scale L";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.numeric_scale_L);
             this.Controls.Add(this.numeric_length);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.numeric_dt);
@@ -276,11 +311,12 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_export);
             this.Name = "SWTaskpaneHost";
-            this.Size = new System.Drawing.Size(205, 374);
+            this.Size = new System.Drawing.Size(205, 387);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -303,5 +339,7 @@
         private System.Windows.Forms.NumericUpDown numeric_dt;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numeric_length;
+        private System.Windows.Forms.NumericUpDown numeric_scale_L;
+        private System.Windows.Forms.Label label4;
     }
 }
