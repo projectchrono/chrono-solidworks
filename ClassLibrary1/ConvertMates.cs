@@ -11,6 +11,7 @@ using SolidWorks.Interop.swcommands;
 using SolidWorks.Interop.swconst;
 using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
+using ChronoEngineAddin;
 
 
 namespace ChronoEngine_SwAddin
@@ -355,9 +356,13 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistanceShared()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X, cA.Y, cA.Z);
+                                  cA.X * ChScale.L,
+                                  cA.Y * ChScale.L,
+                                  cA.Z * ChScale.L);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X, cB.Y, cB.Z);
+                                  cB.X * ChScale.L,
+                                  cB.Y * ChScale.L,
+                                  cB.Z * ChScale.L);
                         if (!entity_0_as_VERTEX)
                          asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dA.X, dA.Y, dA.Z);
@@ -372,7 +377,8 @@ namespace ChronoEngine_SwAddin
                             asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cB,cA,dA)\n", linkname, name2, name1);
 
                         //if (do_distance_val!=0)
-                            asciitext += String.Format(bz, "{0}.SetDistance({1})\n", linkname, do_distance_val);
+                            asciitext += String.Format(bz, "{0}.SetDistance({1})\n", linkname,
+                                do_distance_val * ChScale.L);
 
                         asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
                         // Insert to a list of exported items
@@ -386,11 +392,15 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateParallelShared()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X, cA.Y, cA.Z);
+                                  cA.X * ChScale.L,
+                                  cA.Y * ChScale.L,
+                                  cA.Z * ChScale.L);
                         asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dA.X, dA.Y, dA.Z);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X, cB.Y, cB.Z);
+                                  cB.X * ChScale.L,
+                                  cB.Y * ChScale.L,
+                                  cB.Z * ChScale.L);
                         asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dB.X, dB.Y, dB.Z);
 
@@ -415,11 +425,15 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonalShared()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X, cA.Y, cA.Z);
+                                  cA.X * ChScale.L,
+                                  cA.Y * ChScale.L,
+                                  cA.Z * ChScale.L);
                         asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dA.X, dA.Y, dA.Z);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X, cB.Y, cB.Z);
+                                  cB.X * ChScale.L,
+                                  cB.Y * ChScale.L,
+                                  cB.Z * ChScale.L);
                         asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dB.X, dB.Y, dB.Z);
 
@@ -441,9 +455,13 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateSphericalShared()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X, cA.Y, cA.Z);
+                                  cA.X * ChScale.L,
+                                  cA.Y * ChScale.L,
+                                  cA.Z * ChScale.L);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X, cB.Y, cB.Z);
+                                  cB.X * ChScale.L,
+                                  cB.Y * ChScale.L,
+                                  cB.Z * ChScale.L);
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (!swapAB_1)
@@ -464,9 +482,13 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0}.SetConstrainedCoords(0, 1, 1, 0, 0, 0)\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X, cA.Y, cA.Z);
+                                  cA.X * ChScale.L,
+                                  cA.Y * ChScale.L,
+                                  cA.Z * ChScale.L);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X, cB.Y, cB.Z); 
+                                  cB.X * ChScale.L,
+                                  cB.Y * ChScale.L,
+                                  cB.Z * ChScale.L); 
                         if (!entity_0_as_VERTEX)
                             asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n", dA.X, dA.Y, dA.Z);
                         else
@@ -504,11 +526,15 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateCoaxialShared()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X, cA.Y, cA.Z);
+                                  cA.X * ChScale.L,
+                                  cA.Y * ChScale.L,
+                                  cA.Z * ChScale.L);
                         asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dA.X, dA.Y, dA.Z);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X, cB.Y, cB.Z);
+                                  cB.X * ChScale.L,
+                                  cB.Y * ChScale.L,
+                                  cB.Z * ChScale.L);
                         asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dB.X, dB.Y, dB.Z);
 
@@ -579,11 +605,15 @@ namespace ChronoEngine_SwAddin
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistanceShared()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cC.X, cC.Y, cC.Z);
+                                  cC.X * ChScale.L,
+                                  cC.Y * ChScale.L,
+                                  cC.Z * ChScale.L);
                         asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dC.X, dC.Y, dC.Z);
                         asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cD.X, cD.Y, cD.Z);
+                                  cD.X * ChScale.L,
+                                  cD.Y * ChScale.L,
+                                  cD.Z * ChScale.L);
                         asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   dD.X, dD.Y, dD.Z);
 

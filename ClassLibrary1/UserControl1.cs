@@ -17,6 +17,7 @@ using SolidWorks.Interop.swcommands;
 using SolidWorks.Interop.swconst;
 using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
+using ChronoEngineAddin;
 
 //using ConvertToCollisionShapes;
 
@@ -87,6 +88,10 @@ namespace ChronoEngine_SwAddin
 
         private void button1_Click(object sender, EventArgs e)
         {
+            ChScale.L = (double)this.numeric_scale_L.Value;
+            ChScale.M = (double)this.numeric_scale_M.Value;
+            ChScale.T = (double)this.numeric_scale_T.Value;
+
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null)
@@ -374,7 +379,9 @@ namespace ChronoEngine_SwAddin
                     asciitext += String.Format(bz, "{0}.AddMarker({1})\n", bodyname, markername);
                     asciitext += String.Format(bz, "{0}.Impose_Abs_Coord(chrono.ChCoordsysD(chrono.ChVectorD({1},{2},{3}),chrono.ChQuaternionD({4},{5},{6},{7})))\n",
                                markername,
-                               amatr[9], amatr[10], amatr[11],
+                               amatr[9]*ChScale.L, 
+                               amatr[10]*ChScale.L, 
+                               amatr[11]*ChScale.L,
                                quat[0], quat[1], quat[2], quat[3]);
                 }
 
@@ -518,7 +525,10 @@ namespace ChronoEngine_SwAddin
                 double[] quat  = GetQuaternionFromMatrix(ref relframe_shape);
 
                 asciitext += String.Format(bz, "{0}_level = chrono.ChAssetLevelShared() \n", shapename);
-                asciitext += String.Format(bz, "{0}_level.GetFrame().SetPos(chrono.ChVectorD({1},{2},{3})) \n", shapename, amatr[9], amatr[10], amatr[11]);
+                asciitext += String.Format(bz, "{0}_level.GetFrame().SetPos(chrono.ChVectorD({1},{2},{3})) \n", shapename, 
+                    amatr[9] *ChScale.L,
+                    amatr[10]*ChScale.L,
+                    amatr[11]*ChScale.L);
                 asciitext += String.Format(bz, "{0}_level.GetFrame().SetRot(chrono.ChQuaternionD({1},{2},{3},{4})) \n", shapename, quat[0], quat[1], quat[2], quat[3]);
                 asciitext += String.Format(bz, "{0}_level.GetAssets().push_back({0}_shape) \n", shapename);
 
@@ -616,7 +626,11 @@ namespace ChronoEngine_SwAddin
                                     double rad = 0;
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = SWTaskpaneHost.PointTransform(center_l, ref collshape_subcomp_transform);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddSphere({1}, chrono.ChVectorD({2},{3},{4}))\n", bodyname, rad, center.X, center.Y, center.Z);
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddSphere({1}, chrono.ChVectorD({2},{3},{4}))\n", bodyname, 
+                                        rad * ChScale.L,
+                                        center.X * ChScale.L,
+                                        center.Y * ChScale.L,
+                                        center.Z * ChScale.L);
                                     rbody_converted = true;
                                 }
                                 if (ConvertToCollisionShapes.SWbodyToBox(swBody))
@@ -639,7 +653,13 @@ namespace ChronoEngine_SwAddin
                                     asciitext += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
                                     asciitext += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
                                     asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddBox({1},{2},{3},chrono.ChVectorD({4},{5},{6}),mr)\n", bodyname, hsX, hsY, hsZ, vO.X, vO.Y, vO.Z);
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddBox({1},{2},{3},chrono.ChVectorD({4},{5},{6}),mr)\n", bodyname,
+                                        hsX * ChScale.L,
+                                        hsY * ChScale.L,
+                                        hsZ * ChScale.L,
+                                        vO.X * ChScale.L,
+                                        vO.Y * ChScale.L,
+                                        vO.Z * ChScale.L);
                                     rbody_converted = true;
                                 }
                                 if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
@@ -671,7 +691,13 @@ namespace ChronoEngine_SwAddin
                                     asciitext += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
                                     asciitext += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
                                     asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1},{2},{3},chrono.ChVectorD({4},{5},{6}),mr)\n", bodyname, hsX, hsZ, hsY, vO.X, vO.Y, vO.Z); // note order hsX-Z-Y
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1},{2},{3},chrono.ChVectorD({4},{5},{6}),mr)\n", bodyname,
+                                        hsX * ChScale.L,
+                                        hsZ * ChScale.L,
+                                        hsY * ChScale.L,
+                                        vO.X * ChScale.L,
+                                        vO.Y * ChScale.L,
+                                        vO.Z * ChScale.L); // note order hsX-Z-Y
                                     rbody_converted = true;
                                 }
 
@@ -686,7 +712,10 @@ namespace ChronoEngine_SwAddin
                                         {
                                             Point3D vert_l = vertexes[iv];
                                             Point3D vert   = SWTaskpaneHost.PointTransform(vert_l, ref collshape_subcomp_transform);
-                                            asciitext += String.Format(bz, "pt_vect.push_back(chrono.ChVectorD({0},{1},{2}))\n", vert.X, vert.Y, vert.Z);
+                                            asciitext += String.Format(bz, "pt_vect.push_back(chrono.ChVectorD({0},{1},{2}))\n",
+                                                vert.X * ChScale.L,
+                                                vert.Y * ChScale.L,
+                                                vert.Z * ChScale.L);
                                         }
                                         asciitext += String.Format(bz, "{0}.GetCollisionModel().AddConvexHull(pt_vect)\n", bodyname);
                                     }
@@ -746,9 +775,9 @@ namespace ChronoEngine_SwAddin
 
                 // Write position
                 asciitext += bodyname + ".SetPos(chrono.ChVectorD("
-                           + amatr[9].ToString("g", bz) + ","
-                           + amatr[10].ToString("g", bz) + ","
-                           + amatr[11].ToString("g", bz) + "))" + "\n";
+                           + (amatr[9] * ChScale.L).ToString("g", bz) + ","
+                           + (amatr[10]* ChScale.L).ToString("g", bz) + ","
+                           + (amatr[11]* ChScale.L).ToString("g", bz) + "))" + "\n";
 
                 // Write rotation
                 double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
@@ -793,18 +822,28 @@ namespace ChronoEngine_SwAddin
                 double cogZb = ((double[])swMassb.CenterOfMass)[2];
 
                 asciitext += String.Format(bz, "{0}.SetMass({1:g})\n",
-                           bodyname, mass);
+                           bodyname,
+                           mass * ChScale.M);
 
                 // Write inertia tensor 
                 asciitext += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
-                           bodyname, Ixx, Iyy, Izz);
+                           bodyname, 
+                           Ixx * ChScale.M * ChScale.L * ChScale.L,
+                           Iyy * ChScale.M * ChScale.L * ChScale.L,
+                           Izz * ChScale.M * ChScale.L * ChScale.L);
                 // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
                 asciitext += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
-                           bodyname, -Ixy, -Izx, -Iyz);
+                           bodyname,
+                           -Ixy * ChScale.M * ChScale.L * ChScale.L,
+                           -Izx * ChScale.M * ChScale.L * ChScale.L,
+                           -Iyz * ChScale.M * ChScale.L * ChScale.L);
 
                 // Write the position of the COG respect to the REF
                 asciitext += String.Format(bz, "{0}.SetFrame_COG_to_REF(chrono.ChFrameD(chrono.ChVectorD({1:g},{2:g},{3:g}),chrono.ChQuaternionD(1,0,0,0)))\n",
-                            bodyname, cogXb, cogYb, cogZb);
+                            bodyname, 
+                            cogXb * ChScale.L,
+                            cogYb * ChScale.L,
+                            cogZb * ChScale.L);
 
                 // Write 'fixed' state
                 if (swComp.IsFixed())
@@ -1251,6 +1290,24 @@ namespace ChronoEngine_SwAddin
                 System.Windows.Forms.MessageBox.Show("Cannot execute the test Python program. \n - Make sure that you already saved with 'save test.py' enabled; \n - Make sure you have Python installed \n\n\nException:\n" + myex.ToString());
             }
         }
+
+        private void checkBox_scale_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.checkBox_scale.Checked)
+            {
+                this.numeric_scale_L.Enabled = true;
+                this.numeric_scale_M.Enabled = true;
+                this.numeric_scale_T.Enabled = true;
+            }
+            else
+            {
+                this.numeric_scale_L.Enabled = false;
+                this.numeric_scale_M.Enabled = false;
+                this.numeric_scale_T.Enabled = false;
+            }
+        }
+
+
 
 
 

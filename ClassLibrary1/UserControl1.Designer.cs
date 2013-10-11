@@ -43,13 +43,20 @@
             this.checkBox_savetest = new System.Windows.Forms.CheckBox();
             this.numeric_dt = new System.Windows.Forms.NumericUpDown();
             this.numeric_length = new System.Windows.Forms.NumericUpDown();
+            this.numeric_scale_L = new System.Windows.Forms.NumericUpDown();
+            this.numeric_scale_M = new System.Windows.Forms.NumericUpDown();
+            this.checkBox_scale = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.numeric_scale_L = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numeric_scale_T = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_M)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_T)).BeginInit();
             this.SuspendLayout();
             // 
             // button_export
@@ -122,7 +129,7 @@
             // 
             // button_setcollshape
             // 
-            this.button_setcollshape.Location = new System.Drawing.Point(17, 289);
+            this.button_setcollshape.Location = new System.Drawing.Point(17, 384);
             this.button_setcollshape.Name = "button_setcollshape";
             this.button_setcollshape.Size = new System.Drawing.Size(163, 32);
             this.button_setcollshape.TabIndex = 5;
@@ -159,7 +166,7 @@
             // 
             // button_runtest
             // 
-            this.button_runtest.Location = new System.Drawing.Point(113, 209);
+            this.button_runtest.Location = new System.Drawing.Point(113, 304);
             this.button_runtest.Name = "button_runtest";
             this.button_runtest.Size = new System.Drawing.Size(69, 22);
             this.button_runtest.TabIndex = 8;
@@ -173,7 +180,7 @@
             // checkBox_savetest
             // 
             this.checkBox_savetest.AutoSize = true;
-            this.checkBox_savetest.Location = new System.Drawing.Point(17, 209);
+            this.checkBox_savetest.Location = new System.Drawing.Point(17, 304);
             this.checkBox_savetest.Name = "checkBox_savetest";
             this.checkBox_savetest.Size = new System.Drawing.Size(88, 17);
             this.checkBox_savetest.TabIndex = 9;
@@ -189,7 +196,7 @@
             0,
             0,
             131072});
-            this.numeric_dt.Location = new System.Drawing.Point(113, 231);
+            this.numeric_dt.Location = new System.Drawing.Point(113, 326);
             this.numeric_dt.Maximum = new decimal(new int[] {
             1,
             0,
@@ -218,7 +225,7 @@
             0,
             0,
             65536});
-            this.numeric_length.Location = new System.Drawing.Point(113, 253);
+            this.numeric_length.Location = new System.Drawing.Point(113, 348);
             this.numeric_length.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -239,10 +246,63 @@
             0,
             0});
             // 
+            // numeric_scale_L
+            // 
+            this.numeric_scale_L.DecimalPlaces = 3;
+            this.numeric_scale_L.Location = new System.Drawing.Point(113, 232);
+            this.numeric_scale_L.Maximum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            0});
+            this.numeric_scale_L.Name = "numeric_scale_L";
+            this.numeric_scale_L.Size = new System.Drawing.Size(67, 20);
+            this.numeric_scale_L.TabIndex = 14;
+            this.toolTipSavePython.SetToolTip(this.numeric_scale_L, "Scale factor for all lengths. For example, if you set 0.1, an object that is 5m l" +
+                    "ong will be exported as 0.5m long.");
+            this.numeric_scale_L.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // numeric_scale_M
+            // 
+            this.numeric_scale_M.DecimalPlaces = 3;
+            this.numeric_scale_M.Location = new System.Drawing.Point(113, 253);
+            this.numeric_scale_M.Maximum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            0});
+            this.numeric_scale_M.Name = "numeric_scale_M";
+            this.numeric_scale_M.Size = new System.Drawing.Size(67, 20);
+            this.numeric_scale_M.TabIndex = 17;
+            this.toolTipSavePython.SetToolTip(this.numeric_scale_M, "Scale factor for all masses. For example, if you set 0.1, an object that is 5kg h" +
+                    "eavy will be exported as 0.5kg.");
+            this.numeric_scale_M.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // checkBox_scale
+            // 
+            this.checkBox_scale.AutoSize = true;
+            this.checkBox_scale.Location = new System.Drawing.Point(17, 214);
+            this.checkBox_scale.Name = "checkBox_scale";
+            this.checkBox_scale.Size = new System.Drawing.Size(126, 17);
+            this.checkBox_scale.TabIndex = 18;
+            this.checkBox_scale.Text = "Scale while exporting";
+            this.toolTipSavePython.SetToolTip(this.checkBox_scale, "If checked, you can set a reduction or enlargement scale for lenghts (L), masses " +
+                    "(M) and times (T) when exporting output.");
+            this.checkBox_scale.UseVisualStyleBackColor = true;
+            this.checkBox_scale.CheckedChanged += new System.EventHandler(this.checkBox_scale_CheckedChanged);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(91, 233);
+            this.label2.Location = new System.Drawing.Point(91, 328);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(16, 13);
             this.label2.TabIndex = 10;
@@ -252,48 +312,73 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(67, 255);
+            this.label3.Location = new System.Drawing.Point(67, 350);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(40, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Length";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // numeric_scale_L
-            // 
-            this.numeric_scale_L.DecimalPlaces = 3;
-            this.numeric_scale_L.Location = new System.Drawing.Point(113, 343);
-            this.numeric_scale_L.Maximum = new decimal(new int[] {
-            1000000000,
-            0,
-            0,
-            0});
-            this.numeric_scale_L.Name = "numeric_scale_L";
-            this.numeric_scale_L.Size = new System.Drawing.Size(67, 20);
-            this.numeric_scale_L.TabIndex = 14;
-            this.toolTipSavePython.SetToolTip(this.numeric_scale_L, "Scale for lengths. For example, if you set 0.1, an object that is 5m long will be" +
-                    " exported as 0.5m long.");
-            this.numeric_scale_L.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(67, 345);
+            this.label4.Location = new System.Drawing.Point(67, 234);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 15;
             this.label4.Text = "Scale L";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(64, 255);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(46, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Scale M";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // numeric_scale_T
+            // 
+            this.numeric_scale_T.DecimalPlaces = 3;
+            this.numeric_scale_T.Location = new System.Drawing.Point(113, 274);
+            this.numeric_scale_T.Maximum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            0});
+            this.numeric_scale_T.Name = "numeric_scale_T";
+            this.numeric_scale_T.Size = new System.Drawing.Size(67, 20);
+            this.numeric_scale_T.TabIndex = 20;
+            this.toolTipSavePython.SetToolTip(this.numeric_scale_T, "Scale factor for time, in measuring units of exported items (some exported quanti" +
+                    "ties depends on time scale, ex speed = [L]/[T] )");
+            this.numeric_scale_T.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(64, 276);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(44, 13);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Scale T";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.numeric_scale_T);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.checkBox_scale);
+            this.Controls.Add(this.numeric_scale_M);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.numeric_scale_L);
             this.Controls.Add(this.numeric_length);
@@ -311,12 +396,14 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_export);
             this.Name = "SWTaskpaneHost";
-            this.Size = new System.Drawing.Size(205, 387);
+            this.Size = new System.Drawing.Size(205, 499);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_M)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_T)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,5 +428,10 @@
         private System.Windows.Forms.NumericUpDown numeric_length;
         private System.Windows.Forms.NumericUpDown numeric_scale_L;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numeric_scale_M;
+        private System.Windows.Forms.CheckBox checkBox_scale;
+        private System.Windows.Forms.NumericUpDown numeric_scale_T;
+        private System.Windows.Forms.Label label6;
     }
 }

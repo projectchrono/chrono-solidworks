@@ -1,10 +1,10 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v1.70"
+#define MyAppVersion "v2.00"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
-#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks"
+#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks (3)"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -72,14 +72,12 @@ begin
   // CHECK PYTHON INSTALLATION
   mFoundSolidWorks := 0;
 
-  myvers := '11';
 
   if (IsWin64) then
   begin
     // CASE OF 64 BIT PLATFORM
 
     // find 64 bit SW v.11:
-    
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
                       'SOFTWARE\SolidWorks\SolidWorks 2011\Setup',
                       'SolidWorks Folder',
@@ -89,6 +87,7 @@ begin
             mFoundSolidWorks := 1;
     end
 
+    // find 64 bit SW v.12:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
                       'SOFTWARE\SolidWorks\SolidWorks 2012\Setup',
                       'SolidWorks Folder',
@@ -111,10 +110,10 @@ begin
   if mFoundSolidWorks = 0 then 
   begin 
            MsgBox('WARNING!'#13#13+
-               'The installer was not able to detect SolidWorks 2011 64 bit, or later versions,'+
+               'The installer was not able to detect SolidWorks 2012 64 bit'+
                'on your system.'#13#13+
                'Maybe your SolidWorks is not yet installed, or not properly installed?'#13+
-               '(If so,please install SolidWorks 2011 64 bit, or later, before installing this plug-in).', mbError, MB_OK);
+               '(If so,please install SolidWorks 2012 64 bit before installing this plug-in).', mbError, MB_OK);
 
            Abort();
   end 
@@ -163,7 +162,7 @@ begin
   end
 
   if ((mFoundSolidWorks = 0) ) then begin
-    S := S + 'No installation of SolidWorks 2011 64bit, or later, has been detected on this system.' + NewLine;
+    S := S + 'No installation of SolidWorks 2012 64bit has been detected on this system.' + NewLine;
     S := S + 'The Chrono::Engine add-in for SolidWorks CANNOT BE INSTALLED!' + NewLine;
   end
 

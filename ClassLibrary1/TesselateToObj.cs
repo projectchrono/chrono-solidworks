@@ -10,6 +10,7 @@ using SolidWorks.Interop.swcommands;
 using SolidWorks.Interop.swconst;
 using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
+using ChronoEngineAddin;
 
 
 
@@ -123,9 +124,9 @@ namespace ChronoEngine_SwAddin
                             if ((swProgress != null)&&(iv%200==0))
                                 swProgress.UpdateTitle("Exporting (write " + iv + "-th vertex in .obj) ...");
                             aVertexCoords1 = (double[])swTessellation.GetVertexPoint(iv);
-                            mline = "v " + aVertexCoords1[0].ToString("f6", bz)
-                                        + " " + aVertexCoords1[1].ToString("f6", bz)
-                                        + " " + aVertexCoords1[2].ToString("f6", bz)
+                            mline = "v " +      (aVertexCoords1[0]*ChScale.L).ToString("f6", bz)
+                                        + " " + (aVertexCoords1[1]*ChScale.L).ToString("f6", bz)
+                                        + " " + (aVertexCoords1[2]*ChScale.L).ToString("f6", bz)
                                         + "\n";
                             textbuilder.Append(mline);
                         }
@@ -136,7 +137,7 @@ namespace ChronoEngine_SwAddin
                             if ((swProgress != null) && (iv % 200 == 0))
                                  swProgress.UpdateTitle("Exporting (write " + iv + "-th normal in .obj) ...");
                             aNormal = (double[])swTessellation.GetVertexNormal(iv);
-                            mline = "vn " + aNormal[0].ToString("f3", bz)
+                            mline = "vn " +     aNormal[0].ToString("f3", bz)
                                         + " " + aNormal[1].ToString("f3", bz)
                                         + " " + aNormal[2].ToString("f3", bz)
                                         + "\n";
