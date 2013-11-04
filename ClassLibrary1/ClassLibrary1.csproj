@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\</OutputPath>
+    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks %283%29\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -54,6 +54,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="hacd_CLI, Version=1.0.5045.21396, Culture=neutral, PublicKeyToken=2b1ef46ffe04a926, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\decomp\hacd_CLI\x64\Release\hacd_CLI.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -104,6 +108,18 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="ChScale.cs" />
+    <Compile Include="ConvexDecomp2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConvexDecomp2.Designer.cs">
+      <DependentUpon>ConvexDecomp2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConvexDecompForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConvexDecompForm.Designer.cs">
+      <DependentUpon>ConvexDecompForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TesselateToObj.cs" />
     <Compile Include="ConvertMates.cs" />
     <Compile Include="ConvertToCollisionShapes.cs" />
@@ -123,6 +139,14 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ConvexDecomp2.resx">
+      <DependentUpon>ConvexDecomp2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConvexDecompForm.resx">
+      <DependentUpon>ConvexDecompForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControl1.resx">
       <DependentUpon>UserControl1.cs</DependentUpon>
       <SubType>Designer</SubType>

@@ -46,12 +46,13 @@
             this.numeric_scale_L = new System.Windows.Forms.NumericUpDown();
             this.numeric_scale_M = new System.Windows.Forms.NumericUpDown();
             this.checkBox_scale = new System.Windows.Forms.CheckBox();
+            this.numeric_scale_T = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.numeric_scale_T = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
+            this.button_convexdecomp = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -299,6 +300,26 @@
             this.checkBox_scale.UseVisualStyleBackColor = true;
             this.checkBox_scale.CheckedChanged += new System.EventHandler(this.checkBox_scale_CheckedChanged);
             // 
+            // numeric_scale_T
+            // 
+            this.numeric_scale_T.DecimalPlaces = 3;
+            this.numeric_scale_T.Location = new System.Drawing.Point(113, 274);
+            this.numeric_scale_T.Maximum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            0});
+            this.numeric_scale_T.Name = "numeric_scale_T";
+            this.numeric_scale_T.Size = new System.Drawing.Size(67, 20);
+            this.numeric_scale_T.TabIndex = 20;
+            this.toolTipSavePython.SetToolTip(this.numeric_scale_T, "Scale factor for time, in measuring units of exported items (some exported quanti" +
+                    "ties depends on time scale, ex speed = [L]/[T] )");
+            this.numeric_scale_T.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -339,26 +360,6 @@
             this.label5.Text = "Scale M";
             this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // numeric_scale_T
-            // 
-            this.numeric_scale_T.DecimalPlaces = 3;
-            this.numeric_scale_T.Location = new System.Drawing.Point(113, 274);
-            this.numeric_scale_T.Maximum = new decimal(new int[] {
-            1000000000,
-            0,
-            0,
-            0});
-            this.numeric_scale_T.Name = "numeric_scale_T";
-            this.numeric_scale_T.Size = new System.Drawing.Size(67, 20);
-            this.numeric_scale_T.TabIndex = 20;
-            this.toolTipSavePython.SetToolTip(this.numeric_scale_T, "Scale factor for time, in measuring units of exported items (some exported quanti" +
-                    "ties depends on time scale, ex speed = [L]/[T] )");
-            this.numeric_scale_T.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -369,11 +370,24 @@
             this.label6.Text = "Scale T";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // button_convexdecomp
+            // 
+            this.button_convexdecomp.Location = new System.Drawing.Point(17, 422);
+            this.button_convexdecomp.Name = "button_convexdecomp";
+            this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
+            this.button_convexdecomp.TabIndex = 21;
+            this.button_convexdecomp.Text = "Convex decomposition";
+            this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, resources.GetString("button_convexdecomp.ToolTip"));
+            this.button_convexdecomp.UseVisualStyleBackColor = true;
+            this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.button_convexdecomp);
             this.Controls.Add(this.numeric_scale_T);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.checkBox_scale);
@@ -433,5 +447,6 @@
         private System.Windows.Forms.CheckBox checkBox_scale;
         private System.Windows.Forms.NumericUpDown numeric_scale_T;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button_convexdecomp;
     }
 }

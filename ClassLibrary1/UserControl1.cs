@@ -1307,6 +1307,222 @@ namespace ChronoEngine_SwAddin
             }
         }
 
+        private void button_convexdecomp_Click(object sender, EventArgs e)
+        {
+            ModelDoc2 swModel;
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            if (swModel == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body!");
+                return;
+            }
+
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+
+            if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies!");
+                return;
+            }
+
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+            {
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
+                {
+                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
+                    return;
+                }
+
+                bool rbody_converted = false;
+                Body2 swBodyIn = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
+
+                // ----- tesselate
+                Face2 swFace = null;
+                Tessellation swTessellation = null;
+
+                bool bResult = false;
+
+                // Pass in null so the whole body will be tessellated
+                swTessellation = (Tessellation)swBodyIn.GetTessellation(null);
+
+                // Set up the Tessellation object
+                swTessellation.NeedFaceFacetMap = true;
+                swTessellation.NeedVertexParams = true;
+                swTessellation.NeedVertexNormal = true;
+                swTessellation.ImprovedQuality = true;
+
+                int group_vstride = 0;
+
+                // How to handle matches across common edges
+                swTessellation.MatchType = (int)swTesselationMatchType_e.swTesselationMatchFacetTopology;
+
+                // Do it
+                if (swProgress != null)
+                    swProgress.UpdateTitle("Tesselation process...");
+                bResult = swTessellation.Tessellate();
+
+                // Now get the facet data per face
+                int[] aFacetIds;
+                int iNumFacetIds;
+                int[] aFinIds;
+                int[] aVertexIds;
+                double[] aVertexCoords1;
+
+                int numv = swTessellation.GetVertexCount();
+                int numf = swTessellation.GetFacetCount();
+                int iface = 0;
+
+                // Get all vertexes
+                vhacd_CLI.Vect3D[] myvertexes = new vhacd_CLI.Vect3D[numv];
+                vhacd_CLI.Triangle[] mytriangles = new vhacd_CLI.Triangle[numf];
+ 
+                for (int iv = 0; iv < numv; iv++)
+                {
+                    if ((swProgress != null) && (iv % 200 == 0))
+                        swProgress.UpdateTitle("Vertexes process: " + iv + "-th vertex ...");
+                    aVertexCoords1 = (double[])swTessellation.GetVertexPoint(iv);
+                    myvertexes[iv] = new vhacd_CLI.Vect3D(
+                        aVertexCoords1[0],
+                        aVertexCoords1[1],
+                        aVertexCoords1[2] );
+                }
+
+                // Loop over faces
+                swFace = (Face2)swBodyIn.GetFirstFace();
+
+                while (swFace != null)
+                {
+                    aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
+
+                    iNumFacetIds = aFacetIds.Length;
+
+                    for (int iFacetIdIdx = 0; iFacetIdIdx < iNumFacetIds; iFacetIdIdx++)
+                    {
+                        if ((swProgress != null) && (iFacetIdIdx % 100 == 0))
+                            swProgress.UpdateTitle("Faces process: " + iFacetIdIdx + "-th face ...");
+
+                        aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
+
+                        // There should always be three fins per facet
+                        int iFinIdx = 0; 
+                        aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
+                        int ip1 = aVertexIds[0] + group_vstride;
+                        iFinIdx = 1; 
+                        aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
+                        int ip2 = aVertexIds[0] + group_vstride;
+                        iFinIdx = 2; 
+                        aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
+                        int ip3 = aVertexIds[0] + group_vstride;
+                        
+                        mytriangles[iface] = new vhacd_CLI.Triangle(ip1, ip2, ip3);
+
+                        iface++;
+                    }
+                    swFace = (Face2)swFace.GetNextFace();
+                }
+
+                group_vstride += swTessellation.GetVertexCount();
+                
+                // construct a new customer dialog
+                ConvexDecomp2 myCustomerDialog = new ConvexDecomp2();
+                myCustomerDialog.SetMeshInfo(numf, numv);
+                // show the modal dialog
+                if (myCustomerDialog.ShowDialog() == DialogResult.OK)
+                {
+
+                    // Perform convexdecomposition
+                    vhacd_CLI.vhacd_CLI_wrapper myConvexDecomp = new vhacd_CLI.vhacd_CLI_wrapper();
+
+                    myConvexDecomp.SetMesh(myvertexes, mytriangles);
+
+                    myConvexDecomp.targetNTrianglesDecimatedMesh = myCustomerDialog.m_decimate;
+                    myConvexDecomp.alpha = myCustomerDialog.m_alpha;
+                    myConvexDecomp.concavity = myCustomerDialog.m_concavity;
+                    myConvexDecomp.depth = myCustomerDialog.m_depht;
+                    myConvexDecomp.posSampling = myCustomerDialog.m_positionsampling;
+                    myConvexDecomp.angleSampling = myCustomerDialog.m_anglesampling;
+                    myConvexDecomp.posRefine = myCustomerDialog.m_posrefine;
+                    myConvexDecomp.angleRefine = myCustomerDialog.m_anglerefine;
+
+                    int nhulls = myConvexDecomp.Compute(true, false);
+
+                    Body2 myNewBody = null;
+                    IPartDoc mpart = null;
+
+                    if (myConvexDecomp.GetNClusters() > 0)
+                    {
+                        Configuration swConf;
+                        Component2 swRootComp;
+
+                        swConf = (Configuration)swModel.GetActiveConfiguration();
+                        swRootComp = (Component2)swConf.GetRootComponent3(true);
+
+                        if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART)
+                        {
+                            mpart = (IPartDoc)swModel;
+                        }
+                    }
+
+                    for (int nc = 0; nc < myConvexDecomp.GetNClusters(); nc++)
+                    {
+                        vhacd_CLI.Vect3D[] hull_vertexes = new vhacd_CLI.Vect3D[0];
+                        vhacd_CLI.Triangle[] hull_triangles = new vhacd_CLI.Triangle[0];
+                        int npoints = myConvexDecomp.GetClusterConvexHull(nc, ref hull_vertexes, ref hull_triangles);
+
+                        if (mpart != null)
+                        {
+                            //myNewBody = (Body2)mpart.CreateNewBody();
+                            myNewBody = (Body2)mpart.ICreateNewBody2();
+
+                            for (int ihf = 0; ihf < hull_triangles.GetLength(0); ihf++)
+                            {
+                                double[] vPt = new double[9];
+                                vPt[0] = hull_vertexes[hull_triangles[ihf].p1].X;
+                                vPt[1] = hull_vertexes[hull_triangles[ihf].p1].Y;
+                                vPt[2] = hull_vertexes[hull_triangles[ihf].p1].Z;
+                                vPt[3] = hull_vertexes[hull_triangles[ihf].p2].X;
+                                vPt[4] = hull_vertexes[hull_triangles[ihf].p2].Y;
+                                vPt[5] = hull_vertexes[hull_triangles[ihf].p2].Z;
+                                vPt[6] = hull_vertexes[hull_triangles[ihf].p3].X;
+                                vPt[7] = hull_vertexes[hull_triangles[ihf].p3].Y;
+                                vPt[8] = hull_vertexes[hull_triangles[ihf].p3].Z;
+                                myNewBody.CreatePlanarTrimSurfaceDLL((Object)vPt, null);
+                            }
+                            bool created = myNewBody.CreateBodyFromSurfaces();
+                            if (created)
+                            {
+                                ModelDocExtension mextension = swModel.Extension;
+                                Feature mlastfeature = mextension.GetLastFeatureAdded();
+                                mlastfeature.Select2(true, nc); // does not append?
+                                /*  ***TO DO***
+                                int materr = myNewBody.SetMaterialProperty("Default", "", "Air");
+                                if (materr != 1)
+                                    materr = myNewBody.SetMaterialProperty("Default", "", "Aria");
+                                if (materr != 1)
+                                    materr = myNewBody.SetMaterialProperty("Default", "", "Luft");
+                                //if (materr != 1)
+                                //    System.Windows.Forms.MessageBox.Show("Warning! could not assign 'air' material to the collision shape: " + myNewBody.Name + "\n This can affect mass computations.");
+                                */
+                                double[] mcolor = new double[9] { 1, 0, 0, 1, 1, 1, 0, 0.7, 0 }; //  R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
+                                myNewBody.MaterialPropertyValues2 = mcolor;  // it does not work
+                            }
+                        }
+                    } // end loop on clusters
+                    /* ***TO DO***
+                    // all new 'imported body' features must be grouped into a folder to avoid confusion:
+                    IFeatureManager swFeatMgr = swModel.FeatureManager;
+                    Feature swFeat = swFeatMgr.InsertFeatureTreeFolder2((int)swFeatureTreeFolderType_e.swFeatureTreeFolder_Containing);
+                    */
+                    // must force rebuild otherwise one cannot see in the design tree that an 'air' material has been added to collision bodies, etc.
+                    //swModel.Rebuild((int)swRebuildOptions_e.swForceRebuildAll);
+                    swModel.ForceRebuild3(false);
+
+                } // end if user choose OK to decompose
+                
+            } // end loop on selected items
+
+        }
+
 
 
 

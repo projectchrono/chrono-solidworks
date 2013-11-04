@@ -205,6 +205,18 @@ This Python program, if executed, will load your .py file and
 will dump some files that can be used in POV for raytracing 
 an animation.</value>
   </data>
+  <data name="button_convexdecomp.ToolTip" xml:space="preserve">
+    <value>To use this function: 
+- select a solid body in a part,
+- press this button.
+The shape of the object will be converted in many convex 
+shapes that will be used for collision detection.
+The convex decomposition process is often an approximation
+of the original shape, and depends a lot on the parameters; so 
+when it is possible, it is better to create the collision shapes by 
+hand by using compounds of cylinders, spheres, etc. 
+</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>

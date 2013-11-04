@@ -12,3 +12,5 @@
 
 # User settings of solution
 *.suo
+decomp/hacd_CLI/x64/
+decomp/hacd_CLI/hacd_CLI.vcproj.tasora-ASUS.tasora.user
