@@ -28,6 +28,7 @@ ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: {#MySolidWorksDir}\ChronoEngineAddIn.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks; 
+Source: {#MySolidWorksDir}\hacd_CLI.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks;
 Source: ..\to_put_in_SW_dir\chronoengine\*; Excludes: "*\.svn"; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Flags: recursesubdirs createallsubdirs;  Check: myFoundSolidWorks; 
 
 [Run]
