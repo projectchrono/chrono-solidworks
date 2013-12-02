@@ -25,6 +25,8 @@ namespace ChronoEngine_SwAddin
             StringBuilder textbuilder = new StringBuilder();
             Body2 swBody = default(Body2);
             object[] vBodies = null;
+            object[] vBodiesSolid = null;
+            object[] vBodiesSheet = null;
             object vBodyInfo;
             int[] BodiesInfo = null;
             int j = 0;
@@ -33,8 +35,21 @@ namespace ChronoEngine_SwAddin
 
             swModel = (ModelDoc2)swComp.GetModelDoc();
 
-            vBodies = (object[])swComp.GetBodies3((int)swBodyType_e.swSolidBody, out vBodyInfo);
+            vBodiesSolid = (object[])swComp.GetBodies3((int)swBodyType_e.swSolidBody, out vBodyInfo);
+            vBodiesSheet = (object[])swComp.GetBodies3((int)swBodyType_e.swSheetBody, out vBodyInfo);
             BodiesInfo = (int[])vBodyInfo;
+
+            if (vBodiesSolid != null && vBodiesSheet == null)
+                vBodies = vBodiesSolid;
+
+            if (vBodiesSolid == null && vBodiesSheet != null)
+                vBodies = vBodiesSheet;
+
+            if (vBodiesSolid != null && vBodiesSheet != null)
+                vBodies = vBodiesSheet.Concat(vBodiesSolid).ToArray();
+
+            // vBodies = (object[])swComp.GetBodies3((int)swBodyType_e.swSolidBody, out vBodyInfo);
+
 
             if (vBodies != null)
             {
@@ -48,6 +63,7 @@ namespace ChronoEngine_SwAddin
                     asciitext += "# Wavefront .OBJ file for tesselated shape: " + swComp.Name2 + " path: " + swModel.GetPathName() + "\n\n";
 
                 int group_vstride = 0;
+                int group_nstride = 0;
 
                 // Loop through bodies
                 for (j = 0; j <= vBodies.Length - 1; j++)
@@ -64,13 +80,15 @@ namespace ChronoEngine_SwAddin
 
                     if ((nBodyType == (int)swBodyType_e.swSheetBody ||
                          nBodyType == (int)swBodyType_e.swSolidBody) &&
-                        !swBody.Name.StartsWith("COLL.") )
+                         !swBody.Name.StartsWith("COLL.") && 
+                         swBody.Visible)
                     {
                         iNumTesselatedBodies++;
 
                         CultureInfo bz = new CultureInfo("en-BZ");
 
-                        asciitext += "g body_" + iNumTesselatedBodies + "\n";
+                        //asciitext += "g body_" + iNumTesselatedBodies + "\n";
+                        textbuilder.Append("g body_" + iNumTesselatedBodies + "\n");            
 
                         Face2 swFace = null;
                         Tessellation swTessellation = null;
@@ -109,11 +127,6 @@ namespace ChronoEngine_SwAddin
                         double[] aVertexCoords2;
                         double[] aVertexParams;
 
-                        //  Add sketch for this bodyto show lines into
-                        // swModel.SetAddToDB(true);
-                        // swModel.SetDisplayWhenAdded(false);
-                        // swModel.Insert3DSketch2(false);
-
                         int numv = swTessellation.GetVertexCount();
 
                         // Write all vertexes
@@ -143,6 +156,18 @@ namespace ChronoEngine_SwAddin
                                         + "\n";
                             textbuilder.Append(mline);
                         }
+                        if (nBodyType == (int)swBodyType_e.swSheetBody)  // for sheets, save two-sided triangles
+                            for (int iv = 0; iv < numv; iv++)
+                            {
+                                if ((swProgress != null) && (iv % 200 == 0))
+                                    swProgress.UpdateTitle("Exporting (write " + iv + "-th normal in .obj) ...");
+                                aNormal = (double[])swTessellation.GetVertexNormal(iv);
+                                mline = "vn "     + (-aNormal[0]).ToString("f3", bz)
+                                            + " " + (-aNormal[1]).ToString("f3", bz)
+                                            + " " + (-aNormal[2]).ToString("f3", bz)
+                                            + "\n";
+                                textbuilder.Append(mline);
+                            }
 
                         // Write all UV (also with '0' as third value, for compatibility with some OBJ reader)
                         if (saveUV)
@@ -161,7 +186,6 @@ namespace ChronoEngine_SwAddin
 
                         // Loop over faces
                         swFace = (Face2)swBody.GetFirstFace();
-
                         while (swFace != null)
                         {
                             aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
@@ -187,15 +211,46 @@ namespace ChronoEngine_SwAddin
                                     if (saveUV)
                                         mline += " " + (aVertexIds[0] + group_vstride +1) + "/"
                                                      + (aVertexIds[0] + group_vstride +1) + "/" 
-                                                     + (aVertexIds[0] + group_vstride +1);
+                                                     + (aVertexIds[0] + group_nstride +1);
                                     else
                                         mline += " " + (aVertexIds[0] + group_vstride + 1) + "//"
-                                                     + (aVertexIds[0] + group_vstride + 1);
+                                                     + (aVertexIds[0] + group_nstride + 1);
+                                }
 
-                                    // ***debug: Create a line in sketch showing the fin of triangle
-                                    //aVertexCoords1 = (double[])swTessellation.GetVertexPoint(aVertexIds[0]);
-                                    //aVertexCoords2 = (double[])swTessellation.GetVertexPoint(aVertexIds[1]);
-                                    //swModel.CreateLine2(aVertexCoords1[0], aVertexCoords1[1], aVertexCoords1[2], aVertexCoords2[0], aVertexCoords2[1], aVertexCoords2[2]);
+                                mline += "\n";
+                                textbuilder.Append(mline);
+                            }
+                            swFace = (Face2)swFace.GetNextFace();
+                        }
+
+                        swFace = (Face2)swBody.GetFirstFace();
+                        if (nBodyType == (int)swBodyType_e.swSheetBody)  // for sheets, save two-sided triangles
+                         while (swFace != null)
+                        {
+                            aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
+
+                            iNumFacetIds = aFacetIds.Length;
+
+                            for (int iFacetIdIdx = 0; iFacetIdIdx < iNumFacetIds; iFacetIdIdx++)
+                            {
+                                if ((swProgress != null) && (iFacetIdIdx % 100 == 0))
+                                    swProgress.UpdateTitle("Exporting (write " + iFacetIdIdx + "-th face in .obj) ...");
+
+                                mline = "f";
+
+                                aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
+
+                                for (int iFinIdx = 2; iFinIdx >= 0; iFinIdx--)
+                                {
+                                    aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
+
+                                    if (saveUV)
+                                        mline += " " + (aVertexIds[0] + group_vstride + 1) + "/"
+                                                     + (aVertexIds[0] + group_vstride + 1) + "/"
+                                                     + (aVertexIds[0] + swTessellation.GetVertexCount() + group_nstride + 1);
+                                    else
+                                        mline += " " + (aVertexIds[0] + group_vstride + 1) + "//"
+                                                     + (aVertexIds[0] + swTessellation.GetVertexCount() + group_nstride + 1);
                                 }
 
                                 mline += "\n";
@@ -205,14 +260,10 @@ namespace ChronoEngine_SwAddin
                         }
 
                         group_vstride += swTessellation.GetVertexCount();
+                        group_nstride += swTessellation.GetVertexCount();
 
-                        // ***debug Close sketch
-                        // swModel.Insert3DSketch2(true);
-                        //  Clear selection for next pass
-                        // swModel.ClearSelection2(true);
-                        //  Restore settings
-                        //swModel.SetAddToDB(false);
-                        //swModel.SetDisplayWhenAdded(true);
+                        if (nBodyType == (int)swBodyType_e.swSheetBody)  // for sheets: two-sided triangles
+                            group_nstride += swTessellation.GetVertexCount();
                     }
 
                 } // end loop on bodies
