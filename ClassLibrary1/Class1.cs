@@ -30,18 +30,26 @@ public class SWIntegration : ISwAddin
     private SWTaskpaneHost mTaskpaneHost;
 
     public bool ConnectToSW(object ThisSW, int Cookie)
-    {  
-        mSWApplication = (SldWorks)ThisSW;
-        mSWCookie = Cookie;
-        bool result = mSWApplication.SetAddinCallbackInfo(0, this, Cookie);
-        
-        // Register the taskpane
-        this.UISetup(); 
+    {
+        System.Windows.Forms.MessageBox.Show("Add-in: ConnectToSW");
+        try
+        {
+            mSWApplication = (SldWorks)ThisSW;
+            mSWCookie = Cookie;
+            bool result = mSWApplication.SetAddinCallbackInfo(0, this, Cookie);
 
-        // Event register: here is an example of how to do...
-        SldWorks moSWApplication = (SldWorks)mSWApplication;
-        moSWApplication.ActiveDocChangeNotify += new DSldWorksEvents_ActiveDocChangeNotifyEventHandler(test_event_ActiveDocChangeNotify);
-        moSWApplication.ActiveModelDocChangeNotify += new DSldWorksEvents_ActiveModelDocChangeNotifyEventHandler(test_event_ActiveModelDocChangeNotify);
+            // Register the taskpane
+            this.UISetup();
+
+            // Event register: here is an example of how to do...
+            SldWorks moSWApplication = (SldWorks)mSWApplication;
+            moSWApplication.ActiveDocChangeNotify += new DSldWorksEvents_ActiveDocChangeNotifyEventHandler(test_event_ActiveDocChangeNotify);
+            moSWApplication.ActiveModelDocChangeNotify += new DSldWorksEvents_ActiveModelDocChangeNotifyEventHandler(test_event_ActiveModelDocChangeNotify);
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show("ConnectToSW failed! " + ex.Message);
+        }
 
         return true;
  
@@ -69,6 +77,7 @@ public class SWIntegration : ISwAddin
     [ComRegisterFunction()]
     private static void ComRegister(Type t)
     {
+        System.Windows.Forms.MessageBox.Show("Add-in: ComRegister()");
         string keyPath = String.Format(@"SOFTWARE\SolidWorks\AddIns\{0:b}", t.GUID);
         using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(keyPath))
         {
