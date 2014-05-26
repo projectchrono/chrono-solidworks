@@ -28,11 +28,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks %283%29\</OutputPath>
+    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks %283%29\chronoengine\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>true</RegisterForComInterop>
+    <RegisterForComInterop>false</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -65,8 +65,8 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="SolidWorks.Interop.sldworks, Version=20.0.0.5022, Culture=neutral, PublicKeyToken=7c4797c3e4eeac03, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (3)\SolidWorks.Interop.sldworks.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SolidWorks.Interop.swcommands, Version=20.0.0.5022, Culture=neutral, PublicKeyToken=0fda92720ba7919f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -161,7 +161,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v2.0.50727\regasm" "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v2.0.50727\regasm" /codebase "$(TargetPath)"</PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>

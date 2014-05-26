@@ -548,7 +548,8 @@ namespace ChronoEngine_SwAddin
             {
                 swChildComp = (Component2)vChildComp[i];
 
-                PythonTraverseComponent_for_visualizationshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref nvisshape, chbody_comp);
+                if (swChildComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                    PythonTraverseComponent_for_visualizationshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref nvisshape, chbody_comp);
             }
         }
 
@@ -854,7 +855,9 @@ namespace ChronoEngine_SwAddin
                 if (this.checkBox_surfaces.Checked)
                 {
                     int nvisshape = 0;
-                    PythonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);        
+
+                    if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                        PythonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);        
                 } 
 
                 // Write markers (SW coordsystems) contained in this component or subcomponents
@@ -1158,6 +1161,27 @@ namespace ChronoEngine_SwAddin
                 System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies!");
                 return;
             }
+
+            /* TEST
+            // stub for code to try to convert whole body:
+            ModelDoc2 selpart;
+            Component2 selcomp;
+            
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++ )
+            {
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
+                {
+                    selcomp = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
+                    if (selcomp != null)
+                    {
+                        selpart = (ModelDoc2)selcomp.GetModelDoc2();
+                        String partinfo = "Component2! Part/assembly name:" + selcomp.Name + "\n" + "Config:" + selcomp.ReferencedConfiguration + "\n" + "Path:" + selpart.GetPathName();
+                        System.Windows.Forms.MessageBox.Show(partinfo);
+                    }
+                }
+            }
+            */
+
 
             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++ )
             {

@@ -47,12 +47,12 @@
             this.numeric_scale_M = new System.Windows.Forms.NumericUpDown();
             this.checkBox_scale = new System.Windows.Forms.CheckBox();
             this.numeric_scale_T = new System.Windows.Forms.NumericUpDown();
+            this.button_convexdecomp = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.button_convexdecomp = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -320,6 +320,18 @@
             0,
             0});
             // 
+            // button_convexdecomp
+            // 
+            this.button_convexdecomp.Location = new System.Drawing.Point(17, 422);
+            this.button_convexdecomp.Name = "button_convexdecomp";
+            this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
+            this.button_convexdecomp.TabIndex = 21;
+            this.button_convexdecomp.Text = "Convex decomposition";
+            this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, resources.GetString("button_convexdecomp.ToolTip"));
+            this.button_convexdecomp.UseVisualStyleBackColor = true;
+            this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -369,18 +381,6 @@
             this.label6.TabIndex = 19;
             this.label6.Text = "Scale T";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // button_convexdecomp
-            // 
-            this.button_convexdecomp.Location = new System.Drawing.Point(17, 422);
-            this.button_convexdecomp.Name = "button_convexdecomp";
-            this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
-            this.button_convexdecomp.TabIndex = 21;
-            this.button_convexdecomp.Text = "Convex decomposition";
-            this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, resources.GetString("button_convexdecomp.ToolTip"));
-            this.button_convexdecomp.UseVisualStyleBackColor = true;
-            this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
             // 
             // SWTaskpaneHost
             // 

@@ -1,7 +1,7 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v2.02"
+#define MyAppVersion "v2.04"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
 #define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks (3)"
@@ -27,15 +27,16 @@ OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source: {#MySolidWorksDir}\ChronoEngineAddIn.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks; 
-Source: {#MySolidWorksDir}\hacd_CLI.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks;
+;Source: {#MySolidWorksDir}\ChronoEngineAddIn.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks; 
+;Source: {#MySolidWorksDir}\hacd_CLI.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks;
 Source: ..\to_put_in_SW_dir\chronoengine\*; Excludes: "*\.svn"; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Flags: recursesubdirs createallsubdirs;  Check: myFoundSolidWorks; 
+Source: {#MySolidWorksDir}\chronoengine\*.dll; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Check: myFoundSolidWorks; 
 
 [Run]
-Filename:"{dotnet20}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}; StatusMsg: "Registering controls ..."; Flags: runhidden;
+Filename:"{dotnet20}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}\chronoengine; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet20}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
+Filename:"{dotnet20}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}\chronoengine; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
 
 
 [Icons]
@@ -120,6 +121,16 @@ begin
             mFoundSolidWorks := 1;
     end
 
+    // find 64 bit SW v.15:
+    if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+                      'SOFTWARE\SolidWorks\SolidWorks 2015\Setup',
+                      'SolidWorks Folder',
+                      mallDirSolidWorks) then
+    begin
+            mPathSolidWorks := mallDirSolidWorks; 
+            mFoundSolidWorks := 1;
+    end
+
 
     
   end 
@@ -182,7 +193,7 @@ begin
     S := S + 'The SolidWorks dll directory is:' + NewLine;
     S := S + Space + mPathSolidWorks + NewLine;
     S := S + 'so the Chrono::Engine 64 bit add-in module for SolidWorks will be installed in:' + NewLine;
-    S := S + Space + mPathSolidWorks + NewLine;
+    S := S + Space + mPathSolidWorks + 'chronoengine' + NewLine;
   end
 
   if ((mFoundSolidWorks = 0) ) then begin
