@@ -29,9 +29,11 @@ public class SWIntegration : ISwAddin
     private TaskpaneView mTaskpaneView;
     private SWTaskpaneHost mTaskpaneHost;
 
+    public AttributeDef defattr_chbody;
+
     public bool ConnectToSW(object ThisSW, int Cookie)
     {
-        System.Windows.Forms.MessageBox.Show("Add-in: ConnectToSW");
+        //System.Windows.Forms.MessageBox.Show("Add-in: ConnectToSW");
         try
         {
             mSWApplication = (SldWorks)ThisSW;
@@ -45,6 +47,18 @@ public class SWIntegration : ISwAddin
             SldWorks moSWApplication = (SldWorks)mSWApplication;
             moSWApplication.ActiveDocChangeNotify += new DSldWorksEvents_ActiveDocChangeNotifyEventHandler(test_event_ActiveDocChangeNotify);
             moSWApplication.ActiveModelDocChangeNotify += new DSldWorksEvents_ActiveModelDocChangeNotifyEventHandler(test_event_ActiveModelDocChangeNotify);
+
+            // Attributes register
+            defattr_chbody = (AttributeDef)moSWApplication.DefineAttribute("ChBody");
+            defattr_chbody.AddParameter("friction", (int)swParamType_e.swParamTypeDouble, 0.6, 0);
+            defattr_chbody.AddParameter("rolling_friction", (int)swParamType_e.swParamTypeDouble, 0, 0);
+            defattr_chbody.AddParameter("spinning_friction", (int)swParamType_e.swParamTypeDouble, 0, 0);
+            defattr_chbody.AddParameter("restitution", (int)swParamType_e.swParamTypeDouble, 0, 0);
+            defattr_chbody.AddParameter("collision_on", (int)swParamType_e.swParamTypeDouble, 1, 0);
+            defattr_chbody.AddParameter("collision_margin", (int)swParamType_e.swParamTypeDouble, 0.01, 0);
+            defattr_chbody.AddParameter("collision_envelope", (int)swParamType_e.swParamTypeDouble, 0.03, 0);
+            defattr_chbody.AddParameter("collision_family", (int)swParamType_e.swParamTypeDouble, 0, 0);
+            defattr_chbody.Register();
         }
         catch (Exception ex)
         {
@@ -65,6 +79,7 @@ public class SWIntegration : ISwAddin
         mTaskpaneView = mSWApplication.CreateTaskpaneView2(string.Empty, "Chrono::Engine tools");
         mTaskpaneHost = (SWTaskpaneHost)mTaskpaneView.AddControl(SWTaskpaneHost.SWTASKPANE_PROGID,"");
         mTaskpaneHost.mSWApplication = this.mSWApplication;
+        mTaskpaneHost.mSWintegration = this;
     }
     private void UITeardown()
     {
@@ -77,7 +92,7 @@ public class SWIntegration : ISwAddin
     [ComRegisterFunction()]
     private static void ComRegister(Type t)
     {
-        System.Windows.Forms.MessageBox.Show("Add-in: ComRegister()");
+        //System.Windows.Forms.MessageBox.Show("Add-in: ComRegister()");
         string keyPath = String.Format(@"SOFTWARE\SolidWorks\AddIns\{0:b}", t.GUID);
         using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(keyPath))
         {
@@ -105,6 +120,9 @@ public class SWIntegration : ISwAddin
         //System.Windows.Forms.MessageBox.Show("ActiveDocChangeNotify");
         return 0;
     }
+
+
+    
 }
 
 

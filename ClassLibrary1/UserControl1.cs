@@ -33,6 +33,7 @@ namespace ChronoEngine_SwAddin
     {
         public const string SWTASKPANE_PROGID = "ChronoEngine.Taskpane";
         public ISldWorks mSWApplication;
+        public SWIntegration mSWintegration;
         internal SaveFileDialog SaveFileDialog1;
         internal int num_comp;
         internal string save_dir_shapes = "";
@@ -556,10 +557,10 @@ namespace ChronoEngine_SwAddin
        
 
 
-        public void PythonTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref  string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes)
+        public void PythonTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref  string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
         {
             // Look if component contains collision shapes (customized SW solid bodies):
-            PythonTraverseFeatures_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform,  ref found_collisionshapes);
+            PythonTraverseFeatures_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase);
 
             // Recursive scan of subcomponents
 
@@ -570,11 +571,11 @@ namespace ChronoEngine_SwAddin
             {
                 swChildComp = (Component2)vChildComp[i];
 
-                PythonTraverseComponent_for_collshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref chbodytransform,  ref found_collisionshapes);
+                PythonTraverseComponent_for_collshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase);
             }
         }
 
-        public void PythonTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref  string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes)
+        public void PythonTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref  string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             Feature swFeat;
@@ -609,8 +610,38 @@ namespace ChronoEngine_SwAddin
                         if (!found_collisionshapes)
                         {
                             found_collisionshapes = true;
+
+                            // fetch SW attribute with Chrono parameters
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+
+                            if (myattr != null)
+                            {
+                                asciitext += "\n# Collision parameters \n";
+                                double param_friction = ((Parameter)myattr.GetParameter("friction")).GetDoubleValue();
+                                double param_restitution = ((Parameter)myattr.GetParameter("restitution")).GetDoubleValue();
+                                double param_rolling_friction = ((Parameter)myattr.GetParameter("rolling_friction")).GetDoubleValue();
+                                double param_spinning_friction = ((Parameter)myattr.GetParameter("spinning_friction")).GetDoubleValue();
+                                double param_collision_envelope = ((Parameter)myattr.GetParameter("collision_envelope")).GetDoubleValue();
+                                double param_collision_margin = ((Parameter)myattr.GetParameter("collision_margin")).GetDoubleValue();
+                                int    param_collision_family = (int)((Parameter)myattr.GetParameter("collision_family")).GetDoubleValue();
+
+                                asciitext += String.Format(bz, "{0}.SetFriction({1:g});\n", bodyname, param_friction);
+                                if (param_restitution != 0)
+                                    asciitext += String.Format(bz, "{0}.SetImpactC({1:g});\n", bodyname, param_restitution);
+                                if (param_rolling_friction != 0)
+                                    asciitext += String.Format(bz, "{0}.SetRollingFriction({1:g});\n", bodyname, param_rolling_friction);
+                                if (param_spinning_friction != 0)
+                                    asciitext += String.Format(bz, "{0}.SetSpinningFriction({1:g});\n", bodyname, param_spinning_friction);
+                                //if (param_collision_envelope != 0.03)
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetEnvelope({1:g});\n", bodyname, param_collision_envelope * ChScale.L);
+                                //if (param_collision_margin != 0.01)
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetSafeMargin({1:g});\n", bodyname, param_collision_margin * ChScale.L);
+                                if (param_collision_family != 0)
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetFamily({1});\n", bodyname, param_collision_family);
+                            }
+
                             // clear model only at 1st subcomponent where coll shapes are found in features:
-                            asciitext += "\n# Collision shape(s) \n";
+                            asciitext += "\n# Collision shapes \n";
                             asciitext += String.Format(bz, "{0}.GetCollisionModel().ClearModel()\n", bodyname);
                         }
 
@@ -762,6 +793,9 @@ namespace ChronoEngine_SwAddin
                     this.swProgress.UpdateProgress(this.num_comp % 5);
                 }
 
+                // fetch SW attribute with Chrono parameters
+                SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+
                 MathTransform chbodytransform = swComp.GetTotalTransform(true);
                 double[] amatr;
                 amatr = (double[])chbodytransform.ArrayData;
@@ -862,17 +896,23 @@ namespace ChronoEngine_SwAddin
 
                 // Write markers (SW coordsystems) contained in this component or subcomponents
                 // if any.
-                PythonTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);
-
+                PythonTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);   
 
                 // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
                 // if any.
-                bool found_collisionshapes = false;
-                PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes);
-                if (found_collisionshapes)
+                bool param_collide = true;
+                if (myattr != null)
+                    param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
+
+                if (param_collide)
                 {
-                    asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
-                    asciitext += String.Format(bz, "{0}.SetCollide(1)\n", bodyname);
+                    bool found_collisionshapes = false;
+                    PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp);
+                    if (found_collisionshapes)
+                    {
+                        asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
+                        asciitext += String.Format(bz, "{0}.SetCollide(1)\n", bodyname);
+                    }
                 }
 
                 // Insert to a list of exported items
@@ -1544,6 +1584,52 @@ namespace ChronoEngine_SwAddin
                 } // end if user choose OK to decompose
                 
             } // end loop on selected items
+
+        }
+
+        private void button_chrono_property_Click(object sender, EventArgs e)
+        {
+            ModelDoc2 swModel;
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            if (swModel == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Please open an assembly and select a part!");
+                return;
+            }
+
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+
+            if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Please select one or more parts!");
+                return;
+            }
+
+            bool selected_part = false;
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
+                {
+                    selected_part = true;
+                }
+
+            if (!selected_part)
+            {
+                System.Windows.Forms.MessageBox.Show("Chrono properties can be edited only for parts! Select one or more parts before using it.");
+                return;
+            }
+
+            // Open modal dialog
+            EditChBody myCustomerDialog = new EditChBody();
+
+            // Update dialog properties properties from the selected part(s) (i.e. ChBody in C::E) 
+            myCustomerDialog.UpdateFromSelection(swSelMgr, this.mSWintegration.defattr_chbody);
+                
+            // Show the modal dialog
+            if (myCustomerDialog.ShowDialog() == DialogResult.OK)
+            {
+                // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
+                myCustomerDialog.StoreToSelection(swSelMgr, this.mSWintegration.defattr_chbody);
+            } 
 
         }
 

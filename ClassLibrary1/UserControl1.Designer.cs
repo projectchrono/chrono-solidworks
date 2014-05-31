@@ -53,6 +53,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.button_chrono_property = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -327,7 +328,7 @@
             this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
             this.button_convexdecomp.TabIndex = 21;
             this.button_convexdecomp.Text = "Convex decomposition";
-            this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_convexdecomp, resources.GetString("button_convexdecomp.ToolTip"));
             this.button_convexdecomp.UseVisualStyleBackColor = true;
             this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
@@ -382,11 +383,24 @@
             this.label6.Text = "Scale T";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // button_chrono_property
+            // 
+            this.button_chrono_property.Location = new System.Drawing.Point(17, 460);
+            this.button_chrono_property.Name = "button_chrono_property";
+            this.button_chrono_property.Size = new System.Drawing.Size(163, 32);
+            this.button_chrono_property.TabIndex = 22;
+            this.button_chrono_property.Text = "Chrono property";
+            this.button_chrono_property.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.button_chrono_property, resources.GetString("button_chrono_property.ToolTip"));
+            this.button_chrono_property.UseVisualStyleBackColor = true;
+            this.button_chrono_property.Click += new System.EventHandler(this.button_chrono_property_Click);
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.button_chrono_property);
             this.Controls.Add(this.button_convexdecomp);
             this.Controls.Add(this.numeric_scale_T);
             this.Controls.Add(this.label6);
@@ -448,5 +462,6 @@
         private System.Windows.Forms.NumericUpDown numeric_scale_T;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button_convexdecomp;
+        private System.Windows.Forms.Button button_chrono_property;
     }
 }

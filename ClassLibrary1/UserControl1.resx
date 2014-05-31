@@ -217,6 +217,17 @@ when it is possible, it is better to create the collision shapes by
 hand by using compounds of cylinders, spheres, etc. 
 </value>
   </data>
+  <data name="button_chrono_property.ToolTip" xml:space="preserve">
+    <value>This button opens a window where you can 
+set Chrono::Engine specific properties.
+To set ChBody specific properties (friction ,etc.) 
+- select a part in an assembly,
+- press this button.
+Note that many properties used by Chrono::Engine,
+such as mass properties, coordinates, grounded/floating
+state, etc., are taken directly from SolidWorks properties
+of the part.</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>
