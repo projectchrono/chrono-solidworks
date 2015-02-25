@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <limits>
 #include <hacdManifoldMesh.h>
+#include <algorithm>
 namespace HACD
 {
 	bool BBox::Raycast(const Vec3<Float> & origin, const Vec3<Float> & dir, Float & distMin) const

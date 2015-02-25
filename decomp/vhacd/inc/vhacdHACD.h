@@ -22,7 +22,7 @@
 #include <set>
 #include <vector>
 #include <queue>
-
+#include <functional>
 namespace VHACD
 {
 	static const Real EPSILON = 0.0000000001;
