@@ -116,20 +116,15 @@ namespace ChronoEngineAddin
             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
                 {
-                    //Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
-                    Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
-                    ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                    Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);
+                    Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
+                    ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc();
 
                     // fetch SW attribute with Chrono parameters for ChBody
-                    SolidWorks.Interop.sldworks.Attribute myattr = null;
-                    if (swPartcorr != null)
-                        myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(mdefattr_chbody, 0);
+                    SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(mdefattr_chbody, 0);
                     if (myattr == null)
                     {
                         // if not already added to part, create and attach it
-                        System.Windows.Forms.MessageBox.Show("Create data");
-                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPartcorr, "Chrono::ChBody_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPart, "Chrono::ChBody_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
                         
                         if (myattr.GetEntityState((int)swAssociatedEntityStates_e.swIsEntityInvalid))
                             System.Windows.Forms.MessageBox.Show("swIsEntityInvalid!");
@@ -195,19 +190,17 @@ namespace ChronoEngineAddin
             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
                 {
-                    //Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
-                    Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
-                    ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                    Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);
-
+                    Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
+                    ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc();
+                    
                     // fetch SW attribute with Chrono parameters for ChBody
-                    SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPartcorr.FindAttribute(mdefattr_chbody, 0);
+                    SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(mdefattr_chbody, 0);
                     if (myattr == null)
                     {
                         // if not already added to part, create and attach it
-                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPartcorr, "Chrono::ChBody data", 0, (int)swInConfigurationOpts_e.swThisConfiguration);
+                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPart, "Chrono ChBody data", 0, (int)swInConfigurationOpts_e.swThisConfiguration);
                         swPartModel.ForceRebuild3(false); // needed? 
-                        if (myattr == null) System.Windows.Forms.MessageBox.Show("Error: myattr null in setting!!");
+                        if (myattr == null) System.Windows.Forms.MessageBox.Show("myattr null in setting!!");
                     }
 
                     ((Parameter)myattr.GetParameter("collision_on")).SetDoubleValue2(

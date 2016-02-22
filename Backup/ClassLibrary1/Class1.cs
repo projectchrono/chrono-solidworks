@@ -30,7 +30,7 @@ public class SWIntegration : ISwAddin
     private SWTaskpaneHost mTaskpaneHost;
     
     public AttributeDef defattr_chbody = default(AttributeDef);
-    //public AttributeDef defattr_chconveyor = default(AttributeDef);
+    //public AttributeDef defattr_chconveyor;
     public AttributeDef defattr_test = default(AttributeDef);
     
     public bool ConnectToSW(object ThisSW, int Cookie)
@@ -45,7 +45,7 @@ public class SWIntegration : ISwAddin
             // Attributes register
             
 
-            defattr_chbody = (AttributeDef)mSWApplication.DefineAttribute("chrono_ChBody");
+            defattr_chbody = (AttributeDef)mSWApplication.DefineAttribute("chrono::ChBody");
             defattr_chbody.AddParameter("friction",             (int)swParamType_e.swParamTypeDouble, 0.6, 0);
             defattr_chbody.AddParameter("rolling_friction",     (int)swParamType_e.swParamTypeDouble, 0, 0);
             defattr_chbody.AddParameter("spinning_friction",    (int)swParamType_e.swParamTypeDouble, 0, 0);
@@ -56,7 +56,7 @@ public class SWIntegration : ISwAddin
             defattr_chbody.AddParameter("collision_family",     (int)swParamType_e.swParamTypeDouble, 0, 0);
             defattr_chbody.Register();
             /*
-            defattr_chconveyor = (AttributeDef)moSWApplication.DefineAttribute("chrono_ChConveyor");
+            defattr_chconveyor = (AttributeDef)moSWApplication.DefineAttribute("chrono::ChConveyor");
             defattr_chconveyor.AddParameter("conveyor_speed",   (int)swParamType_e.swParamTypeDouble, 1.0, 0);
             defattr_chconveyor.Register();
             */

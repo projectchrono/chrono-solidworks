@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SolidWorks ChronoEngine export")]
-[assembly: AssemblyCopyright("Alessandro Tasora ©  2015")]
+[assembly: AssemblyCopyright("Alessandro Tasora ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

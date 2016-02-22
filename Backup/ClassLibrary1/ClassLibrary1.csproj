@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,21 +10,16 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ChronoEngineAddin</RootNamespace>
     <AssemblyName>ChronoEngineAddIn</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>signature.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\</OutputPath>
+    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks %283%29\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\</OutputPath>
+    <OutputPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks %283%29\chronoengine\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,40 +54,35 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="hacd_CLI">
+    <Reference Include="hacd_CLI, Version=1.0.5045.21396, Culture=neutral, PublicKeyToken=2b1ef46ffe04a926, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\decomp\hacd_CLI\x64\Release\hacd_CLI.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="SolidWorks.Interop.sldworks, Version=21.3.0.60, Culture=neutral, PublicKeyToken=7c4797c3e4eeac03, processorArchitecture=MSIL">
+    <Reference Include="SolidWorks.Interop.sldworks, Version=20.0.0.5022, Culture=neutral, PublicKeyToken=7c4797c3e4eeac03, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\SolidWorks.Interop.sldworks.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (3)\SolidWorks.Interop.sldworks.dll</HintPath>
     </Reference>
-    <Reference Include="SolidWorks.Interop.swcommands, Version=21.3.0.60, Culture=neutral, PublicKeyToken=0fda92720ba7919f, processorArchitecture=MSIL">
+    <Reference Include="SolidWorks.Interop.swcommands, Version=20.0.0.5022, Culture=neutral, PublicKeyToken=0fda92720ba7919f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\SolidWorks.Interop.swcommands.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (3)\SolidWorks.Interop.swcommands.dll</HintPath>
     </Reference>
-    <Reference Include="SolidWorks.Interop.swconst, Version=21.3.0.60, Culture=neutral, PublicKeyToken=19f43e188e4269d8, processorArchitecture=MSIL">
+    <Reference Include="SolidWorks.Interop.swconst, Version=20.0.0.5022, Culture=neutral, PublicKeyToken=19f43e188e4269d8, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\SolidWorks.Interop.swconst.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (3)\SolidWorks.Interop.swconst.dll</HintPath>
     </Reference>
-    <Reference Include="SolidWorks.Interop.swpublished, Version=21.3.0.60, Culture=neutral, PublicKeyToken=89a97bdc5284e6d8, processorArchitecture=MSIL">
+    <Reference Include="SolidWorks.Interop.swpublished, Version=20.0.0.5022, Culture=neutral, PublicKeyToken=89a97bdc5284e6d8, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\SolidWorks.Interop.swpublished.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (3)\SolidWorks.Interop.swpublished.dll</HintPath>
     </Reference>
     <Reference Include="solidworkstools, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bd18593873b4686d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks\solidworkstools.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (4)\solidworkstools.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -181,7 +171,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v4.0.30319\regasm" /codebase "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v2.0.50727\regasm" /codebase "$(TargetPath)"</PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>

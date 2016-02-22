@@ -222,7 +222,7 @@ namespace ChronoEngine_SwAddin
 
             asciitext += "body_0= chrono.ChBodyAuxRefShared()\n" +
                          "body_0.SetName('ground')\n" +
-                         "body_0.SetBodyFixed(True)\n" +
+                         "body_0.SetBodyFixed(1)\n" +
                          "exported_items.append(body_0)\n\n";
 
             
@@ -882,7 +882,7 @@ namespace ChronoEngine_SwAddin
 
                 // Write 'fixed' state
                 if (swComp.IsFixed())
-                    asciitext += String.Format(bz, "{0}.SetBodyFixed(True)\n", bodyname);
+                    asciitext += String.Format(bz, "{0}.SetBodyFixed(1)\n", bodyname);
 
 
                 // Write shapes (saving also Wavefront files .obj)
@@ -911,7 +911,7 @@ namespace ChronoEngine_SwAddin
                     if (found_collisionshapes)
                     {
                         asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
-                        asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
+                        asciitext += String.Format(bz, "{0}.SetCollide(1)\n", bodyname);
                     }
                 }
 
@@ -1604,34 +1604,39 @@ namespace ChronoEngine_SwAddin
                 System.Windows.Forms.MessageBox.Show("Please select one or more parts!");
                 return;
             }
-            /*
-            //***TEST***
+
             AttributeDef defattr_test = (AttributeDef)this.mSWApplication.DefineAttribute("mytestt");
             defattr_test.AddParameter("testpar", (int)swParamType_e.swParamTypeDouble, 0.6, 0);
             defattr_test.Register();
 
-            Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(1, -1);
-            ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-            //ModelDoc2 swModel = (ModelDoc2)this.ActiveDoc;
-             System.Windows.Forms.MessageBox.Show("attach, v CreateInstance5");
-             SolidWorks.Interop.sldworks.Attribute myattr = defattr_test.CreateInstance5(swModel, swPart, "test_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
-            */
-            
-             bool selected_part = false;
-             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
-                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
-                 {
-                     selected_part = true;     
-                 }
-                 
+            bool selected_part = false;
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
+                {
+                    selected_part = true;
 
-             if (!selected_part)
+                    //***TEST***
+                    Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
+                    ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc();
+                    // fetch SW attribute with Chrono parameters for ChBody
+                    SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(defattr_test, 0);
+                    if (myattr == null)
+                    {
+                        System.Windows.Forms.MessageBox.Show("attach, CreateInstance5");
+                        // if not already added to part, create and attach it
+                        myattr = defattr_test.CreateInstance5(swPartModel, swPart, "test_data", 0, (int)swInConfigurationOpts_e.swLinkedToParentswAllConfiguration); 
+                    }
+                        
+                }
+                
+
+            if (!selected_part)
             {
                 System.Windows.Forms.MessageBox.Show("Chrono properties can be edited only for parts! Select one or more parts before using it.");
                 return;
             }
 
-            
+            /*
             // Open modal dialog
             EditChBody myCustomerDialog = new EditChBody();
 
@@ -1644,7 +1649,7 @@ namespace ChronoEngine_SwAddin
                 // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
                 myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
             } 
-            
+            */
         }
 
 

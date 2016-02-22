@@ -372,9 +372,9 @@ namespace ChronoEngine_SwAddin
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dB)\n", linkname, name1, name2);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dB)\n", linkname, name1, name2);
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dA)\n", linkname, name2, name1);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cB,cA,dA)\n", linkname, name2, name1);
 
                         //if (do_distance_val!=0)
                             asciitext += String.Format(bz, "{0}.SetDistance({1})\n", linkname,
@@ -405,13 +405,13 @@ namespace ChronoEngine_SwAddin
                                   dB.X, dB.Y, dB.Z);
 
                         if (do_parallel_flip)
-                            asciitext += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
+                            asciitext += String.Format(bz, "{0}.SetFlipped(1)\n", linkname);
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dA,dB)\n", linkname, name1, name2);
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cB,cA,dB,dA)\n", linkname, name2, name1);
 
                         asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
                         // Insert to a list of exported items
@@ -439,9 +439,9 @@ namespace ChronoEngine_SwAddin
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dA,dB)\n", linkname, name1, name2);
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cB,cA,dB,dA)\n", linkname, name2, name1);
 
                         asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
                         // Insert to a list of exported items
@@ -465,9 +465,9 @@ namespace ChronoEngine_SwAddin
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB)\n", linkname, name1, name2);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB)\n", linkname, name1, name2);
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA)\n", linkname, name2, name1);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cB,cA)\n", linkname, name2, name1);
 
                         asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
                         // Insert to a list of exported items
@@ -479,7 +479,7 @@ namespace ChronoEngine_SwAddin
                         num_link++;
                         String linkname = "link_" + num_link;
                         asciitext += String.Format(bz, "{0} = chrono.ChLinkMateGenericShared()\n", linkname);
-                        asciitext += String.Format(bz, "{0}.SetConstrainedCoords(False, True, True, False, False, False)\n", linkname);
+                        asciitext += String.Format(bz, "{0}.SetConstrainedCoords(0, 1, 1, 0, 0, 0)\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cA.X * ChScale.L,
@@ -500,9 +500,9 @@ namespace ChronoEngine_SwAddin
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dA,dB)\n", linkname, name1, name2);
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cB,cA,dB,dA)\n", linkname, name2, name1);
 
                         asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
                         // Insert to a list of exported items
@@ -542,7 +542,7 @@ namespace ChronoEngine_SwAddin
 
                         
                         // Initialize link, by setting the two csys, in absolute space,
-                        asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                        asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dA,dB)\n", linkname, name1, name2);
 
                         // Insert to a list of exported items
                         asciitext += String.Format(bz, "exported_items.append({0})\n", linkname);
@@ -622,9 +622,9 @@ namespace ChronoEngine_SwAddin
 
                         // Initialize link, by setting the two csys, in absolute space,
                         if (entity_2_as_VERTEX)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA)\n", linkname, name3, name4);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dA)\n", linkname, name3, name4);
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dB)\n", linkname, name3, name4);
+                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},0,cA,cB,dB)\n", linkname, name3, name4);
 
                         // Insert to a list of exported items
                         asciitext += String.Format(bz, "exported_items.append({0})\n", linkname);
