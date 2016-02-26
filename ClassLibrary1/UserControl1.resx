@@ -112,12 +112,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolTipSavePython.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="toolTipSavePython.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>494, 44</value>
   </metadata>
   <data name="button_export.ToolTip" xml:space="preserve">
@@ -205,30 +205,7 @@ This Python program, if executed, will load your .py file and
 will dump some files that can be used in POV for raytracing 
 an animation.</value>
   </data>
-  <data name="button_convexdecomp.ToolTip" xml:space="preserve">
-    <value>To use this function: 
-- select a solid body in a part,
-- press this button.
-The shape of the object will be converted in many convex 
-shapes that will be used for collision detection.
-The convex decomposition process is often an approximation
-of the original shape, and depends a lot on the parameters; so 
-when it is possible, it is better to create the collision shapes by 
-hand by using compounds of cylinders, spheres, etc. 
-</value>
-  </data>
-  <data name="button_chrono_property.ToolTip" xml:space="preserve">
-    <value>This button opens a window where you can 
-set Chrono::Engine specific properties.
-To set ChBody specific properties (friction ,etc.) 
-- select a part in an assembly,
-- press this button.
-Note that many properties used by Chrono::Engine,
-such as mass properties, coordinates, grounded/floating
-state, etc., are taken directly from SolidWorks properties
-of the part.</value>
-  </data>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>
   <data name="$this.ToolTip" xml:space="preserve">

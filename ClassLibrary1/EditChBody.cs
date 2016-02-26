@@ -119,8 +119,27 @@ namespace ChronoEngineAddin
                     //Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
                     Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
                     ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                    Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);
+                     Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);// ***TODO*** for instanced parts? does not work...
+                     swPartcorr = swPart; // ***TODO***
 
+                    if (swPartModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY) 
+                    {
+                        if (swPart.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Fexible assemblies not supported as ChBody (set as Rigid?)");
+                            return;
+                        }
+                        if (swPart.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Setting props to rigid assembly as ChBody");
+                            AssemblyDoc swAssemblyDoc = (AssemblyDoc)swPartModel;
+                            swPart.Select(false);
+                            swAssemblyDoc.EditAssembly();
+                            swAssemblyDoc.EditRebuild();
+                            //return;
+                        }  
+                    }
+                    
                     // fetch SW attribute with Chrono parameters for ChBody
                     SolidWorks.Interop.sldworks.Attribute myattr = null;
                     if (swPartcorr != null)
@@ -128,9 +147,12 @@ namespace ChronoEngineAddin
                     if (myattr == null)
                     {
                         // if not already added to part, create and attach it
-                        System.Windows.Forms.MessageBox.Show("Create data");
+                        //System.Windows.Forms.MessageBox.Show("Create data");
                         myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPartcorr, "Chrono::ChBody_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
                         
+                        swPartModel.ForceRebuild3(false); // needed, but does not work...
+                        //swPartModel.Rebuild((int)swRebuildOptions_e.swRebuildAll); // needed but does not work...
+
                         if (myattr.GetEntityState((int)swAssociatedEntityStates_e.swIsEntityInvalid))
                             System.Windows.Forms.MessageBox.Show("swIsEntityInvalid!");
                         if (myattr.GetEntityState((int)swAssociatedEntityStates_e.swIsEntitySuppressed))
@@ -138,9 +160,7 @@ namespace ChronoEngineAddin
                         if (myattr.GetEntityState((int)swAssociatedEntityStates_e.swIsEntityAmbiguous))
                             System.Windows.Forms.MessageBox.Show("swIsEntityAmbiguous!");
                         if (myattr.GetEntityState((int)swAssociatedEntityStates_e.swIsEntityDeleted))
-                            System.Windows.Forms.MessageBox.Show("swIsEntityDeleted!");
-
-                        swPartModel.ForceRebuild3(false); // needed?  
+                            System.Windows.Forms.MessageBox.Show("swIsEntityDeleted!");  
                     }
 
                     Set_collision_on(Convert.ToBoolean(((Parameter)myattr.GetParameter(
@@ -189,7 +209,7 @@ namespace ChronoEngineAddin
 
         public void StoreToSelection(SelectionMgr swSelMgr, ref AttributeDef mdefattr_chbody)//, ref AttributeDef defattr_chconveyor)
         {
-            System.Windows.Forms.MessageBox.Show("StoreToSelection()");
+            //System.Windows.Forms.MessageBox.Show("StoreToSelection()");
 
             // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
@@ -198,13 +218,15 @@ namespace ChronoEngineAddin
                     //Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
                     Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
                     ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                    Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);
+                     Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);// ***TODO*** for instanced parts? does not work...
+                     swPartcorr = swPart; // ***TODO***
 
                     // fetch SW attribute with Chrono parameters for ChBody
                     SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPartcorr.FindAttribute(mdefattr_chbody, 0);
                     if (myattr == null)
                     {
                         // if not already added to part, create and attach it
+                        System.Windows.Forms.MessageBox.Show("Create data [should not happen here]");
                         myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPartcorr, "Chrono::ChBody data", 0, (int)swInConfigurationOpts_e.swThisConfiguration);
                         swPartModel.ForceRebuild3(false); // needed? 
                         if (myattr == null) System.Windows.Forms.MessageBox.Show("Error: myattr null in setting!!");

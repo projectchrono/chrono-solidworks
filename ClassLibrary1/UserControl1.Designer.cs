@@ -48,12 +48,12 @@
             this.checkBox_scale = new System.Windows.Forms.CheckBox();
             this.numeric_scale_T = new System.Windows.Forms.NumericUpDown();
             this.button_convexdecomp = new System.Windows.Forms.Button();
+            this.button_chrono_property = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.button_chrono_property = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -174,8 +174,8 @@
             this.button_runtest.TabIndex = 8;
             this.button_runtest.Text = "Run test";
             this.toolTipSavePython.SetToolTip(this.button_runtest, "If you saved a test Python program, with the check button at \r\nthe left, then you" +
-                    " can also run the program directly by pressing\r\nthis button. \r\nNOTE: you must ha" +
-                    "ve Python installed.");
+        " can also run the program directly by pressing\r\nthis button. \r\nNOTE: you must ha" +
+        "ve Python installed.");
             this.button_runtest.UseVisualStyleBackColor = true;
             this.button_runtest.Click += new System.EventHandler(this.button_runtest_Click);
             // 
@@ -261,7 +261,7 @@
             this.numeric_scale_L.Size = new System.Drawing.Size(67, 20);
             this.numeric_scale_L.TabIndex = 14;
             this.toolTipSavePython.SetToolTip(this.numeric_scale_L, "Scale factor for all lengths. For example, if you set 0.1, an object that is 5m l" +
-                    "ong will be exported as 0.5m long.");
+        "ong will be exported as 0.5m long.");
             this.numeric_scale_L.Value = new decimal(new int[] {
             1,
             0,
@@ -281,7 +281,7 @@
             this.numeric_scale_M.Size = new System.Drawing.Size(67, 20);
             this.numeric_scale_M.TabIndex = 17;
             this.toolTipSavePython.SetToolTip(this.numeric_scale_M, "Scale factor for all masses. For example, if you set 0.1, an object that is 5kg h" +
-                    "eavy will be exported as 0.5kg.");
+        "eavy will be exported as 0.5kg.");
             this.numeric_scale_M.Value = new decimal(new int[] {
             1,
             0,
@@ -297,7 +297,7 @@
             this.checkBox_scale.TabIndex = 18;
             this.checkBox_scale.Text = "Scale while exporting";
             this.toolTipSavePython.SetToolTip(this.checkBox_scale, "If checked, you can set a reduction or enlargement scale for lenghts (L), masses " +
-                    "(M) and times (T) when exporting output.");
+        "(M) and times (T) when exporting output.");
             this.checkBox_scale.UseVisualStyleBackColor = true;
             this.checkBox_scale.CheckedChanged += new System.EventHandler(this.checkBox_scale_CheckedChanged);
             // 
@@ -314,7 +314,7 @@
             this.numeric_scale_T.Size = new System.Drawing.Size(67, 20);
             this.numeric_scale_T.TabIndex = 20;
             this.toolTipSavePython.SetToolTip(this.numeric_scale_T, "Scale factor for time, in measuring units of exported items (some exported quanti" +
-                    "ties depends on time scale, ex speed = [L]/[T] )");
+        "ties depends on time scale, ex speed = [L]/[T] )");
             this.numeric_scale_T.Value = new decimal(new int[] {
             1,
             0,
@@ -323,15 +323,29 @@
             // 
             // button_convexdecomp
             // 
+            this.button_convexdecomp.Enabled = false;
             this.button_convexdecomp.Location = new System.Drawing.Point(17, 422);
             this.button_convexdecomp.Name = "button_convexdecomp";
             this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
             this.button_convexdecomp.TabIndex = 21;
             this.button_convexdecomp.Text = "Convex decomposition";
             this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, resources.GetString("button_convexdecomp.ToolTip"));
+            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, "To use this function: \rselect a solid body and press the button");
             this.button_convexdecomp.UseVisualStyleBackColor = true;
             this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
+            // 
+            // button_chrono_property
+            // 
+            this.button_chrono_property.Enabled = false;
+            this.button_chrono_property.Location = new System.Drawing.Point(17, 460);
+            this.button_chrono_property.Name = "button_chrono_property";
+            this.button_chrono_property.Size = new System.Drawing.Size(163, 32);
+            this.button_chrono_property.TabIndex = 22;
+            this.button_chrono_property.Text = "Chrono property";
+            this.button_chrono_property.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.button_chrono_property, "Open the properties for Chrono rigid body");
+            this.button_chrono_property.UseVisualStyleBackColor = true;
+            this.button_chrono_property.Click += new System.EventHandler(this.button_chrono_property_Click);
             // 
             // label2
             // 
@@ -382,18 +396,6 @@
             this.label6.TabIndex = 19;
             this.label6.Text = "Scale T";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // button_chrono_property
-            // 
-            this.button_chrono_property.Location = new System.Drawing.Point(17, 460);
-            this.button_chrono_property.Name = "button_chrono_property";
-            this.button_chrono_property.Size = new System.Drawing.Size(163, 32);
-            this.button_chrono_property.TabIndex = 22;
-            this.button_chrono_property.Text = "Chrono property";
-            this.button_chrono_property.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_chrono_property, resources.GetString("button_chrono_property.ToolTip"));
-            this.button_chrono_property.UseVisualStyleBackColor = true;
-            this.button_chrono_property.Click += new System.EventHandler(this.button_chrono_property_Click);
             // 
             // SWTaskpaneHost
             // 

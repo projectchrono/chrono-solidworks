@@ -220,7 +220,7 @@ namespace ChronoEngine_SwAddin
 
             asciitext += "exported_items = [] \n\n";
 
-            asciitext += "body_0= chrono.ChBodyAuxRefShared()\n" +
+            asciitext += "body_0= chrono.ChBodyAuxRef()\n" +
                          "body_0.SetName('ground')\n" +
                          "body_0.SetBodyFixed(True)\n" +
                          "exported_items.append(body_0)\n\n";
@@ -375,7 +375,7 @@ namespace ChronoEngine_SwAddin
                     double[] amatr = (double[])tr_abs.ArrayData;
                     String markername = "marker_" + nbody + "_" + nmarker;
                     asciitext += "\n# Auxiliary marker (coordinate system feature)\n";
-                    asciitext += String.Format(bz, "{0} =chrono.ChMarkerShared()\n", markername);
+                    asciitext += String.Format(bz, "{0} =chrono.ChMarker()\n", markername);
                     asciitext += String.Format(bz, "{0}.SetName('{1}')" + "\n", markername, swFeat.Name);
                     asciitext += String.Format(bz, "{0}.AddMarker({1})\n", bodyname, markername);
                     asciitext += String.Format(bz, "{0}.Impose_Abs_Coord(chrono.ChCoordsysD(chrono.ChVectorD({1},{2},{3}),chrono.ChQuaternionD({4},{5},{6},{7})))\n",
@@ -504,7 +504,7 @@ namespace ChronoEngine_SwAddin
                 }
 
                 asciitext += String.Format(bz, "\n# Visualization shape \n", bodyname);
-                asciitext += String.Format(bz, "{0}_shape = chrono.ChObjShapeFileShared() \n", shapename);
+                asciitext += String.Format(bz, "{0}_shape = chrono.ChObjShapeFile() \n", shapename);
                 asciitext += String.Format(bz, "{0}_shape.SetFilename(shapes_dir +'{0}.obj') \n", shapename);
 
                 object foo = null;
@@ -525,7 +525,7 @@ namespace ChronoEngine_SwAddin
                 double[] amatr = (double[])relframe_shape.ArrayData;
                 double[] quat  = GetQuaternionFromMatrix(ref relframe_shape);
 
-                asciitext += String.Format(bz, "{0}_level = chrono.ChAssetLevelShared() \n", shapename);
+                asciitext += String.Format(bz, "{0}_level = chrono.ChAssetLevel() \n", shapename);
                 asciitext += String.Format(bz, "{0}_level.GetFrame().SetPos(chrono.ChVectorD({1},{2},{3})) \n", shapename, 
                     amatr[9] *ChScale.L,
                     amatr[10]*ChScale.L,
@@ -803,7 +803,7 @@ namespace ChronoEngine_SwAddin
 
                 // Write create body
                 asciitext += "# Rigid body part\n";
-                asciitext += bodyname + "= chrono.ChBodyAuxRefShared()" + "\n";
+                asciitext += bodyname + "= chrono.ChBodyAuxRef()" + "\n";
 
                 // Write name
                 asciitext += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";

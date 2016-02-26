@@ -353,7 +353,7 @@ namespace ChronoEngine_SwAddin
                     {
                         num_link++;
                         String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistanceShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistance()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cA.X * ChScale.L,
@@ -389,7 +389,7 @@ namespace ChronoEngine_SwAddin
                     {
                         num_link++;
                         String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateParallelShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateParallel()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cA.X * ChScale.L,
@@ -422,7 +422,7 @@ namespace ChronoEngine_SwAddin
                     {
                         num_link++;
                         String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonalShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonal()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cA.X * ChScale.L,
@@ -452,7 +452,7 @@ namespace ChronoEngine_SwAddin
                     {
                         num_link++;
                         String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateSphericalShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateSpherical()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cA.X * ChScale.L,
@@ -478,7 +478,7 @@ namespace ChronoEngine_SwAddin
                     {
                         num_link++;
                         String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateGenericShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateGeneric()\n", linkname);
                         asciitext += String.Format(bz, "{0}.SetConstrainedCoords(False, True, True, False, False, False)\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
@@ -523,7 +523,7 @@ namespace ChronoEngine_SwAddin
                         // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
                         num_link++;
                         String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateCoaxialShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateCoaxial()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cA.X * ChScale.L,
@@ -602,7 +602,7 @@ namespace ChronoEngine_SwAddin
 
                         num_link++;
                         linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistanceShared()\n", linkname);
+                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistance()\n", linkname);
 
                         asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
                                   cC.X * ChScale.L,
