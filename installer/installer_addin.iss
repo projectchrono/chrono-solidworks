@@ -1,10 +1,10 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v2.04"
+#define MyAppVersion "v2.05"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
-#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks (3)"
+#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -27,10 +27,10 @@ OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-;Source: {#MySolidWorksDir}\ChronoEngineAddIn.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks; 
-;Source: {#MySolidWorksDir}\hacd_CLI.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks;
+Source: {#MySolidWorksDir}\ChronoEngineAddIn.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks; 
+Source: {#MySolidWorksDir}\hacd_CLI.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks;
 Source: ..\to_put_in_SW_dir\chronoengine\*; Excludes: "*\.svn"; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Flags: recursesubdirs createallsubdirs;  Check: myFoundSolidWorks; 
-Source: {#MySolidWorksDir}\chronoengine\*.dll; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Check: myFoundSolidWorks; 
+;Source: {#MySolidWorksDir}\chronoengine\*.dll; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Check: myFoundSolidWorks; 
 
 [Run]
 Filename:"{dotnet20}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}\chronoengine; StatusMsg: "Registering controls ..."; Flags: runhidden;
@@ -40,7 +40,7 @@ Filename:"{dotnet20}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;
 
 
 [Icons]
-Name: "{group}\Getting started"; Filename: "http://www.chronoengine.info"
+Name: "{group}\Getting started"; Filename: "http://www.projectchrono.org"
 Name: "{group}\Uninstall"; Filename: "{uninstallexe}"
 
 
