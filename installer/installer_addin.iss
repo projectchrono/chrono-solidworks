@@ -1,7 +1,7 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v2.05"
+#define MyAppVersion "v2.07"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
 #define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks"
@@ -124,6 +124,26 @@ begin
     // find 64 bit SW v.15:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
                       'SOFTWARE\SolidWorks\SolidWorks 2015\Setup',
+                      'SolidWorks Folder',
+                      mallDirSolidWorks) then
+    begin
+            mPathSolidWorks := mallDirSolidWorks; 
+            mFoundSolidWorks := 1;
+    end
+
+    // find 64 bit SW v.16:
+    if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+                      'SOFTWARE\SolidWorks\SolidWorks 2016\Setup',
+                      'SolidWorks Folder',
+                      mallDirSolidWorks) then
+    begin
+            mPathSolidWorks := mallDirSolidWorks; 
+            mFoundSolidWorks := 1;
+    end
+
+    // find 64 bit SW v.17:
+    if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+                      'SOFTWARE\SolidWorks\SolidWorks 2017\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin

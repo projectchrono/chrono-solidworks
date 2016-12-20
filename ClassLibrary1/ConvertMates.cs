@@ -47,7 +47,7 @@ namespace ChronoEngine_SwAddin
             {
                  // Get the mated parts
                 MateEntity2 swEntityA = swMate.MateEntity(0);
-                MateEntity2 swEntityB = swMate.MateEntity(1);
+                MateEntity2 swEntityB = swMate.MateEntity(1);           
                 Component2 swCompA = swEntityA.ReferenceComponent;
                 Component2 swCompB = swEntityB.ReferenceComponent;
                 double[] paramsA = (double[])swEntityA.EntityParams;
@@ -86,13 +86,13 @@ namespace ChronoEngine_SwAddin
                         name2 = "body_0";
 
                     // Add some comment in Python, to list the referenced SW items
-                    asciitext += "\n# Mate constraint: " + swMateFeature.Name + " [" + swMateFeature.GetTypeName2() + "]" + "\n";
+                    asciitext += "\n# Mate constraint: " + swMateFeature.Name + " [" + swMateFeature.GetTypeName2() + "]" + " type:" + swMate.Type + " align:" + swMate.Alignment + " flip:" + swMate.Flipped + "\n";
                     for (int e = 0; e < swMate.GetMateEntityCount(); e++)
                     {
                         MateEntity2 swEntityN = swMate.MateEntity(e);
                         Component2 swCompN = swEntityN.ReferenceComponent;
                         String ce_nameN = (String)saved_parts[swModelDocExt.GetPersistReference3(swCompN)];
-                        asciitext += "#   Entity " + e + ": C::E name: " + ce_nameN + " , SW name: " + swCompN.Name2 + " ,  SW ref.type:" + swEntityN.ReferenceType2 + "\n";
+                        asciitext += "#   Entity " + e + ": C::E name: " + ce_nameN + " , SW name: " + swCompN.Name2 + " ,  SW ref.type:" + swEntityN.Reference.GetType() + " (" + swEntityN.ReferenceType2 + ")\n";
                     }
                     asciitext += "\n";
 
@@ -111,22 +111,23 @@ namespace ChronoEngine_SwAddin
                     bool do_CHmate_pointline  = false;
 
                     // to simplify things later...
+                    // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to  swMate.MateEntity(0).ReferenceType2  
+                    // but in some cases the latter fails.
+                    bool entity_0_as_FACE   = (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelFACES);
+                    bool entity_0_as_EDGE   = (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelEDGES) ||
+                                              (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelSKETCHSEGS) ||
+                                              (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelDATUMAXES);
+                    bool entity_0_as_VERTEX = (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
+                                              (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                              (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
 
-                    bool entity_0_as_FACE   = (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelFACES);
-                    bool entity_0_as_EDGE   = (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelEDGES) ||
-                                              (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelSKETCHSEGS) ||
-                                              (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelDATUMAXES);
-                    bool entity_0_as_VERTEX = (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelVERTICES) ||
-                                              (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                              (swMate.MateEntity(0).ReferenceType2 == (int)swSelectType_e.swSelDATUMPOINTS);
-
-                    bool entity_1_as_FACE   = (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelFACES);
-                    bool entity_1_as_EDGE   = (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelEDGES) ||
-                                              (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelSKETCHSEGS) ||
-                                              (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelDATUMAXES);
-                    bool entity_1_as_VERTEX = (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelVERTICES) ||
-                                              (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                              (swMate.MateEntity(1).ReferenceType2 == (int)swSelectType_e.swSelDATUMPOINTS);
+                    bool entity_1_as_FACE   = (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelFACES);
+                    bool entity_1_as_EDGE   = (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelEDGES) ||
+                                              (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelSKETCHSEGS) ||
+                                              (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelDATUMAXES);
+                    bool entity_1_as_VERTEX = (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
+                                              (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                              (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
 
                     Point3D cA  = new Point3D(0, 0, 0);
                     Point3D cB  = new Point3D(0, 0, 0);
@@ -378,7 +379,7 @@ namespace ChronoEngine_SwAddin
 
                         //if (do_distance_val!=0)
                             asciitext += String.Format(bz, "{0}.SetDistance({1})\n", linkname,
-                                do_distance_val * ChScale.L);
+                                do_distance_val * ChScale.L *-1);
 
                         asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
                         // Insert to a list of exported items
@@ -387,65 +388,79 @@ namespace ChronoEngine_SwAddin
 
                     if (do_CHmate_parallel)
                     {
-                        num_link++;
-                        String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateParallel()\n", linkname);
+                        if (Math.Abs(Vector3D.DotProduct(dA, dB)) > 0.98)
+                        {
+                            num_link++;
+                            String linkname = "link_" + num_link;
+                            asciitext += String.Format(bz, "{0} = chrono.ChLinkMateParallel()\n", linkname);
 
-                        asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X * ChScale.L,
-                                  cA.Y * ChScale.L,
-                                  cA.Z * ChScale.L);
-                        asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  dA.X, dA.Y, dA.Z);
-                        asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X * ChScale.L,
-                                  cB.Y * ChScale.L,
-                                  cB.Z * ChScale.L);
-                        asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  dB.X, dB.Y, dB.Z);
+                            asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      cA.X * ChScale.L,
+                                      cA.Y * ChScale.L,
+                                      cA.Z * ChScale.L);
+                            asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      dA.X, dA.Y, dA.Z);
+                            asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      cB.X * ChScale.L,
+                                      cB.Y * ChScale.L,
+                                      cB.Z * ChScale.L);
+                            asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      dB.X, dB.Y, dB.Z);
 
-                        if (do_parallel_flip)
-                            asciitext += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
+                            if (do_parallel_flip)
+                                asciitext += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
 
-                        // Initialize link, by setting the two csys, in absolute space,
-                        if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            // Initialize link, by setting the two csys, in absolute space,
+                            if (!swapAB_1)
+                                asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            else
+                                asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
+
+                            asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
+                            // Insert to a list of exported items
+                            asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
+                        }
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
-
-                        asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                        // Insert to a list of exported items
-                        asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
+                        {
+                            asciitext += "\n# ChLinkMateParallel skipped because directions not parallel! \n";
+                        }
                     }
 
                     if (do_CHmate_orthogonal)
                     {
-                        num_link++;
-                        String linkname = "link_" + num_link;
-                        asciitext += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonal()\n", linkname);
+                        if (Math.Abs(Vector3D.DotProduct(dA, dB)) < 0.02)
+                        {
+                            num_link++;
+                            String linkname = "link_" + num_link;
+                            asciitext += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonal()\n", linkname);
 
-                        asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cA.X * ChScale.L,
-                                  cA.Y * ChScale.L,
-                                  cA.Z * ChScale.L);
-                        asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  dA.X, dA.Y, dA.Z);
-                        asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  cB.X * ChScale.L,
-                                  cB.Y * ChScale.L,
-                                  cB.Z * ChScale.L);
-                        asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                                  dB.X, dB.Y, dB.Z);
+                            asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      cA.X * ChScale.L,
+                                      cA.Y * ChScale.L,
+                                      cA.Z * ChScale.L);
+                            asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      dA.X, dA.Y, dA.Z);
+                            asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      cB.X * ChScale.L,
+                                      cB.Y * ChScale.L,
+                                      cB.Z * ChScale.L);
+                            asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                                      dB.X, dB.Y, dB.Z);
 
-                        // Initialize link, by setting the two csys, in absolute space,
-                        if (!swapAB_1)
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            // Initialize link, by setting the two csys, in absolute space,
+                            if (!swapAB_1)
+                                asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, name1, name2);
+                            else
+                                asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
+
+                            asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
+                            // Insert to a list of exported items
+                            asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
+                        } 
                         else
-                            asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, name2, name1);
-
-                        asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                        // Insert to a list of exported items
-                        asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
+                        {
+                            asciitext += "\n# ChLinkMateOrthogonal skipped because directions not orthogonal! \n";
+                        }
                     }
 
                     if (do_CHmate_spherical)
@@ -571,13 +586,13 @@ namespace ChronoEngine_SwAddin
                             if (partrasfD != null)
                                 trD = partrasfD.IMultiply(invroottrasf);
                         }
-                        
-                        bool entity_2_as_VERTEX = (swMate.MateEntity(2).ReferenceType2 == (int)swSelectType_e.swSelVERTICES) ||
-                                                  (swMate.MateEntity(2).ReferenceType2 == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                                  (swMate.MateEntity(2).ReferenceType2 == (int)swSelectType_e.swSelDATUMPOINTS);
-                        bool entity_3_as_VERTEX = (swMate.MateEntity(3).ReferenceType2 == (int)swSelectType_e.swSelVERTICES) ||
-                                                  (swMate.MateEntity(3).ReferenceType2 == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                                  (swMate.MateEntity(3).ReferenceType2 == (int)swSelectType_e.swSelDATUMPOINTS);
+
+                        bool entity_2_as_VERTEX = (swMate.MateEntity(2).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
+                                                  (swMate.MateEntity(2).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                                  (swMate.MateEntity(2).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
+                        bool entity_3_as_VERTEX = (swMate.MateEntity(3).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
+                                                  (swMate.MateEntity(3).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                                  (swMate.MateEntity(3).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
                         Point3D cC  = new Point3D(0, 0, 0);
                         Point3D cD  = new Point3D(0, 0, 0);
                         Vector3D dC = new Vector3D(1, 0, 0);
