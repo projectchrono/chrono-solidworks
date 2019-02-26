@@ -92,6 +92,8 @@ namespace ChronoEngine_SwAddin
                         MateEntity2 swEntityN = swMate.MateEntity(e);
                         Component2 swCompN = swEntityN.ReferenceComponent;
                         String ce_nameN = (String)saved_parts[swModelDocExt.GetPersistReference3(swCompN)];
+                        if (ce_nameN == "")
+                            ce_nameN = "body_0"; // reference assembly
                         asciitext += "#   Entity " + e + ": C::E name: " + ce_nameN + " , SW name: " + swCompN.Name2 + " ,  SW ref.type:" + swEntityN.Reference.GetType() + " (" + swEntityN.ReferenceType2 + ")\n";
                     }
                     asciitext += "\n";
@@ -113,6 +115,7 @@ namespace ChronoEngine_SwAddin
                     // to simplify things later...
                     // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to  swMate.MateEntity(0).ReferenceType2  
                     // but in some cases the latter fails.
+                    /*
                     bool entity_0_as_FACE   = (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelFACES);
                     bool entity_0_as_EDGE   = (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelEDGES) ||
                                               (swMate.MateEntity(0).Reference.GetType() == (int)swSelectType_e.swSelSKETCHSEGS) ||
@@ -128,6 +131,34 @@ namespace ChronoEngine_SwAddin
                     bool entity_1_as_VERTEX = (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
                                               (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
                                               (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
+                    */
+
+                    // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to  swMate.MateEntity(0).ReferenceType2  
+                    // but in some cases the latter fails. However, sometimes swMate.MateEntity(0).Reference.GetType() is null ReferenceType2 is ok,
+                    // so do the following trick:
+                    int entity0_ref = swMate.MateEntity(0).Reference.GetType();
+                    if (entity0_ref == (int)swSelectType_e.swSelNOTHING)
+                        entity0_ref = swMate.MateEntity(0).ReferenceType2;
+                    int entity1_ref = swMate.MateEntity(1).Reference.GetType();
+                    if (entity1_ref == (int)swSelectType_e.swSelNOTHING)
+                        entity1_ref = swMate.MateEntity(1).ReferenceType2;
+
+                    bool entity_0_as_FACE =   (entity0_ref == (int)swSelectType_e.swSelFACES);
+                    bool entity_0_as_EDGE =   (entity0_ref == (int)swSelectType_e.swSelEDGES) ||
+                                              (entity0_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
+                                              (entity0_ref == (int)swSelectType_e.swSelDATUMAXES);
+                    bool entity_0_as_VERTEX = (entity0_ref == (int)swSelectType_e.swSelVERTICES) ||
+                                              (entity0_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                              (entity0_ref == (int)swSelectType_e.swSelDATUMPOINTS);
+
+                    bool entity_1_as_FACE =   (entity1_ref == (int)swSelectType_e.swSelFACES);
+                    bool entity_1_as_EDGE =   (entity1_ref == (int)swSelectType_e.swSelEDGES) ||
+                                              (entity1_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
+                                              (entity1_ref == (int)swSelectType_e.swSelDATUMAXES);
+                    bool entity_1_as_VERTEX = (entity1_ref == (int)swSelectType_e.swSelVERTICES) ||
+                                              (entity1_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                              (entity1_ref == (int)swSelectType_e.swSelDATUMPOINTS);
+
 
                     Point3D cA  = new Point3D(0, 0, 0);
                     Point3D cB  = new Point3D(0, 0, 0);
@@ -587,12 +618,23 @@ namespace ChronoEngine_SwAddin
                                 trD = partrasfD.IMultiply(invroottrasf);
                         }
 
-                        bool entity_2_as_VERTEX = (swMate.MateEntity(2).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
-                                                  (swMate.MateEntity(2).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                                  (swMate.MateEntity(2).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
-                        bool entity_3_as_VERTEX = (swMate.MateEntity(3).Reference.GetType() == (int)swSelectType_e.swSelVERTICES) ||
-                                                  (swMate.MateEntity(3).Reference.GetType() == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                                  (swMate.MateEntity(3).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
+                        // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to  swMate.MateEntity(0).ReferenceType2  
+                        // but in some cases the latter fails. However, sometimes swMate.MateEntity(0).Reference.GetType() is null ReferenceType2 is ok,
+                        // so do the following trick:
+                        int entity2_ref = swMate.MateEntity(2).Reference.GetType();
+                        if (entity2_ref == (int)swSelectType_e.swSelNOTHING)
+                            entity2_ref = swMate.MateEntity(2).ReferenceType2;
+                        int entity3_ref = swMate.MateEntity(3).Reference.GetType();
+                        if (entity3_ref == (int)swSelectType_e.swSelNOTHING)
+                            entity3_ref = swMate.MateEntity(3).ReferenceType2;
+
+                        bool entity_2_as_VERTEX = (entity2_ref == (int)swSelectType_e.swSelVERTICES) ||
+                                                  (entity2_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                                  (entity2_ref == (int)swSelectType_e.swSelDATUMPOINTS);
+                        bool entity_3_as_VERTEX = (entity3_ref == (int)swSelectType_e.swSelVERTICES) ||
+                                                  (entity3_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                                                  (entity3_ref == (int)swSelectType_e.swSelDATUMPOINTS);
+
                         Point3D cC  = new Point3D(0, 0, 0);
                         Point3D cD  = new Point3D(0, 0, 0);
                         Vector3D dC = new Vector3D(1, 0, 0);
