@@ -49,11 +49,13 @@
             this.numeric_scale_T = new System.Windows.Forms.NumericUpDown();
             this.button_convexdecomp = new System.Windows.Forms.Button();
             this.button_chrono_property = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -131,7 +133,7 @@
             // 
             // button_setcollshape
             // 
-            this.button_setcollshape.Location = new System.Drawing.Point(17, 384);
+            this.button_setcollshape.Location = new System.Drawing.Point(17, 414);
             this.button_setcollshape.Name = "button_setcollshape";
             this.button_setcollshape.Size = new System.Drawing.Size(163, 32);
             this.button_setcollshape.TabIndex = 5;
@@ -168,7 +170,7 @@
             // 
             // button_runtest
             // 
-            this.button_runtest.Location = new System.Drawing.Point(113, 304);
+            this.button_runtest.Location = new System.Drawing.Point(113, 306);
             this.button_runtest.Name = "button_runtest";
             this.button_runtest.Size = new System.Drawing.Size(69, 22);
             this.button_runtest.TabIndex = 8;
@@ -182,7 +184,7 @@
             // checkBox_savetest
             // 
             this.checkBox_savetest.AutoSize = true;
-            this.checkBox_savetest.Location = new System.Drawing.Point(17, 304);
+            this.checkBox_savetest.Location = new System.Drawing.Point(17, 306);
             this.checkBox_savetest.Name = "checkBox_savetest";
             this.checkBox_savetest.Size = new System.Drawing.Size(88, 17);
             this.checkBox_savetest.TabIndex = 9;
@@ -198,7 +200,7 @@
             0,
             0,
             131072});
-            this.numeric_dt.Location = new System.Drawing.Point(113, 326);
+            this.numeric_dt.Location = new System.Drawing.Point(113, 328);
             this.numeric_dt.Maximum = new decimal(new int[] {
             1,
             0,
@@ -227,7 +229,7 @@
             0,
             0,
             65536});
-            this.numeric_length.Location = new System.Drawing.Point(113, 348);
+            this.numeric_length.Location = new System.Drawing.Point(113, 350);
             this.numeric_length.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -251,7 +253,7 @@
             // numeric_scale_L
             // 
             this.numeric_scale_L.DecimalPlaces = 3;
-            this.numeric_scale_L.Location = new System.Drawing.Point(113, 232);
+            this.numeric_scale_L.Location = new System.Drawing.Point(113, 234);
             this.numeric_scale_L.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -271,7 +273,7 @@
             // numeric_scale_M
             // 
             this.numeric_scale_M.DecimalPlaces = 3;
-            this.numeric_scale_M.Location = new System.Drawing.Point(113, 253);
+            this.numeric_scale_M.Location = new System.Drawing.Point(113, 255);
             this.numeric_scale_M.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -304,7 +306,7 @@
             // numeric_scale_T
             // 
             this.numeric_scale_T.DecimalPlaces = 3;
-            this.numeric_scale_T.Location = new System.Drawing.Point(113, 274);
+            this.numeric_scale_T.Location = new System.Drawing.Point(113, 276);
             this.numeric_scale_T.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -324,7 +326,7 @@
             // button_convexdecomp
             // 
             this.button_convexdecomp.Enabled = false;
-            this.button_convexdecomp.Location = new System.Drawing.Point(17, 422);
+            this.button_convexdecomp.Location = new System.Drawing.Point(17, 452);
             this.button_convexdecomp.Name = "button_convexdecomp";
             this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
             this.button_convexdecomp.TabIndex = 21;
@@ -337,7 +339,7 @@
             // button_chrono_property
             // 
             this.button_chrono_property.Enabled = false;
-            this.button_chrono_property.Location = new System.Drawing.Point(17, 460);
+            this.button_chrono_property.Location = new System.Drawing.Point(17, 490);
             this.button_chrono_property.Name = "button_chrono_property";
             this.button_chrono_property.Size = new System.Drawing.Size(163, 32);
             this.button_chrono_property.TabIndex = 22;
@@ -346,6 +348,19 @@
             this.toolTipSavePython.SetToolTip(this.button_chrono_property, "Open the properties for Chrono rigid body");
             this.button_chrono_property.UseVisualStyleBackColor = true;
             this.button_chrono_property.Click += new System.EventHandler(this.button_chrono_property_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "irrlicht",
+            "pov"});
+            this.comboBox1.Location = new System.Drawing.Point(113, 373);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(67, 21);
+            this.comboBox1.TabIndex = 23;
+            this.toolTipSavePython.SetToolTip(this.comboBox1, "Choose the type of  visualization system used by the test python program");
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -370,7 +385,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(67, 234);
+            this.label4.Location = new System.Drawing.Point(67, 236);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 15;
@@ -380,7 +395,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(64, 255);
+            this.label5.Location = new System.Drawing.Point(64, 257);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(46, 13);
             this.label5.TabIndex = 16;
@@ -390,18 +405,30 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(64, 276);
+            this.label6.Location = new System.Drawing.Point(64, 278);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(44, 13);
             this.label6.TabIndex = 19;
             this.label6.Text = "Scale T";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(40, 374);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Visualization";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button_chrono_property);
             this.Controls.Add(this.button_convexdecomp);
             this.Controls.Add(this.numeric_scale_T);
@@ -426,7 +453,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_export);
             this.Name = "SWTaskpaneHost";
-            this.Size = new System.Drawing.Size(205, 499);
+            this.Size = new System.Drawing.Size(205, 525);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
@@ -465,5 +492,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button_convexdecomp;
         private System.Windows.Forms.Button button_chrono_property;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label7;
     }
 }

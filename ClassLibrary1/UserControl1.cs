@@ -19,6 +19,7 @@ using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
 using ChronoEngineAddin;
 
+using Microsoft.Win32;
 //using ConvertToCollisionShapes;
 
 
@@ -34,7 +35,7 @@ namespace ChronoEngine_SwAddin
         public const string SWTASKPANE_PROGID = "ChronoEngine.Taskpane";
         public ISldWorks mSWApplication;
         public SWIntegration mSWintegration;
-        internal SaveFileDialog SaveFileDialog1;
+        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
         internal int num_comp;
         internal string save_dir_shapes = "";
         internal string save_filename = "";
@@ -77,7 +78,7 @@ namespace ChronoEngine_SwAddin
         public SWTaskpaneHost()
         {
             InitializeComponent();
-            this.SaveFileDialog1 = new SaveFileDialog();
+            this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.saved_parts  = new Hashtable(new myBytearrayHashComparer());
             this.saved_shapes = new Hashtable();
         }
@@ -106,7 +107,7 @@ namespace ChronoEngine_SwAddin
                 return;
             }
             
-            this.SaveFileDialog1.Filter = "C::E Python script (*.py)|*.py";
+            this.SaveFileDialog1.Filter = "PyChrono Python script (*.py)|*.py";
             this.SaveFileDialog1.DefaultExt = "py";
             //this.SaveFileDialog1.FileName = "mechanism";
             this.SaveFileDialog1.InitialDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
@@ -159,19 +160,20 @@ namespace ChronoEngine_SwAddin
                     string save_directory = System.IO.Path.GetDirectoryName(SaveFileDialog1.FileName);
                     try
                     {
-
+                        string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
+                        //System.Windows.Forms.MessageBox.Show("GetInstallPath: " + InstallPath);
                         //System.Windows.Forms.MessageBox.Show("GetCurrentWorkingDirectory: " + this.mSWApplication.GetCurrentWorkingDirectory());
                         //System.Windows.Forms.MessageBox.Show("GetExecutablePath: " + this.mSWApplication.GetExecutablePath());
                         //System.Windows.Forms.MessageBox.Show("GetDataFolder: " + this.mSWApplication.GetDataFolder(true));
  
                         if (!System.IO.File.Exists(save_directory + "\\run_test.py"))
-                            System.IO.File.Copy(this.mSWApplication.GetExecutablePath() + "\\chronoengine\\run_test.py", save_directory + "\\run_test.py");
+                            System.IO.File.Copy(InstallPath + "\\run_test.py", save_directory + "\\run_test.py");
                         if (!System.IO.File.Exists(save_directory + "\\_template_POV.pov"))
-                            System.IO.File.Copy(this.mSWApplication.GetExecutablePath() + "\\chronoengine\\_template_POV.pov", save_directory + "\\_template_POV.pov");
+                            System.IO.File.Copy(InstallPath + "\\_template_POV.pov", save_directory + "\\_template_POV.pov");
                     }
                     catch (Exception exc)
                     {
-                        System.Windows.Forms.MessageBox.Show("Cannot write the test Python program. \n Make sure that the template chronoengine\\run_test.py is in your SolidWorks directory.\n\n" + exc.Message);
+                        System.Windows.Forms.MessageBox.Show("Cannot write the test Python program. \n Make sure that the template chrono_solidworks\\run_test.py is in your SolidWorks directory.\n\n" + exc.Message);
                     }
                 }
             }
@@ -207,10 +209,10 @@ namespace ChronoEngine_SwAddin
 
             num_comp =0;
 
-            asciitext = "# Chrono::Engine Python script from SolidWorks \n" +
+            asciitext = "# PyChrono script generated from SolidWorks using Chrono::SolidWorks add-in \n" +
                         "# Assembly: " + swModel.GetPathName() + "\n\n\n";
 
-            asciitext += "import ChronoEngine_PYTHON_core as chrono \n";
+            asciitext += "import pychrono as chrono \n";
             asciitext += "import builtins \n\n";
 
             asciitext += "shapes_dir = '" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + "/' \n\n";
@@ -1295,6 +1297,11 @@ namespace ChronoEngine_SwAddin
                     //swModel.Rebuild((int)swRebuildOptions_e.swForceRebuildAll);
                     swModel.ForceRebuild3(false);
                 }
+                else 
+                {
+                    System.Windows.Forms.MessageBox.Show("Selected solid body is not of cylinder/box/sphere/convexhull type. Cannot convert to collision shape.");
+                    return;
+                }
 
             } // end loop on selected items
 
@@ -1325,6 +1332,7 @@ namespace ChronoEngine_SwAddin
 
             try
             {
+                string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
                 System.Diagnostics.ProcessStartInfo startInfo;
                 System.Diagnostics.Process process;
                 string save_directory = System.IO.Path.GetDirectoryName(this.save_filename);
@@ -1333,6 +1341,12 @@ namespace ChronoEngine_SwAddin
                 pyArgs += " -f " + System.IO.Path.GetFileName(this.save_filename); //was .GetFileNameWithoutExtension(this.save_filename);
                 pyArgs += " -d " + this.numeric_dt.Value.ToString(bz);
                 pyArgs += " -T " + this.numeric_length.Value.ToString(bz);
+                pyArgs += " --datapath " +  "\"" + InstallPath + "/data/" + "\"";
+                if (this.comboBox1.SelectedIndex == 0)
+                    pyArgs += " -v irrlicht";
+                if (this.comboBox1.SelectedIndex == 1)
+                    pyArgs += " -v pov";
+
                 string script = "run_test.py";
                 startInfo = new System.Diagnostics.ProcessStartInfo("Python.exe");
                 startInfo.WorkingDirectory = directory;
@@ -1351,7 +1365,7 @@ namespace ChronoEngine_SwAddin
             }
             catch (Exception myex)
             {
-                System.Windows.Forms.MessageBox.Show("Cannot execute the test Python program. \n - Make sure that you already saved with 'save test.py' enabled; \n - Make sure you have Python installed \n\n\nException:\n" + myex.ToString());
+                System.Windows.Forms.MessageBox.Show("Cannot execute the test Python program. \n - Make sure that you already saved with 'save test.py' enabled; \n - Make sure you have Python.exe available in command line PATH. \n\n\nException:\n" + myex.ToString());
             }
         }
 
@@ -1645,6 +1659,11 @@ namespace ChronoEngine_SwAddin
                 myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
             } 
             
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
 
