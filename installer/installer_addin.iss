@@ -1,10 +1,11 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v2.07"
+#define MyAppVersion "v4.00"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
-#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks"
+#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks (2)"
+#define MyAppSource "C:\Program Files\chrono_solidworks"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -16,8 +17,8 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\
 DefaultGroupName={#MyAppName}
+DefaultDirName={pf}\ChronoSolidworks
 WizardImageFile=SetupModern20.bmp
 WizardSmallImageFile=SetupModernSmall26.bmp
 PrivilegesRequired=admin
@@ -27,22 +28,24 @@ OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source: {#MySolidWorksDir}\ChronoEngineAddIn.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks; 
-Source: {#MySolidWorksDir}\hacd_CLI.dll; DestDir: {code:myGetPathSolidWorks};  Flags: "sharedfile uninsnosharedfileprompt";  Check: myFoundSolidWorks;
-Source: ..\to_put_in_SW_dir\chronoengine\*; Excludes: "*\.svn"; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Flags: recursesubdirs createallsubdirs;  Check: myFoundSolidWorks; 
+Source: {#MyAppSource}\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt"; 
+Source: {#MyAppSource}\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt"; 
+Source: ..\to_put_in_SW_dir\*; Excludes: "*\.svn,*.git"; DestDir: {app};  Flags: recursesubdirs createallsubdirs; 
 ;Source: {#MySolidWorksDir}\chronoengine\*.dll; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Check: myFoundSolidWorks; 
 
 [Run]
-Filename:"{dotnet20}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}\chronoengine; StatusMsg: "Registering controls ..."; Flags: runhidden;
+Filename:"{dotnet20}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet20}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {code:myGetPathSolidWorks}\chronoengine; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
+Filename:"{dotnet20}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
 
 
 [Icons]
 Name: "{group}\Getting started"; Filename: "http://www.projectchrono.org"
 Name: "{group}\Uninstall"; Filename: "{uninstallexe}"
 
+[Registry]
+Root: HKLM; Subkey: Software\ChronoSolidworks; ValueType: string; ValueName: InstallPath; ValueData: {app}
 
 [Code]
 var
@@ -164,13 +167,13 @@ begin
 
   if mFoundSolidWorks = 0 then 
   begin 
-           MsgBox('WARNING!'#13#13+
-               'The installer was not able to detect SolidWorks 64 bit'+
-               'on your system.'#13#13+
-               'Maybe your SolidWorks is not yet installed, or not properly installed?'#13+
-               '(If so,please install SolidWorks 64 bit before installing this plug-in).', mbError, MB_OK);
-
-           Abort();
+           //MsgBox('WARNING!'#13#13+
+           //    'The installer was not able to detect SolidWorks 64 bit'+
+           //    'on your system.'#13#13+
+           //    'Maybe your SolidWorks is not yet installed, or not properly installed?'#13+
+           //    '(If so,please install SolidWorks 64 bit before installing this plug-in).', mbError, MB_OK);
+           //
+           //Abort();
   end 
                                    
 
@@ -193,11 +196,8 @@ begin
   
   { Skip pages that shouldn't be shown }
 
-  if (PageID = wpSelectDir) then
-    Result := True
-
-  if (PageID = wpSelectDir) then
-    Result := True
+  //if (PageID = wpSelectDir) then
+  //  Result := True
 end;
 
 
@@ -207,19 +207,21 @@ var
   S: String;
 begin
   { Fill the 'Ready Memo' with the normal settings and the custom settings }
-  S := '';
+  S :=     'Instaling the Chrono::SolidWorks add-in.'  + NewLine  + NewLine;
+  S := S + 'After the installation do this: launch SolidWorks, then check that the Chrono add-in is activated by using the Tools/Add-in... menu. '  + NewLine;
+  S := S + 'In the Add-ins panel you should find an item called ChronoEngine SwAddin; set it as active by flagging it.' + NewLine;
 
-  if (mFoundSolidWorks = 1) then begin
-    S := S + 'The SolidWorks dll directory is:' + NewLine;
-    S := S + Space + mPathSolidWorks + NewLine;
-    S := S + 'so the Chrono::Engine 64 bit add-in module for SolidWorks will be installed in:' + NewLine;
-    S := S + Space + mPathSolidWorks + 'chronoengine' + NewLine;
-  end
+  //if (mFoundSolidWorks = 1) then begin
+  //  S := S + 'The SolidWorks dll directory is:' + NewLine;
+  //  S := S + Space + mPathSolidWorks + NewLine;
+  //  S := S + 'so the Chrono::Engine 64 bit add-in module for SolidWorks will be installed in:' + NewLine;
+  //  S := S + Space + mPathSolidWorks + 'chronoengine' + NewLine;
+  //end
 
-  if ((mFoundSolidWorks = 0) ) then begin
-    S := S + 'No installation of SolidWorks 64bit has been detected on this system.' + NewLine;
-    S := S + 'The Chrono::Engine add-in for SolidWorks CANNOT BE INSTALLED!' + NewLine;
-  end
+  //if ((mFoundSolidWorks = 0) ) then begin
+  //  S := S + 'No installation of SolidWorks 64bit has been detected on this system.' + NewLine;
+  //  S := S + 'The Chrono::Engine add-in for SolidWorks CANNOT BE INSTALLED!' + NewLine;
+  //end
 
   Result := S;
 end;
