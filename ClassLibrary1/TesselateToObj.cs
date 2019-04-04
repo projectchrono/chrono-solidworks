@@ -98,6 +98,17 @@ namespace ChronoEngine_SwAddin
                         // Pass in null so the whole body will be tessellated
                         swTessellation = (Tessellation)swBody.GetTessellation(null);
 
+                        //****DEBUG***
+                        /*
+                        System.Windows.Forms.MessageBox.Show("TESSELLATE: \n" +
+                         String.Format(bz, "CurveChordAngleTolerance={0} \n", swTessellation.CurveChordAngleTolerance) + // DEFAULT 0.523
+                         String.Format(bz, "CurveChordTolerance={0} \n", swTessellation.CurveChordTolerance) +  // DEFAULT CHANGES WITH OBJ
+                         String.Format(bz, "SurfacePlaneAngleTolerance={0} \n", swTessellation.SurfacePlaneAngleTolerance) + // DEFAULT 0.523
+                         String.Format(bz, "SurfacePlaneTolerance={0} \n", swTessellation.SurfacePlaneTolerance) +  // DEFAULT CHANGES WITH OBJ
+                         String.Format(bz, "MaxFacetWidth={0} \n", swTessellation.MaxFacetWidth) +
+                         String.Format(bz, "MinFacetWidth={0} \n", swTessellation.MinFacetWidth));
+                        */
+
                         // Set up the Tessellation object
                         swTessellation.NeedFaceFacetMap = true;
                         swTessellation.NeedVertexParams = true;

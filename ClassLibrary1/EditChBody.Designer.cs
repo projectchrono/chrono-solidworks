@@ -105,11 +105,6 @@
             this.numeric_friction.Name = "numeric_friction";
             this.numeric_friction.Size = new System.Drawing.Size(120, 20);
             this.numeric_friction.TabIndex = 6;
-            this.numeric_friction.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
             // 
             // label_rolling_friction
             // 
@@ -311,6 +306,7 @@
             // numeric_conveyor_speed
             // 
             this.numeric_conveyor_speed.DecimalPlaces = 3;
+            this.numeric_conveyor_speed.Enabled = false;
             this.numeric_conveyor_speed.Increment = new decimal(new int[] {
             5,
             0,

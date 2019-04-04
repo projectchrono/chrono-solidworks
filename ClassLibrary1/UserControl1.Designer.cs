@@ -338,7 +338,6 @@
             // 
             // button_chrono_property
             // 
-            this.button_chrono_property.Enabled = false;
             this.button_chrono_property.Location = new System.Drawing.Point(17, 490);
             this.button_chrono_property.Name = "button_chrono_property";
             this.button_chrono_property.Size = new System.Drawing.Size(163, 32);

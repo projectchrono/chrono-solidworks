@@ -88,7 +88,7 @@
     </Reference>
     <Reference Include="solidworkstools">
       <HintPath>..\..\..\..\..\Program Files\SolidWorks Corp\SolidWorks (2)\solidworkstools.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

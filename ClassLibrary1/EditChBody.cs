@@ -110,24 +110,32 @@ namespace ChronoEngineAddin
             this.numeric_conveyor_speed.Value = (decimal)m_conveyor_speed;
         }
 
-        public void UpdateFromSelection(SelectionMgr swSelMgr, ref AttributeDef mdefattr_chbody)//, ref AttributeDef defattr_chconveyor)
+        public bool UpdateFromSelection(SelectionMgr swSelMgr, ref AttributeDef mdefattr_chbody)//, ref AttributeDef defattr_chconveyor)
         {
             // Fetch current properties from the selected part(s) (i.e. ChBody in C::E)
             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
                 {
-                    //Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
                     Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
+                    if (swPart == null)
+                    {
+                        System.Windows.Forms.MessageBox.Show("swPart == null");
+                        return false;
+                    }
+                    
                     ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                     Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);// ***TODO*** for instanced parts? does not work...
-                     swPartcorr = swPart; // ***TODO***
+                    if (swPartModel == null)
+                    {
+                        System.Windows.Forms.MessageBox.Show("swPartModel == null");
+                        return false;
+                    }
 
                     if (swPartModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY) 
                     {
                         if (swPart.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
                         {
                             System.Windows.Forms.MessageBox.Show("Fexible assemblies not supported as ChBody (set as Rigid?)");
-                            return;
+                            return false;
                         }
                         if (swPart.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving)
                         {
@@ -139,17 +147,23 @@ namespace ChronoEngineAddin
                             //return;
                         }  
                     }
-                    
+
                     // fetch SW attribute with Chrono parameters for ChBody
                     SolidWorks.Interop.sldworks.Attribute myattr = null;
-                    if (swPartcorr != null)
+                    if (swPart != null)
                         myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(mdefattr_chbody, 0);
+
                     if (myattr == null)
                     {
                         // if not already added to part, create and attach it
                         //System.Windows.Forms.MessageBox.Show("Create data");
-                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPartcorr, "Chrono::ChBody_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
-                        
+                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPart, "Chrono::ChBody_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+
+                        if (myattr == null)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Probably you selected a part which is one of N instances in assembly. \n Please close window and use this function on another instance for whom you already have set the properties.\n [Sorry for the inconvenience, this issue will be removed in future]");
+                            return false;
+                        }
                         swPartModel.ForceRebuild3(false); // needed, but does not work...
                         //swPartModel.Rebuild((int)swRebuildOptions_e.swRebuildAll); // needed but does not work...
 
@@ -179,8 +193,7 @@ namespace ChronoEngineAddin
                                         "collision_margin")).GetDoubleValue());
                     Set_collision_family((int)((Parameter)myattr.GetParameter(
                                         "collision_family")).GetDoubleValue());
-
-                    
+   
 
                     // fetch SW attribute with Chrono parameters for ChConveyor
                     /*
@@ -203,7 +216,7 @@ namespace ChronoEngineAddin
                     }
                     */
                 }
-
+            return true;
         }
 
 
@@ -217,19 +230,17 @@ namespace ChronoEngineAddin
                 {
                     //Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
                     Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
-                    ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                     Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);// ***TODO*** for instanced parts? does not work...
-                     swPartcorr = swPart; // ***TODO***
+                    ModelDoc2  swPartModel = (ModelDoc2)swPart.GetModelDoc2();
+                      //Component2 swPartcorr = swPart;
+                      //Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);// ***TODO*** for instanced parts? does not work...
 
                     // fetch SW attribute with Chrono parameters for ChBody
-                    SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPartcorr.FindAttribute(mdefattr_chbody, 0);
+                    SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(mdefattr_chbody, 0);
                     if (myattr == null)
                     {
                         // if not already added to part, create and attach it
-                        System.Windows.Forms.MessageBox.Show("Create data [should not happen here]");
-                        myattr = mdefattr_chbody.CreateInstance5(swPartModel, swPartcorr, "Chrono::ChBody data", 0, (int)swInConfigurationOpts_e.swThisConfiguration);
-                        swPartModel.ForceRebuild3(false); // needed? 
-                        if (myattr == null) System.Windows.Forms.MessageBox.Show("Error: myattr null in setting!!");
+                        System.Windows.Forms.MessageBox.Show("[store settings failed - should not happen]");
+                        return;
                     }
 
                     ((Parameter)myattr.GetParameter("collision_on")).SetDoubleValue2(

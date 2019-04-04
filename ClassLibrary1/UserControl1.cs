@@ -627,13 +627,13 @@ namespace ChronoEngine_SwAddin
                                 double param_collision_margin = ((Parameter)myattr.GetParameter("collision_margin")).GetDoubleValue();
                                 int    param_collision_family = (int)((Parameter)myattr.GetParameter("collision_family")).GetDoubleValue();
 
-                                asciitext += String.Format(bz, "{0}.SetFriction({1:g});\n", bodyname, param_friction);
+                                asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetFriction({1:g});\n", bodyname, param_friction);
                                 if (param_restitution != 0)
-                                    asciitext += String.Format(bz, "{0}.SetImpactC({1:g});\n", bodyname, param_restitution);
+                                    asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetImpactC({1:g});\n", bodyname, param_restitution);
                                 if (param_rolling_friction != 0)
-                                    asciitext += String.Format(bz, "{0}.SetRollingFriction({1:g});\n", bodyname, param_rolling_friction);
+                                    asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetRollingFriction({1:g});\n", bodyname, param_rolling_friction);
                                 if (param_spinning_friction != 0)
-                                    asciitext += String.Format(bz, "{0}.SetSpinningFriction({1:g});\n", bodyname, param_spinning_friction);
+                                    asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetSpinningFriction({1:g});\n", bodyname, param_spinning_friction);
                                 //if (param_collision_envelope != 0.03)
                                     asciitext += String.Format(bz, "{0}.GetCollisionModel().SetEnvelope({1:g});\n", bodyname, param_collision_envelope * ChScale.L);
                                 //if (param_collision_margin != 0.01)
@@ -1236,7 +1236,6 @@ namespace ChronoEngine_SwAddin
                 bool rbody_converted = false;
                 Body2 swBody = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
 
-
                 // ----- Try to see if this is a sphere
 
                 if (ConvertToCollisionShapes.SWbodyToSphere(swBody))
@@ -1410,7 +1409,14 @@ namespace ChronoEngine_SwAddin
                     System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
                     return;
                 }
-
+                /*
+                IComponent2 mcomponent = swSelMgr.GetSelectedObjectsComponent4(isel, -1);
+                object bodyInfo;
+                object[] bodies;
+                bodies = (object[])mcomponent.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+                if (bodies.Length == 1)
+                     System.Windows.Forms.MessageBox.Show("Warning! This is the only body in this part. It will converted to collision body -you will loose visualization and mass computation.");
+                */
                 bool rbody_converted = false;
                 Body2 swBodyIn = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
 
@@ -1422,7 +1428,7 @@ namespace ChronoEngine_SwAddin
 
                 // Pass in null so the whole body will be tessellated
                 swTessellation = (Tessellation)swBodyIn.GetTessellation(null);
-
+                
                 // Set up the Tessellation object
                 swTessellation.NeedFaceFacetMap = true;
                 swTessellation.NeedVertexParams = true;
@@ -1650,14 +1656,15 @@ namespace ChronoEngine_SwAddin
             EditChBody myCustomerDialog = new EditChBody();
 
             // Update dialog properties properties from the selected part(s) (i.e. ChBody in C::E) 
-            myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_chbody); //ref this.mSWintegration.defattr_chconveyor);
-                
-            // Show the modal dialog
-            if (myCustomerDialog.ShowDialog() == DialogResult.OK)
+            if (myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_chbody))
             {
-                // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
-                myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
-            } 
+                // Show the modal dialog
+                if (myCustomerDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
+                    myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
+                }
+            }
             
         }
 
