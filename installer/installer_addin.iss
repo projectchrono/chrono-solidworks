@@ -34,10 +34,10 @@ Source: ..\to_put_in_SW_dir\*; Excludes: "*\.svn,*.git"; DestDir: {app};  Flags:
 ;Source: {#MySolidWorksDir}\chronoengine\*.dll; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Check: myFoundSolidWorks; 
 
 [Run]
-Filename:"{dotnet20}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet20}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
 
 
 [Icons]
@@ -208,6 +208,7 @@ var
 begin
   { Fill the 'Ready Memo' with the normal settings and the custom settings }
   S :=     'Instaling the Chrono::SolidWorks add-in.'  + NewLine  + NewLine;
+  S :=     'Assuming NET 4.0 framework is installed.';
   S := S + 'After the installation do this: launch SolidWorks, then check that the Chrono add-in is activated by using the Tools/Add-in... menu. '  + NewLine;
   S := S + 'In the Add-ins panel you should find an item called ChronoEngine SwAddin; set it as active by flagging it.' + NewLine;
 
