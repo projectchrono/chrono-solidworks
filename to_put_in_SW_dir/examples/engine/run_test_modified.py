@@ -1,14 +1,13 @@
 #-------------------------------------------------------------------------------
-# Name:        modulo1
-# Purpose:
 #
-# Author:      tasora
+# This file shows how to simulate a four cylinder engine
 #
-# Created:     14/02/2012
-# Copyright:   (c) tasora 2012
-# Licence:     <your licence>
+# Author: Alessandro Tasora
+#
+# REMARK: this is part of Chrono::Solidworks add-in
+#     - it assumes that you exported the .asm in this directory using the add-in
+#     - PyChrono must be installed in your Python environment
 #-------------------------------------------------------------------------------
-#!/usr/bin/env python
 
 def main():
     pass
@@ -20,12 +19,21 @@ if __name__ == '__main__':
 import os
 import math
 import time
-import sys, getopt, imp
-import ChronoEngine_PYTHON_core as chrono
-import ChronoEngine_PYTHON_postprocess as postprocess
+import sys, getopt
+import pychrono as chrono
+import pychrono.postprocess as postprocess
+import pychrono.irrlicht as chronoirr
+
+# ---------------------------------------------------------------------
 
 m_timestep = 0.01
 m_length = 1.0
+m_visualization = "pov"
+m_datapath = "C:/Program Files/chrono_solidworks/data/" 
+
+# For irrlicht fonts & background. Adjust to your path
+chrono.SetChronoDataPath(m_datapath)
+
 
 # ---------------------------------------------------------------------
 #
@@ -33,12 +41,12 @@ m_length = 1.0
 #  and add it to the ChSystem.
 #
 
-
 print ("Loading C::E scene...");
 
-exported_items = chrono.ImportSolidWorksSystem('engine4c')
+exported_items = chrono.ImportSolidWorksSystem('./engine4c')
 
 print ("...loading done!");
+
 
 
 # Print exported items
@@ -46,10 +54,18 @@ for my_item in exported_items:
     print (my_item.GetName())
 
 # Add items to the physical system
-my_system = chrono.ChSystem()
+my_system = chrono.ChSystemNSC()
 for my_item in exported_items:
     my_system.Add(my_item)
 
+
+# Optionally set some solver parameters.
+
+#my_system.SetMaxPenetrationRecoverySpeed(1.00)
+my_system.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN);
+my_system.SetMaxItersSolverSpeed(600);
+my_system.SetSolverWarmStarting(True);
+my_system.Set_G_acc(chrono.ChVectorD(0,-9.8,0))
 
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #  SOME MODIFICATIONS....
@@ -59,7 +75,7 @@ for my_item in exported_items:
 #  the SolidWorks interface)
 
 my_marker = my_system.SearchMarker('Marker_shaft')
-if my_marker.IsNull() :
+if not my_marker :
     sys.exit('Error: cannot find marker from its name in the C::E system!')
 
 # ***TRICK***
@@ -68,186 +84,219 @@ if my_marker.IsNull() :
 # my_system object with my_system.ShowHierarchy(chrono.GetLog()) if needed)
 #   Note.. here we must upcast because Search() returns generic shared
 # pointer to a base class ChPhysicsItem, so we use CastToXXYYZZ()
+# my_shaft = chrono.CastToChBodyAuxRefShared(my_system.Search('Crankshaft-1'))
+# Or use the specialized SearchBody().
 
-my_item = my_system.Search('Crankshaft-1')
-my_shaft  = chrono.CastToChBodyAuxRefShared(my_item)
-if my_shaft.IsNull() :
+my_shaft = my_system.SearchBody('Crankshaft-1')
+if not my_shaft :
     sys.exit('Error: cannot find shaft  from its name in the C::E system!')
 
-my_item = my_system.Search('ground')
-my_ground = chrono.CastToChBodyAuxRefShared(my_item)
-if my_ground.IsNull() :
+my_ground = my_system.SearchBody('ground')
+if not my_ground :
     sys.exit('Error: cannot find ground from its name in the C::E system!')
 
 # ***TRICK***
 # Create an engine along the Z direction of the coordsystem specified by
 # the marker, and acting between shaft and ground
 
-revolute_csys = my_marker.GetAbsCoord()
-link_motor = chrono.ChLinkEngineShared()
-link_motor.Initialize(my_shaft, my_ground, revolute_csys)
-link_motor.Set_shaft_mode(chrono.ChLinkEngine.ENG_SHAFT_PRISM)
-link_motor.Set_eng_mode(chrono.ChLinkEngine.ENG_MODE_SPEED)
-link_motor.Get_spe_funct().Set_yconst(2.5*chrono.CH_C_2PI)  # 0.5 Hz to rad/s
+revolute_frame = my_marker.GetAbsFrame()
+link_motor = chrono.ChLinkMotorRotationSpeed()
+link_motor.Initialize(my_shaft, my_ground, revolute_frame)
+link_motor.SetSpindleConstraint(chrono.ChLinkMotorRotationSpeed.SpindleConstraint_CYLINDRICAL)# Set_shaft_mode(chrono.ChLinkEngine.ENG_SHAFT_PRISM)
+link_motor.SetMotorFunction(chrono.ChFunction_Const(1.0*chrono.CH_C_2PI))  # 1.0 Hz to rad/s
 my_system.Add(link_motor)
 
-my_shaft.SetWvel_par(chrono.ChVectorD(2,2,2))
-
-# ***TRICK***
-# Add a POVray steel material to the shaft for enhanced photorealism
-# Thank to the 'assets' system, it is possible to add custom POV statements
-# to the the visualization shapes.
-
-if (True):
-    shaft_povmat = postprocess.ChPovRayAssetCustomShared()
-    shaft_povmat.SetCommands('''
-       pigment { color rgbt <0.5,0.5,0.52,0> }
-       finish  {    reflection {0.35}
-                    ambient 0
-                    diffuse 1
-                    phong 0.9
-                    phong_size 60
-                    metallic } ''')
-    my_shaft.GetAssets().push_back(shaft_povmat)
 
 
 
-#  END OF MODIFICATIONS....
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+if m_visualization == "pov":
 
+    # ---------------------------------------------------------------------
+    #
+    #  Render a short animation by generating scripts
+    #  to be used with POV-Ray
+    #
 
+    pov_exporter = postprocess.ChPovRay(my_system)
 
+     # Sets some file names for in-out processes.
+    pov_exporter.SetTemplateFile        ("_template_POV.pov")
+    pov_exporter.SetOutputScriptFile    ("rendering_frames.pov")
+    if not os.path.exists("output"):
+        os.mkdir("output")
+    if not os.path.exists("anim"):
+        os.mkdir("anim")
+    pov_exporter.SetOutputDataFilebase("output/my_state")
+    pov_exporter.SetPictureFilebase("anim/picture")
 
-# ---------------------------------------------------------------------
-#
-#  Render a short animation by generating scripts
-#  to be used with POV-Ray
-#
+     # Sets the viewpoint, aimed point, lens angle
+    pov_exporter.SetCamera(chrono.ChVectorD(0.4,0.6,0.9), chrono.ChVectorD(0.2,0,0), 30)
 
-pov_exporter = postprocess.ChPovRay(my_system)
+     # Sets the default ambient light and default light lamp
+    pov_exporter.SetAmbientLight(chrono.ChColor(1,1,1))
+    pov_exporter.SetLight(chrono.ChVectorD(-2,2,-1), chrono.ChColor(1.1,1.2,1.2), True)
 
- # Sets some file names for in-out processes.
-pov_exporter.SetTemplateFile        ("_template_POV.pov")
-pov_exporter.SetOutputScriptFile    ("rendering_frames.pov")
-if not os.path.exists("output"):
-    os.mkdir("output")
-if not os.path.exists("anim"):
-    os.mkdir("anim")
-pov_exporter.SetOutputDataFilebase("output/my_state")
-pov_exporter.SetPictureFilebase("anim/picture")
+     # Sets other settings
+    pov_exporter.SetPictureSize(640,480)
+    pov_exporter.SetAmbientLight(chrono.ChColor(2,2,2))
 
- # Sets the viewpoint, aimed point, lens angle
-pov_exporter.SetCamera(chrono.ChVectorD(0.4,0.6,0.9), chrono.ChVectorD(0.2,0,0), 30)
-
- # Sets the default ambient light and default light lamp
-pov_exporter.SetAmbientLight(chrono.ChColor(1,1,1))
-pov_exporter.SetLight(chrono.ChVectorD(-2,2,-1), chrono.ChColor(1.1,1.2,1.2), 1)
-
- # Sets other settings
-pov_exporter.SetPictureSize(640,480)
-pov_exporter.SetAmbientLight(chrono.ChColor(2,2,2))
-
- # Turn on the rendering of xyz axes for the centers of gravity or reference frames:
-#pov_exporter.SetShowCOGs  (1, 0.05)
-#pov_exporter.SetShowFrames(1, 0.02)
-#pov_exporter.SetShowLinks(1, 0.03)
-if (False) :
-    pov_exporter.SetShowContacts(1,
-                            postprocess.ChPovRay.SYMBOL_VECTOR_SCALELENGTH,
-                            0.2,    # scale
-                            0.0007, # width
-                            0.1,    # max size
-                            1,0,0.5 ) # colormap on, blue at 0, red at 0.5
-
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#  SOME MODIFICATION....
-
-# ***TRICK***
-# Add an horizontal grid and a gray plane; also add a light source.
-# Use the SetCustomPOVcommandsScript() statement to add POV commands
-# to the POV script generated by Chrono::Engine.
-
-pov_exporter.SetCustomPOVcommandsScript(
-'''
-light_source{ <1,3,1.5> color rgb<1.1,1.1,1.1> }
-object{ Grid(0.1,0.04, rgb<0.5,0.5,0.5>, rgbt<1,1,1,1>) translate -0.3*y }
-plane{<0,1,0>, 0 pigment{color rgb<0.8,0.8,0.8>} translate -0.301*y }
-''')
-
-# ***TRICK***
-# Add a camera that moves together with one of the connecting rods;
-# note that position and aimpoint are set in conrod coordinate
-# system.
-
-if (False):
-    my_item = my_system.Search('piston_rod-2/ConRod-1')
-    my_rod  = chrono.CastToChBodyAuxRefShared(my_item)
-    if my_rod.IsNull() :
-        sys.exit('Error: cannot find conrod from its name in the C::E system!')
-
-    my_movingcamera = chrono.ChCameraShared()
-    my_movingcamera.SetPosition(chrono.ChVectorD(0,-0.1,-0.700))
-    my_movingcamera.SetAimPoint(chrono.ChVectorD(0,-0.1,0))
-    #my_movingcamera.SetOrthographic(True)
-    my_rod.GetAssets().push_back(my_movingcamera)
-
-
-# ***TRICK***
-# Show reference frames of constraints as small RGB small coordinate systems.
-# Also make all bodies semi transparent in POVray raytracing, so that
-# you can see better where the constraint coordinate sytstems are.
-
-if (False):
-    pov_exporter.SetShowLinks(1, 0.03)
+     # Turn on the rendering of xyz axes for the centers of gravity or reference frames:
     #pov_exporter.SetShowCOGs  (1, 0.05)
-    #pov_exporter.SetShowFrames  (1, 0.05)
+    #pov_exporter.SetShowFrames(1, 0.02)
+    #pov_exporter.SetShowLinks(1, 0.03)
+    if (False) :
+        pov_exporter.SetShowContacts(1,
+                                postprocess.ChPovRay.SYMBOL_VECTOR_SCALELENGTH,
+                                0.2,    # scale
+                                0.0007, # width
+                                0.1,    # max size
+                                1,0,0.5 ) # colormap on, blue at 0, red at 0.5
 
-    transp_povmat = postprocess.ChPovRayAssetCustomShared()
-    transp_povmat.SetCommands('''
-       pigment { color rgbt <1,1,1,0.8> }
-        ''')
+    # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #  SOME MODIFICATION....
 
-    for aitem in chrono.IterOtherPhysicsItems(my_system):
-        aitem.GetAssets().push_back(transp_povmat)
+    # ***TRICK***
+    # Add a POVray steel material to the shaft for enhanced photorealism
+    # Thank to the 'assets' system, it is possible to add custom POV statements
+    # to the the visualization shapes.
 
-
-#  END OF MODIFICATIONS....
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-
- # Tell which physical items you want to render
-pov_exporter.AddAll()
-
-
- # Create the two .pov and .ini files for POV-Ray (this must be done
- # only once at the beginning of the simulation).
-pov_exporter.ExportScript()
+    if (True):
+        shaft_povmat = postprocess.ChPovRayAssetCustom()
+        shaft_povmat.SetCommands('''
+           pigment { color rgbt <0.5,0.5,0.52,0> }
+           finish  {    reflection {0.35}
+                        ambient 0
+                        diffuse 1
+                        phong 0.9
+                        phong_size 60
+                        metallic } ''')
+        my_shaft.GetAssets().push_back(shaft_povmat)
 
 
- # Optionally set some solver parameters.
-my_system.SetLcpSolverType(chrono.ChSystem.LCP_ITERATIVE_BARZILAIBORWEIN)
-my_system.SetIterLCPmaxItersSpeed(100)
-my_system.SetMaxPenetrationRecoverySpeed(.1)
-my_system.Set_G_acc(chrono.ChVectorD(0,-9.8,0))
+    # ***TRICK***
+    # Add an horizontal grid and a gray plane; also add a light source.
+    # Use the SetCustomPOVcommandsScript() statement to add POV commands
+    # to the POV script generated by Chrono::Engine.
 
- # Perform a short simulation
-nstep =0
-while (my_system.GetChTime() < m_length) :
+    pov_exporter.SetCustomPOVcommandsScript(
+    '''
+    light_source{ <1,3,1.5> color rgb<1.1,1.1,1.1> }
+    object{ Grid(0.1,0.04, rgb<0.5,0.5,0.5>, rgbt<1,1,1,1>) translate -0.3*y }
+    plane{<0,1,0>, 0 pigment{color rgb<0.8,0.8,0.8>} translate -0.301*y }
+    ''')
 
-    my_system.DoStepDynamics(m_timestep)
+    # ***TRICK***
+    # Add a camera that moves together with one of the connecting rods;
+    # note that position and aimpoint are set in conrod coordinate
+    # system.
 
-    #if math.fmod(nstep,10) ==0 :
-    print ('time=', my_system.GetChTime() )
+    if (False):
+        my_rod = my_system.SearchBody('piston_rod-2/ConRod-1')
+        if my_rod.IsNull() :
+            sys.exit('Error: cannot find conrod from its name in the C::E system!')
 
-        # Create the incremental nnnn.dat and nnnn.pov files that will be load
-        # by the pov .ini script in POV-Ray (do this at each simulation timestep)
-    pov_exporter.ExportData()
+        my_movingcamera = chrono.ChCamera()
+        my_movingcamera.SetPosition(chrono.ChVectorD(0,-0.1,-0.700))
+        my_movingcamera.SetAimPoint(chrono.ChVectorD(0,-0.1,0))
+        #my_movingcamera.SetOrthographic(True)
+        my_rod.GetAssets().push_back(my_movingcamera)
 
-    nstep = nstep +1
 
-print ("\n\nOk, Simulation done!");
-time.sleep(2)
+    # ***TRICK***
+    # Show reference frames of constraints as small RGB small coordinate systems.
+    # Also make all bodies semi transparent in POVray raytracing, so that
+    # you can see better where the constraint coordinate sytstems are.
+
+    if (False):
+        pov_exporter.SetShowLinks(1, 0.03)
+        #pov_exporter.SetShowCOGs  (1, 0.05)
+        #pov_exporter.SetShowFrames  (1, 0.05)
+
+        transp_povmat = postprocess.ChPovRayAssetCustom()
+        transp_povmat.SetCommands('''
+           pigment { color rgbt <1,1,1,0.8> }
+            ''')
+
+        for aitem in chrono.IterOtherPhysicsItems(my_system):
+            aitem.GetAssets().push_back(transp_povmat)
+
+
+    #  END OF MODIFICATIONS....
+    # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+     # Tell which physical items you want to render
+    pov_exporter.AddAll()
+
+
+     # Create the two .pov and .ini files for POV-Ray (this must be done
+     # only once at the beginning of the simulation).
+    pov_exporter.ExportScript()
+
+
+     # Perform a short simulation
+    nstep =0
+    while (my_system.GetChTime() < m_length) :
+
+        my_system.DoStepDynamics(m_timestep)
+
+        #if math.fmod(nstep,10) ==0 :
+        print ('time=', my_system.GetChTime() )
+
+            # Create the incremental nnnn.dat and nnnn.pov files that will be load
+            # by the pov .ini script in POV-Ray (do this at each simulation timestep)
+        pov_exporter.ExportData()
+
+        nstep = nstep +1
+
+    print ("\n\nOk, Simulation done!");
+    time.sleep(2)
+
+
+if m_visualization == "irrlicht":
+
+    # ---------------------------------------------------------------------
+    #
+    #  Create an Irrlicht application to visualize the system
+    #
+
+    myapplication = chronoirr.ChIrrApp(my_system, 'Test', chronoirr.dimension2du(1280,720))
+
+    myapplication.AddTypicalSky(chrono.GetChronoDataPath() + 'skybox/')
+    myapplication.AddTypicalLogo(chrono.GetChronoDataPath() + 'logo_pychrono_alpha.png')
+    myapplication.AddTypicalCamera(chronoirr.vector3df(0.5,0.5,0.5),chronoirr.vector3df(0.0,0.0,0.0))
+    myapplication.AddTypicalLights()
+    #myapplication.AddLightWithShadow(chronoirr.vector3df(10,20,10),chronoirr.vector3df(0,2.6,0), 10 ,10,40, 60, 512);
+
+                # ==IMPORTANT!== Use this function for adding a ChIrrNodeAsset to all items
+                # in the system. These ChIrrNodeAsset assets are 'proxies' to the Irrlicht meshes.
+                # If you need a finer control on which item really needs a visualization proxy in
+                # Irrlicht, just use application.AssetBind(myitem); on a per-item basis.
+
+    myapplication.AssetBindAll();
+
+                # ==IMPORTANT!== Use this function for 'converting' into Irrlicht meshes the assets
+                # that you added to the bodies into 3D shapes, they can be visualized by Irrlicht!
+
+    myapplication.AssetUpdateAll();
+
+                # ==IMPORTANT!== Use this function for enabling cast soft shadows
+
+    #myapplication.AddShadowAll();
+
+    # ---------------------------------------------------------------------
+    #
+    #  Run the simulation forever until windows is closed
+    #
+
+    myapplication.SetTimestep(m_timestep);
+    
+    while(myapplication.GetDevice().run()):
+        myapplication.BeginScene()
+        myapplication.DrawAll()
+        myapplication.DoStep()
+        myapplication.EndScene()
 
 
 
