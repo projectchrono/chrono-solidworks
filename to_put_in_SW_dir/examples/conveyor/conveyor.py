@@ -1,11 +1,13 @@
 #-------------------------------------------------------------------------------
-# Name:        conveyor
 #
-# This file shows how to
-#   - create a stack of pebbles
+# This file shows how to simulate a conveyor and a stack of pebbles
 #
+# Author: Alessandro Tasora
+#
+# REMARK: this is part of Chrono::Solidworks add-in
+#     - it assumes that you exported the .asm in this directory using the add-in
+#     - PyChrono must be installed in your Python environment
 #-------------------------------------------------------------------------------
-#!/usr/bin/env python
 
 def main():
     pass
@@ -15,8 +17,9 @@ if __name__ == '__main__':
 
 
 # Load the Chrono::Engine unit and the postprocessing unit!!!
-import ChronoEngine_PYTHON_core as chrono
-import ChronoEngine_PYTHON_postprocess as postprocess
+import pychrono as chrono
+import pychrono.postprocess as postprocess
+import pychrono.irrlicht as chronoirr
 import os
 import imp
 import math
@@ -31,13 +34,12 @@ import sys
 
 #from PyQt4 import QtGui, QtCore
 
-
-# Create a physical system,
-my_system = chrono.ChSystem()
+m_timestep = 0.01
 
 
 # Set the default outward/inward shape margins for collision detection,
 # this is epecially important for very large or very small objects.
+# This is a global setting to be put BEFORE creating objects/systems
 chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.005)
 chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.005)
 
@@ -45,11 +47,11 @@ chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.005)
 
 # Load the CAD file
 
-exported_items = chrono.ImportSolidWorksSystem('cad_conveyor')
+exported_items = chrono.ImportSolidWorksSystem('./cad_conveyor')
 
 
 # Add items to the physical system
-my_system = chrono.ChSystem()
+my_system = chrono.ChSystemNSC()
 for my_item in exported_items:
     my_system.Add(my_item)
 
@@ -61,7 +63,7 @@ for my_item in exported_items:
 # Create a contact material (surface property)to share between all objects.
 # The rolling and spinning parameters are optional - if enabled they double
 # the computational time.
-pebble_material = chrono.ChMaterialSurfaceShared()
+pebble_material = chrono.ChMaterialSurfaceNSC()
 pebble_material.SetFriction(0.6)
 #pebble_material.SetDampingF(0.1)
 #pebble_material.SetCompliance (0.0000000001)
@@ -72,16 +74,12 @@ pebble_material.SetSpinningFriction(0.005)
 # pebble_material.SetComplianceSpinning(0.0000001)
 
 
-# Assign the surface moaterial also to items made with CAD:
-my_item = my_system.Search('floor_box^assembly_conveyor-1')
-my_floor  = chrono.CastToChBodyAuxRefShared(my_item)
-if my_floor.IsNull() :
+# Assign the surface material also to items made with CAD:
+my_bodyfloor = my_system.SearchBody('floor_box^assembly_conveyor-1')
+if not my_bodyfloor :
     sys.exit('Error: cannot find floor_box from its name in the C::E system!')
-my_bodyfloor  = chrono.CastToChBodyAuxRefShared(my_floor)
-if not my_bodyfloor.IsNull() :
-    my_bodyfloor.SetMaterialSurface(pebble_material)
-else :
-    sys.exit('Error: cannot assign material to floor_box!')
+
+my_bodyfloor.SetMaterialSurface(pebble_material)
 
 
 
@@ -96,7 +94,7 @@ inertia_pebble = (2./5.)*mass_pebble*(pow((diameter_pebble*0.5),2))
 
 
 
-pebbles = chrono.ChParticlesClonedShared()
+pebbles = chrono.ChParticlesClones()
 
 pebbles.SetMass(mass_pebble)
 pebbles.SetInertiaXX(chrono.ChVectorD(inertia_pebble,inertia_pebble,inertia_pebble))
@@ -107,7 +105,7 @@ pebbles.GetCollisionModel().AddSphere(diameter_pebble/2.)
 pebbles.GetCollisionModel().BuildModel()
 pebbles.SetCollide(True)
 
-pebbles_shape = chrono.ChSphereShapeShared()
+pebbles_shape = chrono.ChSphereShape()
 pebbles_shape.GetSphereGeometry().rad = diameter_pebble/2.
 pebbles.GetAssets().push_back(pebbles_shape)
 my_system.Add(pebbles)
@@ -127,18 +125,18 @@ pos_outlet = chrono.ChVectorD(-2,1.6,0)  # to drop stuff into the hopper
 conv_length = 2.5
 conv_thick = 0.1
 conv_width = 0.38
-body_belt = chrono.ChConveyorShared(conv_length,conv_thick,conv_width)
+body_belt = chrono.ChConveyor(conv_length,conv_thick,conv_width)
 body_belt.SetBodyFixed(True)
 body_belt.SetConveyorSpeed(0.5)  # m/s
 
 # set the position of the conveyor as in a CAD reference coordsys
 my_marker = my_system.SearchMarker('Sistema di coordinate1')
-if my_marker.IsNull() :
+if not my_marker :
     sys.exit('Error: cannot find marker from its name in the C::E system!')
 body_belt.SetCoord(my_marker.GetAbsCoord())
 
 # note: the CAD reference was on surface, so we must move down COG that is at middle of surface:
-body_belt.ConcatenatePreTransformation(chrono.ChFrameMovingD(chrono.ChVectorD(0, -0.005-conv_thick/2., 0)))
+#body_belt.ConcatenatePreTransformation(chrono.ChFrameMovingD(chrono.ChVectorD(0, -0.005-conv_thick/2., 0)))
 
 
 my_system.Add(body_belt)
@@ -150,7 +148,7 @@ my_system.Add(body_belt)
 # Create the room floor: a simple fixed rigid body with a collision shape
 # and a visualization shape
 
-body_floor = chrono.ChBodyShared()
+body_floor = chrono.ChBody()
 body_floor.SetBodyFixed(True)
 body_floor.SetPos(chrono.ChVectorD(0, -1, 0 ))
 body_floor.SetMaterialSurface(pebble_material)
@@ -162,10 +160,10 @@ body_floor.GetCollisionModel().BuildModel()
 body_floor.SetCollide(True)
 
 # Visualization shape (shared by all particle clones)
-body_floor_shape = chrono.ChBoxShapeShared()
+body_floor_shape = chrono.ChBoxShape()
 body_floor_shape.GetBoxGeometry().Size = chrono.ChVectorD(3, 1, 3)
 body_floor.GetAssets().push_back(body_floor_shape)
-body_floor_texture = chrono.ChTextureShared()
+body_floor_texture = chrono.ChTexture()
 body_floor_texture.SetTextureFilename('concrete.jpeg')
 body_floor.GetAssets().push_back(body_floor_texture)
 
@@ -173,8 +171,49 @@ my_system.Add(body_floor)
 
 
 
+if True: # m_visualization == "irrlicht":
 
+    # ---------------------------------------------------------------------
+    #
+    #  Create an Irrlicht application to visualize the system
+    #
 
+    myapplication = chronoirr.ChIrrApp(my_system, 'Test', chronoirr.dimension2du(1280,720))
+
+    myapplication.AddTypicalSky(chrono.GetChronoDataPath() + 'skybox/')
+    myapplication.AddTypicalLogo(chrono.GetChronoDataPath() + 'logo_pychrono_alpha.png')
+    myapplication.AddTypicalCamera(chronoirr.vector3df(0.5,0.5,0.5),chronoirr.vector3df(0.0,0.0,0.0))
+    myapplication.AddTypicalLights()
+    #myapplication.AddLightWithShadow(chronoirr.vector3df(10,20,10),chronoirr.vector3df(0,2.6,0), 10 ,10,40, 60, 512);
+
+                # ==IMPORTANT!== Use this function for adding a ChIrrNodeAsset to all items
+                # in the system. These ChIrrNodeAsset assets are 'proxies' to the Irrlicht meshes.
+                # If you need a finer control on which item really needs a visualization proxy in
+                # Irrlicht, just use application.AssetBind(myitem); on a per-item basis.
+
+    myapplication.AssetBindAll();
+
+                # ==IMPORTANT!== Use this function for 'converting' into Irrlicht meshes the assets
+                # that you added to the bodies into 3D shapes, they can be visualized by Irrlicht!
+
+    myapplication.AssetUpdateAll();
+
+                # ==IMPORTANT!== Use this function for enabling cast soft shadows
+
+    #myapplication.AddShadowAll();
+
+    # ---------------------------------------------------------------------
+    #
+    #  Run the simulation forever until windows is closed
+    #
+
+    myapplication.SetTimestep(m_timestep);
+    
+    while(myapplication.GetDevice().run()):
+        myapplication.BeginScene()
+        myapplication.DrawAll()
+        myapplication.DoStep()
+        myapplication.EndScene()
 
 
 
@@ -195,7 +234,7 @@ pov_exporter.SetOutputDataFilebase("output/my_state")
 pov_exporter.SetPictureFilebase("anim/picture")
 
 pov_exporter.SetCamera(chrono.ChVectorD(4.2,2.5,4.5), chrono.ChVectorD(0,0.5,0), 32)
-pov_exporter.SetLight(chrono.ChVectorD(-2,4,-1), chrono.ChColor(0.5,0.5,0.6), 0)
+pov_exporter.SetLight(chrono.ChVectorD(-2,4,-1), chrono.ChColor(0.5,0.5,0.6), False)
 pov_exporter.SetPictureSize(640,480)
 pov_exporter.SetAmbientLight(chrono.ChColor(2,2,2))
 
@@ -225,12 +264,12 @@ pov_exporter.ExportScript()
 
 
 # If you want to change some settings for the solver, here is the right place
-# to do it. For example you might want to use SetIterLCPmaxItersSpeed to set
+# to do it. For example you might want to use SetMaxItersSolverSpeed to set
 # the number of iterations per timestep, etc.
 
-#my_system.SetLcpSolverType(chrono.ChSystem.LCP_ITERATIVE_BARZILAIBORWEIN) # precise, more slow
-my_system.SetLcpSolverType(chrono.ChSystem.LCP_ITERATIVE_SOR_MULTITHREAD)
-my_system.SetIterLCPmaxItersSpeed(70)
+#my_system.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN) # precise, more slow
+my_system.SetSolverType(chrono.ChSolver.Type_SOR)
+my_system.SetMaxItersSolverSpeed(70)
 
 
 # Now perform the simulation by advancing the timestep in a
