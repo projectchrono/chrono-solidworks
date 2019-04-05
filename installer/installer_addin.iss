@@ -1,7 +1,7 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v4.00"
+#define MyAppVersion "v4.01"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
 #define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks (2)"
