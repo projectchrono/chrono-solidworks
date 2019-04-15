@@ -143,7 +143,8 @@ namespace ChronoEngine_SwAddin
                     if (entity1_ref == (int)swSelectType_e.swSelNOTHING)
                         entity1_ref = swMate.MateEntity(1).ReferenceType2;
 
-                    bool entity_0_as_FACE =   (entity0_ref == (int)swSelectType_e.swSelFACES);
+                    bool entity_0_as_FACE =   (entity0_ref == (int)swSelectType_e.swSelFACES)||
+                                              (entity0_ref == (int)swSelectType_e.swSelDATUMPLANES);
                     bool entity_0_as_EDGE =   (entity0_ref == (int)swSelectType_e.swSelEDGES) ||
                                               (entity0_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
                                               (entity0_ref == (int)swSelectType_e.swSelDATUMAXES);
@@ -151,7 +152,8 @@ namespace ChronoEngine_SwAddin
                                               (entity0_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
                                               (entity0_ref == (int)swSelectType_e.swSelDATUMPOINTS);
 
-                    bool entity_1_as_FACE =   (entity1_ref == (int)swSelectType_e.swSelFACES);
+                    bool entity_1_as_FACE =   (entity1_ref == (int)swSelectType_e.swSelFACES)||
+                                              (entity1_ref == (int)swSelectType_e.swSelDATUMPLANES);
                     bool entity_1_as_EDGE =   (entity1_ref == (int)swSelectType_e.swSelEDGES) ||
                                               (entity1_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
                                               (entity1_ref == (int)swSelectType_e.swSelDATUMAXES);
