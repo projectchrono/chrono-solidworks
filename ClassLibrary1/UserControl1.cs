@@ -79,7 +79,7 @@ namespace ChronoEngine_SwAddin
         {
             InitializeComponent();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.saved_parts  = new Hashtable(new myBytearrayHashComparer());
+            this.saved_parts = new Hashtable(new myBytearrayHashComparer());
             this.saved_shapes = new Hashtable();
         }
 
@@ -106,7 +106,7 @@ namespace ChronoEngine_SwAddin
                 System.Windows.Forms.MessageBox.Show("Please use this command when an assembly is open.");
                 return;
             }
-            
+
             this.SaveFileDialog1.Filter = "PyChrono Python script (*.py)|*.py";
             this.SaveFileDialog1.DefaultExt = "py";
             //this.SaveFileDialog1.FileName = "mechanism";
@@ -115,8 +115,8 @@ namespace ChronoEngine_SwAddin
 
             if (result == DialogResult.OK)
             {
-                string asciitext = ""; 
-                
+                string asciitext = "";
+
                 this.save_filename = SaveFileDialog1.FileName;
 
                 if (this.checkBox_surfaces.Checked)
@@ -125,7 +125,7 @@ namespace ChronoEngine_SwAddin
                     this.save_dir_shapes = save_directory + "\\" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes";
                     //System.Windows.Forms.MessageBox.Show("DIRECTORY FOR SHAPES: " + save_dir_shapes);
                     DirectoryInfo mi = System.IO.Directory.CreateDirectory(this.save_dir_shapes);
-                    if (mi.Exists == false) 
+                    if (mi.Exists == false)
                         System.Windows.Forms.MessageBox.Show("ERROR. Can't create directory for .obj surfaces: " + this.save_dir_shapes);
 
                     // ***TEST*** Dump also hierarchy for test
@@ -165,7 +165,7 @@ namespace ChronoEngine_SwAddin
                         //System.Windows.Forms.MessageBox.Show("GetCurrentWorkingDirectory: " + this.mSWApplication.GetCurrentWorkingDirectory());
                         //System.Windows.Forms.MessageBox.Show("GetExecutablePath: " + this.mSWApplication.GetExecutablePath());
                         //System.Windows.Forms.MessageBox.Show("GetDataFolder: " + this.mSWApplication.GetDataFolder(true));
- 
+
                         if (!System.IO.File.Exists(save_directory + "\\run_test.py"))
                             System.IO.File.Copy(InstallPath + "\\run_test.py", save_directory + "\\run_test.py");
                         if (!System.IO.File.Exists(save_directory + "\\_template_POV.pov"))
@@ -181,7 +181,7 @@ namespace ChronoEngine_SwAddin
             // System.Windows.Forms.MessageBox.Show("Ok, saved");
 
         }
-        
+
 
         //
         // Traverse for Python dumping
@@ -202,12 +202,12 @@ namespace ChronoEngine_SwAddin
             swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
             swConf = (Configuration)swConfMgr.ActiveConfiguration;
             swRootComp = (Component2)swConf.GetRootComponent3(true);
-            
+
             this.mSWApplication.GetUserProgressBar(out this.swProgress);
             if (this.swProgress != null)
                 this.swProgress.Start(0, 5, "Exporting to Python");
 
-            num_comp =0;
+            num_comp = 0;
 
             asciitext = "# PyChrono script generated from SolidWorks using Chrono::SolidWorks add-in \n" +
                         "# Assembly: " + swModel.GetPathName() + "\n\n\n";
@@ -216,7 +216,7 @@ namespace ChronoEngine_SwAddin
             asciitext += "import builtins \n\n";
 
             asciitext += "shapes_dir = '" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + "/' \n\n";
-            
+
             asciitext += "if hasattr(builtins, 'exported_system_relpath'): \n";
             asciitext += "    shapes_dir = builtins.exported_system_relpath + shapes_dir \n\n";
 
@@ -227,13 +227,13 @@ namespace ChronoEngine_SwAddin
                          "body_0.SetBodyFixed(True)\n" +
                          "exported_items.append(body_0)\n\n";
 
-            
-                    
+
+
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts
 
-                PythonTraverseComponent_for_ChBody (swRootComp, 1, ref asciitext, -1);
+                PythonTraverseComponent_for_ChBody(swRootComp, 1, ref asciitext, -1);
 
 
                 // Write down all constraints
@@ -242,9 +242,9 @@ namespace ChronoEngine_SwAddin
                 if (roottrasf == null)
                 {
                     IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
-                    double[] nulltr = new double[] {1,0,0,0,1,0,0,0,1, 0,0,0, 1, 0,0,0};
+                    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
                     roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
-                }                
+                }
 
                 Feature swFeat = (Feature)swModel.FirstFeature();
                 PythonTraverseFeatures_for_links(swFeat, 1, ref asciitext, ref roottrasf, ref swRootComp);
@@ -256,7 +256,7 @@ namespace ChronoEngine_SwAddin
 
                 swFeat = (Feature)swModel.FirstFeature();
                 PythonTraverseFeatures_for_markers(swFeat, 1, ref asciitext, 0, roottrasf);
-                
+
             }
 
             if (this.swProgress != null)
@@ -268,7 +268,7 @@ namespace ChronoEngine_SwAddin
         // LINK EXPORTING FUNCTIONS
         // 
 
-        public void PythonTraverseComponent_for_links(Component2 swComp, long nLevel, ref  string asciitext, ref MathTransform roottrasf)
+        public void PythonTraverseComponent_for_links(Component2 swComp, long nLevel, ref string asciitext, ref MathTransform roottrasf)
         {
             // Scan assembly features and save mating info
 
@@ -288,13 +288,13 @@ namespace ChronoEngine_SwAddin
             for (long i = 0; i < vChildComp.Length; i++)
             {
                 swChildComp = (Component2)vChildComp[i];
-                              
+
                 if (swChildComp.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
                     PythonTraverseComponent_for_links(swChildComp, nLevel + 1, ref asciitext, ref roottrasf);
             }
         }
 
-        public void PythonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref  string asciitext, ref MathTransform roottrasf, ref Component2 assemblyofmates)
+        public void PythonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref string asciitext, ref MathTransform roottrasf, ref Component2 assemblyofmates)
         {
             Feature swSubFeat;
 
@@ -304,23 +304,23 @@ namespace ChronoEngine_SwAddin
             {
                 // Export mates as constraints
 
-                if ((swFeat.GetTypeName2() == "MateGroup") && 
+                if ((swFeat.GetTypeName2() == "MateGroup") &&
                     (this.checkBox_constraints.Checked))
                 {
                     swSubFeat = (Feature)swFeat.GetFirstSubFeature();
-            
+
                     while ((swSubFeat != null))
                     {
                         ConvertMates.ConvertMateToPython(ref swSubFeat, ref asciitext, ref mSWApplication, ref saved_parts, ref num_link, ref roottrasf, ref assemblyofmates);
-                        
+
                         swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
-                    
+
                     } // end while loop on subfeatures mates
 
                 } // end if mate group
 
                 swFeat = (Feature)swFeat.GetNextFeature();
-            
+
             } // end while loop on features
 
         }
@@ -331,7 +331,7 @@ namespace ChronoEngine_SwAddin
         // BODY EXPORTING FUNCTIONS
         // 
 
-        public void PythonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref  string asciitext, int nbody)
+        public void PythonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref string asciitext, int nbody)
         {
             // Look if component contains markers
             Feature swFeat = (Feature)swComp.FirstFeature();
@@ -351,10 +351,10 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void PythonTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref  string asciitext, int nbody, MathTransform swCompTotalTrasf)
+        public void PythonTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref string asciitext, int nbody, MathTransform swCompTotalTrasf)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
-            
+
             int nmarker = 0;
 
             String bodyname = "body_" + nbody;
@@ -382,9 +382,9 @@ namespace ChronoEngine_SwAddin
                     asciitext += String.Format(bz, "{0}.AddMarker({1})\n", bodyname, markername);
                     asciitext += String.Format(bz, "{0}.Impose_Abs_Coord(chrono.ChCoordsysD(chrono.ChVectorD({1},{2},{3}),chrono.ChQuaternionD({4},{5},{6},{7})))\n",
                                markername,
-                               amatr[9]*ChScale.L, 
-                               amatr[10]*ChScale.L, 
-                               amatr[11]*ChScale.L,
+                               amatr[9] * ChScale.L,
+                               amatr[10] * ChScale.L,
+                               amatr[11] * ChScale.L,
                                quat[0], quat[1], quat[2], quat[3]);
                 }
 
@@ -468,77 +468,77 @@ namespace ChronoEngine_SwAddin
             bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
 
             if (bodies != null)
-              if (bodies.Length > 0)
-            {
-                // Export the component shape to a .OBJ file representing its SW body(s)
-                nvisshape += 1;
-                string bodyname  = "body_" + nbody;
-                string shapename = "body_" + nbody + "_" + nvisshape;
-                string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
-
-                ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
-                if (!this.saved_shapes.ContainsKey(swCompModel.GetPathName()))
+                if (bodies.Length > 0)
                 {
-                    try
-                    {
-                        FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
-                        StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
-                        string asciiobj = "";
-                        if (this.swProgress != null)
-                            this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
-                        // Write the OBJ converted visualization shapes:
-                        TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress);
-                        writer.Write(asciiobj);
-                        writer.Flush();
-                        ostream.Close();
+                    // Export the component shape to a .OBJ file representing its SW body(s)
+                    nvisshape += 1;
+                    string bodyname = "body_" + nbody;
+                    string shapename = "body_" + nbody + "_" + nvisshape;
+                    string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
 
-                        this.saved_shapes.Add(swCompModel.GetPathName(), shapename);
-                    }
-                    catch (Exception)
+                    ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
+                    if (!this.saved_shapes.ContainsKey(swCompModel.GetPathName()))
                     {
-                        System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename);
+                        try
+                        {
+                            FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
+                            StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
+                            string asciiobj = "";
+                            if (this.swProgress != null)
+                                this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
+                            // Write the OBJ converted visualization shapes:
+                            TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress);
+                            writer.Write(asciiobj);
+                            writer.Flush();
+                            ostream.Close();
+
+                            this.saved_shapes.Add(swCompModel.GetPathName(), shapename);
+                        }
+                        catch (Exception)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename);
+                        }
                     }
+                    else
+                    {
+                        // reuse the already-saved shape name
+                        shapename = (String)saved_shapes[swCompModel.GetPathName()];
+                    }
+
+                    asciitext += String.Format(bz, "\n# Visualization shape \n", bodyname);
+                    asciitext += String.Format(bz, "{0}_shape = chrono.ChObjShapeFile() \n", shapename);
+                    asciitext += String.Format(bz, "{0}_shape.SetFilename(shapes_dir +'{0}.obj') \n", shapename);
+
+                    object foo = null;
+                    double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
+
+                    if (vMatProperties != null)
+                        if (vMatProperties[0] != -1)
+                        {
+                            asciitext += String.Format(bz, "{0}_shape.SetColor(chrono.ChColor({1},{2},{3})) \n", shapename,
+                                vMatProperties[0], vMatProperties[1], vMatProperties[2]);
+                            asciitext += String.Format(bz, "{0}_shape.SetFading({1}) \n", shapename, vMatProperties[7]);
+                        }
+
+                    MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
+                    MathTransform absframe_shape = swComp.GetTotalTransform(true);
+                    MathTransform absframe_chbody_inv = absframe_chbody.IInverse();
+                    MathTransform relframe_shape = absframe_shape.IMultiply(absframe_chbody_inv);  // row-ordered transf. -> reverse mult.order!
+                    double[] amatr = (double[])relframe_shape.ArrayData;
+                    double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
+
+                    asciitext += String.Format(bz, "{0}_level = chrono.ChAssetLevel() \n", shapename);
+                    asciitext += String.Format(bz, "{0}_level.GetFrame().SetPos(chrono.ChVectorD({1},{2},{3})) \n", shapename,
+                        amatr[9] * ChScale.L,
+                        amatr[10] * ChScale.L,
+                        amatr[11] * ChScale.L);
+                    asciitext += String.Format(bz, "{0}_level.GetFrame().SetRot(chrono.ChQuaternionD({1},{2},{3},{4})) \n", shapename, quat[0], quat[1], quat[2], quat[3]);
+                    asciitext += String.Format(bz, "{0}_level.GetAssets().push_back({0}_shape) \n", shapename);
+
+                    asciitext += String.Format(bz, "{0}.GetAssets().push_back({1}_level) \n", bodyname, shapename);
+
+
                 }
-                else
-                {
-                    // reuse the already-saved shape name
-                    shapename = (String)saved_shapes[swCompModel.GetPathName()];
-                }
-
-                asciitext += String.Format(bz, "\n# Visualization shape \n", bodyname);
-                asciitext += String.Format(bz, "{0}_shape = chrono.ChObjShapeFile() \n", shapename);
-                asciitext += String.Format(bz, "{0}_shape.SetFilename(shapes_dir +'{0}.obj') \n", shapename);
-
-                object foo = null;
-                double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
-
-                if (vMatProperties != null)
-                    if (vMatProperties[0] != -1)
-                    {
-                        asciitext += String.Format(bz, "{0}_shape.SetColor(chrono.ChColor({1},{2},{3})) \n", shapename,
-                            vMatProperties[0], vMatProperties[1], vMatProperties[2]);
-                        asciitext += String.Format(bz, "{0}_shape.SetFading({1}) \n", shapename, vMatProperties[7]);
-                    }
-
-                MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
-                MathTransform absframe_shape  = swComp.GetTotalTransform(true);
-                MathTransform absframe_chbody_inv = absframe_chbody.IInverse();
-                MathTransform relframe_shape = absframe_shape.IMultiply(absframe_chbody_inv);  // row-ordered transf. -> reverse mult.order!
-                double[] amatr = (double[])relframe_shape.ArrayData;
-                double[] quat  = GetQuaternionFromMatrix(ref relframe_shape);
-
-                asciitext += String.Format(bz, "{0}_level = chrono.ChAssetLevel() \n", shapename);
-                asciitext += String.Format(bz, "{0}_level.GetFrame().SetPos(chrono.ChVectorD({1},{2},{3})) \n", shapename, 
-                    amatr[9] *ChScale.L,
-                    amatr[10]*ChScale.L,
-                    amatr[11]*ChScale.L);
-                asciitext += String.Format(bz, "{0}_level.GetFrame().SetRot(chrono.ChQuaternionD({1},{2},{3},{4})) \n", shapename, quat[0], quat[1], quat[2], quat[3]);
-                asciitext += String.Format(bz, "{0}_level.GetAssets().push_back({0}_shape) \n", shapename);
-
-                asciitext += String.Format(bz, "{0}.GetAssets().push_back({1}_level) \n", bodyname, shapename);
-
-                
-            }
 
 
 
@@ -556,10 +556,10 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-       
 
 
-        public void PythonTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref  string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
+
+        public void PythonTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
         {
             // Look if component contains collision shapes (customized SW solid bodies):
             PythonTraverseFeatures_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase);
@@ -577,13 +577,14 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void PythonTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref  string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
+        public void PythonTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             Feature swFeat;
-            swFeat = (Feature)swComp.FirstFeature();    
+            swFeat = (Feature)swComp.FirstFeature();
 
             String bodyname = "body_" + nbody;
+            String matname = "mat_" + nbody;
 
             MathTransform subcomp_transform = swComp.GetTotalTransform(true);
             MathTransform invchbody_trasform = (MathTransform)chbodytransform.Inverse();
@@ -591,7 +592,7 @@ namespace ChronoEngine_SwAddin
 
             // Export collision shapes
             if (this.checkBox_collshapes.Checked)
-            {   
+            {
                 object[] bodies;
                 object bodyInfo;
                 bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
@@ -616,8 +617,16 @@ namespace ChronoEngine_SwAddin
                             // fetch SW attribute with Chrono parameters
                             SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(this.mSWintegration.defattr_chbody, 0);
 
+
+                            asciitext += "\n# Collision material \n";
+
+                            asciitext += String.Format(bz, "{0} = chrono.ChMaterialSurfaceNSC()\n", matname);
+
+
+
                             if (myattr != null)
                             {
+
                                 asciitext += "\n# Collision parameters \n";
                                 double param_friction = ((Parameter)myattr.GetParameter("friction")).GetDoubleValue();
                                 double param_restitution = ((Parameter)myattr.GetParameter("restitution")).GetDoubleValue();
@@ -625,21 +634,21 @@ namespace ChronoEngine_SwAddin
                                 double param_spinning_friction = ((Parameter)myattr.GetParameter("spinning_friction")).GetDoubleValue();
                                 double param_collision_envelope = ((Parameter)myattr.GetParameter("collision_envelope")).GetDoubleValue();
                                 double param_collision_margin = ((Parameter)myattr.GetParameter("collision_margin")).GetDoubleValue();
-                                int    param_collision_family = (int)((Parameter)myattr.GetParameter("collision_family")).GetDoubleValue();
+                                int param_collision_family = (int)((Parameter)myattr.GetParameter("collision_family")).GetDoubleValue();
 
-                                asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetFriction({1:g});\n", bodyname, param_friction);
+                                asciitext += String.Format(bz, "{0}.SetFriction({1:g})\n", matname, param_friction);
                                 if (param_restitution != 0)
-                                    asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetImpactC({1:g});\n", bodyname, param_restitution);
+                                    asciitext += String.Format(bz, "{0}.SetRestitution({1:g})\n", matname, param_restitution);
                                 if (param_rolling_friction != 0)
-                                    asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetRollingFriction({1:g});\n", bodyname, param_rolling_friction);
+                                    asciitext += String.Format(bz, "{0}.SetRollingFriction({1:g})\n", matname, param_rolling_friction);
                                 if (param_spinning_friction != 0)
-                                    asciitext += String.Format(bz, "{0}.GetMaterialSurfaceNSC().SetSpinningFriction({1:g});\n", bodyname, param_spinning_friction);
+                                    asciitext += String.Format(bz, "{0}.SetSpinningFriction({1:g})\n", matname, param_spinning_friction);
                                 //if (param_collision_envelope != 0.03)
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetEnvelope({1:g});\n", bodyname, param_collision_envelope * ChScale.L);
+                                asciitext += String.Format(bz, "{0}.GetCollisionModel().SetEnvelope({1:g})\n", bodyname, param_collision_envelope * ChScale.L);
                                 //if (param_collision_margin != 0.01)
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetSafeMargin({1:g});\n", bodyname, param_collision_margin * ChScale.L);
+                                asciitext += String.Format(bz, "{0}.GetCollisionModel().SetSafeMargin({1:g})\n", bodyname, param_collision_margin * ChScale.L);
                                 if (param_collision_family != 0)
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetFamily({1});\n", bodyname, param_collision_family);
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().SetFamily({1})\n", bodyname, param_collision_family);
                             }
 
                             // clear model only at 1st subcomponent where coll shapes are found in features:
@@ -660,7 +669,8 @@ namespace ChronoEngine_SwAddin
                                     double rad = 0;
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = SWTaskpaneHost.PointTransform(center_l, ref collshape_subcomp_transform);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddSphere({1}, chrono.ChVectorD({2},{3},{4}))\n", bodyname, 
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddSphere({1}, {2}, chrono.ChVectorD({3},{4},{5}))\n",
+                                        bodyname, matname,
                                         rad * ChScale.L,
                                         center.X * ChScale.L,
                                         center.Y * ChScale.L,
@@ -669,17 +679,17 @@ namespace ChronoEngine_SwAddin
                                 }
                                 if (ConvertToCollisionShapes.SWbodyToBox(swBody))
                                 {
-                                    Point3D  vC_l = new Point3D();
+                                    Point3D vC_l = new Point3D();
                                     Vector3D eX_l = new Vector3D(); Vector3D eY_l = new Vector3D(); Vector3D eZ_l = new Vector3D();
                                     ConvertToCollisionShapes.SWbodyToBox(swBody, ref vC_l, ref eX_l, ref eY_l, ref eZ_l);
-                                    Point3D  vC = SWTaskpaneHost.PointTransform(vC_l, ref collshape_subcomp_transform);
+                                    Point3D vC = SWTaskpaneHost.PointTransform(vC_l, ref collshape_subcomp_transform);
                                     Vector3D eX = SWTaskpaneHost.DirTransform(eX_l, ref collshape_subcomp_transform);
                                     Vector3D eY = SWTaskpaneHost.DirTransform(eY_l, ref collshape_subcomp_transform);
                                     Vector3D eZ = SWTaskpaneHost.DirTransform(eZ_l, ref collshape_subcomp_transform);
                                     double hsX = eX.Length * 0.5;
                                     double hsY = eY.Length * 0.5;
                                     double hsZ = eZ.Length * 0.5;
-                                    Point3D  vO = vC + 0.5 * eX + 0.5 * eY + 0.5 * eZ;
+                                    Point3D vO = vC + 0.5 * eX + 0.5 * eY + 0.5 * eZ;
                                     Vector3D Dx = eX; Dx.Normalize();
                                     Vector3D Dy = eY; Dy.Normalize();
                                     Vector3D Dz = Vector3D.CrossProduct(Dx, Dy);
@@ -687,7 +697,8 @@ namespace ChronoEngine_SwAddin
                                     asciitext += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
                                     asciitext += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
                                     asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddBox({1},{2},{3},chrono.ChVectorD({4},{5},{6}),mr)\n", bodyname,
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddBox({1}, {2},{3},{4},chrono.ChVectorD({5},{6},{7}),mr)\n",
+                                        bodyname, matname,
                                         hsX * ChScale.L,
                                         hsY * ChScale.L,
                                         hsZ * ChScale.L,
@@ -708,7 +719,7 @@ namespace ChronoEngine_SwAddin
                                     double hsY = (p1 - p2).Length * 0.5;
                                     double hsZ = rad;
                                     double hsX = rad;
-                                    Point3D  vO = p1 + 0.5 * (p2 - p1);
+                                    Point3D vO = p1 + 0.5 * (p2 - p1);
                                     Vector3D Dx = new Vector3D();
                                     if (Dy.X < 0.9)
                                     {
@@ -725,7 +736,8 @@ namespace ChronoEngine_SwAddin
                                     asciitext += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
                                     asciitext += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
                                     asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1},{2},{3},chrono.ChVectorD({4},{5},{6}),mr)\n", bodyname,
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1}, {2},{3},{4},chrono.ChVectorD({5},{6},{7}),mr)\n",
+                                        bodyname, matname,
                                         hsX * ChScale.L,
                                         hsZ * ChScale.L,
                                         hsY * ChScale.L,
@@ -745,13 +757,13 @@ namespace ChronoEngine_SwAddin
                                         for (int iv = 0; iv < vertexes.Length; iv++)
                                         {
                                             Point3D vert_l = vertexes[iv];
-                                            Point3D vert   = SWTaskpaneHost.PointTransform(vert_l, ref collshape_subcomp_transform);
+                                            Point3D vert = SWTaskpaneHost.PointTransform(vert_l, ref collshape_subcomp_transform);
                                             asciitext += String.Format(bz, "pt_vect.push_back(chrono.ChVectorD({0},{1},{2}))\n",
                                                 vert.X * ChScale.L,
                                                 vert.Y * ChScale.L,
                                                 vert.Z * ChScale.L);
                                         }
-                                        asciitext += String.Format(bz, "{0}.GetCollisionModel().AddConvexHull(pt_vect)\n", bodyname);
+                                        asciitext += String.Format(bz, "{0}.GetCollisionModel().AddConvexHull({1}, pt_vect)\n", bodyname, matname);
                                     }
                                 }
 
@@ -760,7 +772,7 @@ namespace ChronoEngine_SwAddin
 
                         } // end solid bodies traversal for converting to coll.shapes
 
-                        
+
 
                     } // end if build_collision_model
                 }
@@ -770,7 +782,7 @@ namespace ChronoEngine_SwAddin
         }
 
 
-        public void PythonTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref  string asciitext,  int nbody)
+        public void PythonTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref string asciitext, int nbody)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] vmyChildComp = (object[])swComp.GetChildren();
@@ -778,174 +790,174 @@ namespace ChronoEngine_SwAddin
 
             if (nLevel > 1)
                 if (nbody == -1)
-                    if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || 
+                    if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) ||
                         (vmyChildComp.Length == 0))
-            {
-                // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
-
-                found_chbody_equivalent = true;
-
-                this.num_comp++;
-
-                nbody = this.num_comp;  // mark the rest of recursion as 'n-th body found'
-
-                if (this.swProgress != null)
-                {
-                    this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
-                    this.swProgress.UpdateProgress(this.num_comp % 5);
-                }
-
-                // fetch SW attribute with Chrono parameters
-                SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
-
-                MathTransform chbodytransform = swComp.GetTotalTransform(true);
-                double[] amatr;
-                amatr = (double[])chbodytransform.ArrayData;
-                string bodyname = "body_" + this.num_comp;
-
-                // Write create body
-                asciitext += "# Rigid body part\n";
-                asciitext += bodyname + "= chrono.ChBodyAuxRef()" + "\n";
-
-                // Write name
-                asciitext += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
-
-                // Write position
-                asciitext += bodyname + ".SetPos(chrono.ChVectorD("
-                           + (amatr[9] * ChScale.L).ToString("g", bz) + ","
-                           + (amatr[10]* ChScale.L).ToString("g", bz) + ","
-                           + (amatr[11]* ChScale.L).ToString("g", bz) + "))" + "\n";
-
-                // Write rotation
-                double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
-                asciitext += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n",
-                           bodyname, quat[0], quat[1], quat[2], quat[3]);
-
-                // Compute mass
-
-                int nvalid_bodies = 0;
-                PythonTraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
-
-                int addedb = 0;
-                object[] bodies_nocollshapes = new object[nvalid_bodies];
-                PythonTraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
-                
-                MassProperty swMass;
-                swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
-                bool boolstatus = false;
-                boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
-                swMass.SetCoordinateSystem(chbodytransform);
-                swMass.UseSystemUnits = true;
-                //note: do not set here the COG-to-REF position because here SW express it in absolute coords
-                // double cogX = ((double[])swMass.CenterOfMass)[0];
-                // double cogY = ((double[])swMass.CenterOfMass)[1];
-                // double cogZ = ((double[])swMass.CenterOfMass)[2];
-                double mass = swMass.Mass;
-                double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
-                double Ixx = Itensor[0];
-                double Iyy = Itensor[4];
-                double Izz = Itensor[8];
-                double Ixy = Itensor[1];
-                double Izx = Itensor[2];
-                double Iyz = Itensor[5];
-
-                MassProperty swMassb;
-                swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
-                bool boolstatusb = false;
-                boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
-                swMassb.UseSystemUnits = true;
-                double cogXb = ((double[])swMassb.CenterOfMass)[0];
-                double cogYb = ((double[])swMassb.CenterOfMass)[1];
-                double cogZb = ((double[])swMassb.CenterOfMass)[2];
-
-                asciitext += String.Format(bz, "{0}.SetMass({1:g})\n",
-                           bodyname,
-                           mass * ChScale.M);
-
-                // Write inertia tensor 
-                asciitext += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
-                           bodyname, 
-                           Ixx * ChScale.M * ChScale.L * ChScale.L,
-                           Iyy * ChScale.M * ChScale.L * ChScale.L,
-                           Izz * ChScale.M * ChScale.L * ChScale.L);
-                // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                asciitext += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
-                           bodyname,
-                           -Ixy * ChScale.M * ChScale.L * ChScale.L,
-                           -Izx * ChScale.M * ChScale.L * ChScale.L,
-                           -Iyz * ChScale.M * ChScale.L * ChScale.L);
-
-                // Write the position of the COG respect to the REF
-                asciitext += String.Format(bz, "{0}.SetFrame_COG_to_REF(chrono.ChFrameD(chrono.ChVectorD({1:g},{2:g},{3:g}),chrono.ChQuaternionD(1,0,0,0)))\n",
-                            bodyname, 
-                            cogXb * ChScale.L,
-                            cogYb * ChScale.L,
-                            cogZb * ChScale.L);
-
-                // Write 'fixed' state
-                if (swComp.IsFixed())
-                    asciitext += String.Format(bz, "{0}.SetBodyFixed(True)\n", bodyname);
-
-
-                // Write shapes (saving also Wavefront files .obj)
-                if (this.checkBox_surfaces.Checked)
-                {
-                    int nvisshape = 0;
-
-                    if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
-                        PythonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);        
-                } 
-
-                // Write markers (SW coordsystems) contained in this component or subcomponents
-                // if any.
-                PythonTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);   
-
-                // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
-                // if any.
-                bool param_collide = true;
-                if (myattr != null)
-                    param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
-
-                if (param_collide)
-                {
-                    bool found_collisionshapes = false;
-                    PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp);
-                    if (found_collisionshapes)
                     {
-                        asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
-                        asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
-                    }
-                }
+                        // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
 
-                // Insert to a list of exported items
-                asciitext += String.Format(bz, "\n" +"exported_items.append({0})\n", bodyname);
+                        found_chbody_equivalent = true;
 
-                // End writing body in Python-
-                asciitext += "\n\n\n"; 
+                        this.num_comp++;
+
+                        nbody = this.num_comp;  // mark the rest of recursion as 'n-th body found'
+
+                        if (this.swProgress != null)
+                        {
+                            this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
+                            this.swProgress.UpdateProgress(this.num_comp % 5);
+                        }
+
+                        // fetch SW attribute with Chrono parameters
+                        SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+
+                        MathTransform chbodytransform = swComp.GetTotalTransform(true);
+                        double[] amatr;
+                        amatr = (double[])chbodytransform.ArrayData;
+                        string bodyname = "body_" + this.num_comp;
+
+                        // Write create body
+                        asciitext += "# Rigid body part\n";
+                        asciitext += bodyname + "= chrono.ChBodyAuxRef()" + "\n";
+
+                        // Write name
+                        asciitext += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
+
+                        // Write position
+                        asciitext += bodyname + ".SetPos(chrono.ChVectorD("
+                                   + (amatr[9] * ChScale.L).ToString("g", bz) + ","
+                                   + (amatr[10] * ChScale.L).ToString("g", bz) + ","
+                                   + (amatr[11] * ChScale.L).ToString("g", bz) + "))" + "\n";
+
+                        // Write rotation
+                        double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
+                        asciitext += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n",
+                                   bodyname, quat[0], quat[1], quat[2], quat[3]);
+
+                        // Compute mass
+
+                        int nvalid_bodies = 0;
+                        PythonTraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
+
+                        int addedb = 0;
+                        object[] bodies_nocollshapes = new object[nvalid_bodies];
+                        PythonTraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
+
+                        MassProperty swMass;
+                        swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                        bool boolstatus = false;
+                        boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
+                        swMass.SetCoordinateSystem(chbodytransform);
+                        swMass.UseSystemUnits = true;
+                        //note: do not set here the COG-to-REF position because here SW express it in absolute coords
+                        // double cogX = ((double[])swMass.CenterOfMass)[0];
+                        // double cogY = ((double[])swMass.CenterOfMass)[1];
+                        // double cogZ = ((double[])swMass.CenterOfMass)[2];
+                        double mass = swMass.Mass;
+                        double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
+                        double Ixx = Itensor[0];
+                        double Iyy = Itensor[4];
+                        double Izz = Itensor[8];
+                        double Ixy = Itensor[1];
+                        double Izx = Itensor[2];
+                        double Iyz = Itensor[5];
+
+                        MassProperty swMassb;
+                        swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                        bool boolstatusb = false;
+                        boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
+                        swMassb.UseSystemUnits = true;
+                        double cogXb = ((double[])swMassb.CenterOfMass)[0];
+                        double cogYb = ((double[])swMassb.CenterOfMass)[1];
+                        double cogZb = ((double[])swMassb.CenterOfMass)[2];
+
+                        asciitext += String.Format(bz, "{0}.SetMass({1:g})\n",
+                                   bodyname,
+                                   mass * ChScale.M);
+
+                        // Write inertia tensor 
+                        asciitext += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
+                                   bodyname,
+                                   Ixx * ChScale.M * ChScale.L * ChScale.L,
+                                   Iyy * ChScale.M * ChScale.L * ChScale.L,
+                                   Izz * ChScale.M * ChScale.L * ChScale.L);
+                        // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
+                        asciitext += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
+                                   bodyname,
+                                   -Ixy * ChScale.M * ChScale.L * ChScale.L,
+                                   -Izx * ChScale.M * ChScale.L * ChScale.L,
+                                   -Iyz * ChScale.M * ChScale.L * ChScale.L);
+
+                        // Write the position of the COG respect to the REF
+                        asciitext += String.Format(bz, "{0}.SetFrame_COG_to_REF(chrono.ChFrameD(chrono.ChVectorD({1:g},{2:g},{3:g}),chrono.ChQuaternionD(1,0,0,0)))\n",
+                                    bodyname,
+                                    cogXb * ChScale.L,
+                                    cogYb * ChScale.L,
+                                    cogZb * ChScale.L);
+
+                        // Write 'fixed' state
+                        if (swComp.IsFixed())
+                            asciitext += String.Format(bz, "{0}.SetBodyFixed(True)\n", bodyname);
 
 
-            } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+                        // Write shapes (saving also Wavefront files .obj)
+                        if (this.checkBox_surfaces.Checked)
+                        {
+                            int nvisshape = 0;
+
+                            if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                                PythonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);
+                        }
+
+                        // Write markers (SW coordsystems) contained in this component or subcomponents
+                        // if any.
+                        PythonTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);
+
+                        // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
+                        // if any.
+                        bool param_collide = true;
+                        if (myattr != null)
+                            param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
+
+                        if (param_collide)
+                        {
+                            bool found_collisionshapes = false;
+                            PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp);
+                            if (found_collisionshapes)
+                            {
+                                asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
+                                asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
+                            }
+                        }
+
+                        // Insert to a list of exported items
+                        asciitext += String.Format(bz, "\n" + "exported_items.append({0})\n", bodyname);
+
+                        // End writing body in Python-
+                        asciitext += "\n\n\n";
+
+
+                    } // end if ChBody equivalent (tree leaf or non-flexible assembly)
 
 
             // Things to do also for sub-components of 'non flexible' assemblies: 
             //
 
-                // store in hashtable, will be useful later when adding constraints
+            // store in hashtable, will be useful later when adding constraints
             if ((nLevel > 1) && (nbody != -1))
-            try
-            {
-                string bodyname = "body_" + this.num_comp;
+                try
+                {
+                    string bodyname = "body_" + this.num_comp;
 
-                ModelDocExtension swModelDocExt = default(ModelDocExtension);
-                ModelDoc2 swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
-                //if (swModel != null)
-                swModelDocExt = swModel.Extension;
-                this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), bodyname);
-            }
-            catch
-            {
-                System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
-            }
+                    ModelDocExtension swModelDocExt = default(ModelDocExtension);
+                    ModelDoc2 swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+                    //if (swModel != null)
+                    swModelDocExt = swModel.Extension;
+                    this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), bodyname);
+                }
+                catch
+                {
+                    System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
+                }
 
 
             // Traverse all children, proceeding to subassemblies and parts, if any
@@ -991,7 +1003,7 @@ namespace ChronoEngine_SwAddin
             swConf = (Configuration)swConfMgr.ActiveConfiguration;
             swRootComp = (Component2)swConf.GetRootComponent3(true);
 
-            asciitext = "# Dump hierarchy from SolidWorks \n" + 
+            asciitext = "# Dump hierarchy from SolidWorks \n" +
                         "# Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             // The root component (root assembly) cannot work in DumpTraverseComponent() 
@@ -1006,7 +1018,7 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void DumpTraverseFeatures(Feature swFeat, long nLevel, ref  string asciitext)
+        public void DumpTraverseFeatures(Feature swFeat, long nLevel, ref string asciitext)
         {
             Feature swSubFeat;
             string sPadStr = " ";
@@ -1035,9 +1047,9 @@ namespace ChronoEngine_SwAddin
                 }
             }
         }
-        
 
-        public void DumpTraverseComponent(Component2 swComp, long nLevel, ref  string asciitext)
+
+        public void DumpTraverseComponent(Component2 swComp, long nLevel, ref string asciitext)
         {
             // *** SCAN THE COMPONENT FEATURES
 
@@ -1066,7 +1078,7 @@ namespace ChronoEngine_SwAddin
             {
                 swChildComp = (Component2)vChildComp[i];
 
-                asciitext += sPadStr + "+" + swChildComp.Name2 + " <" + swChildComp.ReferencedConfiguration + ">" +"\n";
+                asciitext += sPadStr + "+" + swChildComp.Name2 + " <" + swChildComp.ReferencedConfiguration + ">" + "\n";
 
                 // DumpTraverseComponentFeatures(swChildComp, nLevel, ref asciitext);
 
@@ -1087,71 +1099,71 @@ namespace ChronoEngine_SwAddin
             double[] q = new double[4];
             double[] amatr = (double[])trasf.ArrayData;
             double s, tr;
-										// for speed reasons: ..
+            // for speed reasons: ..
             double m00 = amatr[0];
-			double m01 = amatr[3];
-			double m02 = amatr[6]; 
-			double m10 = amatr[1]; 
-			double m11 = amatr[4]; 
-			double m12 = amatr[7]; 
-			double m20 = amatr[2];
+            double m01 = amatr[3];
+            double m02 = amatr[6];
+            double m10 = amatr[1];
+            double m11 = amatr[4];
+            double m12 = amatr[7];
+            double m20 = amatr[2];
             double m21 = amatr[5];
             double m22 = amatr[8];
 
-			tr=m00 + m11 + m22;		// diag sum
+            tr = m00 + m11 + m22;       // diag sum
 
-			if (tr >= 0)
-			{
-				s = Math.Sqrt(tr + 1.0);
-				q[0] = 0.5 * s;
-				s = 0.5 / s;
-				q[1] = (m21 - m12) * s;
-				q[2] = (m02 - m20) * s;
-				q[3] = (m10 - m01) * s;
-			}
-			else
-			{
-				int i = 0;
+            if (tr >= 0)
+            {
+                s = Math.Sqrt(tr + 1.0);
+                q[0] = 0.5 * s;
+                s = 0.5 / s;
+                q[1] = (m21 - m12) * s;
+                q[2] = (m02 - m20) * s;
+                q[3] = (m10 - m01) * s;
+            }
+            else
+            {
+                int i = 0;
 
-				if (m11 > m00)
-				{	
-					i = 1;
-					if (m22 > m11)	i = 2;
-				}
-				else
-				{
-					if (m22 > m00)  i = 2;
-				}
+                if (m11 > m00)
+                {
+                    i = 1;
+                    if (m22 > m11) i = 2;
+                }
+                else
+                {
+                    if (m22 > m00) i = 2;
+                }
 
-				switch (i)
-				{
-				case 0:
-					s = Math.Sqrt(m00 - m11 - m22 + 1);
-					q[1] = 0.5 * s;
-					s = 0.5 / s;
-					q[2] = (m01 + m10) * s;
-					q[3] = (m20 + m02) * s;
-					q[0] = (m21 - m12) * s;
-					break;
-				case 1:
-					s = Math.Sqrt(m11 - m22 - m00 + 1);
-					q[2] = 0.5 * s;
-					s = 0.5 / s;
-					q[3] = (m12 + m21) * s;
-					q[1] = (m01 + m10) * s;
-					q[0] = (m02 - m20) * s;
-					break;
-				case 2:
-					s = Math.Sqrt(m22 - m00 - m11 + 1);
-					q[3] = 0.5 * s;
-					s = 0.5 / s;
-					q[1] = (m20 + m02) * s;
-					q[2] = (m12 + m21) * s;
-					q[0] = (m10 - m01) * s;
-					break;
-				}
-			}
-			return q;
+                switch (i)
+                {
+                    case 0:
+                        s = Math.Sqrt(m00 - m11 - m22 + 1);
+                        q[1] = 0.5 * s;
+                        s = 0.5 / s;
+                        q[2] = (m01 + m10) * s;
+                        q[3] = (m20 + m02) * s;
+                        q[0] = (m21 - m12) * s;
+                        break;
+                    case 1:
+                        s = Math.Sqrt(m11 - m22 - m00 + 1);
+                        q[2] = 0.5 * s;
+                        s = 0.5 / s;
+                        q[3] = (m12 + m21) * s;
+                        q[1] = (m01 + m10) * s;
+                        q[0] = (m02 - m20) * s;
+                        break;
+                    case 2:
+                        s = Math.Sqrt(m22 - m00 - m11 + 1);
+                        q[3] = 0.5 * s;
+                        s = 0.5 / s;
+                        q[1] = (m20 + m02) * s;
+                        q[2] = (m12 + m21) * s;
+                        q[0] = (m10 - m01) * s;
+                        break;
+                }
+            }
+            return q;
         }
 
         public static Matrix3D GetMatrixFromMathTransform(ref MathTransform trasf)
@@ -1225,7 +1237,7 @@ namespace ChronoEngine_SwAddin
             */
 
 
-            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++ )
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
             {
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
                 {
@@ -1282,21 +1294,21 @@ namespace ChronoEngine_SwAddin
                 {
                     //int materr = swBody.SetMaterialProperty("Default", "Materiali personalizzati.sldmat", "CollisionShapeMaterial");
                     int materr = swBody.SetMaterialProperty("Default", "", "Air");
-                    if (materr !=1)
+                    if (materr != 1)
                         materr = swBody.SetMaterialProperty("Default", "", "Aria");
                     if (materr != 1)
                         materr = swBody.SetMaterialProperty("Default", "", "Luft");
                     if (materr != 1)
-                        System.Windows.Forms.MessageBox.Show("Warning! could not assign 'air' material to the collision shape: "+ swBody.Name +"\n This can affect mass computations."); 
+                        System.Windows.Forms.MessageBox.Show("Warning! could not assign 'air' material to the collision shape: " + swBody.Name + "\n This can affect mass computations.");
 
                     double[] mcolor = new double[9] { 1, 0, 0, 1, 1, 1, 0, 0.7, 0 }; //  R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
                     swBody.MaterialPropertyValues2 = mcolor;
-                    
+
                     // must force rebuild otherwise one cannot see in the design tree that an 'air' material has been added to collision bodies, etc.
                     //swModel.Rebuild((int)swRebuildOptions_e.swForceRebuildAll);
                     swModel.ForceRebuild3(false);
                 }
-                else 
+                else
                 {
                     System.Windows.Forms.MessageBox.Show("Selected solid body is not of cylinder/box/sphere/convexhull type. Cannot convert to collision shape.");
                     return;
@@ -1340,7 +1352,7 @@ namespace ChronoEngine_SwAddin
                 pyArgs += " -f " + System.IO.Path.GetFileName(this.save_filename); //was .GetFileNameWithoutExtension(this.save_filename);
                 pyArgs += " -d " + this.numeric_dt.Value.ToString(bz);
                 pyArgs += " -T " + this.numeric_length.Value.ToString(bz);
-                pyArgs += " --datapath " +  "\"" + InstallPath + "/data/" + "\"";
+                pyArgs += " --datapath " + "\"" + InstallPath + "/data/" + "\"";
                 if (this.comboBox1.SelectedIndex == 0)
                     pyArgs += " -v irrlicht";
                 if (this.comboBox1.SelectedIndex == 1)
@@ -1350,17 +1362,17 @@ namespace ChronoEngine_SwAddin
                 startInfo = new System.Diagnostics.ProcessStartInfo("Python.exe");
                 startInfo.WorkingDirectory = directory;
                 startInfo.Arguments = script + " " + pyArgs;
-               // startInfo.UseShellExecute = false;
-               // startInfo.CreateNoWindow = false;
-               // startInfo.RedirectStandardOutput = true;
-               // startInfo.RedirectStandardError = true;
+                // startInfo.UseShellExecute = false;
+                // startInfo.CreateNoWindow = false;
+                // startInfo.RedirectStandardOutput = true;
+                // startInfo.RedirectStandardError = true;
 
                 process = new System.Diagnostics.Process();
                 process.StartInfo = startInfo;
                 process.Start();
 
-              //  process.WaitForExit();
-              //  process.Close();
+                //  process.WaitForExit();
+                //  process.Close();
             }
             catch (Exception myex)
             {
@@ -1428,7 +1440,7 @@ namespace ChronoEngine_SwAddin
 
                 // Pass in null so the whole body will be tessellated
                 swTessellation = (Tessellation)swBodyIn.GetTessellation(null);
-                
+
                 // Set up the Tessellation object
                 swTessellation.NeedFaceFacetMap = true;
                 swTessellation.NeedVertexParams = true;
@@ -1459,7 +1471,7 @@ namespace ChronoEngine_SwAddin
                 // Get all vertexes
                 vhacd_CLI.Vect3D[] myvertexes = new vhacd_CLI.Vect3D[numv];
                 vhacd_CLI.Triangle[] mytriangles = new vhacd_CLI.Triangle[numf];
- 
+
                 for (int iv = 0; iv < numv; iv++)
                 {
                     if ((swProgress != null) && (iv % 200 == 0))
@@ -1468,7 +1480,7 @@ namespace ChronoEngine_SwAddin
                     myvertexes[iv] = new vhacd_CLI.Vect3D(
                         aVertexCoords1[0],
                         aVertexCoords1[1],
-                        aVertexCoords1[2] );
+                        aVertexCoords1[2]);
                 }
 
                 // Loop over faces
@@ -1488,16 +1500,16 @@ namespace ChronoEngine_SwAddin
                         aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
 
                         // There should always be three fins per facet
-                        int iFinIdx = 0; 
+                        int iFinIdx = 0;
                         aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
                         int ip1 = aVertexIds[0] + group_vstride;
-                        iFinIdx = 1; 
+                        iFinIdx = 1;
                         aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
                         int ip2 = aVertexIds[0] + group_vstride;
-                        iFinIdx = 2; 
+                        iFinIdx = 2;
                         aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
                         int ip3 = aVertexIds[0] + group_vstride;
-                        
+
                         mytriangles[iface] = new vhacd_CLI.Triangle(ip1, ip2, ip3);
 
                         iface++;
@@ -1506,7 +1518,7 @@ namespace ChronoEngine_SwAddin
                 }
 
                 group_vstride += swTessellation.GetVertexCount();
-                
+
                 // construct a new customer dialog
                 ConvexDecomp2 myCustomerDialog = new ConvexDecomp2();
                 myCustomerDialog.SetMeshInfo(numf, numv);
@@ -1602,7 +1614,7 @@ namespace ChronoEngine_SwAddin
                     swModel.ForceRebuild3(false);
 
                 } // end if user choose OK to decompose
-                
+
             } // end loop on selected items
 
         }
@@ -1636,22 +1648,22 @@ namespace ChronoEngine_SwAddin
              System.Windows.Forms.MessageBox.Show("attach, v CreateInstance5");
              SolidWorks.Interop.sldworks.Attribute myattr = defattr_test.CreateInstance5(swModel, swPart, "test_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
             */
-            
-             bool selected_part = false;
-             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
-                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
-                 {
-                     selected_part = true;     
-                 }
-                 
 
-             if (!selected_part)
+            bool selected_part = false;
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
+                {
+                    selected_part = true;
+                }
+
+
+            if (!selected_part)
             {
                 System.Windows.Forms.MessageBox.Show("Chrono properties can be edited only for parts! Select one or more parts before using it.");
                 return;
             }
 
-            
+
             // Open modal dialog
             EditChBody myCustomerDialog = new EditChBody();
 
@@ -1665,7 +1677,7 @@ namespace ChronoEngine_SwAddin
                     myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
                 }
             }
-            
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

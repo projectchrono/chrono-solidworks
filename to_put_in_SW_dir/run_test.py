@@ -101,9 +101,10 @@ for my_item in exported_items:
 # Optionally set some solver parameters.
 
 #my_system.SetMaxPenetrationRecoverySpeed(1.00)
-my_system.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN);
-my_system.SetMaxItersSolverSpeed(600);
-my_system.SetSolverWarmStarting(True);
+my_solver = chrono.ChSolverBB()
+my_system.SetSolver(my_solver)
+my_solver.SetMaxIterations(600)
+my_solver.EnableWarmStart(True);
 my_system.Set_G_acc(chrono.ChVectorD(0,-9.8,0))
 	
 		
