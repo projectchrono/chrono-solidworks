@@ -527,17 +527,10 @@ namespace ChronoEngine_SwAddin
                     double[] amatr = (double[])relframe_shape.ArrayData;
                     double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-                    asciitext += String.Format(bz, "{0}_level = chrono.ChAssetLevel() \n", shapename);
-                    asciitext += String.Format(bz, "{0}_level.GetFrame().SetPos(chrono.ChVectorD({1},{2},{3})) \n", shapename,
-                        amatr[9] * ChScale.L,
-                        amatr[10] * ChScale.L,
-                        amatr[11] * ChScale.L);
-                    asciitext += String.Format(bz, "{0}_level.GetFrame().SetRot(chrono.ChQuaternionD({1},{2},{3},{4})) \n", shapename, quat[0], quat[1], quat[2], quat[3]);
-                    asciitext += String.Format(bz, "{0}_level.GetAssets().push_back({0}_shape) \n", shapename);
-
-                    asciitext += String.Format(bz, "{0}.GetAssets().push_back({1}_level) \n", bodyname, shapename);
-
-
+                    asciitext += String.Format(bz, "{0}.AddVisualShape({1}, chrono.ChFrameD(", bodyname, shapename);
+                    asciitext += String.Format(bz, "chrono.ChVectorD({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                    asciitext += String.Format(bz, "chrono.ChQuaternionD({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
+                    asciitext += String.Format(bz, "))\n")
                 }
 
 
