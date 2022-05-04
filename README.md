@@ -24,12 +24,25 @@ How to install and build the library
 ------------------------------------
 
 * the project is written in C#, so you must use Microsoft Visual Studio
-* you must have a [SolidWorks](http://www.solidworks.com) license installed on your computer.  
+* you must have a [SolidWorks](http://www.solidworks.com) license installed on your computer.
+* create a directory, ex. "C:\Program Files\chrono_solidworks". It will contain dlls and examples. Let's reference to this as the *app directory*.
+* move the content of "to_put_in_app_dir" into the app directory
 * run Visual Studio as Administrator
-* load the .sln file in Visual Studio
-* you may need to modify some settings of the solution, in order to reference the .COM assemblies of your SolidWorks. In the Solution Explorer, there should be four references called "SolidWorks....", if they are not active or are missing, do this: from the Solution Explorer, right-click on the Project and select Add Reference... Go to the Browse tab and navigate to the SolidWorks installation folder (typically C:\Program Files\SolidWorks 20XX\SolidWorks) and add the .dll files: "solidworkstools.dll" "SolidWorks.Interop.sldworks.dll" "SolidWorks.Interop.swcommands.dll" "SolidWorks.Interop.swconst.dll" "SolidWorks.Interop.swpublished.dll". In some releases of Solidorks you may find different names.
-* also, depending on the directory where you installed SolidWorks, you may need to select the project in the solution explorer, open 'Properties', go to 'Build' tab, and set the 'Output path:' as the same directory of all other SolidWorks dlls. For example on my laptop it is "C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\".
-* build the solution
+* load and build the **hacd_CLI.sln** solution in /decomp/hacd_CLI/ in order to generate **hacd_CLI.dll**. Copy such dll in the *app directory*. 
+  This is an auxiliary dll that will be needed by the main project.
+* load the **ClassLibrary1.sln** solution 
+* you may need to modify some settings of this solution, in order to reference the .COM assemblies of your SolidWorks. 
+  In the Solution Explorer, there should be four references called "SolidWorks....", if they are not active or are missing, do this: 
+  from the Solution Explorer, right-click on the Project and select Add Reference... 
+  Go to the Browse tab and navigate to the SolidWorks installation folder (typically C:\Program Files\SolidWorks 20XX\SolidWorks) and add the .dll files: 
+  * "solidworkstools.dll" 
+  * "SolidWorks.Interop.sldworks.dll" 
+  * "SolidWorks.Interop.swcommands.dll" 
+  * "SolidWorks.Interop.swconst.dll" 
+  * "SolidWorks.Interop.swpublished.dll". 
+  In some releases of Solidorks you may find different names.
+* also, depending on the directory where you installed SolidWorks, you may need to select the project in the solution explorer, open 'Properties', go to 'Build' tab, and set the 'Output path:' as the *app directory*. 
+* build the solution. It will generate the **ChronoEngineAddIn.dll** into the *app directory*.
 * start SolidWorks, then you should find the Chrono::Engine panel in the Task Pane to the right. Note that add-ins can be enabled/disabled with the 'Adds-In' menu in the toolbar.
 
 If you find problems to build the add-in, look at [this tutorial](http://www.angelsix.com/cms/products/tutorials/64-solidworks/67-creating-a-solidworks-add-in-from-scratch) for instructions about how to build add-ins for SolidWorks.
