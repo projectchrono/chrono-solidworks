@@ -530,7 +530,7 @@ namespace ChronoEngine_SwAddin
                     asciitext += String.Format(bz, "{0}.AddVisualShape({1}, chrono.ChFrameD(", bodyname, shapename);
                     asciitext += String.Format(bz, "chrono.ChVectorD({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
                     asciitext += String.Format(bz, "chrono.ChQuaternionD({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
-                    asciitext += String.Format(bz, "))\n")
+                    asciitext += String.Format(bz, "))\n");
                 }
 
 
