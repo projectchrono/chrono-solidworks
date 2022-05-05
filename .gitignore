@@ -5,6 +5,7 @@
 # Where you build the src
 /bin
 /obj
+/.vs
 
 ##---------------------------------------------------
 ## Visual Studio
