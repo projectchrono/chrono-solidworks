@@ -1355,17 +1355,25 @@ namespace ChronoEngine_SwAddin
                 startInfo = new System.Diagnostics.ProcessStartInfo("Python.exe");
                 startInfo.WorkingDirectory = directory;
                 startInfo.Arguments = script + " " + pyArgs;
-                // startInfo.UseShellExecute = false;
+                startInfo.UseShellExecute = false;
                 // startInfo.CreateNoWindow = false;
-                // startInfo.RedirectStandardOutput = true;
-                // startInfo.RedirectStandardError = true;
+                startInfo.RedirectStandardOutput = true;
+                startInfo.RedirectStandardError = true;
 
                 process = new System.Diagnostics.Process();
                 process.StartInfo = startInfo;
                 process.Start();
 
+                string cmdError = process.StandardError.ReadToEnd();
+                string cmdOutput = process.StandardOutput.ReadToEnd();
+
                 //  process.WaitForExit();
                 //  process.Close();
+
+                //System.Windows.Forms.MessageBox.Show("Launching Python.exe with parameters: \n" + startInfo.Arguments.ToString());
+                //System.Windows.Forms.MessageBox.Show("Output: \n" + cmdOutput);
+                if (cmdError.Length >1)
+                    System.Windows.Forms.MessageBox.Show("Error: \n" + cmdError);
             }
             catch (Exception myex)
             {
