@@ -24,6 +24,23 @@ import pychrono as chrono
 import pychrono.postprocess as postprocess
 import pychrono.irrlicht as chronoirr
 
+print("Demo program that shows how to use the SolidWorks add-in.")
+print(" 1) use the SolidWorks Add-in, load the .SLDASM,")
+print(" 2) from the Add-in, 'save as Python..' in a directory X")
+print(" 3) modify m_datapath in this file")
+print(" 3) modify ImportSolidWorksSystem(..) to match what you exported")
+print(" 4) move this .py file in directory X and execute it.")
+
+
+m_timestep = 0.001
+m_length = 4.0
+m_visualization = "irrlicht" # use "irrlicht" (realtime 3D) or "pov" (raytracing postprocess)
+m_datapath = "C:/Program Files/ChronoSolidworks/data/" 
+
+# For irrlicht fonts & background. Adjust to your path
+chrono.SetChronoDataPath(m_datapath)
+
+
 # ***TRICK***
 # Set the default outward/inward shape margins for collision detection,
 # this is epecially important for very large or very small objects.
@@ -32,17 +49,9 @@ chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.005)
 chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.005)
 
 
-# ---------------------------------------------------------------------
-#
-# Parse command-line parameters
-
 m_timestep = 0.001
-m_length = 4.0
-m_visualization = "irrlicht" # use "irrlicht" (realtime 3D) or "pov" (raytracing postprocess)
-m_datapath = "C:/Program Files/chrono_solidworks/data/" 
 
-# For irrlicht fonts & background. Adjust to your path
-chrono.SetChronoDataPath(m_datapath)
+
 
 # ---------------------------------------------------------------------
 #
@@ -56,7 +65,7 @@ chrono.SetChronoDataPath(m_datapath)
 
 print ("Loading C::E scene...");
 
-exported_items = chrono.ImportSolidWorksSystem('./collisions')
+exported_items = chrono.ImportSolidWorksSystem('./capitel')
 
 print ("...loading done!");
 
@@ -84,24 +93,7 @@ brick_material.SetFriction(0.6)
 
 
 for my_body in my_system.Get_bodylist(): 
-    my_body.SetMaterialSurface(brick_material)
-
-
-# Rendering for the POV raytracing:
-
-marble_povmat = postprocess.ChPovRayAssetCustom()
-marble_povmat.SetCommands('''
-       texture{T_Stone8}
-        ''')
-
-for my_body in my_system.Get_bodylist(): 
-        my_body.AddAsset(marble_povmat)
-
-
-floor_povmat = postprocess.ChPovRayAssetCustom()
-floor_povmat.SetCommands('''
-       texture{T_Stone9}
-        ''')
+    my_body.GetCollisionModel().SetAllShapesMaterial(brick_material)
 
 
 # ***TRICK***
@@ -110,7 +102,6 @@ floor_povmat.SetCommands('''
 my_floor = my_system.SearchBody('floor^portal-1')
 if not my_floor :
     sys.exit('Error: cannot find floor  from its name in the C::E system!')
-my_floor.AddAsset(floor_povmat)
 
 my_ground = my_system.SearchBody('ground')
 if not my_ground :
@@ -130,7 +121,7 @@ my_functB.thisown = 0
 my_funct = chrono.ChFunction_Operation()
 my_funct.Set_fa(my_functA)
 my_funct.Set_fb(my_functB)
-my_funct.Set_optype(chrono.ChOP_MUL)
+my_funct.Set_optype(chrono.ChFunction_Operation.ChOP_MUL)
 my_funct.thisown = 0
 link_shaker.SetMotion_X(my_funct)
 
@@ -144,15 +135,10 @@ if m_visualization == "pov":
 
     pov_exporter = postprocess.ChPovRay(my_system)
 
-     # Sets some file names for in-out processes.
-    pov_exporter.SetTemplateFile        ("_template_POV.pov")
-    pov_exporter.SetOutputScriptFile    ("rendering_frames.pov")
-    if not os.path.exists("output"):
-        os.mkdir("output")
-    if not os.path.exists("anim"):
-        os.mkdir("anim")
-    pov_exporter.SetOutputDataFilebase("output/my_state")
-    pov_exporter.SetPictureFilebase("anim/picture")
+    # Set the path where it will save all .pov, .ini, .asset and .dat files,
+    # this directory will be created if not existing. For example:
+    pov_exporter.SetBasePath("povray_pychrono_generated")
+    pov_exporter.SetTemplateFile("_template_POV.pov")
 
      # Sets the viewpoint, aimed point, lens angle
     pov_exporter.SetCamera(chrono.ChVectorD(3.2,1.3,3.5), chrono.ChVectorD(0.6,0.5,0), 32)
@@ -171,7 +157,7 @@ if m_visualization == "pov":
     #pov_exporter.SetShowLinks(1, 0.03)
     if (False):
         pov_exporter.SetShowContacts(1,
-                                postprocess.ChPovRay.SYMBOL_VECTOR_SCALELENGTH,
+                                postprocess.ChPovRay.ContactSymbol_VECTOR_SCALELENGTH,
                                 0.2,    # scale
                                 0.0007, # width
                                 0.1,    # max size
@@ -195,7 +181,17 @@ if m_visualization == "pov":
      # only once at the beginning of the simulation).
     pov_exporter.ExportScript()
 
-
+     # Assign custom textures to some objects
+    for my_body in my_system.Get_bodylist(): 
+        pov_exporter.SetCustomCommands(my_body,'''
+                   texture{T_Stone8}
+                    ''')
+                    
+    pov_exporter.SetCustomCommands(my_floor, '''
+       texture{T_Stone9}
+        ''')
+        
+        
      # Optionally set some solver parameters.
     #my_system.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN) # precise, more slow
     my_system.SetSolverType(chrono.ChSolver.Type_SOR)
@@ -223,45 +219,26 @@ if m_visualization == "pov":
 
 if m_visualization == "irrlicht":
 
-	# ---------------------------------------------------------------------
-	#
-	#  Create an Irrlicht application to visualize the system
-	#
+    # ---------------------------------------------------------------------
+    #
+    #  Create an Irrlicht application to visualize the system
+    #
 
-	myapplication = chronoirr.ChIrrApp(my_system, 'Test', chronoirr.dimension2du(1280,720))
-
-	myapplication.AddTypicalSky(chrono.GetChronoDataPath() + 'skybox/')
-	myapplication.AddTypicalLogo(chrono.GetChronoDataPath() + 'logo_pychrono_alpha.png')
-	myapplication.AddTypicalCamera(chronoirr.vector3df(1,1,1),chronoirr.vector3df(0.0,0.0,0.0))
-	myapplication.AddTypicalLights()
-	#myapplication.AddLightWithShadow(chronoirr.vector3df(10,20,10),chronoirr.vector3df(0,2.6,0), 10 ,10,40, 60, 512);
-
-				# ==IMPORTANT!== Use this function for adding a ChIrrNodeAsset to all items
-				# in the system. These ChIrrNodeAsset assets are 'proxies' to the Irrlicht meshes.
-				# If you need a finer control on which item really needs a visualization proxy in
-				# Irrlicht, just use application.AssetBind(myitem); on a per-item basis.
-
-	myapplication.AssetBindAll();
-
-				# ==IMPORTANT!== Use this function for 'converting' into Irrlicht meshes the assets
-				# that you added to the bodies into 3D shapes, they can be visualized by Irrlicht!
-
-	myapplication.AssetUpdateAll();
-
-				# ==IMPORTANT!== Use this function for enabling cast soft shadows
-
-	#myapplication.AddShadowAll();
-
-	# ---------------------------------------------------------------------
-	#
-	#  Run the simulation forever until windows is closed
-	#
-
-	myapplication.SetTimestep(m_timestep);
-	
-	while(myapplication.GetDevice().run()):
-		myapplication.BeginScene()
-		myapplication.DrawAll()
-		myapplication.DoStep()
-		myapplication.EndScene()
+    # Create the Irrlicht visualization
+    vis = chronoirr.ChVisualSystemIrrlicht()
+    my_system.SetVisualSystem(vis)
+    vis.SetWindowSize(1024,768)
+    vis.SetWindowTitle('Test')
+    vis.Initialize()
+    vis.AddLogo(chrono.GetChronoDataPath() + 'logo_pychrono_alpha.png')
+    vis.AddSkyBox()
+    vis.AddCamera(chrono.ChVectorD(1, 1, 1))
+    vis.AddTypicalLights()
+    
+    # Simulation loop
+    while vis.Run():
+        vis.BeginScene()
+        vis.DrawAll()
+        vis.EndScene()
+        my_system.DoStepDynamics(m_timestep)
 

@@ -2,6 +2,10 @@
 #
 # This file shows how to simulate a four cylinder engine
 #
+# This is developed by modifying  the "run_test.py" as an example on
+# how to load SolidWorks exported systems and then add some custom PyChrono
+# customization.
+#
 # Author: Alessandro Tasora
 #
 # REMARK: this is part of Chrono::Solidworks add-in
@@ -23,6 +27,15 @@ import sys, getopt
 import pychrono as chrono
 import pychrono.postprocess as postprocess
 import pychrono.irrlicht as chronoirr
+
+
+print("Demo program that shows how to use the SolidWorks add-in.")
+print(" 1) use the SolidWorks Add-in, load the .SLDASM,")
+print(" 2) from the Add-in, 'save as Python..' in a directory X")
+print(" 3) modify m_datapath in this file")
+print(" 3) modify ImportSolidWorksSystem(..) to match what you exported")
+print(" 4) move this .py file in directory X and execute it.")
+
 
 # ---------------------------------------------------------------------
 
@@ -62,9 +75,10 @@ for my_item in exported_items:
 # Optionally set some solver parameters.
 
 #my_system.SetMaxPenetrationRecoverySpeed(1.00)
-my_system.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN);
-my_system.SetMaxItersSolverSpeed(600);
-my_system.SetSolverWarmStarting(True);
+my_solver = chrono.ChSolverBB()
+my_solver.SetMaxIterations(600)
+my_system.SetSolver(my_solver)
+
 my_system.Set_G_acc(chrono.ChVectorD(0,-9.8,0))
 
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -119,15 +133,10 @@ if m_visualization == "pov":
 
     pov_exporter = postprocess.ChPovRay(my_system)
 
-     # Sets some file names for in-out processes.
-    pov_exporter.SetTemplateFile        ("_template_POV.pov")
-    pov_exporter.SetOutputScriptFile    ("rendering_frames.pov")
-    if not os.path.exists("output"):
-        os.mkdir("output")
-    if not os.path.exists("anim"):
-        os.mkdir("anim")
-    pov_exporter.SetOutputDataFilebase("output/my_state")
-    pov_exporter.SetPictureFilebase("anim/picture")
+    # Set the path where it will save all .pov, .ini, .asset and .dat files,
+    # this directory will be created if not existing. For example:
+    pov_exporter.SetBasePath("povray_pychrono_generated")
+    pov_exporter.SetTemplateFile("_template_POV.pov")
 
      # Sets the viewpoint, aimed point, lens angle
     pov_exporter.SetCamera(chrono.ChVectorD(0.4,0.6,0.9), chrono.ChVectorD(0.2,0,0), 30)
@@ -146,7 +155,7 @@ if m_visualization == "pov":
     #pov_exporter.SetShowLinks(1, 0.03)
     if (False) :
         pov_exporter.SetShowContacts(1,
-                                postprocess.ChPovRay.SYMBOL_VECTOR_SCALELENGTH,
+                                postprocess.ChPovRay.ContactSymbol_VECTOR_SCALELENGTH,
                                 0.2,    # scale
                                 0.0007, # width
                                 0.1,    # max size
@@ -161,8 +170,7 @@ if m_visualization == "pov":
     # to the the visualization shapes.
 
     if (True):
-        shaft_povmat = postprocess.ChPovRayAssetCustom()
-        shaft_povmat.SetCommands('''
+        pov_exporter.SetCustomCommands(my_shaft,'''
            pigment { color rgbt <0.5,0.5,0.52,0> }
            finish  {    reflection {0.35}
                         ambient 0
@@ -170,9 +178,7 @@ if m_visualization == "pov":
                         phong 0.9
                         phong_size 60
                         metallic } ''')
-        my_shaft.GetAssets().push_back(shaft_povmat)
-
-
+        
     # ***TRICK***
     # Add an horizontal grid and a gray plane; also add a light source.
     # Use the SetCustomPOVcommandsScript() statement to add POV commands
@@ -212,13 +218,11 @@ if m_visualization == "pov":
         #pov_exporter.SetShowCOGs  (1, 0.05)
         #pov_exporter.SetShowFrames  (1, 0.05)
 
-        transp_povmat = postprocess.ChPovRayAssetCustom()
-        transp_povmat.SetCommands('''
-           pigment { color rgbt <1,1,1,0.8> }
-            ''')
-
         for aitem in chrono.IterOtherPhysicsItems(my_system):
-            aitem.GetAssets().push_back(transp_povmat)
+            pov_exporter.SetCustomCommands(aitem,'''
+              pigment { color rgbt <1,1,1,0.8> }
+            ''')
+                                          
 
 
     #  END OF MODIFICATIONS....
@@ -251,52 +255,41 @@ if m_visualization == "pov":
         nstep = nstep +1
 
     print ("\n\nOk, Simulation done!");
+    print ("\n\nGenerated .pov and .ini files for POVray.");
     time.sleep(2)
 
 
 if m_visualization == "irrlicht":
 
-    # ---------------------------------------------------------------------
-    #
-    #  Create an Irrlicht application to visualize the system
-    #
+	# ---------------------------------------------------------------------
+	#
+	#  Create an Irrlicht application to visualize the system
+	#
 
-    myapplication = chronoirr.ChIrrApp(my_system, 'Test', chronoirr.dimension2du(1280,720))
-
-    myapplication.AddTypicalSky(chrono.GetChronoDataPath() + 'skybox/')
-    myapplication.AddTypicalLogo(chrono.GetChronoDataPath() + 'logo_pychrono_alpha.png')
-    myapplication.AddTypicalCamera(chronoirr.vector3df(0.5,0.5,0.5),chronoirr.vector3df(0.0,0.0,0.0))
-    myapplication.AddTypicalLights()
-    #myapplication.AddLightWithShadow(chronoirr.vector3df(10,20,10),chronoirr.vector3df(0,2.6,0), 10 ,10,40, 60, 512);
-
-                # ==IMPORTANT!== Use this function for adding a ChIrrNodeAsset to all items
-                # in the system. These ChIrrNodeAsset assets are 'proxies' to the Irrlicht meshes.
-                # If you need a finer control on which item really needs a visualization proxy in
-                # Irrlicht, just use application.AssetBind(myitem); on a per-item basis.
-
-    myapplication.AssetBindAll();
-
-                # ==IMPORTANT!== Use this function for 'converting' into Irrlicht meshes the assets
-                # that you added to the bodies into 3D shapes, they can be visualized by Irrlicht!
-
-    myapplication.AssetUpdateAll();
-
-                # ==IMPORTANT!== Use this function for enabling cast soft shadows
-
-    #myapplication.AddShadowAll();
-
-    # ---------------------------------------------------------------------
-    #
-    #  Run the simulation forever until windows is closed
-    #
-
-    myapplication.SetTimestep(m_timestep);
+    # Create the Irrlicht visualization
+    vis = chronoirr.ChVisualSystemIrrlicht()
+    my_system.SetVisualSystem(vis)
+    vis.SetWindowSize(1024,768)
+    vis.SetWindowTitle('Test')
+    vis.Initialize()
+    vis.AddLogo(chrono.GetChronoDataPath() + 'logo_pychrono_alpha.png')
+    vis.AddSkyBox()
+    vis.AddCamera(chrono.ChVectorD(0.5, 0.5, 0.5))
+    vis.AddTypicalLights()
     
-    while(myapplication.GetDevice().run()):
-        myapplication.BeginScene()
-        myapplication.DrawAll()
-        myapplication.DoStep()
-        myapplication.EndScene()
+    # ==IMPORTANT!== Use this function for adding a ChIrrNodeAsset to all items
+    				# in the system. These ChIrrNodeAsset assets are 'proxies' to the Irrlicht meshes.
+    				# If you need a finer control on which item really needs a visualization proxy in
+    				# Irrlicht, just use application.AssetBind(myitem); on a per-item basis.
+    #vis.BindAll()
+       
+    
+    # Simulation loop
+    while vis.Run():
+        vis.BeginScene()
+        vis.DrawAll()
+        vis.EndScene()
+        my_system.DoStepDynamics(m_timestep)
 
 
 
