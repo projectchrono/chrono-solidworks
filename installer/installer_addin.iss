@@ -1,10 +1,9 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v4.01"
+#define MyAppVersion "v7.00"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
-#define MySolidWorksDir "C:\Program Files\SolidWorks Corp\SolidWorks (2)"
 #define MyAppSource "C:\Program Files\chrono_solidworks"
 
 [Setup]
@@ -23,15 +22,14 @@ WizardImageFile=SetupModern20.bmp
 WizardSmallImageFile=SetupModernSmall26.bmp
 PrivilegesRequired=admin
 ;Compression=none
-OutputDir=c:\tasora\lavori\data_chrono
+OutputDir=D:\tasora\code\projectchrono\chrono-web-assets\installers
 OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: {#MyAppSource}\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt"; 
 Source: {#MyAppSource}\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt"; 
-Source: ..\to_put_in_SW_dir\*; Excludes: "*\.svn,*.git"; DestDir: {app};  Flags: recursesubdirs createallsubdirs; 
-;Source: {#MySolidWorksDir}\chronoengine\*.dll; DestDir: {code:myGetPathSolidWorks}\chronoengine;  Check: myFoundSolidWorks; 
+Source: ..\to_put_in_app_dir\*; Excludes: "*\.svn,*.git"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
 
 [Run]
 Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
@@ -77,92 +75,83 @@ begin
   // CHECK PYTHON INSTALLATION
   mFoundSolidWorks := 0;
 
+  // ***NOTE**** the following code (that detects the directory where SW is 
+  // installed) is NOT necessary anymore because in latest revisions this
+  // add-in installer does not need such information (it just registers the 
+  // ChronoEngineAddIn.dll in the COM system)
+
+  //***BEGIN OF NOT USED CODE*** Maybe to remove in future. Just for reference. 
 
   if (IsWin64) then
   begin
     // CASE OF 64 BIT PLATFORM
 
-    // find 64 bit SW v.11:
+
+    // find 64 bit SW v.20:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2011\Setup',
+                      'SOFTWARE\SolidWorks\SolidWorks 2020\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
-    end
+    end;
 
-    // find 64 bit SW v.12:
+    // find 64 bit SW v.21:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2012\Setup',
+                      'SOFTWARE\SolidWorks\SolidWorks 2021\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
-    end
+    end;
 
-
-    // find 64 bit SW v.13:
+    // find 64 bit SW v.22:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2013\Setup',
+                      'SOFTWARE\SolidWorks\SolidWorks 2022\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
-    end
+    end;
 
-
-    // find 64 bit SW v.14:
+    // find 64 bit SW v.23:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2014\Setup',
+                      'SOFTWARE\SolidWorks\SolidWorks 2023\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
-    end
-
-    // find 64 bit SW v.15:
+    end;
+    // find 64 bit SW v.24:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2015\Setup',
+                      'SOFTWARE\SolidWorks\SolidWorks 2024\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
-    end
+    end;
 
-    // find 64 bit SW v.16:
+    // find 64 bit SW v.25:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2016\Setup',
+                      'SOFTWARE\SolidWorks\SolidWorks 2025\Setup',
                       'SolidWorks Folder',
                       mallDirSolidWorks) then
     begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
-    end
-
-    // find 64 bit SW v.17:
-    if RegQueryStringValue(HKEY_LOCAL_MACHINE,
-                      'SOFTWARE\SolidWorks\SolidWorks 2017\Setup',
-                      'SolidWorks Folder',
-                      mallDirSolidWorks) then
-    begin
-            mPathSolidWorks := mallDirSolidWorks; 
-            mFoundSolidWorks := 1;
-    end
-
-
-    
+    end;
+                
   end 
   else
   begin
     // CASE OF 32 BIT PLATFORM
           mFoundSolidWorks := 0;
-  end
-
+  end;
 
 
   if mFoundSolidWorks = 0 then 
@@ -174,8 +163,9 @@ begin
            //    '(If so,please install SolidWorks 64 bit before installing this plug-in).', mbError, MB_OK);
            //
            //Abort();
-  end 
-                                   
+  end;
+
+  //***END OF NOT USED CODE***                               
 
 end;
 
@@ -207,10 +197,12 @@ var
   S: String;
 begin
   { Fill the 'Ready Memo' with the normal settings and the custom settings }
-  S :=     'Instaling the Chrono::SolidWorks add-in.'  + NewLine  + NewLine;
-  S :=     'Assuming NET 4.0 framework is installed.';
-  S := S + 'After the installation do this: launch SolidWorks, then check that the Chrono add-in is activated by using the Tools/Add-in... menu. '  + NewLine;
-  S := S + 'In the Add-ins panel you should find an item called ChronoEngine SwAddin; set it as active by flagging it.' + NewLine;
+  S :=     'Assuming NET 4.0 framework is installed.' + NewLine + NewLine;
+  S := S + 'After the installation do this: launch SolidWorks,' + NewLine; 
+  S := S + 'then check that the Chrono add-in is activated ' + NewLine;
+  S := S + 'by using the Tools/Add-in... menu. '  + NewLine;
+  S := S + 'In the Add-ins panel you should find an item called ' + NewLine;
+  S := S + 'ChronoEngine SwAddin; set it as active by flagging it.' + NewLine;
 
   //if (mFoundSolidWorks = 1) then begin
   //  S := S + 'The SolidWorks dll directory is:' + NewLine;
