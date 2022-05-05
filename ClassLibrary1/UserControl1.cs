@@ -527,7 +527,7 @@ namespace ChronoEngine_SwAddin
                     double[] amatr = (double[])relframe_shape.ArrayData;
                     double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-                    asciitext += String.Format(bz, "{0}.AddVisualShape({1}, chrono.ChFrameD(", bodyname, shapename);
+                    asciitext += String.Format(bz, "{0}.AddVisualShape({1}_shape, chrono.ChFrameD(", bodyname, shapename);
                     asciitext += String.Format(bz, "chrono.ChVectorD({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
                     asciitext += String.Format(bz, "chrono.ChQuaternionD({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
                     asciitext += String.Format(bz, "))\n");
