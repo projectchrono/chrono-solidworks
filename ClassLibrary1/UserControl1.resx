@@ -205,6 +205,22 @@ This Python program, if executed, will load your .py file and
 will dump some files that can be used in POV for raytracing 
 an animation.</value>
   </data>
+  <data name="numeric_sphereswept.ToolTip" xml:space="preserve">
+    <value>By inflating the thickness of triangles in meshes for collisions (if used), this enhances robustness of contact detection.  Too large can cause unnaturally "fat" invisible layer around triangle meshes.</value>
+  </data>
+  <data name="button_settrimeshcoll.ToolTip" xml:space="preserve">
+    <value>To use this function: 
+- in a part, select one of the SolidWorks solid bodies that you want to use 
+   as a collision shape,
+- press this button.
+Note: this works for whatever shape, but it will use the Chrono triangle mesh 
+vs. triangle mesh collision algorithm that is CPU intensive and that is
+less robust than the primitive concave collision shapes, therefore try to
+use the other button for primitive collision shapes if you can (spheres, boxes, etc.)
+Aso this collision type is quite sensitive to the global parameter 
+"Trimesh sphereswept_r", the larger the more robust, but also more distant
+from the original shape, that is "inflated" and rounded in terms of collsions.</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>

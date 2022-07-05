@@ -56,18 +56,32 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.numeric_envelope = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.numeric_margin = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.numeric_contactbreaking = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.numeric_sphereswept = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.button_settrimeshcoll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_M)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_T)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_envelope)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_margin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_contactbreaking)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_sphereswept)).BeginInit();
             this.SuspendLayout();
             // 
             // button_export
             // 
-            this.button_export.Location = new System.Drawing.Point(17, 56);
+            this.button_export.Location = new System.Drawing.Point(17, 45);
             this.button_export.Name = "button_export";
-            this.button_export.Size = new System.Drawing.Size(163, 32);
+            this.button_export.Size = new System.Drawing.Size(184, 32);
             this.button_export.TabIndex = 0;
             this.button_export.Text = "Save as Python...";
             this.button_export.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -91,7 +105,7 @@
             this.checkBox_surfaces.AutoSize = true;
             this.checkBox_surfaces.Checked = true;
             this.checkBox_surfaces.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_surfaces.Location = new System.Drawing.Point(17, 95);
+            this.checkBox_surfaces.Location = new System.Drawing.Point(17, 84);
             this.checkBox_surfaces.Name = "checkBox_surfaces";
             this.checkBox_surfaces.Size = new System.Drawing.Size(102, 17);
             this.checkBox_surfaces.TabIndex = 2;
@@ -105,7 +119,7 @@
             this.checkBox_collshapes.AutoSize = true;
             this.checkBox_collshapes.Checked = true;
             this.checkBox_collshapes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_collshapes.Location = new System.Drawing.Point(17, 162);
+            this.checkBox_collshapes.Location = new System.Drawing.Point(17, 151);
             this.checkBox_collshapes.Name = "checkBox_collshapes";
             this.checkBox_collshapes.Size = new System.Drawing.Size(131, 17);
             this.checkBox_collshapes.TabIndex = 3;
@@ -118,7 +132,7 @@
             this.checkBox_constraints.AutoSize = true;
             this.checkBox_constraints.Checked = true;
             this.checkBox_constraints.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_constraints.Location = new System.Drawing.Point(17, 185);
+            this.checkBox_constraints.Location = new System.Drawing.Point(17, 174);
             this.checkBox_constraints.Name = "checkBox_constraints";
             this.checkBox_constraints.Size = new System.Drawing.Size(110, 17);
             this.checkBox_constraints.TabIndex = 4;
@@ -133,11 +147,12 @@
             // 
             // button_setcollshape
             // 
-            this.button_setcollshape.Location = new System.Drawing.Point(17, 414);
+            this.button_setcollshape.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_setcollshape.Location = new System.Drawing.Point(17, 390);
             this.button_setcollshape.Name = "button_setcollshape";
-            this.button_setcollshape.Size = new System.Drawing.Size(163, 32);
+            this.button_setcollshape.Size = new System.Drawing.Size(68, 54);
             this.button_setcollshape.TabIndex = 5;
-            this.button_setcollshape.Text = "Set body as collision shape";
+            this.button_setcollshape.Text = "Set body as primitive collision ";
             this.button_setcollshape.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_setcollshape, resources.GetString("button_setcollshape.ToolTip"));
             this.button_setcollshape.UseVisualStyleBackColor = true;
@@ -146,7 +161,7 @@
             // checkBox_separateobj
             // 
             this.checkBox_separateobj.AutoSize = true;
-            this.checkBox_separateobj.Location = new System.Drawing.Point(33, 118);
+            this.checkBox_separateobj.Location = new System.Drawing.Point(33, 107);
             this.checkBox_separateobj.Name = "checkBox_separateobj";
             this.checkBox_separateobj.Size = new System.Drawing.Size(172, 17);
             this.checkBox_separateobj.TabIndex = 6;
@@ -159,7 +174,7 @@
             this.checkBox_saveUV.AutoSize = true;
             this.checkBox_saveUV.Checked = true;
             this.checkBox_saveUV.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_saveUV.Location = new System.Drawing.Point(33, 139);
+            this.checkBox_saveUV.Location = new System.Drawing.Point(33, 128);
             this.checkBox_saveUV.Name = "checkBox_saveUV";
             this.checkBox_saveUV.Size = new System.Drawing.Size(149, 17);
             this.checkBox_saveUV.TabIndex = 7;
@@ -170,7 +185,7 @@
             // 
             // button_runtest
             // 
-            this.button_runtest.Location = new System.Drawing.Point(113, 306);
+            this.button_runtest.Location = new System.Drawing.Point(134, 295);
             this.button_runtest.Name = "button_runtest";
             this.button_runtest.Size = new System.Drawing.Size(69, 22);
             this.button_runtest.TabIndex = 8;
@@ -184,7 +199,7 @@
             // checkBox_savetest
             // 
             this.checkBox_savetest.AutoSize = true;
-            this.checkBox_savetest.Location = new System.Drawing.Point(17, 306);
+            this.checkBox_savetest.Location = new System.Drawing.Point(17, 295);
             this.checkBox_savetest.Name = "checkBox_savetest";
             this.checkBox_savetest.Size = new System.Drawing.Size(88, 17);
             this.checkBox_savetest.TabIndex = 9;
@@ -200,7 +215,7 @@
             0,
             0,
             131072});
-            this.numeric_dt.Location = new System.Drawing.Point(113, 328);
+            this.numeric_dt.Location = new System.Drawing.Point(134, 317);
             this.numeric_dt.Maximum = new decimal(new int[] {
             1,
             0,
@@ -229,7 +244,7 @@
             0,
             0,
             65536});
-            this.numeric_length.Location = new System.Drawing.Point(113, 350);
+            this.numeric_length.Location = new System.Drawing.Point(134, 339);
             this.numeric_length.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -253,7 +268,7 @@
             // numeric_scale_L
             // 
             this.numeric_scale_L.DecimalPlaces = 3;
-            this.numeric_scale_L.Location = new System.Drawing.Point(113, 234);
+            this.numeric_scale_L.Location = new System.Drawing.Point(134, 223);
             this.numeric_scale_L.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -273,7 +288,7 @@
             // numeric_scale_M
             // 
             this.numeric_scale_M.DecimalPlaces = 3;
-            this.numeric_scale_M.Location = new System.Drawing.Point(113, 255);
+            this.numeric_scale_M.Location = new System.Drawing.Point(134, 244);
             this.numeric_scale_M.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -293,7 +308,7 @@
             // checkBox_scale
             // 
             this.checkBox_scale.AutoSize = true;
-            this.checkBox_scale.Location = new System.Drawing.Point(17, 214);
+            this.checkBox_scale.Location = new System.Drawing.Point(17, 203);
             this.checkBox_scale.Name = "checkBox_scale";
             this.checkBox_scale.Size = new System.Drawing.Size(126, 17);
             this.checkBox_scale.TabIndex = 18;
@@ -306,7 +321,7 @@
             // numeric_scale_T
             // 
             this.numeric_scale_T.DecimalPlaces = 3;
-            this.numeric_scale_T.Location = new System.Drawing.Point(113, 276);
+            this.numeric_scale_T.Location = new System.Drawing.Point(134, 265);
             this.numeric_scale_T.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -326,23 +341,24 @@
             // button_convexdecomp
             // 
             this.button_convexdecomp.Enabled = false;
-            this.button_convexdecomp.Location = new System.Drawing.Point(17, 452);
+            this.button_convexdecomp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_convexdecomp.Location = new System.Drawing.Point(150, 390);
             this.button_convexdecomp.Name = "button_convexdecomp";
-            this.button_convexdecomp.Size = new System.Drawing.Size(163, 32);
+            this.button_convexdecomp.Size = new System.Drawing.Size(51, 54);
             this.button_convexdecomp.TabIndex = 21;
             this.button_convexdecomp.Text = "Convex decomposition";
             this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, "To use this function: \rselect a solid body and press the button");
+            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, "To use this function: \r\nselect a solid body and press the button");
             this.button_convexdecomp.UseVisualStyleBackColor = true;
             this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
             // 
             // button_chrono_property
             // 
-            this.button_chrono_property.Location = new System.Drawing.Point(17, 490);
+            this.button_chrono_property.Location = new System.Drawing.Point(17, 450);
             this.button_chrono_property.Name = "button_chrono_property";
-            this.button_chrono_property.Size = new System.Drawing.Size(163, 32);
+            this.button_chrono_property.Size = new System.Drawing.Size(184, 25);
             this.button_chrono_property.TabIndex = 22;
-            this.button_chrono_property.Text = "Chrono property";
+            this.button_chrono_property.Text = "Chrono properties";
             this.button_chrono_property.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_chrono_property, "Open the properties for Chrono rigid body");
             this.button_chrono_property.UseVisualStyleBackColor = true;
@@ -354,7 +370,7 @@
             this.comboBox1.Items.AddRange(new object[] {
             "irrlicht",
             "pov"});
-            this.comboBox1.Location = new System.Drawing.Point(113, 373);
+            this.comboBox1.Location = new System.Drawing.Point(134, 362);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(67, 21);
             this.comboBox1.TabIndex = 23;
@@ -364,7 +380,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(91, 328);
+            this.label2.Location = new System.Drawing.Point(112, 317);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(16, 13);
             this.label2.TabIndex = 10;
@@ -374,7 +390,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(67, 350);
+            this.label3.Location = new System.Drawing.Point(88, 339);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(40, 13);
             this.label3.TabIndex = 12;
@@ -384,7 +400,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(67, 236);
+            this.label4.Location = new System.Drawing.Point(88, 225);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 15;
@@ -394,7 +410,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(64, 257);
+            this.label5.Location = new System.Drawing.Point(85, 246);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(46, 13);
             this.label5.TabIndex = 16;
@@ -404,7 +420,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(64, 278);
+            this.label6.Location = new System.Drawing.Point(85, 267);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(44, 13);
             this.label6.TabIndex = 19;
@@ -414,18 +430,202 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(40, 374);
+            this.label7.Location = new System.Drawing.Point(61, 363);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 13);
             this.label7.TabIndex = 24;
             this.label7.Text = "Visualization";
             this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(14, 498);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(76, 13);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "Global settings";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // numeric_envelope
+            // 
+            this.numeric_envelope.DecimalPlaces = 5;
+            this.numeric_envelope.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numeric_envelope.Location = new System.Drawing.Point(136, 517);
+            this.numeric_envelope.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numeric_envelope.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            589824});
+            this.numeric_envelope.Name = "numeric_envelope";
+            this.numeric_envelope.Size = new System.Drawing.Size(67, 20);
+            this.numeric_envelope.TabIndex = 27;
+            this.toolTipSavePython.SetToolTip(this.numeric_envelope, "Outward tolerance for detecting potential contacts. Too small, might miss contact" +
+        "s. Too large, cause false positives and high CPU times.");
+            this.numeric_envelope.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            196608});
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(34, 519);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(92, 13);
+            this.label9.TabIndex = 26;
+            this.label9.Text = "Collision envelope";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // numeric_margin
+            // 
+            this.numeric_margin.DecimalPlaces = 5;
+            this.numeric_margin.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numeric_margin.Location = new System.Drawing.Point(136, 539);
+            this.numeric_margin.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numeric_margin.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            589824});
+            this.numeric_margin.Name = "numeric_margin";
+            this.numeric_margin.Size = new System.Drawing.Size(67, 20);
+            this.numeric_margin.TabIndex = 29;
+            this.toolTipSavePython.SetToolTip(this.numeric_margin, "Inward tolerance for interpenetrating contacts. Too small might cause objects sin" +
+        "king. Too large, cause false positives and high CPU times.");
+            this.numeric_margin.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            196608});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(47, 541);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(79, 13);
+            this.label10.TabIndex = 28;
+            this.label10.Text = "Collision margin";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // numeric_contactbreaking
+            // 
+            this.numeric_contactbreaking.DecimalPlaces = 5;
+            this.numeric_contactbreaking.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numeric_contactbreaking.Location = new System.Drawing.Point(136, 561);
+            this.numeric_contactbreaking.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numeric_contactbreaking.Name = "numeric_contactbreaking";
+            this.numeric_contactbreaking.Size = new System.Drawing.Size(67, 20);
+            this.numeric_contactbreaking.TabIndex = 31;
+            this.toolTipSavePython.SetToolTip(this.numeric_contactbreaking, "Nonzero value cause contact persistence between frames when possible, that can he" +
+        "lp solver convergence. Too large, anyway, can lead to wrong contacts.");
+            this.numeric_contactbreaking.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            196608});
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(38, 563);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(88, 13);
+            this.label11.TabIndex = 30;
+            this.label11.Text = "Contact breaking";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label11.Click += new System.EventHandler(this.label11_Click);
+            // 
+            // numeric_sphereswept
+            // 
+            this.numeric_sphereswept.DecimalPlaces = 5;
+            this.numeric_sphereswept.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.numeric_sphereswept.Location = new System.Drawing.Point(136, 584);
+            this.numeric_sphereswept.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numeric_sphereswept.Name = "numeric_sphereswept";
+            this.numeric_sphereswept.Size = new System.Drawing.Size(67, 20);
+            this.numeric_sphereswept.TabIndex = 33;
+            this.toolTipSavePython.SetToolTip(this.numeric_sphereswept, resources.GetString("numeric_sphereswept.ToolTip"));
+            this.numeric_sphereswept.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(13, 586);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(113, 13);
+            this.label12.TabIndex = 32;
+            this.label12.Text = "Trimesh sphereswept r";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label12.Click += new System.EventHandler(this.label12_Click);
+            // 
+            // button_settrimeshcoll
+            // 
+            this.button_settrimeshcoll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_settrimeshcoll.Location = new System.Drawing.Point(88, 390);
+            this.button_settrimeshcoll.Name = "button_settrimeshcoll";
+            this.button_settrimeshcoll.Size = new System.Drawing.Size(60, 54);
+            this.button_settrimeshcoll.TabIndex = 34;
+            this.button_settrimeshcoll.Text = "Set as mesh collision";
+            this.button_settrimeshcoll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.button_settrimeshcoll, resources.GetString("button_settrimeshcoll.ToolTip"));
+            this.button_settrimeshcoll.UseVisualStyleBackColor = true;
+            this.button_settrimeshcoll.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.button_settrimeshcoll);
+            this.Controls.Add(this.numeric_sphereswept);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.numeric_contactbreaking);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.numeric_margin);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.numeric_envelope);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button_chrono_property);
@@ -452,7 +652,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_export);
             this.Name = "SWTaskpaneHost";
-            this.Size = new System.Drawing.Size(205, 525);
+            this.Size = new System.Drawing.Size(215, 609);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
@@ -460,6 +660,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_M)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_T)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_envelope)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_margin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_contactbreaking)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numeric_sphereswept)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -493,5 +697,15 @@
         private System.Windows.Forms.Button button_chrono_property;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.NumericUpDown numeric_envelope;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown numeric_margin;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown numeric_contactbreaking;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown numeric_sphereswept;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button button_settrimeshcoll;
     }
 }

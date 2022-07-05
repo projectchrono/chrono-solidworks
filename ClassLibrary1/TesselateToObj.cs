@@ -20,7 +20,7 @@ namespace ChronoEngine_SwAddin
     {
         /// Convert a SolidWorks component to Wavefront OBJ mesh
         /// 
-        public static void Convert(Component2 swComp, ref string asciitext, bool saveUV, ref UserProgressBar swProgress)
+        public static void Convert(Component2 swComp, ref string asciitext, bool saveUV, ref UserProgressBar swProgress, bool for_visualshapes, bool for_collshapes)
         {
             StringBuilder textbuilder = new StringBuilder();
             Body2 swBody = default(Body2);
@@ -80,8 +80,16 @@ namespace ChronoEngine_SwAddin
 
                     if ((nBodyType == (int)swBodyType_e.swSheetBody ||
                          nBodyType == (int)swBodyType_e.swSolidBody) &&
-                         !swBody.Name.StartsWith("COLL.") && 
-                         swBody.Visible)
+                         (
+                          (for_visualshapes && 
+                             (!swBody.Name.StartsWith("COLL.") && 
+                             swBody.Visible)) 
+                             ||
+                          (for_collshapes &&
+                             (swBody.Name.StartsWith("COLLMESH"))
+                          )
+                         )
+                       )
                     {
                         iNumTesselatedBodies++;
 

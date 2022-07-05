@@ -42,6 +42,7 @@ namespace ChronoEngine_SwAddin
         internal UserProgressBar swProgress;
         internal Hashtable saved_parts;
         internal Hashtable saved_shapes;
+        internal Hashtable saved_collisionmeshes;
 
 
         class myBytearrayHashComparer : IEqualityComparer
@@ -81,6 +82,7 @@ namespace ChronoEngine_SwAddin
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.saved_parts = new Hashtable(new myBytearrayHashComparer());
             this.saved_shapes = new Hashtable();
+            this.saved_collisionmeshes = new Hashtable();
         }
 
         private void UserControl1_Load(object sender, EventArgs e)
@@ -189,6 +191,8 @@ namespace ChronoEngine_SwAddin
 
         public void ExportToPython(ref string asciitext)
         {
+            CultureInfo bz = new CultureInfo("en-BZ");
+
             ModelDoc2 swModel;
             ConfigurationManager swConfMgr;
             Configuration swConf;
@@ -196,6 +200,7 @@ namespace ChronoEngine_SwAddin
 
             this.saved_parts.Clear();
             this.saved_shapes.Clear();
+            this.saved_collisionmeshes.Clear();
 
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null) return;
@@ -214,6 +219,12 @@ namespace ChronoEngine_SwAddin
 
             asciitext += "import pychrono as chrono \n";
             asciitext += "import builtins \n\n";
+
+            asciitext += "# some global settings: \n" +
+                         "sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + "\n" +
+                         "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ")\n" +
+                         "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)this.numeric_margin.Value * ChScale.L).ToString(bz) + ")\n" +
+                         "chrono.ChCollisionSystemBullet.SetContactBreakingThreshold(" + ((double)this.numeric_contactbreaking.Value * ChScale.L).ToString(bz) + ")\n\n";
 
             asciitext += "shapes_dir = '" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + "/' \n\n";
 
@@ -487,7 +498,7 @@ namespace ChronoEngine_SwAddin
                             if (this.swProgress != null)
                                 this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
                             // Write the OBJ converted visualization shapes:
-                            TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress);
+                            TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress, true, false);
                             writer.Write(asciiobj);
                             writer.Flush();
                             ostream.Close();
@@ -496,7 +507,7 @@ namespace ChronoEngine_SwAddin
                         }
                         catch (Exception)
                         {
-                            System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename);
+                            System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + "\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
                         }
                     }
                     else
@@ -552,10 +563,10 @@ namespace ChronoEngine_SwAddin
 
 
 
-        public void PythonTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
+        public void PythonTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
         {
             // Look if component contains collision shapes (customized SW solid bodies):
-            PythonTraverseFeatures_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase);
+            PythonTraverseFeatures_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
 
             // Recursive scan of subcomponents
 
@@ -566,11 +577,11 @@ namespace ChronoEngine_SwAddin
             {
                 swChildComp = (Component2)vChildComp[i];
 
-                PythonTraverseComponent_for_collshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase);
+                PythonTraverseComponent_for_collshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
             }
         }
 
-        public void PythonTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase)
+        public void PythonTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             Feature swFeat;
@@ -597,7 +608,7 @@ namespace ChronoEngine_SwAddin
                     for (int ib = 0; ib < bodies.Length; ib++)
                     {
                         Body2 swBody = (Body2)bodies[ib];
-                        if (swBody.Name.StartsWith("COLL."))
+                        if (swBody.Name.StartsWith("COLL.") || swBody.Name.StartsWith("COLLMESH"))
                             build_collision_model = true;
                     }
 
@@ -649,9 +660,16 @@ namespace ChronoEngine_SwAddin
                             asciitext += String.Format(bz, "{0}.GetCollisionModel().ClearModel()\n", bodyname);
                         }
 
+                        bool has_coll_mesh = false;
+
                         for (int ib = 0; ib < bodies.Length; ib++)
                         {
                             Body2 swBody = (Body2)bodies[ib];
+
+                            if (swBody.Name.StartsWith("COLLMESH"))
+                            {
+                                has_coll_mesh = true;
+                            }
 
                             if (swBody.Name.StartsWith("COLL."))
                             {
@@ -758,6 +776,7 @@ namespace ChronoEngine_SwAddin
                                         }
                                         asciitext += String.Format(bz, "{0}.GetCollisionModel().AddConvexHull({1}, pt_vect)\n", bodyname, matname);
                                     }
+                                    rbody_converted = true;
                                 }
 
 
@@ -765,6 +784,58 @@ namespace ChronoEngine_SwAddin
 
                         } // end solid bodies traversal for converting to coll.shapes
 
+
+
+                        if (has_coll_mesh)
+                        {
+                            // fallback if no primitive collision shape found: use concave trimesh collision model (although inefficient)
+                            ncollshape += 1;
+                            string shapename = "body_" + nbody + "_" + ncollshape + "_collision";
+                            string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+
+                            ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
+                            if (!this.saved_collisionmeshes.ContainsKey(swCompModel.GetPathName()))
+                            {
+                                try
+                                {
+                                    FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
+                                    StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
+                                    string asciiobj = "";
+                                    if (this.swProgress != null)
+                                        this.swProgress.UpdateTitle("Exporting collision shape" + swComp.Name2 + " (tesselate) ...");
+                                    // Write the OBJ converted visualization shapes:
+                                    TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress, false, true);
+                                    writer.Write(asciiobj);
+                                    writer.Flush();
+                                    ostream.Close();
+
+                                    this.saved_collisionmeshes.Add(swCompModel.GetPathName(), shapename);
+                                }
+                                catch (Exception)
+                                {
+                                    System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + "\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
+                                }
+                            }
+                            else
+                            {
+                                // reuse the already-saved shape name
+                                shapename = (String)this.saved_collisionmeshes[swCompModel.GetPathName()];
+                            }
+
+                            double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
+                            double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
+
+                            asciitext += String.Format(bz, "\n# Triangle mesh collision shape \n", bodyname);
+                            asciitext += String.Format(bz, "{0}_mesh = chrono.ChTriangleMeshConnected.CreateFromWavefrontFile(shapes_dir + '{1}.obj', False, True) \n", shapename, shapename);
+                            asciitext += String.Format(bz, "mr = chrono.ChMatrix33D()\n");
+                            asciitext += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L);
+                            asciitext += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L);
+                            asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L);
+                            asciitext += String.Format(bz, "{0}_mesh.Transform(chrono.ChVectorD({1}, {2}, {3}), mr) \n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                            asciitext += String.Format(bz, "{0}.GetCollisionModel().AddTriangleMesh({1}, {2}_mesh, False, False, ", bodyname, matname, shapename);
+                            asciitext += String.Format(bz, "chrono.ChVectorD(0,0,0), chrono.ChMatrix33D(chrono.ChQuaternionD(1,0,0,0)), sphereswept_r) \n");
+                            //rbody_converted = true;
+                        }
 
 
                     } // end if build_collision_model
@@ -914,7 +985,9 @@ namespace ChronoEngine_SwAddin
                         if (param_collide)
                         {
                             bool found_collisionshapes = false;
-                            PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp);
+                            int ncollshapes = 0;
+
+                            PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                             if (found_collisionshapes)
                             {
                                 asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
@@ -1303,7 +1376,7 @@ namespace ChronoEngine_SwAddin
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Selected solid body is not of cylinder/box/sphere/convexhull type. Cannot convert to collision shape.");
+                    System.Windows.Forms.MessageBox.Show("Selected solid body is not of cylinder/box/sphere/convexhull type. Cannot convert to collision shape. Fallback solution: use concave tri-mesh collision (slower, less robust).");
                     return;
                 }
 
@@ -1686,10 +1759,82 @@ namespace ChronoEngine_SwAddin
 
         }
 
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            ModelDoc2 swModel;
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            if (swModel == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body!");
+                return;
+            }
+
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+
+            if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies!");
+                return;
+            }
+
+            string message = "";
+
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+            {
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
+                {
+                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
+                    return;
+                }
+
+                bool rbody_converted = false;
+                Body2 swBody = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
+
+                string mname = swBody.Name;
+                mname.Replace("COLLMESH-", "");
+                swBody.Name = "COLLMESH-" + mname;
+                rbody_converted = true;
+
+                swModel.ForceRebuild3(false);
 
 
+                // ----- Try to see if it was possible to use a faster method.
 
+                if (ConvertToCollisionShapes.SWbodyToSphere(swBody))
+                {
+                    message += "  " + swBody.Name + " is a sphere primitive, \n";
+                }
+                if (ConvertToCollisionShapes.SWbodyToBox(swBody))
+                {
+                    message += "  " + swBody.Name + " is a box primitive, \n";
+                }
+                if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
+                {
+                    message += "  " + swBody.Name + " is a cylinder primitive, \n";
+                }
+                if (ConvertToCollisionShapes.SWbodyToConvexHull(swBody, 30) && !rbody_converted)
+                {
+                    message += "  " + swBody.Name + " is a convex hull primitive, \n";
+                }
 
+            } // end loop on selected items
+
+            if (message != "")
+            {
+                System.Windows.Forms.MessageBox.Show("Hint: \n" + message + "so you might better use the conversion into primitive collision shapes, that is faster and more robust thatn the generic triangle mesh collision.");
+            }
+
+        }
 
 
 

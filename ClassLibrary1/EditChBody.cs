@@ -139,7 +139,7 @@ namespace ChronoEngineAddin
                         }
                         if (swPart.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving)
                         {
-                            System.Windows.Forms.MessageBox.Show("Setting props to rigid assembly as ChBody");
+                            // System.Windows.Forms.MessageBox.Show("Setting props to rigid assembly as ChBody");
                             AssemblyDoc swAssemblyDoc = (AssemblyDoc)swPartModel;
                             swPart.Select(false);
                             swAssemblyDoc.EditAssembly();
@@ -165,7 +165,7 @@ namespace ChronoEngineAddin
                             return false;
                         }
                         swPartModel.ForceRebuild3(false); // needed, but does not work...
-                        //swPartModel.Rebuild((int)swRebuildOptions_e.swRebuildAll); // needed but does not work...
+                        swPartModel.Rebuild((int)swRebuildOptions_e.swRebuildAll); // needed but does not work...
 
                         if (myattr.GetEntityState((int)swAssociatedEntityStates_e.swIsEntityInvalid))
                             System.Windows.Forms.MessageBox.Show("swIsEntityInvalid!");
@@ -280,6 +280,7 @@ namespace ChronoEngineAddin
                     ((Parameter)myattr_conveyor.GetParameter("conveyor_speed")).SetDoubleValue2(
                                   m_conveyor_speed, (int)swInConfigurationOpts_e.swThisConfiguration, "");
                     */
+                    swPartModel.ForceRebuild3(false);
                 } 
         }
 
