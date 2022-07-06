@@ -517,7 +517,7 @@ namespace ChronoEngine_SwAddin
                     }
 
                     asciitext += String.Format(bz, "\n# Visualization shape \n", bodyname);
-                    asciitext += String.Format(bz, "{0}_shape = chrono.ChObjShapeFile() \n", shapename);
+                    asciitext += String.Format(bz, "{0}_shape = chrono.ChObjFileShape() \n", shapename);
                     asciitext += String.Format(bz, "{0}_shape.SetFilename(shapes_dir +'{0}.obj') \n", shapename);
 
                     object foo = null;
