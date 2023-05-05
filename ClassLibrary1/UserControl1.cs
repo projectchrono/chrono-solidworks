@@ -517,7 +517,7 @@ namespace ChronoEngine_SwAddin
                     }
 
                     asciitext += String.Format(bz, "\n# Visualization shape \n", bodyname);
-                    asciitext += String.Format(bz, "{0}_shape = chrono.ChObjFileShape() \n", shapename);
+                    asciitext += String.Format(bz, "{0}_shape = chrono.ChModelFileShape() \n", shapename);
                     asciitext += String.Format(bz, "{0}_shape.SetFilename(shapes_dir +'{0}.obj') \n", shapename);
 
                     object foo = null;
@@ -697,9 +697,6 @@ namespace ChronoEngine_SwAddin
                                     Vector3D eX = SWTaskpaneHost.DirTransform(eX_l, ref collshape_subcomp_transform);
                                     Vector3D eY = SWTaskpaneHost.DirTransform(eY_l, ref collshape_subcomp_transform);
                                     Vector3D eZ = SWTaskpaneHost.DirTransform(eZ_l, ref collshape_subcomp_transform);
-                                    double hsX = eX.Length * 0.5;
-                                    double hsY = eY.Length * 0.5;
-                                    double hsZ = eZ.Length * 0.5;
                                     Point3D vO = vC + 0.5 * eX + 0.5 * eY + 0.5 * eZ;
                                     Vector3D Dx = eX; Dx.Normalize();
                                     Vector3D Dy = eY; Dy.Normalize();
@@ -710,9 +707,9 @@ namespace ChronoEngine_SwAddin
                                     asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
                                     asciitext += String.Format(bz, "{0}.GetCollisionModel().AddBox({1}, {2},{3},{4},chrono.ChVectorD({5},{6},{7}),mr)\n",
                                         bodyname, matname,
-                                        hsX * ChScale.L,
-                                        hsY * ChScale.L,
-                                        hsZ * ChScale.L,
+                                        eX.Length * ChScale.L,
+                                        eY.Length * ChScale.L,
+                                        eZ.Length * ChScale.L,
                                         vO.X * ChScale.L,
                                         vO.Y * ChScale.L,
                                         vO.Z * ChScale.L);
@@ -726,35 +723,9 @@ namespace ChronoEngine_SwAddin
                                     ConvertToCollisionShapes.SWbodyToCylinder(swBody, ref p1_l, ref p2_l, ref rad);
                                     Point3D p1 = SWTaskpaneHost.PointTransform(p1_l, ref collshape_subcomp_transform);
                                     Point3D p2 = SWTaskpaneHost.PointTransform(p2_l, ref collshape_subcomp_transform);
-                                    Vector3D Dy = p1 - p2; Dy.Normalize();
-                                    double hsY = (p1 - p2).Length * 0.5;
-                                    double hsZ = rad;
-                                    double hsX = rad;
-                                    Point3D vO = p1 + 0.5 * (p2 - p1);
-                                    Vector3D Dx = new Vector3D();
-                                    if (Dy.X < 0.9)
-                                    {
-                                        Vector3D Dtst = new Vector3D(1, 0, 0);
-                                        Dx = Vector3D.CrossProduct(Dtst, Dy);
-                                    }
-                                    else
-                                    {
-                                        Vector3D Dtst = new Vector3D(0, 1, 0);
-                                        Dx = Vector3D.CrossProduct(Dtst, Dy);
-                                    }
-                                    Vector3D Dz = Vector3D.CrossProduct(Dx, Dy);
-                                    asciitext += String.Format(bz, "mr = chrono.ChMatrix33D()\n");
-                                    asciitext += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
-                                    asciitext += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
-                                    asciitext += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
-                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1}, {2},{3},{4},chrono.ChVectorD({5},{6},{7}),mr)\n",
-                                        bodyname, matname,
-                                        hsX * ChScale.L,
-                                        hsZ * ChScale.L,
-                                        hsY * ChScale.L,
-                                        vO.X * ChScale.L,
-                                        vO.Y * ChScale.L,
-                                        vO.Z * ChScale.L); // note order hsX-Z-Y
+                                    asciitext += String.Format(bz, "p1 = chrono.ChVectorD({0}, {1}, {2})\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L);
+                                    asciitext += String.Format(bz, "p1 = chrono.ChVectorD({0}, {1}, {2})\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1}, {2}, p1, p2)\n", bodyname, matname, rad * ChScale.L);
                                     rbody_converted = true;
                                 }
 

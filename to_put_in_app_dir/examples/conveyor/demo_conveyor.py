@@ -173,13 +173,13 @@ body_floor.SetPos(chrono.ChVectorD(0, -1, 0 ))
 
 # Collision shape (shared by all particle clones)
 body_floor.GetCollisionModel().ClearModel()
-body_floor.GetCollisionModel().AddBox(pebble_material, 3, 1, 3) # hemi sizes
+body_floor.GetCollisionModel().AddBox(pebble_material, 6, 2, 6)
 body_floor.GetCollisionModel().BuildModel()
 body_floor.SetCollide(True)
 
 # Visualization shape (shared by all particle clones)
 body_floor_shape = chrono.ChBoxShape()
-body_floor_shape.GetBoxGeometry().Size = chrono.ChVectorD(3, 1, 3)
+body_floor_shape.GetBoxGeometry().Size = chrono.ChVectorD(6, 2, 6)
 body_floor_shape.SetTexture('concrete.jpg')
 body_floor.AddVisualShape(body_floor_shape)
 
