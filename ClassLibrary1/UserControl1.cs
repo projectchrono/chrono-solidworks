@@ -724,7 +724,7 @@ namespace ChronoEngine_SwAddin
                                     Point3D p1 = SWTaskpaneHost.PointTransform(p1_l, ref collshape_subcomp_transform);
                                     Point3D p2 = SWTaskpaneHost.PointTransform(p2_l, ref collshape_subcomp_transform);
                                     asciitext += String.Format(bz, "p1 = chrono.ChVectorD({0}, {1}, {2})\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L);
-                                    asciitext += String.Format(bz, "p1 = chrono.ChVectorD({0}, {1}, {2})\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
+                                    asciitext += String.Format(bz, "p2 = chrono.ChVectorD({0}, {1}, {2})\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
                                     asciitext += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1}, {2}, p1, p2)\n", bodyname, matname, rad * ChScale.L);
                                     rbody_converted = true;
                                 }

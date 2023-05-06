@@ -41,7 +41,7 @@ print(" 4) move this .py file in directory X and execute it.")
 
 m_timestep = 0.01
 m_length = 1.0
-m_visualization = "pov"
+m_visualization = "irrlicht"
 m_datapath = "C:/Program Files/chrono_solidworks/data/" 
 
 # For irrlicht fonts & background. Adjust to your path
@@ -268,7 +268,7 @@ if m_visualization == "irrlicht":
 
     # Create the Irrlicht visualization
     vis = chronoirr.ChVisualSystemIrrlicht()
-    my_system.SetVisualSystem(vis)
+    vis.AttachSystem(my_system)
     vis.SetWindowSize(1024,768)
     vis.SetWindowTitle('Test')
     vis.Initialize()
@@ -287,7 +287,7 @@ if m_visualization == "irrlicht":
     # Simulation loop
     while vis.Run():
         vis.BeginScene()
-        vis.DrawAll()
+        vis.Render()
         vis.EndScene()
         my_system.DoStepDynamics(m_timestep)
 

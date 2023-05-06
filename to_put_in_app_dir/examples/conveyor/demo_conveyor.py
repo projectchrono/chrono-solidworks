@@ -111,7 +111,7 @@ inertia_pebble = (2./5.)*mass_pebble*(pow((diameter_pebble*0.5),2))
 
 
 
-pebbles = chrono.ChParticlesClones()
+pebbles = chrono.ChParticleCloud()
 
 pebbles.SetMass(mass_pebble)
 pebbles.SetInertiaXX(chrono.ChVectorD(inertia_pebble,inertia_pebble,inertia_pebble))
@@ -124,7 +124,7 @@ pebbles.SetCollide(True)
 pebbles.AddParticle(chrono.ChCoordsysD()) # at least one particle or Irrlicht crashes
 
 pebbles_shape = chrono.ChSphereShape()
-pebbles_shape.GetSphereGeometry().rad = diameter_pebble/2.
+pebbles_shape.GetGeometry().rad = diameter_pebble/2.
 pebbles.AddVisualShape(pebbles_shape)
 
 my_system.Add(pebbles)
@@ -179,7 +179,7 @@ body_floor.SetCollide(True)
 
 # Visualization shape (shared by all particle clones)
 body_floor_shape = chrono.ChBoxShape()
-body_floor_shape.GetBoxGeometry().Size = chrono.ChVectorD(6, 2, 6)
+body_floor_shape.GetGeometry().Size = chrono.ChVectorD(6, 2, 6)
 body_floor_shape.SetTexture('concrete.jpg')
 body_floor.AddVisualShape(body_floor_shape)
 
@@ -192,7 +192,7 @@ if True: # m_visualization == "irrlicht":
 
     # Create the Irrlicht visualization
     vis = chronoirr.ChVisualSystemIrrlicht()
-    my_system.SetVisualSystem(vis)
+    vis.AttachSystem(my_system)
     vis.SetWindowSize(1024,768)
     vis.SetWindowTitle('Conveyor')
     vis.Initialize()
@@ -211,7 +211,7 @@ if True: # m_visualization == "irrlicht":
     # Simulation loop
     while vis.Run():
         vis.BeginScene()
-        vis.DrawAll()
+        vis.Render()
         vis.EndScene()
         my_system.DoStepDynamics(m_timestep)
 
