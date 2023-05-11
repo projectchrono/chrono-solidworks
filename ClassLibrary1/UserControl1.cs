@@ -220,7 +220,7 @@ namespace ChronoEngine_SwAddin
             asciitext += "import pychrono as chrono \n";
             asciitext += "import builtins \n\n";
 
-            asciitext += "# some global settings: \n" +
+            asciitext += "# Some global settings: \n" +
                          "sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + "\n" +
                          "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ")\n" +
                          "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)this.numeric_margin.Value * ChScale.L).ToString(bz) + ")\n" +
@@ -233,7 +233,7 @@ namespace ChronoEngine_SwAddin
 
             asciitext += "exported_items = [] \n\n";
 
-            asciitext += "body_0= chrono.ChBodyAuxRef()\n" +
+            asciitext += "body_0 = chrono.ChBodyAuxRef()\n" +
                          "body_0.SetName('ground')\n" +
                          "body_0.SetBodyFixed(True)\n" +
                          "exported_items.append(body_0)\n\n";
@@ -269,6 +269,8 @@ namespace ChronoEngine_SwAddin
                 PythonTraverseFeatures_for_markers(swFeat, 1, ref asciitext, 0, roottrasf);
 
             }
+
+            System.Windows.Forms.MessageBox.Show("Export to Python completed.");
 
             if (this.swProgress != null)
                 this.swProgress.End();
@@ -825,7 +827,7 @@ namespace ChronoEngine_SwAddin
 
             if (nLevel > 1)
                 if (nbody == -1)
-                    if (!swComp.IsSuppressed())
+                    if (!swComp.IsSuppressed()) // skip body if marked as 'suppressed'
                     {
                         if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
                         {
@@ -853,7 +855,7 @@ namespace ChronoEngine_SwAddin
 
                             // Write create body
                             asciitext += "# Rigid body part\n";
-                            asciitext += bodyname + "= chrono.ChBodyAuxRef()" + "\n";
+                            asciitext += bodyname + " = chrono.ChBodyAuxRef()" + "\n";
 
                             // Write name
                             asciitext += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
