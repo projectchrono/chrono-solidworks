@@ -368,15 +368,25 @@ namespace ChronoEngine_SwAddin
                         //***TO DO*** cases of distance line-vs-line and line-vs-vertex and vert-vert.
                         //           Those will require another .cpp ChLinkMate specialized class(es).
 
-                        if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
-                            do_parallel_flip = true;
-
                         // Get the imposed distance value, in SI units
                         string confnames = "";
                         do_distance_val = swMate.DisplayDimension.GetDimension2(0).IGetSystemValue3((int)swInConfigurationOpts_e.swThisConfiguration, 0, ref confnames);
 
-                        if (swMate.Flipped)
-                            do_distance_val = -do_distance_val;
+                        // Get aligment and flipped properties
+                        int alignment = swMate.Alignment;
+                        bool isflipped = swMate.Flipped;
+
+                        if (swMate.Alignment == (int)swMateAlign_e.swMateAlignALIGNED)
+                        {
+                            if (isflipped)
+                                do_distance_val = -do_distance_val;
+                        }
+                        else if (alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
+                        {
+                            do_parallel_flip = true;
+                            if (!isflipped)
+                                do_distance_val = -do_distance_val;
+                        }
                     }
 
                     //// 
