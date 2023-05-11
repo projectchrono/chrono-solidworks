@@ -825,155 +825,157 @@ namespace ChronoEngine_SwAddin
 
             if (nLevel > 1)
                 if (nbody == -1)
-                    if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) ||
-                        (vmyChildComp.Length == 0))
+                    if (!swComp.IsSuppressed())
                     {
-                        // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
-
-                        found_chbody_equivalent = true;
-
-                        this.num_comp++;
-
-                        nbody = this.num_comp;  // mark the rest of recursion as 'n-th body found'
-
-                        if (this.swProgress != null)
+                        if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
                         {
-                            this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
-                            this.swProgress.UpdateProgress(this.num_comp % 5);
-                        }
+                            // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
 
-                        // fetch SW attribute with Chrono parameters
-                        SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+                            found_chbody_equivalent = true;
 
-                        MathTransform chbodytransform = swComp.GetTotalTransform(true);
-                        double[] amatr;
-                        amatr = (double[])chbodytransform.ArrayData;
-                        string bodyname = "body_" + this.num_comp;
+                            this.num_comp++;
 
-                        // Write create body
-                        asciitext += "# Rigid body part\n";
-                        asciitext += bodyname + "= chrono.ChBodyAuxRef()" + "\n";
+                            nbody = this.num_comp;  // mark the rest of recursion as 'n-th body found'
 
-                        // Write name
-                        asciitext += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
-
-                        // Write position
-                        asciitext += bodyname + ".SetPos(chrono.ChVectorD("
-                                   + (amatr[9] * ChScale.L).ToString("g", bz) + ","
-                                   + (amatr[10] * ChScale.L).ToString("g", bz) + ","
-                                   + (amatr[11] * ChScale.L).ToString("g", bz) + "))" + "\n";
-
-                        // Write rotation
-                        double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
-                        asciitext += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n",
-                                   bodyname, quat[0], quat[1], quat[2], quat[3]);
-
-                        // Compute mass
-
-                        int nvalid_bodies = 0;
-                        PythonTraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
-
-                        int addedb = 0;
-                        object[] bodies_nocollshapes = new object[nvalid_bodies];
-                        PythonTraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
-
-                        MassProperty swMass;
-                        swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
-                        bool boolstatus = false;
-                        boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
-                        swMass.SetCoordinateSystem(chbodytransform);
-                        swMass.UseSystemUnits = true;
-                        //note: do not set here the COG-to-REF position because here SW express it in absolute coords
-                        // double cogX = ((double[])swMass.CenterOfMass)[0];
-                        // double cogY = ((double[])swMass.CenterOfMass)[1];
-                        // double cogZ = ((double[])swMass.CenterOfMass)[2];
-                        double mass = swMass.Mass;
-                        double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
-                        double Ixx = Itensor[0];
-                        double Iyy = Itensor[4];
-                        double Izz = Itensor[8];
-                        double Ixy = Itensor[1];
-                        double Izx = Itensor[2];
-                        double Iyz = Itensor[5];
-
-                        MassProperty swMassb;
-                        swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
-                        bool boolstatusb = false;
-                        boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
-                        swMassb.UseSystemUnits = true;
-                        double cogXb = ((double[])swMassb.CenterOfMass)[0];
-                        double cogYb = ((double[])swMassb.CenterOfMass)[1];
-                        double cogZb = ((double[])swMassb.CenterOfMass)[2];
-
-                        asciitext += String.Format(bz, "{0}.SetMass({1:g})\n",
-                                   bodyname,
-                                   mass * ChScale.M);
-
-                        // Write inertia tensor 
-                        asciitext += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
-                                   bodyname,
-                                   Ixx * ChScale.M * ChScale.L * ChScale.L,
-                                   Iyy * ChScale.M * ChScale.L * ChScale.L,
-                                   Izz * ChScale.M * ChScale.L * ChScale.L);
-                        // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                        asciitext += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
-                                   bodyname,
-                                   -Ixy * ChScale.M * ChScale.L * ChScale.L,
-                                   -Izx * ChScale.M * ChScale.L * ChScale.L,
-                                   -Iyz * ChScale.M * ChScale.L * ChScale.L);
-
-                        // Write the position of the COG respect to the REF
-                        asciitext += String.Format(bz, "{0}.SetFrame_COG_to_REF(chrono.ChFrameD(chrono.ChVectorD({1:g},{2:g},{3:g}),chrono.ChQuaternionD(1,0,0,0)))\n",
-                                    bodyname,
-                                    cogXb * ChScale.L,
-                                    cogYb * ChScale.L,
-                                    cogZb * ChScale.L);
-
-                        // Write 'fixed' state
-                        if (swComp.IsFixed())
-                            asciitext += String.Format(bz, "{0}.SetBodyFixed(True)\n", bodyname);
-
-
-                        // Write shapes (saving also Wavefront files .obj)
-                        if (this.checkBox_surfaces.Checked)
-                        {
-                            int nvisshape = 0;
-
-                            if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
-                                PythonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);
-                        }
-
-                        // Write markers (SW coordsystems) contained in this component or subcomponents
-                        // if any.
-                        PythonTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);
-
-                        // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
-                        // if any.
-                        bool param_collide = true;
-                        if (myattr != null)
-                            param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
-
-                        if (param_collide)
-                        {
-                            bool found_collisionshapes = false;
-                            int ncollshapes = 0;
-
-                            PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
-                            if (found_collisionshapes)
+                            if (this.swProgress != null)
                             {
-                                asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
-                                asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
+                                this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
+                                this.swProgress.UpdateProgress(this.num_comp % 5);
                             }
-                        }
 
-                        // Insert to a list of exported items
-                        asciitext += String.Format(bz, "\n" + "exported_items.append({0})\n", bodyname);
+                            // fetch SW attribute with Chrono parameters
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
 
-                        // End writing body in Python-
-                        asciitext += "\n\n\n";
+                            MathTransform chbodytransform = swComp.GetTotalTransform(true);
+                            double[] amatr;
+                            amatr = (double[])chbodytransform.ArrayData;
+                            string bodyname = "body_" + this.num_comp;
+
+                            // Write create body
+                            asciitext += "# Rigid body part\n";
+                            asciitext += bodyname + "= chrono.ChBodyAuxRef()" + "\n";
+
+                            // Write name
+                            asciitext += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
+
+                            // Write position
+                            asciitext += bodyname + ".SetPos(chrono.ChVectorD("
+                                       + (amatr[9] * ChScale.L).ToString("g", bz) + ","
+                                       + (amatr[10] * ChScale.L).ToString("g", bz) + ","
+                                       + (amatr[11] * ChScale.L).ToString("g", bz) + "))" + "\n";
+
+                            // Write rotation
+                            double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
+                            asciitext += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n",
+                                       bodyname, quat[0], quat[1], quat[2], quat[3]);
+
+                            // Compute mass
+
+                            int nvalid_bodies = 0;
+                            PythonTraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
+
+                            int addedb = 0;
+                            object[] bodies_nocollshapes = new object[nvalid_bodies];
+                            PythonTraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
+
+                            MassProperty swMass;
+                            swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                            bool boolstatus = false;
+                            boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
+                            swMass.SetCoordinateSystem(chbodytransform);
+                            swMass.UseSystemUnits = true;
+                            //note: do not set here the COG-to-REF position because here SW express it in absolute coords
+                            // double cogX = ((double[])swMass.CenterOfMass)[0];
+                            // double cogY = ((double[])swMass.CenterOfMass)[1];
+                            // double cogZ = ((double[])swMass.CenterOfMass)[2];
+                            double mass = swMass.Mass;
+                            double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
+                            double Ixx = Itensor[0];
+                            double Iyy = Itensor[4];
+                            double Izz = Itensor[8];
+                            double Ixy = Itensor[1];
+                            double Izx = Itensor[2];
+                            double Iyz = Itensor[5];
+
+                            MassProperty swMassb;
+                            swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                            bool boolstatusb = false;
+                            boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
+                            swMassb.UseSystemUnits = true;
+                            double cogXb = ((double[])swMassb.CenterOfMass)[0];
+                            double cogYb = ((double[])swMassb.CenterOfMass)[1];
+                            double cogZb = ((double[])swMassb.CenterOfMass)[2];
+
+                            asciitext += String.Format(bz, "{0}.SetMass({1:g})\n",
+                                       bodyname,
+                                       mass * ChScale.M);
+
+                            // Write inertia tensor 
+                            asciitext += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
+                                       bodyname,
+                                       Ixx * ChScale.M * ChScale.L * ChScale.L,
+                                       Iyy * ChScale.M * ChScale.L * ChScale.L,
+                                       Izz * ChScale.M * ChScale.L * ChScale.L);
+                            // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
+                            asciitext += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
+                                       bodyname,
+                                       -Ixy * ChScale.M * ChScale.L * ChScale.L,
+                                       -Izx * ChScale.M * ChScale.L * ChScale.L,
+                                       -Iyz * ChScale.M * ChScale.L * ChScale.L);
+
+                            // Write the position of the COG respect to the REF
+                            asciitext += String.Format(bz, "{0}.SetFrame_COG_to_REF(chrono.ChFrameD(chrono.ChVectorD({1:g},{2:g},{3:g}),chrono.ChQuaternionD(1,0,0,0)))\n",
+                                        bodyname,
+                                        cogXb * ChScale.L,
+                                        cogYb * ChScale.L,
+                                        cogZb * ChScale.L);
+
+                            // Write 'fixed' state
+                            if (swComp.IsFixed())
+                                asciitext += String.Format(bz, "{0}.SetBodyFixed(True)\n", bodyname);
 
 
-                    } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+                            // Write shapes (saving also Wavefront files .obj)
+                            if (this.checkBox_surfaces.Checked)
+                            {
+                                int nvisshape = 0;
+
+                                if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                                    PythonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);
+                            }
+
+                            // Write markers (SW coordsystems) contained in this component or subcomponents
+                            // if any.
+                            PythonTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);
+
+                            // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
+                            // if any.
+                            bool param_collide = true;
+                            if (myattr != null)
+                                param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
+
+                            if (param_collide)
+                            {
+                                bool found_collisionshapes = false;
+                                int ncollshapes = 0;
+
+                                PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
+                                if (found_collisionshapes)
+                                {
+                                    asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
+                                    asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
+                                }
+                            }
+
+                            // Insert to a list of exported items
+                            asciitext += String.Format(bz, "\n" + "exported_items.append({0})\n", bodyname);
+
+                            // End writing body in Python-
+                            asciitext += "\n\n\n";
+
+
+                        } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+                    }
 
 
             // Things to do also for sub-components of 'non flexible' assemblies: 
