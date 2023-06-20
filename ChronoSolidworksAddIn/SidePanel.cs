@@ -332,7 +332,6 @@ namespace ChronoEngine_SwAddin
             _object_ID_used = 0;
 
 
-
             //asciitext = "# PyChrono script generated from SolidWorks using Chrono::SolidWorks add-in \n" +
             //            "# Assembly: " + swModel.GetPathName() + "\n\n\n";
 
@@ -374,39 +373,39 @@ namespace ChronoEngine_SwAddin
                 };
                 ChSystemBodylistArray.Add(ChBodyGroundNode);
 
-                JsonTraverseComponent_for_ChBody(swRootComp, 1, ref ChSystemBodylistArray);
+                //JsonTraverseComponent_for_ChBody(swRootComp, 1, ref ChSystemBodylistArray);
 
                 ChSystemNode["bodies"] = ChSystemBodylistArray;
 
                 System.Windows.Forms.MessageBox.Show("Bodies _object_ID_used: " + _object_ID_used.ToString());
 
 
-                // Write down all constraints
+                //// Write down all constraints
 
-                MathTransform roottrasf = swRootComp.GetTotalTransform(true);
-                if (roottrasf == null)
-                {
-                    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
-                    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
-                    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
-                }
+                //MathTransform roottrasf = swRootComp.GetTotalTransform(true);
+                //if (roottrasf == null)
+                //{
+                //    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
+                //    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
+                //    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
+                //}
 
-                var ChSystemLinklistArray = new JsonArray();
+                //var ChSystemLinklistArray = new JsonArray();
 
-                Feature swFeat = (Feature)swModel.FirstFeature();
-                JsonTraverseFeatures_for_links(swFeat, 1, ref ChSystemLinklistArray, ref roottrasf, ref swRootComp);
-                ChSystemNode["links"] = ChSystemLinklistArray;
+                //Feature swFeat = (Feature)swModel.FirstFeature();
+                //JsonTraverseFeatures_for_links(swFeat, 1, ref ChSystemLinklistArray, ref roottrasf, ref swRootComp);
+                //ChSystemNode["links"] = ChSystemLinklistArray;
 
-                JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
+                //JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
 
-                System.Windows.Forms.MessageBox.Show("Links _object_ID_used: " + _object_ID_used.ToString());
+                //System.Windows.Forms.MessageBox.Show("Links _object_ID_used: " + _object_ID_used.ToString());
 
 
 
-                //// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
+                ////// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
 
-                swFeat = (Feature)swModel.FirstFeature();
-                JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
+                //swFeat = (Feature)swModel.FirstFeature();
+                //JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
 
             }
 
@@ -885,7 +884,7 @@ namespace ChronoEngine_SwAddin
                     ["1"] = new JsonObject // TODO: _object_ID
                     {
                         ["_type"] = "ChModelFileShape",
-                        ["filename"] = "shapes_dir" + shapename + ".obj"
+                        ["filename"] = this.save_dir_shapes + shapename + ".obj"
                     },
                     ["2"] = new JsonObject // TODO: _object_ID
                     {

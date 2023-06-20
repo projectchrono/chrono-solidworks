@@ -14,11 +14,7 @@ using SolidWorksTools;
 using ChronoEngineAddin;
 
 // for Json Export
-// for JSON export
-using System.Text.Json;
 using System.Text.Json.Nodes;
-using static System.Windows.Forms.AxHost;
-using System.Xml.Linq;
 
 
 namespace ChronoEngine_SwAddin
