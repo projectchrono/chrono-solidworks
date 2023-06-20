@@ -25,8 +25,9 @@ using Microsoft.Win32;
 
 
 // for JSON export
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 // TODO: DARIOM replace PythonXXX and JsonXXX functions with overloaded variants with samename if possible
 
@@ -158,31 +159,33 @@ namespace ChronoEngine_SwAddin
                 // This will scan the low level hierarchy of the assembly
                 // and its mating constraints and create the proper Chrono::Engine
                 // links.
-                string asciitext = "";
 
 
                 if ((sender as Button).Name.ToString() == "button_ExportToPython")
                 {
+                    string asciitext = "";
+
                     this.ExportToPython(ref asciitext);
+
+                    byte[] byteArray = Encoding.ASCII.GetBytes(asciitext);
+                    MemoryStream stream = new MemoryStream(byteArray);
+
+                    Stream fileStream;
+                    fileStream = SaveFileDialog1.OpenFile();
+                    stream.Position = 0;
+                    stream.WriteTo(fileStream);
+                    fileStream.Close();
                 }
                 else if ((sender as Button).Name.ToString() == "button_ExportToJson")
                 {
-                    var ChSystemNode = new JsonObject {};
+                    var ChSystemNode = new JObject();
                     this.ExportToJson(ref ChSystemNode);
 
-                    var options = new JsonSerializerOptions { WriteIndented = true };
-                    asciitext = ChSystemNode.ToJsonString(options);
+                    File.WriteAllText(SaveFileDialog1.FileName, ChSystemNode.ToString(Formatting.Indented));
 
                 }
 
-                byte[] byteArray = Encoding.ASCII.GetBytes(asciitext);
-                MemoryStream stream = new MemoryStream(byteArray);
 
-                Stream fileStream;
-                fileStream = SaveFileDialog1.OpenFile();
-                stream.Position = 0;
-                stream.WriteTo(fileStream);
-                fileStream.Close();
 
 
                 if (this.checkBox_savetest.Checked && sender.ToString() == "button_ExportToPython") // TODO: Json cannot handle collisions yet
@@ -305,7 +308,7 @@ namespace ChronoEngine_SwAddin
         }
 
 
-        public void ExportToJson(ref JsonObject ChSystemNode)
+        public void ExportToJson(ref JObject ChSystemNode)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
 
@@ -361,51 +364,52 @@ namespace ChronoEngine_SwAddin
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts
-                var ChSystemBodylistArray = new JsonArray();
+                var ChSystemBodylistArray = new JArray();
 
                 // Add world-fixed object
-                var ChBodyGroundNode = new JsonObject
-                {
-                    ["_type"] = "ChBodyAuxRef",
-                    ["m_name"] = "WORLDFIXED",
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_c_SetBodyFixed"] = true
-                };
+                var ChBodyGroundNode = new JObject
+                (
+                    new JProperty("_type", "ChBodyAuxRef"),
+                    new JProperty("m_name", "WORLDFIXED"),
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_c_SetBodyFixed", true)
+                );
+
                 ChSystemBodylistArray.Add(ChBodyGroundNode);
 
                 //JsonTraverseComponent_for_ChBody(swRootComp, 1, ref ChSystemBodylistArray);
 
-                ChSystemNode["bodies"] = ChSystemBodylistArray;
+                ChSystemNode.Add("bodies", ChSystemBodylistArray);
 
                 System.Windows.Forms.MessageBox.Show("Bodies _object_ID_used: " + _object_ID_used.ToString());
 
 
-                //// Write down all constraints
+                // Write down all constraints
 
-                //MathTransform roottrasf = swRootComp.GetTotalTransform(true);
-                //if (roottrasf == null)
-                //{
-                //    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
-                //    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
-                //    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
-                //}
+                MathTransform roottrasf = swRootComp.GetTotalTransform(true);
+                if (roottrasf == null)
+                {
+                    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
+                    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
+                    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
+                }
 
-                //var ChSystemLinklistArray = new JsonArray();
+                var ChSystemLinklistArray = new JArray();
 
-                //Feature swFeat = (Feature)swModel.FirstFeature();
-                //JsonTraverseFeatures_for_links(swFeat, 1, ref ChSystemLinklistArray, ref roottrasf, ref swRootComp);
-                //ChSystemNode["links"] = ChSystemLinklistArray;
+                Feature swFeat = (Feature)swModel.FirstFeature();
+                JsonTraverseFeatures_for_links(swFeat, 1, ref ChSystemLinklistArray, ref roottrasf, ref swRootComp);
+                ChSystemNode.Add("links", ChSystemLinklistArray);
 
-                //JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
+                JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
 
-                //System.Windows.Forms.MessageBox.Show("Links _object_ID_used: " + _object_ID_used.ToString());
+                System.Windows.Forms.MessageBox.Show("Links _object_ID_used: " + _object_ID_used.ToString());
 
 
 
-                ////// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
+                //// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
 
-                //swFeat = (Feature)swModel.FirstFeature();
-                //JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
+                swFeat = (Feature)swModel.FirstFeature();
+                JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
 
             }
 
@@ -479,7 +483,7 @@ namespace ChronoEngine_SwAddin
 
         }
 
-        public void JsonTraverseComponent_for_links(Component2 swComp, long nLevel, ref JsonArray ChSystemLinklistArray, ref MathTransform roottrasf)
+        public void JsonTraverseComponent_for_links(Component2 swComp, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf)
         {
             // Scan assembly features and save mating info
 
@@ -505,7 +509,7 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void JsonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref JsonArray ChSystemLinklistArray, ref MathTransform roottrasf, ref Component2 assemblyofmates)
+        public void JsonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf, ref Component2 assemblyofmates)
         {
             Feature swSubFeat;
 
@@ -601,7 +605,7 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void JsonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref JsonObject ChBodyAuxRefNode)
+        public void JsonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode)
         {
             // Look if component contains markers
             Feature swFeat = (Feature)swComp.FirstFeature();
@@ -621,21 +625,20 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void JsonTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref JsonObject ChBodyAuxRefNode, MathTransform swCompTotalTrasf)
+        public void JsonTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref JObject ChBodyAuxRefNode, MathTransform swCompTotalTrasf)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
 
             int nmarker = 0;
 
-            var marklist = new JsonArray();
+            var marklist = new JArray();
 
             while ((swFeat != null))
             {
                 // asciitext += "# feature: " + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
 
 
-                // TODO: DARIOM are markers attached to the proper body and in the proper way? What if multiple markers are attached?
-                // Export markers, if any (as coordinate systems)
+                // TODO: DARIOM are markers attached to the proper body and in the proper way?
                 if (swFeat.GetTypeName2() == "CoordSys")
                 {
                     nmarker++;
@@ -648,19 +651,22 @@ namespace ChronoEngine_SwAddin
                     double[] quat = GetQuaternionFromMatrix(ref tr_abs);
                     double[] amatr = (double[])tr_abs.ArrayData;
 
-                    var marklist_node = new JsonObject { // TODO: missing _object_ID?
-                        ["m_name"] = swFeat.Name,
-                        ["_c_Impose_Abs_Coord__ChCoordsys__ChVector"] = new JsonArray(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
-                        ["_c_Impose_Abs_Coord__ChCoordsys__ChQuaternion"] = new JsonArray(quat[0], quat[1], quat[2], quat[3]),
+                    var marklist_node = new JObject { // TODO: missing _object_ID?
+                        new JProperty("m_name", swFeat.Name),
+                        new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChVector", new JArray(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
+                        new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChQuaternion", new JArray(quat[0], quat[1], quat[2], quat[3]))
                     };
-                                    
+
+                    marklist.Add(marklist_node);
+
+
                 }
 
 
                 swFeat = (Feature)swFeat.GetNextFeature();
             }
 
-            ChBodyAuxRefNode["_c_AddMarker"] = marklist;
+            ChBodyAuxRefNode.Add("_c_AddMarker", marklist);
 
         }
 
@@ -821,7 +827,7 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        public void JsonTraverseComponent_for_visualizationshapes(Component2 swComp, long nLevel, ref JsonObject ChBodyAuxRefNode, ref int nvisshape, Component2 chbody_comp)
+        public void JsonTraverseComponent_for_visualizationshapes(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode, ref int nvisshape, Component2 chbody_comp)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] bodies;
@@ -878,33 +884,29 @@ namespace ChronoEngine_SwAddin
                 double[] amatr = (double[])relframe_shape.ArrayData;
                 double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-
-                var m_shapes_tuple = new JsonObject
-                {
-                    ["1"] = new JsonObject // TODO: _object_ID
-                    {
-                        ["_type"] = "ChModelFileShape",
-                        ["filename"] = this.save_dir_shapes + shapename + ".obj"
-                    },
-                    ["2"] = new JsonObject // TODO: _object_ID
-                    {
-                        ["_type"] = "ChFrame", // TODO: in the export it seems that the type is not exported
-                        ["_c_SetPos"] = new JsonArray(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
-                        ["_c_SetRot"] = new JsonArray(quat[0], quat[1], quat[2], quat[3])
-                    }
-                };
-
+                var m_shapes_tuple_1 = new JObject
+                (
+                    new JProperty("_type", "ChModelFileShape"),                    new JProperty("filename", this.save_dir_shapes + shapename + ".obj")                );
                 if (vMatProperties != null && vMatProperties[0] != -1)
-                    m_shapes_tuple["1"]["_c_SetColor"] = new JsonArray(vMatProperties[0], vMatProperties[1], vMatProperties[2]);
+                    m_shapes_tuple_1.Add("_c_SetColor", new JArray(vMatProperties[0], vMatProperties[1], vMatProperties[2]));
+
+                var m_shapes_tuple = new JObject
+                (
+                    // TODO: _object_ID
+                    new JProperty("1", m_shapes_tuple_1),
+                    new JProperty("2", new JObject // TODO: _object_ID
+                    (
+                        new JProperty("_type", "ChFrame"), // TODO: in the export it seems that the type is not exported                        new JProperty("_c_SetPos", new JArray(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),                        new JProperty("_c_SetRot", new JArray(quat[0], quat[1], quat[2], quat[3]))                    ))
+                );
 
 
                 // TODO: missing _object_ID!!!
-                ChBodyAuxRefNode["visual_model"] = new JsonObject
-                {
-                    ["_type"] = "ChModelFileShape",
-                    ["filename"] = System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + ChBodyAuxRefNode["m_name"] + ".obj",
-                    ["_c_AddVisualShape"] = new JsonArray(m_shapes_tuple) // shapes needs to be added through AddVisualShape
-                };
+                ChBodyAuxRefNode.Add("visual_model", new JObject
+                (
+                    new JProperty("_type", "ChModelFileShape"),
+                    new JProperty("filename", System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + ChBodyAuxRefNode["m_name"] + ".obj"),
+                    new JProperty("_c_AddVisualShape", new JArray(m_shapes_tuple)) // shapes needs to be added through AddVisualShape
+                ));
             }
 
 
@@ -1379,7 +1381,7 @@ namespace ChronoEngine_SwAddin
         }
 
 
-        public void JsonTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref JsonArray ChSystemBodylistArray)
+        public void JsonTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref JArray ChSystemBodylistArray)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] vmyChildComp = (object[])swComp.GetChildren();
@@ -1408,13 +1410,13 @@ namespace ChronoEngine_SwAddin
 
                 double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
 
-                var ChBodyAuxRefNode = new JsonObject
+                var ChBodyAuxRefNode = new JObject
                 {
-                    ["_type"] = "ChBodyAuxRef",
-                    ["m_name"] = swComp.Name2,
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_c_SetPos"] = new JsonArray(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)
-                    ["_c_SetRot"] = new JsonArray(quat[0], quat[1], quat[2], quat[3])
+                    new JProperty("_type", "ChBodyAuxRef"),
+                    new JProperty("m_name", swComp.Name2),
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_c_SetPos", new JArray(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
+                    new JProperty("_c_SetRot", new JArray(quat[0], quat[1], quat[2], quat[3]))
                 };
 
                 // Compute mass
@@ -1454,22 +1456,22 @@ namespace ChronoEngine_SwAddin
                 double cogYb = ((double[])swMassb.CenterOfMass)[1];
                 double cogZb = ((double[])swMassb.CenterOfMass)[2];
 
-                ChBodyAuxRefNode["_c_SetMass"] = mass * ChScale.M;
-                ChBodyAuxRefNode["_c_SetInertiaXX"] = new JsonArray(
+                ChBodyAuxRefNode.Add("_c_SetMass", mass * ChScale.M);
+                ChBodyAuxRefNode.Add("_c_SetInertiaXX", new JArray(
                                Ixx * ChScale.M * ChScale.L * ChScale.L,
                                Iyy * ChScale.M * ChScale.L * ChScale.L,
-                               Izz * ChScale.M * ChScale.L * ChScale.L);
+                               Izz * ChScale.M * ChScale.L * ChScale.L));
                 //// Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                ChBodyAuxRefNode["_c_SetInertiaXY"] = new JsonArray(
+                ChBodyAuxRefNode.Add("_c_SetInertiaXY", new JArray(
                                -Ixy * ChScale.M * ChScale.L * ChScale.L,
                                -Izx * ChScale.M * ChScale.L * ChScale.L,
-                               -Iyz * ChScale.M * ChScale.L * ChScale.L);
+                               -Iyz * ChScale.M * ChScale.L * ChScale.L));
 
-                ChBodyAuxRefNode["_c_SetFrame_COG_to_REF__ChFrame__ChVector"] = new JsonArray(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L);
-                ChBodyAuxRefNode["_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion"] = new JsonArray(1, 0, 0, 0);
+                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChVector", new JArray(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L));
+                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion", new JArray(1, 0, 0, 0));
 
                 // Write 'fixed' state
-                ChBodyAuxRefNode["is_fixed"] = swComp.IsFixed() ? true: false;
+                ChBodyAuxRefNode.Add("is_fixed", swComp.IsFixed() ? true: false);
 
 
 

@@ -14,7 +14,7 @@ using SolidWorksTools;
 using ChronoEngineAddin;
 
 // for Json Export
-using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
 
 
 namespace ChronoEngine_SwAddin
@@ -59,7 +59,7 @@ namespace ChronoEngine_SwAddin
 
         public static bool ConvertMateToJson(
                                     in Feature swMateFeature,
-                                    ref JsonArray ChSystemLinklistArray,
+                                    ref JArray ChSystemLinklistArray,
                                     in ISldWorks mSWApplication,
                                     in Hashtable saved_parts,
                                     ref int _object_ID_used,
@@ -79,52 +79,37 @@ namespace ChronoEngine_SwAddin
             swModelDocExt = swModel.Extension;
 
 
-            CultureInfo bz = new CultureInfo("en-BZ");
-
             if (link_params.do_ChLinkMateXdistance)
             {
-                var link_node = new JsonObject
-                {
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_type"] = "ChLinkMateXdistance",
-                    ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_pos_are_relative"] = false
-                };
-
-                if (!link_params.swapAB_1)
-                {
-                    link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                    link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                    link_node["_c_Initialize_pt1"] = new JsonArray(
+                var link_node = new JObject
+                (
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_type", "ChLinkMateXdistance"),
+                    new JProperty("_c_Initialize_Body1",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                    ),
+                    new JProperty("_c_Initialize_Body2",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                    ),
+                    new JProperty("_c_Initialize_pos_are_relative", false),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
-                        link_params.cA.Z * ChScale.L);
-                        link_node["_c_Initialize_pt2"] = new JsonArray(
-                            link_params.cB.X * ChScale.L,
-                            link_params.cB.Y * ChScale.L,
-                            link_params.cB.Z * ChScale.L);
-                    link_node["_c_Initialize_dir2"] = new JsonArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-
-                }
-                else
-                {
-                    link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                    link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                    link_node["_c_Initialize_pt1"] = new JsonArray(
+                        link_params.cA.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
-                        link_params.cB.Z * ChScale.L);
-                    link_node["_c_Initialize_pt2"] = new JsonArray(
-                        link_params.cA.X * ChScale.L,
-                        link_params.cA.Y * ChScale.L,
-                        link_params.cA.Z * ChScale.L);
-                    link_node["_c_Initialize_dir2"] = new JsonArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-
-                }
-
-                link_node["_c_SetDistance"] = link_params.do_distance_val * ChScale.L * -1;
-                link_node["m_name"] = swMateFeature.Name;
+                        link_params.cB.Z * ChScale.L)
+                    ),
+                    new JProperty("_c_Initialize_dir2", !link_params.swapAB_1 ? new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z) : new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                    new JProperty("_c_SetDistance", link_params.do_distance_val * ChScale.L * -1),
+                    new JProperty("m_name", swMateFeature.Name)
+                );
 
                 ChSystemLinklistArray.Add(link_node);
             }
@@ -133,49 +118,39 @@ namespace ChronoEngine_SwAddin
             {
                 if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) > 0.98)
                 {
-                    var link_node = new JsonObject
-                    {
-                        ["_object_ID"] = ++_object_ID_used,
-                        ["_type"] = "ChLinkMateParallel",
-                        ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                        ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                        ["_c_Initialize_pos_are_relative"] = false
-                    };
 
-                    if (!link_params.swapAB_1)
-                    {
-                        link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                        link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                        link_node["_c_Initialize_pt1"] = new JsonArray(
+                    var link_node = new JObject
+                    (
+                        new JProperty("_object_ID", ++_object_ID_used),
+                        new JProperty("_type", "ChLinkMateParallel"),
+                        new JProperty("_c_Initialize_Body1",
+                            new JObject(
+                                new JProperty("_type", "ChBodyAuxRef"),
+                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                        ),
+                        new JProperty("_c_Initialize_Body2",
+                            new JObject(
+                                new JProperty("_type", "ChBodyAuxRef"),
+                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                        ),
+                        new JProperty("_c_Initialize_pos_are_relative", false),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
                             link_params.cA.X * ChScale.L,
                             link_params.cA.Y * ChScale.L,
-                            link_params.cA.Z * ChScale.L);
-                        link_node["_c_Initialize_pt2"] = new JsonArray(
+                            link_params.cA.Z * ChScale.L)
+                        ),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
                             link_params.cB.X * ChScale.L,
                             link_params.cB.Y * ChScale.L,
-                            link_params.cB.Z * ChScale.L);
-                        link_node["_c_Initialize_norm1"] = new JsonArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                        link_node["_c_Initialize_norm2"] = new JsonArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-                    }
-                    else
-                    {
-                        link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                        link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                        link_node["_c_Initialize_pt1"] = new JsonArray(
-                            link_params.cB.X * ChScale.L,
-                            link_params.cB.Y * ChScale.L,
-                            link_params.cB.Z * ChScale.L);
-                        link_node["_c_Initialize_pt2"] = new JsonArray(
-                            link_params.cA.X * ChScale.L,
-                            link_params.cA.Y * ChScale.L,
-                            link_params.cA.Z * ChScale.L);
-                        link_node["_c_Initialize_norm1"] = new JsonArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-                        link_node["_c_Initialize_norm2"] = new JsonArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    }
+                            link_params.cB.Z * ChScale.L)
+                        ),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
+                        new JProperty("m_name", swMateFeature.Name)
+                    );
 
                     if (link_params.do_parallel_flip)
-                        link_node["_c_SetFlipped"] = true;
-                    link_node["m_name"] = swMateFeature.Name;
+                        link_node.Add("_c_SetFlipped", true);
 
                     ChSystemLinklistArray.Add(link_node);
 
@@ -190,47 +165,35 @@ namespace ChronoEngine_SwAddin
             {
                 if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) < 0.02)
                 {
-                    var link_node = new JsonObject
-                    {
-                        ["_object_ID"] = ++_object_ID_used,
-                        ["_type"] = "ChLinkMateOrthogonal",
-                        ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                        ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                        ["_c_Initialize_pos_are_relative"] = false
-                    };
-
-                    if (!link_params.swapAB_1)
-                    {
-                        link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                        link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                        link_node["_c_Initialize_pt1"] = new JsonArray(
+                    var link_node = new JObject
+                    (
+                        new JProperty("_object_ID", ++_object_ID_used),
+                        new JProperty("_type", "ChLinkMateOrthogonal"),
+                        new JProperty("_c_Initialize_Body1",
+                            new JObject(
+                                new JProperty("_type", "ChBodyAuxRef"),
+                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                        ),
+                        new JProperty("_c_Initialize_Body2",
+                            new JObject(
+                                new JProperty("_type", "ChBodyAuxRef"),
+                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                        ),
+                        new JProperty("_c_Initialize_pos_are_relative", false),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
                             link_params.cA.X * ChScale.L,
                             link_params.cA.Y * ChScale.L,
-                            link_params.cA.Z * ChScale.L);
-                        link_node["_c_Initialize_pt2"] = new JsonArray(
+                            link_params.cA.Z * ChScale.L)
+                        ),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
                             link_params.cB.X * ChScale.L,
                             link_params.cB.Y * ChScale.L,
-                            link_params.cB.Z * ChScale.L);
-                        link_node["_c_Initialize_norm1"] = new JsonArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                        link_node["_c_Initialize_norm2"] = new JsonArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-                    }
-                    else
-                    {
-                        link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                        link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                        link_node["_c_Initialize_pt1"] = new JsonArray(
-                            link_params.cB.X * ChScale.L,
-                            link_params.cB.Y * ChScale.L,
-                            link_params.cB.Z * ChScale.L);
-                        link_node["_c_Initialize_pt2"] = new JsonArray(
-                            link_params.cA.X* ChScale.L,
-                            link_params.cA.Y* ChScale.L,
-                            link_params.cA.Z* ChScale.L);
-                        link_node["_c_Initialize_norm1"] = new JsonArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-                        link_node["_c_Initialize_norm2"] = new JsonArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    }
-
-                    link_node["m_name"] = swMateFeature.Name;
+                            link_params.cB.Z * ChScale.L)
+                        ),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
+                        new JProperty("m_name", swMateFeature.Name)
+                    );
 
                     ChSystemLinklistArray.Add(link_node);
 
@@ -243,45 +206,33 @@ namespace ChronoEngine_SwAddin
 
             if (link_params.do_ChLinkMateSpherical)
             {
-
-                var link_node = new JsonObject
-                {
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_type"] = "ChLinkMateSpherical",
-                    ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_pos_are_relative"] = false
-                };
-
-
-                if (!link_params.swapAB_1) // TODO: optimize writing
-                {
-                    link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                    link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                    link_node["_c_Initialize_pt1"] = new JsonArray(
+                var link_node = new JObject
+                (
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_type", "ChLinkMateSpherical"),
+                    new JProperty("_c_Initialize_Body1",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                    ),
+                    new JProperty("_c_Initialize_Body2",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                    ),
+                    new JProperty("_c_Initialize_pos_are_relative", false),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
-                        link_params.cA.Z * ChScale.L);
-                    link_node["_c_Initialize_pt2"] = new JsonArray(
+                        link_params.cA.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
-                        link_params.cB.Z * ChScale.L);
-                }
-                else
-                {
-                    link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                    link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                    link_node["_c_Initialize_pt1"] = new JsonArray(
-                        link_params.cB.X * ChScale.L,
-                        link_params.cB.Y * ChScale.L,
-                        link_params.cB.Z * ChScale.L);
-                    link_node["_c_Initialize_pt2"] = new JsonArray(
-                        link_params.cA.X * ChScale.L,
-                        link_params.cA.Y * ChScale.L,
-                        link_params.cA.Z * ChScale.L);
-                }
-
-                link_node["m_name"] = swMateFeature.Name;
+                        link_params.cB.Z * ChScale.L)
+                    ),
+                    new JProperty("m_name", swMateFeature.Name)
+                );
 
                 ChSystemLinklistArray.Add(link_node);
 
@@ -289,18 +240,6 @@ namespace ChronoEngine_SwAddin
 
             if (link_params.do_ChLinkMatePointLine)
             {
-                var link_node = new JsonObject
-                {
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_type"] = "ChLinkMateGeneric",
-                    ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_pos_are_relative"] = false
-                };
-
-
-                link_node["_c_SetConstrainedCoords"] = new JsonArray(false, true, true, false, false, false);
-
                 Vector3D dA_temp;
                 if (!link_params.entity_0_as_VERTEX)
                     dA_temp = link_params.dA;
@@ -314,38 +253,36 @@ namespace ChronoEngine_SwAddin
                     dB_temp = new Vector3D(0.0, 0.0, 0.0);
 
 
-                if (!link_params.swapAB_1) // TODO: optimize writing
-                {
-                    link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                    link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                    link_node["_c_Initialize_pt1"] = new JsonArray(
+                var link_node = new JObject
+                (
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_type", "ChLinkMateGeneric"),
+                    new JProperty("_c_SetConstrainedCoords", new JArray(false, true, true, false, false, false)),
+                    new JProperty("_c_Initialize_Body1",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                    ),
+                    new JProperty("_c_Initialize_Body2",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                    ),
+                    new JProperty("_c_Initialize_pos_are_relative", false),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
-                        link_params.cA.Z * ChScale.L);
-                    link_node["_c_Initialize_pt2"] = new JsonArray(
+                        link_params.cA.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
-                        link_params.cB.Z * ChScale.L);
-                    link_node["_c_Initialize_norm1"] = new JsonArray(dA_temp.X, dA_temp.Y, dA_temp.Z);
-                    link_node["_c_Initialize_norm2"] = new JsonArray(dB_temp.X, dB_temp.Y, dB_temp.Z);
-                }
-                else
-                {
-                    link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                    link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                    link_node["_c_Initialize_pt1"] = new JsonArray(
-                        link_params.cB.X * ChScale.L,
-                        link_params.cB.Y * ChScale.L,
-                        link_params.cB.Z * ChScale.L);
-                    link_node["_c_Initialize_pt2"] = new JsonArray(
-                        link_params.cA.X * ChScale.L,
-                        link_params.cA.Y * ChScale.L,
-                        link_params.cA.Z * ChScale.L);
-                    link_node["_c_Initialize_norm1"] = new JsonArray(dB_temp.X, dB_temp.Y, dB_temp.Z);
-                    link_node["_c_Initialize_norm2"] = new JsonArray(dA_temp.X, dA_temp.Y, dA_temp.Z);
-                }
-
-                link_node["m_name"] = swMateFeature.Name;
+                        link_params.cB.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", new JArray(dA_temp.X, dA_temp.Y, dA_temp.Z)),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", new JArray(dB_temp.X, dB_temp.Y, dB_temp.Z)),
+                    new JProperty("m_name", swMateFeature.Name)
+                );
 
                 ChSystemLinklistArray.Add(link_node);
 
@@ -363,73 +300,73 @@ namespace ChronoEngine_SwAddin
                     link_params.dB.Negate();
 
                 // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
-                var link_node = new JsonObject
-                {
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_type"] = "ChLinkMateCoaxial",
-                    ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_pos_are_relative"] = false
-                };
+                var link_node1 = new JObject
+                (
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_type", "ChLinkMateCoaxial"),
+                    new JProperty("_c_Initialize_Body1",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                    ),
+                    new JProperty("_c_Initialize_Body2",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                    ),
+                    new JProperty("_c_Initialize_pos_are_relative", false),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                        link_params.cA.X * ChScale.L,
+                        link_params.cA.Y * ChScale.L,
+                        link_params.cA.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                        link_params.cB.X * ChScale.L,
+                        link_params.cB.Y * ChScale.L,
+                        link_params.cB.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_dir1" : "_c_Initialize_dir2", new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_dir2" : "_c_Initialize_dir1", new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
+                    new JProperty("m_name", swMateFeature.Name + "_1")
+                );
 
-                link_node["_c_SetConstrainedCoords"] = new JsonArray(false, true, true, false, false, false);
-
-
-                link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref1);
-                link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref2);
-                link_node["_c_Initialize_pt1"] = new JsonArray(
-                    link_params.cA.X * ChScale.L,
-                    link_params.cA.Y * ChScale.L,
-                    link_params.cA.Z * ChScale.L);
-                link_node["_c_Initialize_pt2"] = new JsonArray(
-                    link_params.cB.X * ChScale.L,
-                    link_params.cB.Y * ChScale.L,
-                    link_params.cB.Z * ChScale.L);
-                link_node["_c_Initialize_dir1"] = new JsonArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                link_node["_c_Initialize_dir2"] = new JsonArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-
-                link_node["m_name"] = swMateFeature.Name + "_1";
-
-                ChSystemLinklistArray.Add(link_node);
+                ChSystemLinklistArray.Add(link_node1);
 
 
                 ////////////
                 ///
                 // TODO: DARIOM provide function CreateLink so that these two links can be interpreted as ChLinkMateCoaxial + ChLinkMateXdistance
                 // and the LinkParams struct can avoid duplicated entries 
+                var link_node2 = new JObject
+                (
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_type", "ChLinkMateXdistance"),
+                    new JProperty("_c_Initialize_Body1",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref3 : link_params.ref4)))
+                    ),
+                    new JProperty("_c_Initialize_Body2",
+                        new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref4 : link_params.ref3)))
+                    ),
+                    new JProperty("_c_Initialize_pos_are_relative", false),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                        link_params.cC.X * ChScale.L,
+                        link_params.cC.Y * ChScale.L,
+                        link_params.cC.Z * ChScale.L)
+                    ),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                        link_params.cD.X * ChScale.L,
+                        link_params.cD.Y * ChScale.L,
+                        link_params.cD.Z * ChScale.L)
+                    ),
+                    new JProperty("_c_Initialize_dir2", link_params.entity_2_as_VERTEX ? new JArray(link_params.dC.X, link_params.dC.Y, link_params.dC.Z) : new JArray(link_params.dD.X, link_params.dD.Y, link_params.dD.Z)),
+                    new JProperty("m_name", swMateFeature.Name + "_2")
+                );
 
-                link_node = new JsonObject
-                {
-                    ["_object_ID"] = ++_object_ID_used,
-                    ["_type"] = "ChLinkMateXdistance",
-                    ["_c_Initialize_Body1"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_Body2"] = new JsonObject { ["_type"] = "ChBodyAuxRef" },
-                    ["_c_Initialize_pos_are_relative"] = false
-                };
-
-                link_node["_c_Initialize_Body1"]["_reference_ID"] = Convert.ToInt64(link_params.ref3);
-                link_node["_c_Initialize_Body2"]["_reference_ID"] = Convert.ToInt64(link_params.ref4);
-                link_node["_c_Initialize_pt1"] = new JsonArray(
-                    link_params.cC.X * ChScale.L,
-                    link_params.cC.Y * ChScale.L,
-                    link_params.cC.Z * ChScale.L);
-                link_node["_c_Initialize_pt2"] = new JsonArray(
-                    link_params.cD.X * ChScale.L,
-                    link_params.cD.Y * ChScale.L,
-                    link_params.cD.Z * ChScale.L);
-                if (link_params.entity_2_as_VERTEX)
-                {
-                    link_node["_c_Initialize_dir2"] = new JsonArray(link_params.dC.X, link_params.dC.Y, link_params.dC.Z);
-                }
-                else
-                {
-                    link_node["_c_Initialize_dir2"] = new JsonArray(link_params.dD.X, link_params.dD.Y, link_params.dD.Z);
-                }
-
-                //link_node["_c_SetDistance"] = link_params.do_distance_val * ChScale.L * -1;
-                link_node["m_name"] = swMateFeature.Name + "_2";
-
-                ChSystemLinklistArray.Add(link_node);
+                ChSystemLinklistArray.Add(link_node2);
 
             }
 
