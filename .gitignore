@@ -13,7 +13,7 @@
 
 # User settings of solution
 *.suo
-decomp/hacd_CLI/x64/
-decomp/hacd_CLI/hacd_CLI.vcproj.tasora-ASUS.tasora.user
-installer/old_installer_addin.iss
-decomp/hacd_CLI/.vs/
+decomposition_hacd_CLI/x64/
+decomposition_hacd_CLI/.vs/
+chrono-solidworks_install/
+x64/
