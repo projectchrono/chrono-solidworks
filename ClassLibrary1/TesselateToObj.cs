@@ -143,7 +143,7 @@ namespace ChronoEngine_SwAddin
                         int[] aVertexIds;
                         double[] aNormal;
                         double[] aVertexCoords1;
-                        double[] aVertexCoords2;
+                        //double[] aVertexCoords2;
                         double[] aVertexParams;
 
                         int numv = swTessellation.GetVertexCount();

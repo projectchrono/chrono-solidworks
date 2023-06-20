@@ -120,7 +120,7 @@
   <metadata name="toolTipSavePython.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>494, 44</value>
   </metadata>
-  <data name="button_export.ToolTip" xml:space="preserve">
+  <data name="button_ExportToPython.ToolTip" xml:space="preserve">
     <value>Pressing this button you will perform these actions at once:
 
 -  save a .py file that contains functions that, once executed 
@@ -220,6 +220,17 @@ use the other button for primitive collision shapes if you can (spheres, boxes, 
 Aso this collision type is quite sensitive to the global parameter 
 "Trimesh sphereswept_r", the larger the more robust, but also more distant
 from the original shape, that is "inflated" and rounded in terms of collsions.</value>
+  </data>
+  <data name="button_ExportToJson.ToolTip" xml:space="preserve">
+    <value>Pressing this button you will perform these actions at once:
+
+-  save a .py file that contains functions that, once executed 
+   in Python, will create a Chrono::Engine system.
+
+-  create a directory for saving 'assets', that are the shapes
+   for rendering and visualization, that can be used in C::E
+   postprocessing. Shapes are saved in the directory in .OBJ
+   format.</value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>

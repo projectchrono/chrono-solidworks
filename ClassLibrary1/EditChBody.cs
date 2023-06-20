@@ -26,12 +26,12 @@ namespace ChronoEngineAddin
         public double m_collision_envelope;
         public int    m_collision_family;
 
-        bool show_conveyor_params;
+        //bool show_conveyor_params;
         public double m_conveyor_speed;
 
         public EditChBody()
         {
-            show_conveyor_params = false;
+            //show_conveyor_params = false;
             InitializeComponent();
         }
 

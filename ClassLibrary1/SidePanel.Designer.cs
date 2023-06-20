@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SWTaskpaneHost));
-            this.button_export = new System.Windows.Forms.Button();
+            this.button_ExportToPython = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox_surfaces = new System.Windows.Forms.CheckBox();
             this.checkBox_collshapes = new System.Windows.Forms.CheckBox();
@@ -50,6 +50,12 @@
             this.button_convexdecomp = new System.Windows.Forms.Button();
             this.button_chrono_property = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.numeric_envelope = new System.Windows.Forms.NumericUpDown();
+            this.numeric_margin = new System.Windows.Forms.NumericUpDown();
+            this.numeric_contactbreaking = new System.Windows.Forms.NumericUpDown();
+            this.numeric_sphereswept = new System.Windows.Forms.NumericUpDown();
+            this.button_settrimeshcoll = new System.Windows.Forms.Button();
+            this.button_ExportToJson = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -57,15 +63,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.numeric_envelope = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
-            this.numeric_margin = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
-            this.numeric_contactbreaking = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
-            this.numeric_sphereswept = new System.Windows.Forms.NumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
-            this.button_settrimeshcoll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -77,17 +78,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.numeric_sphereswept)).BeginInit();
             this.SuspendLayout();
             // 
-            // button_export
+            // button_ExportToPython
             // 
-            this.button_export.Location = new System.Drawing.Point(17, 45);
-            this.button_export.Name = "button_export";
-            this.button_export.Size = new System.Drawing.Size(184, 32);
-            this.button_export.TabIndex = 0;
-            this.button_export.Text = "Save as Python...";
-            this.button_export.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_export, resources.GetString("button_export.ToolTip"));
-            this.button_export.UseVisualStyleBackColor = true;
-            this.button_export.Click += new System.EventHandler(this.button1_Click);
+            this.button_ExportToPython.Location = new System.Drawing.Point(17, 72);
+            this.button_ExportToPython.Name = "button_ExportToPython";
+            this.button_ExportToPython.Size = new System.Drawing.Size(184, 32);
+            this.button_ExportToPython.TabIndex = 0;
+            this.button_ExportToPython.Text = "Save as Python...";
+            this.button_ExportToPython.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.button_ExportToPython, resources.GetString("button_ExportToPython.ToolTip"));
+            this.button_ExportToPython.UseVisualStyleBackColor = true;
+            this.button_ExportToPython.Click += new System.EventHandler(this.Export_Click);
             // 
             // label1
             // 
@@ -105,7 +106,7 @@
             this.checkBox_surfaces.AutoSize = true;
             this.checkBox_surfaces.Checked = true;
             this.checkBox_surfaces.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_surfaces.Location = new System.Drawing.Point(17, 84);
+            this.checkBox_surfaces.Location = new System.Drawing.Point(17, 111);
             this.checkBox_surfaces.Name = "checkBox_surfaces";
             this.checkBox_surfaces.Size = new System.Drawing.Size(102, 17);
             this.checkBox_surfaces.TabIndex = 2;
@@ -119,7 +120,7 @@
             this.checkBox_collshapes.AutoSize = true;
             this.checkBox_collshapes.Checked = true;
             this.checkBox_collshapes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_collshapes.Location = new System.Drawing.Point(17, 151);
+            this.checkBox_collshapes.Location = new System.Drawing.Point(17, 178);
             this.checkBox_collshapes.Name = "checkBox_collshapes";
             this.checkBox_collshapes.Size = new System.Drawing.Size(131, 17);
             this.checkBox_collshapes.TabIndex = 3;
@@ -132,7 +133,7 @@
             this.checkBox_constraints.AutoSize = true;
             this.checkBox_constraints.Checked = true;
             this.checkBox_constraints.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_constraints.Location = new System.Drawing.Point(17, 174);
+            this.checkBox_constraints.Location = new System.Drawing.Point(17, 201);
             this.checkBox_constraints.Name = "checkBox_constraints";
             this.checkBox_constraints.Size = new System.Drawing.Size(110, 17);
             this.checkBox_constraints.TabIndex = 4;
@@ -148,7 +149,7 @@
             // button_setcollshape
             // 
             this.button_setcollshape.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_setcollshape.Location = new System.Drawing.Point(17, 390);
+            this.button_setcollshape.Location = new System.Drawing.Point(17, 417);
             this.button_setcollshape.Name = "button_setcollshape";
             this.button_setcollshape.Size = new System.Drawing.Size(68, 54);
             this.button_setcollshape.TabIndex = 5;
@@ -161,7 +162,7 @@
             // checkBox_separateobj
             // 
             this.checkBox_separateobj.AutoSize = true;
-            this.checkBox_separateobj.Location = new System.Drawing.Point(33, 107);
+            this.checkBox_separateobj.Location = new System.Drawing.Point(33, 134);
             this.checkBox_separateobj.Name = "checkBox_separateobj";
             this.checkBox_separateobj.Size = new System.Drawing.Size(172, 17);
             this.checkBox_separateobj.TabIndex = 6;
@@ -174,7 +175,7 @@
             this.checkBox_saveUV.AutoSize = true;
             this.checkBox_saveUV.Checked = true;
             this.checkBox_saveUV.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_saveUV.Location = new System.Drawing.Point(33, 128);
+            this.checkBox_saveUV.Location = new System.Drawing.Point(33, 155);
             this.checkBox_saveUV.Name = "checkBox_saveUV";
             this.checkBox_saveUV.Size = new System.Drawing.Size(149, 17);
             this.checkBox_saveUV.TabIndex = 7;
@@ -185,7 +186,7 @@
             // 
             // button_runtest
             // 
-            this.button_runtest.Location = new System.Drawing.Point(134, 295);
+            this.button_runtest.Location = new System.Drawing.Point(134, 322);
             this.button_runtest.Name = "button_runtest";
             this.button_runtest.Size = new System.Drawing.Size(69, 22);
             this.button_runtest.TabIndex = 8;
@@ -199,7 +200,7 @@
             // checkBox_savetest
             // 
             this.checkBox_savetest.AutoSize = true;
-            this.checkBox_savetest.Location = new System.Drawing.Point(17, 295);
+            this.checkBox_savetest.Location = new System.Drawing.Point(17, 322);
             this.checkBox_savetest.Name = "checkBox_savetest";
             this.checkBox_savetest.Size = new System.Drawing.Size(88, 17);
             this.checkBox_savetest.TabIndex = 9;
@@ -215,7 +216,7 @@
             0,
             0,
             131072});
-            this.numeric_dt.Location = new System.Drawing.Point(134, 317);
+            this.numeric_dt.Location = new System.Drawing.Point(134, 344);
             this.numeric_dt.Maximum = new decimal(new int[] {
             1,
             0,
@@ -244,7 +245,7 @@
             0,
             0,
             65536});
-            this.numeric_length.Location = new System.Drawing.Point(134, 339);
+            this.numeric_length.Location = new System.Drawing.Point(134, 366);
             this.numeric_length.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -268,7 +269,7 @@
             // numeric_scale_L
             // 
             this.numeric_scale_L.DecimalPlaces = 3;
-            this.numeric_scale_L.Location = new System.Drawing.Point(134, 223);
+            this.numeric_scale_L.Location = new System.Drawing.Point(134, 250);
             this.numeric_scale_L.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -288,7 +289,7 @@
             // numeric_scale_M
             // 
             this.numeric_scale_M.DecimalPlaces = 3;
-            this.numeric_scale_M.Location = new System.Drawing.Point(134, 244);
+            this.numeric_scale_M.Location = new System.Drawing.Point(134, 271);
             this.numeric_scale_M.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -308,7 +309,7 @@
             // checkBox_scale
             // 
             this.checkBox_scale.AutoSize = true;
-            this.checkBox_scale.Location = new System.Drawing.Point(17, 203);
+            this.checkBox_scale.Location = new System.Drawing.Point(17, 230);
             this.checkBox_scale.Name = "checkBox_scale";
             this.checkBox_scale.Size = new System.Drawing.Size(126, 17);
             this.checkBox_scale.TabIndex = 18;
@@ -321,7 +322,7 @@
             // numeric_scale_T
             // 
             this.numeric_scale_T.DecimalPlaces = 3;
-            this.numeric_scale_T.Location = new System.Drawing.Point(134, 265);
+            this.numeric_scale_T.Location = new System.Drawing.Point(134, 292);
             this.numeric_scale_T.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -342,7 +343,7 @@
             // 
             this.button_convexdecomp.Enabled = false;
             this.button_convexdecomp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_convexdecomp.Location = new System.Drawing.Point(150, 390);
+            this.button_convexdecomp.Location = new System.Drawing.Point(150, 417);
             this.button_convexdecomp.Name = "button_convexdecomp";
             this.button_convexdecomp.Size = new System.Drawing.Size(51, 54);
             this.button_convexdecomp.TabIndex = 21;
@@ -354,7 +355,7 @@
             // 
             // button_chrono_property
             // 
-            this.button_chrono_property.Location = new System.Drawing.Point(17, 450);
+            this.button_chrono_property.Location = new System.Drawing.Point(17, 477);
             this.button_chrono_property.Name = "button_chrono_property";
             this.button_chrono_property.Size = new System.Drawing.Size(184, 25);
             this.button_chrono_property.TabIndex = 22;
@@ -370,82 +371,12 @@
             this.comboBox1.Items.AddRange(new object[] {
             "irrlicht",
             "pov"});
-            this.comboBox1.Location = new System.Drawing.Point(134, 362);
+            this.comboBox1.Location = new System.Drawing.Point(134, 389);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(67, 21);
             this.comboBox1.TabIndex = 23;
             this.toolTipSavePython.SetToolTip(this.comboBox1, "Choose the type of  visualization system used by the test python program");
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(112, 317);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(16, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "dt";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(88, 339);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Length";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(88, 225);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(43, 13);
-            this.label4.TabIndex = 15;
-            this.label4.Text = "Scale L";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(85, 246);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(46, 13);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "Scale M";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(85, 267);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 13);
-            this.label6.TabIndex = 19;
-            this.label6.Text = "Scale T";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(61, 363);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 13);
-            this.label7.TabIndex = 24;
-            this.label7.Text = "Visualization";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 498);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(76, 13);
-            this.label8.TabIndex = 25;
-            this.label8.Text = "Global settings";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // numeric_envelope
             // 
@@ -455,7 +386,7 @@
             0,
             0,
             196608});
-            this.numeric_envelope.Location = new System.Drawing.Point(136, 517);
+            this.numeric_envelope.Location = new System.Drawing.Point(136, 544);
             this.numeric_envelope.Maximum = new decimal(new int[] {
             10,
             0,
@@ -477,16 +408,6 @@
             0,
             196608});
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(34, 519);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(92, 13);
-            this.label9.TabIndex = 26;
-            this.label9.Text = "Collision envelope";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // numeric_margin
             // 
             this.numeric_margin.DecimalPlaces = 5;
@@ -495,7 +416,7 @@
             0,
             0,
             196608});
-            this.numeric_margin.Location = new System.Drawing.Point(136, 539);
+            this.numeric_margin.Location = new System.Drawing.Point(136, 566);
             this.numeric_margin.Maximum = new decimal(new int[] {
             10,
             0,
@@ -517,16 +438,6 @@
             0,
             196608});
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(47, 541);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(79, 13);
-            this.label10.TabIndex = 28;
-            this.label10.Text = "Collision margin";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // numeric_contactbreaking
             // 
             this.numeric_contactbreaking.DecimalPlaces = 5;
@@ -535,7 +446,7 @@
             0,
             0,
             196608});
-            this.numeric_contactbreaking.Location = new System.Drawing.Point(136, 561);
+            this.numeric_contactbreaking.Location = new System.Drawing.Point(136, 588);
             this.numeric_contactbreaking.Maximum = new decimal(new int[] {
             10,
             0,
@@ -552,17 +463,6 @@
             0,
             196608});
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(38, 563);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(88, 13);
-            this.label11.TabIndex = 30;
-            this.label11.Text = "Contact breaking";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label11.Click += new System.EventHandler(this.label11_Click);
-            // 
             // numeric_sphereswept
             // 
             this.numeric_sphereswept.DecimalPlaces = 5;
@@ -571,7 +471,7 @@
             0,
             0,
             196608});
-            this.numeric_sphereswept.Location = new System.Drawing.Point(136, 584);
+            this.numeric_sphereswept.Location = new System.Drawing.Point(136, 611);
             this.numeric_sphereswept.Maximum = new decimal(new int[] {
             10,
             0,
@@ -587,21 +487,10 @@
             0,
             196608});
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(13, 586);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(113, 13);
-            this.label12.TabIndex = 32;
-            this.label12.Text = "Trimesh sphereswept r";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label12.Click += new System.EventHandler(this.label12_Click);
-            // 
             // button_settrimeshcoll
             // 
             this.button_settrimeshcoll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_settrimeshcoll.Location = new System.Drawing.Point(88, 390);
+            this.button_settrimeshcoll.Location = new System.Drawing.Point(88, 417);
             this.button_settrimeshcoll.Name = "button_settrimeshcoll";
             this.button_settrimeshcoll.Size = new System.Drawing.Size(60, 54);
             this.button_settrimeshcoll.TabIndex = 34;
@@ -611,11 +500,136 @@
             this.button_settrimeshcoll.UseVisualStyleBackColor = true;
             this.button_settrimeshcoll.Click += new System.EventHandler(this.button1_Click_1);
             // 
+            // button_ExportToJson
+            // 
+            this.button_ExportToJson.Location = new System.Drawing.Point(17, 39);
+            this.button_ExportToJson.Name = "button_ExportToJson";
+            this.button_ExportToJson.Size = new System.Drawing.Size(184, 32);
+            this.button_ExportToJson.TabIndex = 35;
+            this.button_ExportToJson.Text = "Save as JSON...";
+            this.button_ExportToJson.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.button_ExportToJson, resources.GetString("button_ExportToJson.ToolTip"));
+            this.button_ExportToJson.UseVisualStyleBackColor = true;
+            this.button_ExportToJson.Click += new System.EventHandler(this.Export_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(112, 344);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(16, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "dt";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(88, 366);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Length";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(88, 252);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Scale L";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(85, 273);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(46, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Scale M";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(85, 294);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(44, 13);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Scale T";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(61, 390);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Visualization";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(14, 525);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(76, 13);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "Global settings";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(34, 546);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(92, 13);
+            this.label9.TabIndex = 26;
+            this.label9.Text = "Collision envelope";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(47, 568);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(79, 13);
+            this.label10.TabIndex = 28;
+            this.label10.Text = "Collision margin";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(38, 590);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(88, 13);
+            this.label11.TabIndex = 30;
+            this.label11.Text = "Contact breaking";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label11.Click += new System.EventHandler(this.label11_Click);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(13, 613);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(113, 13);
+            this.label12.TabIndex = 32;
+            this.label12.Text = "Trimesh sphereswept r";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label12.Click += new System.EventHandler(this.label12_Click);
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.button_ExportToJson);
             this.Controls.Add(this.button_settrimeshcoll);
             this.Controls.Add(this.numeric_sphereswept);
             this.Controls.Add(this.label12);
@@ -650,9 +664,9 @@
             this.Controls.Add(this.checkBox_collshapes);
             this.Controls.Add(this.checkBox_surfaces);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button_export);
+            this.Controls.Add(this.button_ExportToPython);
             this.Name = "SWTaskpaneHost";
-            this.Size = new System.Drawing.Size(215, 609);
+            this.Size = new System.Drawing.Size(215, 646);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
@@ -671,7 +685,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button_export;
+        private System.Windows.Forms.Button button_ExportToPython;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox_surfaces;
         private System.Windows.Forms.CheckBox checkBox_collshapes;
@@ -707,5 +721,6 @@
         private System.Windows.Forms.NumericUpDown numeric_sphereswept;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button button_settrimeshcoll;
+        private System.Windows.Forms.Button button_ExportToJson;
     }
 }
