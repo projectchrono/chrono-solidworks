@@ -19,6 +19,8 @@ using Newtonsoft.Json.Linq;
 
 namespace ChronoEngine_SwAddin
 {
+
+
     class ConvertMates
     {
 
@@ -83,8 +85,8 @@ namespace ChronoEngine_SwAddin
             {
                 var link_node = new JObject
                 (
-                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_type", "ChLinkMateXdistance"),
+                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -96,18 +98,18 @@ namespace ChronoEngine_SwAddin
                             new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
                         link_params.cA.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
                         link_params.cB.Z * ChScale.L)
                     ),
-                    new JProperty("_c_Initialize_dir2", !link_params.swapAB_1 ? new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z) : new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
-                    new JProperty("_c_SetDistance", link_params.do_distance_val * ChScale.L * -1),
+                    new JProperty("_c_Initialize_norm2", !link_params.swapAB_1 ? JObjectCreator.CreateChVector(link_params.dB.X, link_params.dB.Y, link_params.dB.Z) : JObjectCreator.CreateChVector(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                    new JProperty("distance", link_params.do_distance_val * ChScale.L * -1),
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
@@ -121,8 +123,8 @@ namespace ChronoEngine_SwAddin
 
                     var link_node = new JObject
                     (
-                        new JProperty("_object_ID", ++_object_ID_used),
                         new JProperty("_type", "ChLinkMateParallel"),
+                        new JProperty("_object_ID", ++_object_ID_used),
                         new JProperty("_c_Initialize_Body1",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
@@ -134,18 +136,18 @@ namespace ChronoEngine_SwAddin
                                 new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                         ),
                         new JProperty("_c_Initialize_pos_are_relative", false),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                             link_params.cA.X * ChScale.L,
                             link_params.cA.Y * ChScale.L,
                             link_params.cA.Z * ChScale.L)
                         ),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                             link_params.cB.X * ChScale.L,
                             link_params.cB.Y * ChScale.L,
                             link_params.cB.Z * ChScale.L)
                         ),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", JObjectCreator.CreateChVector(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", JObjectCreator.CreateChVector(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
                         new JProperty("m_name", swMateFeature.Name)
                     );
 
@@ -167,8 +169,8 @@ namespace ChronoEngine_SwAddin
                 {
                     var link_node = new JObject
                     (
-                        new JProperty("_object_ID", ++_object_ID_used),
                         new JProperty("_type", "ChLinkMateOrthogonal"),
+                        new JProperty("_object_ID", ++_object_ID_used),
                         new JProperty("_c_Initialize_Body1",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
@@ -180,18 +182,18 @@ namespace ChronoEngine_SwAddin
                                 new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                         ),
                         new JProperty("_c_Initialize_pos_are_relative", false),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                             link_params.cA.X * ChScale.L,
                             link_params.cA.Y * ChScale.L,
                             link_params.cA.Z * ChScale.L)
                         ),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                             link_params.cB.X * ChScale.L,
                             link_params.cB.Y * ChScale.L,
                             link_params.cB.Z * ChScale.L)
                         ),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
-                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", JObjectCreator.CreateChVector(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                        new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", JObjectCreator.CreateChVector(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
                         new JProperty("m_name", swMateFeature.Name)
                     );
 
@@ -208,8 +210,8 @@ namespace ChronoEngine_SwAddin
             {
                 var link_node = new JObject
                 (
-                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_type", "ChLinkMateSpherical"),
+                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -221,12 +223,12 @@ namespace ChronoEngine_SwAddin
                             new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
                         link_params.cA.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
                         link_params.cB.Z * ChScale.L)
@@ -255,8 +257,8 @@ namespace ChronoEngine_SwAddin
 
                 var link_node = new JObject
                 (
-                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_type", "ChLinkMateGeneric"),
+                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_c_SetConstrainedCoords", new JArray(false, true, true, false, false, false)),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
@@ -269,18 +271,18 @@ namespace ChronoEngine_SwAddin
                             new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
                         link_params.cA.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
                         link_params.cB.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", new JArray(dA_temp.X, dA_temp.Y, dA_temp.Z)),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", new JArray(dB_temp.X, dB_temp.Y, dB_temp.Z)),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", JObjectCreator.CreateChVector(dA_temp.X, dA_temp.Y, dA_temp.Z)),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", JObjectCreator.CreateChVector(dB_temp.X, dB_temp.Y, dB_temp.Z)),
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
@@ -302,8 +304,8 @@ namespace ChronoEngine_SwAddin
                 // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
                 var link_node1 = new JObject
                 (
-                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_type", "ChLinkMateCoaxial"),
+                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -315,18 +317,18 @@ namespace ChronoEngine_SwAddin
                             new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                         link_params.cA.X * ChScale.L,
                         link_params.cA.Y * ChScale.L,
                         link_params.cA.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                         link_params.cB.X * ChScale.L,
                         link_params.cB.Y * ChScale.L,
                         link_params.cB.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_dir1" : "_c_Initialize_dir2", new JArray(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_dir2" : "_c_Initialize_dir1", new JArray(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm1" : "_c_Initialize_norm2", JObjectCreator.CreateChVector(link_params.dA.X, link_params.dA.Y, link_params.dA.Z)),
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_norm2" : "_c_Initialize_norm1", JObjectCreator.CreateChVector(link_params.dB.X, link_params.dB.Y, link_params.dB.Z)),
                     new JProperty("m_name", swMateFeature.Name + "_1")
                 );
 
@@ -339,8 +341,8 @@ namespace ChronoEngine_SwAddin
                 // and the LinkParams struct can avoid duplicated entries 
                 var link_node2 = new JObject
                 (
-                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_type", "ChLinkMateXdistance"),
+                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -352,17 +354,17 @@ namespace ChronoEngine_SwAddin
                             new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref4 : link_params.ref3)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
                         link_params.cC.X * ChScale.L,
                         link_params.cC.Y * ChScale.L,
                         link_params.cC.Z * ChScale.L)
                     ),
-                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", new JArray(
+                    new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt2" : "_c_Initialize_pt1", JObjectCreator.CreateChVector(
                         link_params.cD.X * ChScale.L,
                         link_params.cD.Y * ChScale.L,
                         link_params.cD.Z * ChScale.L)
                     ),
-                    new JProperty("_c_Initialize_dir2", link_params.entity_2_as_VERTEX ? new JArray(link_params.dC.X, link_params.dC.Y, link_params.dC.Z) : new JArray(link_params.dD.X, link_params.dD.Y, link_params.dD.Z)),
+                    new JProperty("_c_Initialize_norm2", link_params.entity_2_as_VERTEX ? JObjectCreator.CreateChVector(link_params.dC.X, link_params.dC.Y, link_params.dC.Z) : JObjectCreator.CreateChVector(link_params.dD.X, link_params.dD.Y, link_params.dD.Z)),
                     new JProperty("m_name", swMateFeature.Name + "_2")
                 );
 
