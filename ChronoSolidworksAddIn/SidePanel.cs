@@ -411,8 +411,6 @@ namespace ChronoEngine_SwAddin
 
                 ChSystemNode.Add("bodies", ChSystemBodylistArray);
 
-                System.Windows.Forms.MessageBox.Show("Bodies _object_ID_used: " + _object_ID_used.ToString());
-
 
                 // Write down all constraints
 
@@ -432,11 +430,13 @@ namespace ChronoEngine_SwAddin
 
                 JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
 
-                System.Windows.Forms.MessageBox.Show("Links _object_ID_used: " + _object_ID_used.ToString());
 
                 //// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
                 swFeat = (Feature)swModel.FirstFeature();
                 JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
+
+                System.Windows.Forms.MessageBox.Show("Body count: " + (ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + ChSystemLinklistArray.Count.ToString());
+
 
             }
 
@@ -683,6 +683,8 @@ namespace ChronoEngine_SwAddin
                         new JProperty("_type", "ChMarker"),
                         new JProperty("_object_ID", ++_object_ID_used),
                         new JProperty("m_name", swFeat.Name),
+                        // while the ChBody::ArchiveIn would already take care of setting it through AddMarker,
+                        // this call will happen after the following Impose_Abs_Coord, thus causing crash
                         new JProperty("Body", new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
                             new JProperty("_reference_ID", ChBodyAuxRefNode.GetValue("_object_ID"))
@@ -698,7 +700,7 @@ namespace ChronoEngine_SwAddin
                 swFeat = (Feature)swFeat.GetNextFeature();
             }
 
-            ChBodyAuxRefNode.Add("_c_AddMarker", marklist);
+            ChBodyAuxRefNode.Add("markers", marklist);
 
         }
 
@@ -919,7 +921,7 @@ namespace ChronoEngine_SwAddin
                 var _c_AddVisualShape_ChVisualShape = new JObject
                 (
                     new JProperty("_type", "ChModelFileShape"),
-                    new JProperty("filename", this.save_dir_shapes + shapename + ".obj")
+                    new JProperty("filename", obj_filename)
                 );
                 if (vMatProperties != null && vMatProperties[0] != -1)
                     _c_AddVisualShape_ChVisualShape.Add("_c_SetColor", new JObject(
@@ -928,26 +930,15 @@ namespace ChronoEngine_SwAddin
                         new JProperty("B", vMatProperties[2])
                         ));
 
-                var m_shapes_pair = new JObject
+                var _c_AddVisualShape_ChFrame = new JObject // TODO: _object_ID
                 (
-                    // TODO: _object_ID
-                    new JProperty("1", _c_AddVisualShape_ChVisualShape),
-                    new JProperty("2", new JObject // TODO: _object_ID
-                    (
-                        new JProperty("_type", "ChFrame"), // TODO: in the export it seems that the type is not exported
-                        new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
-                        new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
-                    ))
+                    new JProperty("_type", "ChFrame"), // TODO: in the export it seems that the type is not exported
+                    new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
+                    new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
                 );
 
-
-                // TODO: missing _object_ID!!!
-                ChBodyAuxRefNode.Add("visual_model", new JObject
-                (
-                    new JProperty("_type", "ChModelFileShape"),
-                    new JProperty("filename", System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + ChBodyAuxRefNode["m_name"] + ".obj"),
-                    new JProperty("_c_AddVisualShape", new JArray(m_shapes_pair)) // shapes needs to be added through AddVisualShape
-                ));
+                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChVisualShapes", new JArray(_c_AddVisualShape_ChVisualShape));
+                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChFrames", new JArray(_c_AddVisualShape_ChFrame));
             }
 
 
