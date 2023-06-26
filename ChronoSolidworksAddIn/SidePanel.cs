@@ -921,6 +921,7 @@ namespace ChronoEngine_SwAddin
                 var _c_AddVisualShape_ChVisualShape = new JObject
                 (
                     new JProperty("_type", "ChModelFileShape"),
+                    new JProperty("_object_ID", ++_object_ID_used),
                     new JProperty("filename", obj_filename)
                 );
                 if (vMatProperties != null && vMatProperties[0] != -1)
