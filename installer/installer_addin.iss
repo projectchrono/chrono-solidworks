@@ -1,10 +1,9 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v7.03"
+#define MyAppVersion "v9.1"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
-#define MyAppSource "C:\Program Files\chrono_solidworks"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -17,25 +16,26 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultGroupName={#MyAppName}
-DefaultDirName={pf}\ChronoSolidworks
+DefaultDirName={autopf}\ChronoSolidworks
 WizardImageFile=SetupModern20.bmp
 WizardSmallImageFile=SetupModernSmall26.bmp
 PrivilegesRequired=admin
 ;Compression=none
-OutputDir=D:\tasora\code\projectchrono\chrono-web-assets\installers
+OutputDir=.
 OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source: {#MyAppSource}\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt"; 
-Source: {#MyAppSource}\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt"; 
-Source: ..\to_put_in_app_dir\*; Excludes: "*\.svn,*.git"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
+Source: ..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\chrono-solidworks_install\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
 
 [Run]
-Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll;WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
 
 
 [Icons]
