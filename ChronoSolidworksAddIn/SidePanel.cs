@@ -401,7 +401,7 @@ namespace ChronoEngine_SwAddin
                 (
                     new JProperty("_type", "ChBodyAuxRef"),
                     new JProperty("_object_ID", ++_object_ID_used),
-                    new JProperty("m_name", "WORLDFIXED"),
+                    new JProperty("m_name", "ground"),
                     new JProperty("_c_SetBodyFixed", true)
                 );
 
@@ -869,7 +869,7 @@ namespace ChronoEngine_SwAddin
             {
                 // Export the component shape to a .OBJ file representing its SW body(s)
                 nvisshape += 1;
-                string shapename = "body_" + _object_ID_used + "_" + nvisshape;
+                string shapename = ChBodyAuxRefNode.GetValue("m_name") + "_" + nvisshape;
                 string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
 
                 ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
@@ -1542,26 +1542,29 @@ namespace ChronoEngine_SwAddin
 
                 ChSystemBodylistArray.Add(ChBodyAuxRefNode);
 
-            } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+                // store in hashtable, will be useful later when adding constraints
+                // TODO: before, it was after this 'if' with the condition 'if ((nLevel > 1) && (_object_ID_used != 0))'
 
-
-            // Things to do also for sub-components of 'non flexible' assemblies: 
-            //
-
-            // store in hashtable, will be useful later when adding constraints
-            if ((nLevel > 1) && (_object_ID_used != 0))
                 try
                 {
                     ModelDocExtension swModelDocExt = default(ModelDocExtension);
                     ModelDoc2 swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
                     //if (swModel != null)
                     swModelDocExt = swModel.Extension;
-                    this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), _object_ID_used.ToString());
+                    this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), ChBodyAuxRefNode.GetValue("_object_ID"));
                 }
                 catch
                 {
                     System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
                 }
+
+            } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+
+
+            // Things to do also for sub-components of 'non flexible' assemblies: 
+            //
+
+
 
 
             // Traverse all children, proceeding to subassemblies and parts, if any
