@@ -435,14 +435,11 @@ namespace ChronoEngine_SwAddin
                 swFeat = (Feature)swModel.FirstFeature();
                 JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
 
-                System.Windows.Forms.MessageBox.Show("Body count: " + (ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + ChSystemLinklistArray.Count.ToString());
+                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + ChSystemLinklistArray.Count.ToString());
 
 
             }
 
-
-
-            System.Windows.Forms.MessageBox.Show("Export to JSON completed.");
 
             if (this.swProgress != null)
                 this.swProgress.End();
@@ -918,6 +915,7 @@ namespace ChronoEngine_SwAddin
                 double[] amatr = (double[])relframe_shape.ArrayData;
                 double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
+                // TODO: DARIOM should I check if is using shape of other objects?
                 var _c_AddVisualShape_ChVisualShape = new JObject
                 (
                     new JProperty("_type", "ChModelFileShape"),

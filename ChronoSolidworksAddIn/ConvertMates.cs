@@ -90,12 +90,12 @@ namespace ChronoEngine_SwAddin
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
                     ),
                     new JProperty("_c_Initialize_Body2",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
                     new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -128,12 +128,12 @@ namespace ChronoEngine_SwAddin
                         new JProperty("_c_Initialize_Body1",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
-                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                                new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
                         ),
                         new JProperty("_c_Initialize_Body2",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
-                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                                new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                         ),
                         new JProperty("_c_Initialize_pos_are_relative", false),
                         new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -174,12 +174,12 @@ namespace ChronoEngine_SwAddin
                         new JProperty("_c_Initialize_Body1",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
-                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                                new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
                         ),
                         new JProperty("_c_Initialize_Body2",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
-                                new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                                new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                         ),
                         new JProperty("_c_Initialize_pos_are_relative", false),
                         new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -215,12 +215,12 @@ namespace ChronoEngine_SwAddin
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
                     ),
                     new JProperty("_c_Initialize_Body2",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
                     new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -263,12 +263,12 @@ namespace ChronoEngine_SwAddin
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
                     ),
                     new JProperty("_c_Initialize_Body2",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
                     new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -309,12 +309,12 @@ namespace ChronoEngine_SwAddin
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref1 : link_params.ref2)))
                     ),
                     new JProperty("_c_Initialize_Body2",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref2 : link_params.ref1)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
                     new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -346,12 +346,12 @@ namespace ChronoEngine_SwAddin
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref3 : link_params.ref4)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref3 : link_params.ref4)))
                     ),
                     new JProperty("_c_Initialize_Body2",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", Convert.ToInt64(!link_params.swapAB_1 ? link_params.ref4 : link_params.ref3)))
+                            new JProperty("_reference_ID", Convert.ToUInt32(!link_params.swapAB_1 ? link_params.ref4 : link_params.ref3)))
                     ),
                     new JProperty("_c_Initialize_pos_are_relative", false),
                     new JProperty(!link_params.swapAB_1 ? "_c_Initialize_pt1" : "_c_Initialize_pt2", JObjectCreator.CreateChVector(
@@ -1117,259 +1117,6 @@ namespace ChronoEngine_SwAddin
             }
 
             return true;
-        }
-
-        private static void WriteToPython(in ISldWorks mSWApplication, in Feature swMateFeature, ref string asciitext, int num_link, in LinkParams link_params)
-        {
-            //// 
-            //// WRITE PYHTON CODE CORRESPONDING TO CONSTRAINTS
-            ////
-            CultureInfo bz = new CultureInfo("en-BZ");
-
-            if (link_params.do_ChLinkMateXdistance)
-            {
-                num_link++;
-                String linkname = "link_" + num_link;
-                asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistance()\n", linkname);
-
-                asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cA.X * ChScale.L,
-                          link_params.cA.Y * ChScale.L,
-                          link_params.cA.Z * ChScale.L);
-                asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cB.X * ChScale.L,
-                          link_params.cB.Y * ChScale.L,
-                          link_params.cB.Z * ChScale.L);
-                if (!link_params.entity_0_as_VERTEX)
-                    asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                             link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                if (!link_params.entity_1_as_VERTEX)
-                    asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                             link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-
-                // Initialize link, by setting the two csys, in absolute space,
-                if (!link_params.swapAB_1)
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dB)\n", linkname, link_params.ref1, link_params.ref2);
-                else
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dA)\n", linkname, link_params.ref2, link_params.ref1);
-
-                //if (link_params.do_distance_val!=0)
-                asciitext += String.Format(bz, "{0}.SetDistance({1})\n", linkname,
-                    link_params.do_distance_val * ChScale.L * -1);
-
-                asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                // Insert to a list of exported items
-                asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
-            }
-
-            if (link_params.do_ChLinkMateParallel)
-            {
-                if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) > 0.98)
-                {
-                    num_link++;
-                    String linkname = "link_" + num_link;
-                    asciitext += String.Format(bz, "{0} = chrono.ChLinkMateParallel()\n", linkname);
-
-                    asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.cA.X * ChScale.L,
-                              link_params.cA.Y * ChScale.L,
-                              link_params.cA.Z * ChScale.L);
-                    asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.cB.X * ChScale.L,
-                              link_params.cB.Y * ChScale.L,
-                              link_params.cB.Z * ChScale.L);
-                    asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-
-                    if (link_params.do_parallel_flip)
-                        asciitext += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
-
-                    // Initialize link, by setting the two csys, in absolute space,
-                    if (!link_params.swapAB_1)
-                        asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, link_params.ref1, link_params.ref2);
-                    else
-                        asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, link_params.ref2, link_params.ref1);
-
-                    asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                    // Insert to a list of exported items
-                    asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
-                }
-                else
-                {
-                    asciitext += "\n# ChLinkMateParallel skipped because directions not parallel! \n";
-                }
-            }
-
-            if (link_params.do_ChLinkMateOrthogonal)
-            {
-                if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) < 0.02)
-                {
-                    num_link++;
-                    String linkname = "link_" + num_link;
-                    asciitext += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonal()\n", linkname);
-
-                    asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.cA.X * ChScale.L,
-                              link_params.cA.Y * ChScale.L,
-                              link_params.cA.Z * ChScale.L);
-                    asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.cB.X * ChScale.L,
-                              link_params.cB.Y * ChScale.L,
-                              link_params.cB.Z * ChScale.L);
-                    asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                              link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-
-                    // Initialize link, by setting the two csys, in absolute space,
-                    if (!link_params.swapAB_1)
-                        asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, link_params.ref1, link_params.ref2);
-                    else
-                        asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, link_params.ref2, link_params.ref1);
-
-                    asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                    // Insert to a list of exported items
-                    asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
-                }
-                else
-                {
-                    asciitext += "\n# ChLinkMateOrthogonal skipped because directions not orthogonal! \n";
-                }
-            }
-
-            if (link_params.do_ChLinkMateSpherical)
-            {
-                num_link++;
-                String linkname = "link_" + num_link;
-                asciitext += String.Format(bz, "{0} = chrono.ChLinkMateSpherical()\n", linkname);
-
-                asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cA.X * ChScale.L,
-                          link_params.cA.Y * ChScale.L,
-                          link_params.cA.Z * ChScale.L);
-                asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cB.X * ChScale.L,
-                          link_params.cB.Y * ChScale.L,
-                          link_params.cB.Z * ChScale.L);
-
-                // Initialize link, by setting the two csys, in absolute space,
-                if (!link_params.swapAB_1)
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB)\n", linkname, link_params.ref1, link_params.ref2);
-                else
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA)\n", linkname, link_params.ref2, link_params.ref1);
-
-                asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                // Insert to a list of exported items
-                asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
-            }
-
-            if (link_params.do_ChLinkMatePointLine)
-            {
-                num_link++;
-                String linkname = "link_" + num_link;
-                asciitext += String.Format(bz, "{0} = chrono.ChLinkMateGeneric()\n", linkname);
-                asciitext += String.Format(bz, "{0}.SetConstrainedCoords(False, True, True, False, False, False)\n", linkname);
-
-                asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cA.X * ChScale.L,
-                          link_params.cA.Y * ChScale.L,
-                          link_params.cA.Z * ChScale.L);
-                asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cB.X * ChScale.L,
-                          link_params.cB.Y * ChScale.L,
-                          link_params.cB.Z * ChScale.L);
-                if (!link_params.entity_0_as_VERTEX)
-                    asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n", link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                else
-                    asciitext += String.Format(bz, "dA = chrono.VNULL\n");
-                if (!link_params.entity_1_as_VERTEX)
-                    asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n", link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-                else
-                    asciitext += String.Format(bz, "dB = chrono.VNULL\n");
-
-                // Initialize link, by setting the two csys, in absolute space,
-                if (!link_params.swapAB_1)
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, link_params.ref1, link_params.ref2);
-                else
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cB,cA,dB,dA)\n", linkname, link_params.ref2, link_params.ref1);
-
-                asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-                // Insert to a list of exported items
-                asciitext += String.Format(bz, "exported_items.append({0})\n\n", linkname);
-            }
-
-
-
-            // Now, do some other special mate type that did not fall in combinations
-            // of link_params.do_ChLinkMatePointLine, link_params.do_ChLinkMateSpherical, etc etc
-
-            if (swMateFeature.GetTypeName2() == "MateHinge")
-            {
-                // auto flip direction if anti aligned (seems that this is assumed automatically in MateHinge in SW)
-                if (Vector3D.DotProduct(link_params.dA, link_params.dB) < 0)
-                    link_params.dB.Negate();
-
-                // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
-                num_link++;
-                String linkname = "link_" + num_link;
-                asciitext += String.Format(bz, "{0} = chrono.ChLinkMateCoaxial()\n", linkname);
-
-                asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cA.X * ChScale.L,
-                          link_params.cA.Y * ChScale.L,
-                          link_params.cA.Z * ChScale.L);
-                asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cB.X * ChScale.L,
-                          link_params.cB.Y * ChScale.L,
-                          link_params.cB.Z * ChScale.L);
-                asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
-
-                asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-
-
-                // Initialize link, by setting the two csys, in absolute space,
-                asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA,dB)\n", linkname, link_params.ref1, link_params.ref2);
-
-                // Insert to a list of exported items
-                asciitext += String.Format(bz, "exported_items.append({0})\n", linkname);
-
-
-
-
-                num_link++;
-                linkname = "link_" + num_link;
-                asciitext += String.Format(bz, "{0} = chrono.ChLinkMateXdistance()\n", linkname);
-
-                asciitext += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cC.X * ChScale.L,
-                          link_params.cC.Y * ChScale.L,
-                          link_params.cC.Z * ChScale.L);
-                asciitext += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.dC.X, link_params.dC.Y, link_params.dC.Z);
-                asciitext += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.cD.X * ChScale.L,
-                          link_params.cD.Y * ChScale.L,
-                          link_params.cD.Z * ChScale.L);
-                asciitext += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
-                          link_params.dD.X, link_params.dD.Y, link_params.dD.Z);
-
-                asciitext += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
-
-
-                // Initialize link, by setting the two csys, in absolute space,
-                if (link_params.entity_2_as_VERTEX)
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dA)\n", linkname, link_params.ref3, link_params.ref4);
-                else
-                    asciitext += String.Format(bz, "{0}.Initialize({1},{2},False,cA,cB,dB)\n", linkname, link_params.ref3, link_params.ref4);
-
-                // Insert to a list of exported items
-                asciitext += String.Format(bz, "exported_items.append({0})\n", linkname);
-            }
         }
 
     } // end class
