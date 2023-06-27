@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
@@ -22,15 +17,10 @@ using ChronoEngineAddin;
 using Microsoft.Win32;
 //using ConvertToCollisionShapes;
 
-
-
 // for JSON export
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Windows;
 
-
-// TODO: DARIOM replace PythonXXX and JsonXXX functions with overloaded variants with samename if possible
 
 namespace ChronoEngine_SwAddin
 {

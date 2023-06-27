@@ -84,7 +84,7 @@
             this.button_ExportToPython.Name = "button_ExportToPython";
             this.button_ExportToPython.Size = new System.Drawing.Size(184, 32);
             this.button_ExportToPython.TabIndex = 0;
-            this.button_ExportToPython.Text = "Save as Python...";
+            this.button_ExportToPython.Text = "Export to Python...";
             this.button_ExportToPython.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_ExportToPython, resources.GetString("button_ExportToPython.ToolTip"));
             this.button_ExportToPython.UseVisualStyleBackColor = true;
@@ -506,7 +506,7 @@
             this.button_ExportToJson.Name = "button_ExportToJson";
             this.button_ExportToJson.Size = new System.Drawing.Size(184, 32);
             this.button_ExportToJson.TabIndex = 35;
-            this.button_ExportToJson.Text = "Save as JSON...";
+            this.button_ExportToJson.Text = "Export to JSON...";
             this.button_ExportToJson.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_ExportToJson, resources.GetString("button_ExportToJson.ToolTip"));
             this.button_ExportToJson.UseVisualStyleBackColor = true;

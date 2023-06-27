@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows.Media.Media3D;
 
 using SolidWorks.Interop.sldworks;
@@ -79,6 +76,15 @@ namespace ChronoEngine_SwAddin
             ModelDocExtension swModelDocExt = default(ModelDocExtension);
             ModelDoc2 swModel = (ModelDoc2)mSWApplication.ActiveDoc;
             swModelDocExt = swModel.Extension;
+
+
+            if (link_params.ref1 == null)
+                link_params.ref1 = 1.ToString();
+
+            if (link_params.ref2 == null)
+                link_params.ref2 = 1.ToString();
+
+
 
 
             if (link_params.do_ChLinkMateXdistance)
@@ -416,6 +422,13 @@ namespace ChronoEngine_SwAddin
             //// WRITE PYHTON CODE CORRESPONDING TO CONSTRAINTS
             ////
             CultureInfo bz = new CultureInfo("en-BZ");
+
+
+            if (link_params.ref1 == null)
+                link_params.ref1 = "body_0";
+
+            if (link_params.ref2 == null)
+                link_params.ref2 = "body_0";
 
             if (link_params.do_ChLinkMateXdistance)
             {
@@ -763,13 +776,6 @@ namespace ChronoEngine_SwAddin
             // Only constraints between two parts or part & layout can be created
             if (link_params.ref1 == link_params.ref2) // covers both the case of both null or both equal
                 return false;
-
-
-            if (link_params.ref1 == null)
-                link_params.ref1 = "body_0";
-
-            if (link_params.ref2 == null)
-                link_params.ref2 = "body_0";
 
 
 
