@@ -1,49 +1,52 @@
 CHRONO::SOLIDWORKS
 ==================
 
-Chrono::SolidWorks is a part of [Project Chrono](http://www.projectchrono.org). It is an add-in for the popular [SolidWorks](http://www.solidworks.com) 3D CAD, it allows to export mechanisms modeled in SolidWorks as .py files that can be load and simulated with Chrono::Engine.
+Chrono::SolidWorks is a part of [Project Chrono](http://www.projectchrono.org). It is an add-in for the popular [SolidWorks](http://www.solidworks.com) 3D CAD, it allows to export mechanisms modeled in SolidWorks as .py or .json files that can be loaded and simulated with Chrono::Engine.
 
 
 Main features
 -------------
 
 * add-in for [SolidWorks](http://www.solidworks.com)
-* once installed, the user finds a new panel in the CAD interface, with buttons for exporting mechanical systems into Chrono::Engine 
-* most SolidWorks constraints are converted in Chrono::Engine constraints
+* simple graphical interface to export mechanical systems including bodies, assemblies, constraints into Chrono::Engine;
 * SolidWorks parts, in assemblies, become rigid bodies in Chrono::Engine
 * sub-assembles are exported as articulated or single bodies
 * inertia and mass properties of parts are correctly exported
 * visualization shapes are exported as .obj meshes, for later editing or asset optimization
-* coordinate systems are exported as markers
+* coordinate systems are exported as ChMarker
 * tool for creating custom collision shapes using SolidWorks interface
 
 For more informations look at http://www.projectchrono.org 
 
-
-How to install and build the library
+How to install the add-in
 ------------------------------------
+Visit the ProjectChrono website at the [pre-compiled binary webpage](https://www.projectchrono.org/download/) and look for the Chrono::Solidworks section.
+The installer will prompt the user to locate the Solidworks directory. Dependencies will be installed together with the add-in.
 
-* the project is written in C#, so you must use Microsoft Visual Studio
-* you must have a [SolidWorks](http://www.solidworks.com) license installed on your computer.
-* create a directory, ex. "C:\Program Files\chrono_solidworks". It will contain dlls and examples. Let's reference to this as the *app directory*.
-* move the content of "to_put_in_app_dir" into the app directory
-* run Visual Studio as Administrator
-* load and build the **hacd_CLI.sln** solution in /decomp/hacd_CLI/ in order to generate **hacd_CLI.dll**. Copy such dll in the *app directory*. 
-  This is an auxiliary dll that will be needed by the main project.
-* load the **ClassLibrary1.sln** solution 
+
+How to build the add-in from source (advanced users)
+------------------------------------
+There is no need to build the add-in from source unless you are interested in expanding/fixing the add-in.
+
+* the project is written in C#, so you must use Microsoft Visual Studio with the C# development module enabled;
+* double check the availability of the proper .NET Framework version on your computer;
+* you must have a [SolidWorks](http://www.solidworks.com) license installed on your computer;
+* clone this repository to any given folder (always suggested to avoid spaces and special characters in the path);
+* run Visual Studio as Administrator;
+* load the **ChronoSolidworks.sln** solution located in the main directory;
 * you may need to modify some settings of this solution, in order to reference the .COM assemblies of your SolidWorks. 
-  In the Solution Explorer, there should be four references called "SolidWorks....", if they are not active or are missing, do this: 
-  from the Solution Explorer, right-click on the Project and select Add Reference... 
-  Go to the Browse tab and navigate to the SolidWorks installation folder (typically C:\Program Files\SolidWorks 20XX\SolidWorks) and add the .dll files: 
-  * "solidworkstools.dll" 
-  * "SolidWorks.Interop.sldworks.dll" 
-  * "SolidWorks.Interop.swcommands.dll" 
-  * "SolidWorks.Interop.swconst.dll" 
-  * "SolidWorks.Interop.swpublished.dll". 
-  In some releases of Solidorks you may find different names.
-* also, depending on the directory where you installed SolidWorks, you may need to select the project in the solution explorer, open 'Properties', go to 'Build' tab, and set the 'Output path:' as the *app directory*. 
-* build the solution. It will generate the **ChronoEngineAddIn.dll** into the *app directory*.
-* start SolidWorks, then you should find the Chrono::Engine panel in the Task Pane to the right. Note that add-ins can be enabled/disabled with the 'Adds-In' menu in the toolbar.
+  In the Solution Explorer panel, expand *ChronoSolidworksAddIn*>*References* and make sure that the four references called "SolidWorks...." are properly set. If not:
+  + right click on *References*>*Add Reference...*
+  + go to the *Browse* tab and navigate to the SolidWorks installation folder
+     (typically _C:\Program Files\SolidWorks 20XX\SolidWorks_) and add the following files (names might change depending on Solidworks version): 
+    - *solidworkstools.dll*
+    - *SolidWorks.Interop.sldworks.dll*
+    - *SolidWorks.Interop.swcommands.dll*
+    - *SolidWorks.Interop.swconst.dll*
+    - *SolidWorks.Interop.swpublished.dll*  
+* right-click on *ChronoSolidworksAddIn* project, click on *Properties*, *Reference Paths* and add the Solidworks installation folder;
+* build the solution. It will generate the **ChronoEngineAddIn.dll** into the *chrono-solidworks_install* together with all its dependencies; the DLLs are automatically registered by the post-build events;
+* start SolidWorks, you should find the Chrono::Engine panel in the Task Pane to the right. Note that add-ins can be enabled/disabled with the _Tools>Adds-In_ menu in the toolbar.
 
 If you find problems to build the add-in, look at [this tutorial](http://www.angelsix.com/cms/products/tutorials/64-solidworks/67-creating-a-solidworks-add-in-from-scratch) for instructions about how to build add-ins for SolidWorks.
 
@@ -51,7 +54,7 @@ If you find problems to build the add-in, look at [this tutorial](http://www.ang
 How to use the Chrono::SolidWorks add-in
 ----------------------------------------
 
-See the [tutorials](http://www.projectchrono.org/mediawiki/index.php/Tutorials) for examples of C++ code and Python code that load systems exported with this add-in
+See the [tutorials](https://api.projectchrono.org/development/tutorial_table_of_content_chrono_solidworks.html) for examples of C++ code and Python code that load systems exported with this add-in;
 
 A place for discussions can be the [projectchrono group](https://groups.google.com/forum/#!forum/projectchrono).
 
