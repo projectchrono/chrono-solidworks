@@ -18,7 +18,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultGroupName={#MyAppName}
 DefaultDirName={autopf}\ChronoSolidworks
 WizardImageFile=SetupModern20.bmp
-WizardSmallImageFile=SetupModernSmall26.bmp
+WizardSmallImageFile=../to_put_in_app_dir/ChronoEngineAddIn.bmp
 PrivilegesRequired=admin
 ;Compression=none
 OutputDir=.
@@ -35,7 +35,8 @@ Source: ..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir:
 Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden;
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden; RunOnceId: "ChronoEngineAddInUninstallTag"
+
 
 
 [Icons]
@@ -87,7 +88,8 @@ begin
     // CASE OF 64 BIT PLATFORM
 
 
-    // find 64 bit SW v.20:
+
+    // find 64 bit SW v.20:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
                       'SOFTWARE\SolidWorks\SolidWorks 2020\Setup',
                       'SolidWorks Folder',
@@ -126,7 +128,8 @@ begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
     end;
-    // find 64 bit SW v.24:
+
+    // find 64 bit SW v.24:
     if RegQueryStringValue(HKEY_LOCAL_MACHINE,
                       'SOFTWARE\SolidWorks\SolidWorks 2024\Setup',
                       'SolidWorks Folder',
