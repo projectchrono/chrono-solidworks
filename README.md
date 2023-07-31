@@ -34,6 +34,7 @@ There is no need to build the add-in from source unless you are interested in ex
 * clone this repository to any given folder (always suggested to avoid spaces and special characters in the path);
 * run Visual Studio as Administrator;
 * load the **ChronoSolidworks.sln** solution located in the main directory;
+* right-click on the *ChronoSolidworksAddIn* target, click on *Manage NuGet Packages* and install the *Newtonsoft.JSON* package;
 * you may need to modify some settings of this solution, in order to reference the .COM assemblies of your SolidWorks. 
   In the Solution Explorer panel, expand *ChronoSolidworksAddIn*>*References* and make sure that the four references called "SolidWorks...." are properly set. If not:
   + right click on *References*>*Add Reference...*
