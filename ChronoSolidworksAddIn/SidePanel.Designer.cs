@@ -80,7 +80,7 @@
             // 
             // button_ExportToPython
             // 
-            this.button_ExportToPython.Location = new System.Drawing.Point(17, 72);
+            this.button_ExportToPython.Location = new System.Drawing.Point(17, 41);
             this.button_ExportToPython.Name = "button_ExportToPython";
             this.button_ExportToPython.Size = new System.Drawing.Size(184, 32);
             this.button_ExportToPython.TabIndex = 0;
@@ -502,7 +502,7 @@
             // 
             // button_ExportToJson
             // 
-            this.button_ExportToJson.Location = new System.Drawing.Point(17, 39);
+            this.button_ExportToJson.Location = new System.Drawing.Point(17, 76);
             this.button_ExportToJson.Name = "button_ExportToJson";
             this.button_ExportToJson.Size = new System.Drawing.Size(184, 32);
             this.button_ExportToJson.TabIndex = 35;
