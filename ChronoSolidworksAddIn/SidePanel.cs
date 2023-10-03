@@ -815,9 +815,7 @@ namespace ChronoEngine_SwAddin
                         if (vMatProperties[0] != -1)
                         {
                             asciitext += String.Format(bz, "{0}_shape.SetColor(chrono.ChColor({1},{2},{3})) \n", shapename, vMatProperties[0], vMatProperties[1], vMatProperties[2]);
-                            asciitext += String.Format(bz, "{0}_shape.SetOpacity({1}) \n", shapename, vMatProperties[7]);
-                            //asciitext += String.Format(bz, "{0}_shape.SetFading({1}) \n", shapename, vMatProperties[7]);
-                            
+                            asciitext += String.Format(bz, "{0}_shape.SetOpacity({1}) \n", shapename, 1.0 - vMatProperties[7]);                           
                         }
 
                     MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
