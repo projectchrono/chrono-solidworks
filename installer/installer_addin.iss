@@ -1,7 +1,7 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v9.1"
+#define MyAppVersion "v9.2"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
 
@@ -26,10 +26,10 @@ OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source: ..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\chrono-solidworks_install\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
+Source: ..\..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
 
 [Run]
 Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;

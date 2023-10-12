@@ -197,7 +197,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v4.0.30319\regasm" /codebase "$(TargetPath)" &amp;&amp; xcopy /s /e /y $(SolutionDir)to_put_in_app_dir\* $(SolutionDir)chrono-solidworks_install\</PostBuildEvent>
+    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v4.0.30319\regasm" /codebase "$(TargetPath)" &amp;&amp; xcopy /s /e /y $(SolutionDir)to_put_in_app_dir\* $(SolutionDir)..\chrono-solidworks_install</PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>

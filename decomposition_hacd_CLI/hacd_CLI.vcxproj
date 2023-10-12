@@ -89,7 +89,7 @@
     <LinkKeyFile>hacd.snk</LinkKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\chrono-solidworks_install\</OutDir>
+    <OutDir>..\..\chrono-solidworks_install\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>hacd.snk</LinkKeyFile>
