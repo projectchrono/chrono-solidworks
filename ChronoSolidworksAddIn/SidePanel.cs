@@ -159,6 +159,11 @@ namespace ChronoEngine_SwAddin
                 this.SaveFileDialog1.Filter = "PyChrono Python script (*.py)|*.py";
                 this.SaveFileDialog1.DefaultExt = "py";
             }
+            else if ((sender as Button).Name.ToString() == "button_ExportToCpp")
+            {
+                this.SaveFileDialog1.Filter = "Chrono C++ File (*.cpp)|*.cpp";
+                this.SaveFileDialog1.DefaultExt = "cpp";
+            }
             else if ((sender as Button).Name.ToString() == "button_ExportToJson")
             {
                 this.SaveFileDialog1.Filter = "Chrono JSON File (*.json)|*.json";
@@ -213,6 +218,44 @@ namespace ChronoEngine_SwAddin
                     stream.WriteTo(fileStream);
                     fileStream.Close();
                 }
+                else if ((sender as Button).Name.ToString() == "button_ExportToCpp")
+                {
+                    // Export implementation (.cpp)
+                    string asciitext_cpp = "";
+                    this.ExportToCpp(ref asciitext_cpp);
+
+                    byte[] byteArray = Encoding.ASCII.GetBytes(asciitext_cpp);
+                    MemoryStream stream = new MemoryStream(byteArray);
+
+                    Stream fileStream;
+                    System.Windows.Forms.SaveFileDialog createFileDiag = SaveFileDialog1; // create handle to dialog for later reuse of same folder
+                    fileStream = createFileDiag.OpenFile();
+                    stream.Position = 0;
+                    stream.WriteTo(fileStream);
+                    fileStream.Close();
+
+                    // Export header (.h)
+                    string asciitext_header = "";
+                    asciitext_header = "// C++ header generated from SolidWorks using Chrono::SolidWorks add-in\n\n";
+                    asciitext_header += "#ifndef CH_IMPORT_SLDW_CPP_H\n";
+                    asciitext_header += "#define CH_IMPORT_SLDW_CPP_H\n\n";
+
+                    asciitext_header += "#include <vector>\n";
+                    asciitext_header += "#include \"chrono/physics/ChBodyAuxRef.h\"\n";
+                    asciitext_header += "#include \"chrono/physics/ChLinkMate.h\"\n\n";
+
+                    asciitext_header += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist);\n\n";
+
+                    asciitext_header += "#endif // end CH_IMPORT_SLDW_CPP_H\n";
+
+                    byte[] byteArray_header = Encoding.ASCII.GetBytes(asciitext_header);
+                    MemoryStream stream_header = new MemoryStream(byteArray_header);
+
+                    FileStream fileStream_header = new FileStream(System.IO.Path.GetDirectoryName(createFileDiag.FileName) + "\\" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + ".h", FileMode.Create, FileAccess.Write);
+                    stream_header.Position = 0;
+                    stream_header.WriteTo(fileStream_header);
+                    fileStream_header.Close();
+                }
                 else if ((sender as Button).Name.ToString() == "button_ExportToJson")
                 {
                     var ChSystemNode = new JObject();
@@ -223,10 +266,7 @@ namespace ChronoEngine_SwAddin
                     File.WriteAllText(SaveFileDialog1.FileName, ChSystemWrapper.ToString(Formatting.Indented));
 
                 }
-
-
-
-
+                
                 if (this.checkBox_savetest.Checked && sender.ToString() == "button_ExportToPython") // TODO: Json cannot handle collisions yet
                 {
                     string save_directory = System.IO.Path.GetDirectoryName(SaveFileDialog1.FileName);
@@ -290,7 +330,7 @@ namespace ChronoEngine_SwAddin
             asciitext += "import pychrono as chrono \n";
             asciitext += "import builtins \n\n";
 
-            asciitext += "# Some global settings: \n" +
+            asciitext += "# Some global settings \n" +
                          "sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + "\n" +
                          "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ")\n" +
                          "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)this.numeric_margin.Value * ChScale.L).ToString(bz) + ")\n" +
@@ -347,6 +387,107 @@ namespace ChronoEngine_SwAddin
         }
 
 
+        //
+        // Traverse for C++ dumping
+        //
+        public void ExportToCpp(ref string asciitext)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+
+            ModelDoc2 swModel;
+            ConfigurationManager swConfMgr;
+            Configuration swConf;
+            Component2 swRootComp;
+
+            this.saved_parts.Clear();
+            this.saved_shapes.Clear();
+            this.saved_collisionmeshes.Clear();
+
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            if (swModel == null) return;
+            swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
+            swConf = (Configuration)swConfMgr.ActiveConfiguration;
+            swRootComp = (Component2)swConf.GetRootComponent3(true);
+
+            this.mSWApplication.GetUserProgressBar(out this.swProgress);
+            if (this.swProgress != null)
+                this.swProgress.Start(0, 5, "Exporting to C++");
+
+            num_comp = 0;
+
+            asciitext = "// C++ implementation generated from SolidWorks using Chrono::SolidWorks add-in\n" +
+                        "// Assembly: " + swModel.GetPathName() + "\n\n\n";
+
+            asciitext += "#include <string>\n";
+            asciitext += "#include \"chrono/assets/ChModelFileShape.h\"\n";
+            asciitext += "#include \"chrono/collision/ChCollisionSystemBullet.h\"\n";
+            asciitext += "#include \"chrono/physics/ChMaterialSurfaceNSC.h\"\n";
+
+            asciitext += "#include \"" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + ".h\"\n";
+
+            asciitext += "\n\nvoid ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist) {\n\n";
+            asciitext += "// Some global settings\n" +
+                         "double sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + ";\n" +
+                         "chrono::collision::ChCollisionModel::SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ");\n" +
+                         "chrono::collision::ChCollisionModel::SetDefaultSuggestedMargin(" + ((double)this.numeric_margin.Value * ChScale.L).ToString(bz) + ");\n" +
+                         "chrono::collision::ChCollisionSystemBullet::SetContactBreakingThreshold(" + ((double)this.numeric_contactbreaking.Value * ChScale.L).ToString(bz) + ");\n\n";
+
+            asciitext += "std::string shapes_dir = \"" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes/\";\n\n";
+
+            asciitext += "// Prepare some data for later use\n";
+            asciitext += "std::shared_ptr<chrono::ChModelFileShape> body_shape;\n"; 
+            asciitext += "chrono::ChMatrix33<> mr;\n";
+            asciitext += "std::shared_ptr<chrono::ChLinkBase> link;\n";
+            asciitext += "chrono::ChVector<> cA;\n";
+            asciitext += "chrono::ChVector<> cB;\n";
+            asciitext += "chrono::ChVector<> dA;\n";
+            asciitext += "chrono::ChVector<> dB;\n\n";
+
+            asciitext += "// Assembly ground body\n";
+            asciitext += "auto body_0 = chrono_types::make_shared<chrono::ChBodyAuxRef>();\n" +
+                         "body_0->SetName(\"ground\");\n" +
+                         "body_0->SetBodyFixed(true);\n" +
+                         "bodylist.push_back(body_0);\n\n";
+
+
+            if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
+            {
+                // Write down all parts
+                CppTraverseComponent_for_ChBody(swRootComp, 1, ref asciitext, -1);
+
+
+                // Write down all constraints
+                MathTransform roottrasf = swRootComp.GetTotalTransform(true);
+                if (roottrasf == null)
+                {
+                    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
+                    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
+                    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
+                }
+
+                Feature swFeat = (Feature)swModel.FirstFeature();
+                CppTraverseFeatures_for_links(swFeat, 1, ref asciitext, ref roottrasf, ref swRootComp);
+
+                CppTraverseComponent_for_links(swRootComp, 1, ref asciitext, ref roottrasf);
+
+
+                // Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
+                swFeat = (Feature)swModel.FirstFeature();
+                CppTraverseFeatures_for_markers(swFeat, 1, ref asciitext, 0, roottrasf);
+            }
+
+            asciitext += "\n\n} // end function\n";
+
+            System.Windows.Forms.MessageBox.Show("Export to C++ completed.");
+
+            if (this.swProgress != null)
+                this.swProgress.End();
+        }
+
+
+        //
+        // Traverse for Json
+        //
         public void ExportToJson(ref JObject ChSystemNode)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
@@ -436,6 +577,468 @@ namespace ChronoEngine_SwAddin
         }
 
 
+        ///
+        /// Cpp traverse functions
+        ///
+
+        public void CppTraverseComponent_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
+        {
+            // Look if component contains collision shapes (customized SW solid bodies):
+            CppTraverseFeatures_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                CppTraverseComponent_for_collshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
+            }
+        }
+
+        public void CppTraverseFeatures_for_collshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+            Feature swFeat;
+            swFeat = (Feature)swComp.FirstFeature();
+
+            String bodyname = "body_" + nbody;
+            String matname = "mat_" + nbody;
+
+            MathTransform subcomp_transform = swComp.GetTotalTransform(true);
+            MathTransform invchbody_trasform = (MathTransform)chbodytransform.Inverse();
+            MathTransform collshape_subcomp_transform = subcomp_transform.IMultiply(invchbody_trasform); // row-ordered transf. -> reverse mult.order!
+
+            // Export collision shapes
+            if (this.checkBox_collshapes.Checked)
+            {
+                object[] bodies;
+                object bodyInfo;
+                bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+
+                if (bodies != null)
+                {
+                    // see if it contains some collision shape
+                    bool build_collision_model = false;
+                    for (int ib = 0; ib < bodies.Length; ib++)
+                    {
+                        Body2 swBody = (Body2)bodies[ib];
+                        if (swBody.Name.StartsWith("COLL.") || swBody.Name.StartsWith("COLLMESH"))
+                            build_collision_model = true;
+                    }
+
+                    if (build_collision_model)
+                    {
+                        if (!found_collisionshapes)
+                        {
+                            found_collisionshapes = true;
+
+                            // fetch SW attribute with Chrono parameters
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+
+
+                            asciitext += "\n// Collision material\n";
+
+                            asciitext += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChMaterialSurfaceNSC>();\n", matname);
+
+
+
+                            if (myattr != null)
+                            {
+
+                                asciitext += "\n// Collision parameters ;\n";
+                                double param_friction = ((Parameter)myattr.GetParameter("friction")).GetDoubleValue();
+                                double param_restitution = ((Parameter)myattr.GetParameter("restitution")).GetDoubleValue();
+                                double param_rolling_friction = ((Parameter)myattr.GetParameter("rolling_friction")).GetDoubleValue();
+                                double param_spinning_friction = ((Parameter)myattr.GetParameter("spinning_friction")).GetDoubleValue();
+                                double param_collision_envelope = ((Parameter)myattr.GetParameter("collision_envelope")).GetDoubleValue();
+                                double param_collision_margin = ((Parameter)myattr.GetParameter("collision_margin")).GetDoubleValue();
+                                int param_collision_family = (int)((Parameter)myattr.GetParameter("collision_family")).GetDoubleValue();
+
+                                asciitext += String.Format(bz, "{0}->SetFriction({1:g});\n", matname, param_friction);
+                                if (param_restitution != 0)
+                                    asciitext += String.Format(bz, "{0}->SetRestitution({1:g});\n", matname, param_restitution);
+                                if (param_rolling_friction != 0)
+                                    asciitext += String.Format(bz, "{0}->SetRollingFriction({1:g});\n", matname, param_rolling_friction);
+                                if (param_spinning_friction != 0)
+                                    asciitext += String.Format(bz, "{0}->SetSpinningFriction({1:g});\n", matname, param_spinning_friction);
+                                //if (param_collision_envelope != 0.03)
+                                asciitext += String.Format(bz, "{0}->GetCollisionModel()->SetEnvelope({1:g});\n", bodyname, param_collision_envelope * ChScale.L);
+                                //if (param_collision_margin != 0.01)
+                                asciitext += String.Format(bz, "{0}->GetCollisionModel()->SetSafeMargin({1:g});\n", bodyname, param_collision_margin * ChScale.L);
+                                if (param_collision_family != 0)
+                                    asciitext += String.Format(bz, "{0}->GetCollisionModel()->SetFamily({1});\n", bodyname, param_collision_family);
+                            }
+
+                            // clear model only at 1st subcomponent where coll shapes are found in features:
+                            asciitext += "\n// Collision shapes\n";
+                            asciitext += String.Format(bz, "{0}->GetCollisionModel()->ClearModel();\n", bodyname);
+                        }
+
+                        bool has_coll_mesh = false;
+
+                        for (int ib = 0; ib < bodies.Length; ib++)
+                        {
+                            Body2 swBody = (Body2)bodies[ib];
+
+                            if (swBody.Name.StartsWith("COLLMESH"))
+                            {
+                                has_coll_mesh = true;
+                            }
+
+                            if (swBody.Name.StartsWith("COLL."))
+                            {
+                                bool rbody_converted = false;
+                                if (ConvertToCollisionShapes.SWbodyToSphere(swBody))
+                                {
+                                    Point3D center_l = new Point3D(); // in local subcomponent
+                                    double rad = 0;
+                                    ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
+                                    Point3D center = SWTaskpaneHost.PointTransform(center_l, ref collshape_subcomp_transform);
+                                    asciitext += String.Format(bz, "{0}->GetCollisionModel()->AddSphere({1}, {2}, chrono::ChVector<>({3},{4},{5}));\n",
+                                        bodyname, matname,
+                                        rad * ChScale.L,
+                                        center.X * ChScale.L,
+                                        center.Y * ChScale.L,
+                                        center.Z * ChScale.L);
+                                    rbody_converted = true;
+                                }
+                                if (ConvertToCollisionShapes.SWbodyToBox(swBody))
+                                {
+                                    Point3D vC_l = new Point3D();
+                                    Vector3D eX_l = new Vector3D(); Vector3D eY_l = new Vector3D(); Vector3D eZ_l = new Vector3D();
+                                    ConvertToCollisionShapes.SWbodyToBox(swBody, ref vC_l, ref eX_l, ref eY_l, ref eZ_l);
+                                    Point3D vC = SWTaskpaneHost.PointTransform(vC_l, ref collshape_subcomp_transform);
+                                    Vector3D eX = SWTaskpaneHost.DirTransform(eX_l, ref collshape_subcomp_transform);
+                                    Vector3D eY = SWTaskpaneHost.DirTransform(eY_l, ref collshape_subcomp_transform);
+                                    Vector3D eZ = SWTaskpaneHost.DirTransform(eZ_l, ref collshape_subcomp_transform);
+                                    Point3D vO = vC + 0.5 * eX + 0.5 * eY + 0.5 * eZ;
+                                    Vector3D Dx = eX; Dx.Normalize();
+                                    Vector3D Dy = eY; Dy.Normalize();
+                                    Vector3D Dz = Vector3D.CrossProduct(Dx, Dy);                                    
+                                    asciitext += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", Dx.X, Dx.Y, Dx.Z, bodyname);
+                                    asciitext += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", Dy.X, Dy.Y, Dy.Z, bodyname);
+                                    asciitext += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", Dz.X, Dz.Y, Dz.Z, bodyname);
+                                    asciitext += String.Format(bz, "{0}->GetCollisionModel()->AddBox({1},{2},{3},{4},chrono::ChVector<>({5},{6},{7}),mr);\n",
+                                        bodyname, matname,
+                                        eX.Length * ChScale.L,
+                                        eY.Length * ChScale.L,
+                                        eZ.Length * ChScale.L,
+                                        vO.X * ChScale.L,
+                                        vO.Y * ChScale.L,
+                                        vO.Z * ChScale.L);
+                                    rbody_converted = true;
+                                }
+                                if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
+                                {
+                                    Point3D p1_l = new Point3D();
+                                    Point3D p2_l = new Point3D();
+                                    double rad = 0;
+                                    ConvertToCollisionShapes.SWbodyToCylinder(swBody, ref p1_l, ref p2_l, ref rad);
+                                    Point3D p1 = SWTaskpaneHost.PointTransform(p1_l, ref collshape_subcomp_transform);
+                                    Point3D p2 = SWTaskpaneHost.PointTransform(p2_l, ref collshape_subcomp_transform);
+                                    asciitext += String.Format(bz, "chrono::ChVector<> p1_{3}({0},{1},{2});\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L, bodyname);
+                                    asciitext += String.Format(bz, "chrono::ChVector<> p2_{3}({0},{1},{2});\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L, bodyname);
+                                    asciitext += String.Format(bz, "{0}->GetCollisionModel()->AddCylinder({1},{2},p1_{0},p2_{0});\n", bodyname, matname, rad * ChScale.L);
+                                    rbody_converted = true;
+                                }
+
+                                if (ConvertToCollisionShapes.SWbodyToConvexHull(swBody, 30) && !rbody_converted)
+                                {
+                                    Point3D[] vertexes = new Point3D[1]; // will be resized by SWbodyToConvexHull
+                                    ConvertToCollisionShapes.SWbodyToConvexHull(swBody, ref vertexes, 30);
+                                    if (vertexes.Length > 0)
+                                    {
+                                        asciitext += String.Format(bz, "std::vector<ChVector<>> pt_vect_{0};\n", bodyname);
+                                        for (int iv = 0; iv < vertexes.Length; iv++)
+                                        {
+                                            Point3D vert_l = vertexes[iv];
+                                            Point3D vert = SWTaskpaneHost.PointTransform(vert_l, ref collshape_subcomp_transform);
+                                            asciitext += String.Format(bz, "pt_vect_{3}.push_back(chrono::ChVector<>({0},{1},{2}));\n",
+                                                vert.X * ChScale.L,
+                                                vert.Y * ChScale.L,
+                                                vert.Z * ChScale.L,
+                                                bodyname);
+                                        }
+                                        asciitext += String.Format(bz, "{0}->GetCollisionModel()->AddConvexHull({1},pt_vect_{0});\n", bodyname, matname);
+                                    }
+                                    rbody_converted = true;
+                                }
+
+
+                            } // end dealing with a collision shape
+
+                        } // end solid bodies traversal for converting to coll.shapes
+
+
+
+                        if (has_coll_mesh)
+                        {
+                            // fallback if no primitive collision shape found: use concave trimesh collision model (although inefficient)
+                            ncollshape += 1;
+                            string shapename = "body_" + nbody + "_" + ncollshape + "_collision";
+                            string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+
+                            ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
+                            if (!this.saved_collisionmeshes.ContainsKey(swCompModel.GetPathName()))
+                            {
+                                try
+                                {
+                                    FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
+                                    StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
+                                    string asciiobj = "";
+                                    if (this.swProgress != null)
+                                        this.swProgress.UpdateTitle("Exporting collision shape" + swComp.Name2 + " (tesselate) ...");
+                                    // Write the OBJ converted visualization shapes:
+                                    TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress, false, true);
+                                    writer.Write(asciiobj);
+                                    writer.Flush();
+                                    ostream.Close();
+
+                                    this.saved_collisionmeshes.Add(swCompModel.GetPathName(), shapename);
+                                }
+                                catch (Exception)
+                                {
+                                    System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + ";\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
+                                }
+                            }
+                            else
+                            {
+                                // reuse the already-saved shape name
+                                shapename = (String)this.saved_collisionmeshes[swCompModel.GetPathName()];
+                            }
+
+                            double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
+                            double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
+
+                            asciitext += String.Format(bz, ";\n// Triangle mesh collision shape\n", bodyname);
+                            asciitext += String.Format(bz, "std::shared_ptr<chrono::ChTriangleMeshConnected> {0}_mesh;\n", shapename);
+                            asciitext += String.Format(bz, "{0}_mesh->CreateFromWavefrontFile(shapes_dir + \"{0}.obj\", false, true);\n", shapename);
+                            asciitext += String.Format(bz, "chrono::ChMatrix33<> mr;\n");
+                            asciitext += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L, shapename);
+                            asciitext += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L, shapename);
+                            asciitext += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L, shapename);
+                            asciitext += String.Format(bz, "{0}_mesh->Transform(chrono::ChVector<>({1},{2},{3}),mr);\n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                            asciitext += String.Format(bz, "{0}->GetCollisionModel()->AddTriangleMesh({1},{2}_mesh,false,false,", bodyname, matname, shapename);
+                            asciitext += String.Format(bz, "chrono::ChVector<>(0,0,0), chrono::ChMatrix33<>(chrono::ChQuaternion<>(1,0,0,0)), sphereswept_r);\n");
+                            //rbody_converted = true;
+                        }
+
+
+                    } // end if build_collision_model
+                }
+
+            } // end collision shapes export
+
+        }
+
+
+        public void CppTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref string asciitext, int nbody)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+            object[] vmyChildComp = (object[])swComp.GetChildren();
+            //bool found_chbody_equivalent = false;
+
+            if (nLevel > 1)
+                if (nbody == -1)
+                    if (!swComp.IsSuppressed()) // skip body if marked as 'suppressed'
+                    {
+                        if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
+                        {
+                            // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
+
+                            //found_chbody_equivalent = true;
+
+                            this.num_comp++;
+
+                            nbody = this.num_comp;  // mark the rest of recursion as 'n-th body found'
+
+                            if (this.swProgress != null)
+                            {
+                                this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
+                                this.swProgress.UpdateProgress(this.num_comp % 5);
+                            }
+
+                            // fetch SW attribute with Chrono parameters
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+
+                            MathTransform chbodytransform = swComp.GetTotalTransform(true);
+                            double[] amatr;
+                            amatr = (double[])chbodytransform.ArrayData;
+                            string bodyname = "body_" + this.num_comp;
+
+                            // Write create body
+                            asciitext += "// Rigid body part\n";
+                            asciitext += "auto " + bodyname + " = chrono_types::make_shared<chrono::ChBodyAuxRef>();\n";
+
+                            // Write name
+                            asciitext += bodyname + "->SetName(\"" + swComp.Name2 + "\");\n";
+
+                            // Write position
+                            asciitext += bodyname + "->SetPos(chrono::ChVector<>("
+                                       + (amatr[9] * ChScale.L).ToString("g", bz) + ","
+                                       + (amatr[10] * ChScale.L).ToString("g", bz) + ","
+                                       + (amatr[11] * ChScale.L).ToString("g", bz) + "));\n";
+
+                            // Write rotation
+                            double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
+                            asciitext += String.Format(bz, "{0}->SetRot(chrono::ChQuaternion<>({1:g},{2:g},{3:g},{4:g}));\n",
+                                       bodyname, quat[0], quat[1], quat[2], quat[3]);
+
+                            // Compute mass
+
+                            int nvalid_bodies = 0;
+                            TraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
+
+                            int addedb = 0;
+                            object[] bodies_nocollshapes = new object[nvalid_bodies];
+                            TraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
+
+                            MassProperty swMass;
+                            swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                            bool boolstatus = false;
+                            boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
+                            swMass.SetCoordinateSystem(chbodytransform);
+                            swMass.UseSystemUnits = true;
+                            //note: do not set here the COG-to-REF position because here SW express it in absolute coords
+                            // double cogX = ((double[])swMass.CenterOfMass)[0];
+                            // double cogY = ((double[])swMass.CenterOfMass)[1];
+                            // double cogZ = ((double[])swMass.CenterOfMass)[2];
+                            double mass = swMass.Mass;
+                            double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
+                            double Ixx = Itensor[0];
+                            double Iyy = Itensor[4];
+                            double Izz = Itensor[8];
+                            double Ixy = Itensor[1];
+                            double Izx = Itensor[2];
+                            double Iyz = Itensor[5];
+
+                            MassProperty swMassb;
+                            swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                            bool boolstatusb = false;
+                            boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
+                            swMassb.UseSystemUnits = true;
+                            double cogXb = ((double[])swMassb.CenterOfMass)[0];
+                            double cogYb = ((double[])swMassb.CenterOfMass)[1];
+                            double cogZb = ((double[])swMassb.CenterOfMass)[2];
+
+                            asciitext += String.Format(bz, "{0}->SetMass({1:g});\n",
+                                       bodyname,
+                                       mass * ChScale.M);
+
+                            // Write inertia tensor 
+                            asciitext += String.Format(bz, "{0}->SetInertiaXX(chrono::ChVector<>({1:g},{2:g},{3:g}));\n",
+                                       bodyname,
+                                       Ixx * ChScale.M * ChScale.L * ChScale.L,
+                                       Iyy * ChScale.M * ChScale.L * ChScale.L,
+                                       Izz * ChScale.M * ChScale.L * ChScale.L);
+                            // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
+                            asciitext += String.Format(bz, "{0}->SetInertiaXY(chrono::ChVector<>({1:g},{2:g},{3:g}));\n",
+                                       bodyname,
+                                       -Ixy * ChScale.M * ChScale.L * ChScale.L,
+                                       -Izx * ChScale.M * ChScale.L * ChScale.L,
+                                       -Iyz * ChScale.M * ChScale.L * ChScale.L);
+
+                            // Write the position of the COG respect to the REF
+                            asciitext += String.Format(bz, "{0}->SetFrame_COG_to_REF(chrono::ChFrame<>(chrono::ChVector<>({1:g},{2:g},{3:g}),chrono::ChQuaternion<>(1,0,0,0)));\n",
+                                        bodyname,
+                                        cogXb * ChScale.L,
+                                        cogYb * ChScale.L,
+                                        cogZb * ChScale.L);
+
+                            // Write 'fixed' state
+                            if (swComp.IsFixed())
+                                asciitext += String.Format(bz, "{0}->SetBodyFixed(true);\n", bodyname);
+
+
+                            // Write shapes (saving also Wavefront files .obj)
+                            if (this.checkBox_surfaces.Checked)
+                            {
+                                int nvisshape = 0;
+
+                                if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                                    CppTraverseComponent_for_visualizationshapes(swComp, nLevel, ref asciitext, nbody, ref nvisshape, swComp);
+                            }
+
+                            // Write markers (SW coordsystems) contained in this component or subcomponents
+                            // if any.
+                            CppTraverseComponent_for_markers(swComp, nLevel, ref asciitext, nbody);
+
+                            // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
+                            // if any.
+                            bool param_collide = true;
+                            if (myattr != null)
+                                param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
+
+                            if (param_collide)
+                            {
+                                bool found_collisionshapes = false;
+                                int ncollshapes = 0;
+
+                                CppTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
+                                if (found_collisionshapes)
+                                {
+                                    asciitext += String.Format(bz, "{0}->GetCollisionModel()->BuildModel();\n", bodyname);
+                                    asciitext += String.Format(bz, "{0}->SetCollide(true);\n", bodyname);
+                                }
+                            }
+
+                            // Insert to a list of exported items
+                            asciitext += String.Format(bz, "\nbodylist.push_back({0});\n", bodyname);
+
+                            // End writing body in Cpp
+                            asciitext += "\n\n\n";
+
+
+                        } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+                    }
+
+
+            // Things to do also for sub-components of 'non flexible' assemblies: 
+            //
+
+            // store in hashtable, will be useful later when adding constraints
+            if ((nLevel > 1) && (nbody != -1))
+                try
+                {
+                    string bodyname = "body_" + this.num_comp;
+
+                    ModelDocExtension swModelDocExt = default(ModelDocExtension);
+                    ModelDoc2 swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+                    //if (swModel != null)
+                    swModelDocExt = swModel.Extension;
+                    this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), bodyname);
+                }
+                catch
+                {
+                    System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
+                }
+
+
+            // Traverse all children, proceeding to subassemblies and parts, if any
+            // 
+
+            object[] vChildComp;
+            Component2 swChildComp;
+
+            vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                CppTraverseComponent_for_ChBody(swChildComp, nLevel + 1, ref asciitext, nbody);
+            }
+
+
+        }
+
+
+
+
         //
         // LINK EXPORTING FUNCTIONS
         // 
@@ -469,6 +1072,7 @@ namespace ChronoEngine_SwAddin
         public void PythonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref string asciitext, ref MathTransform roottrasf, ref Component2 assemblyofmates)
         {
             Feature swSubFeat;
+            //Feature swSubSubFeat;
 
             int num_link = 0;
 
@@ -481,12 +1085,23 @@ namespace ChronoEngine_SwAddin
                 {
                     swSubFeat = (Feature)swFeat.GetFirstSubFeature();
 
-                    while ((swSubFeat != null))
+                    while ((swSubFeat != null) && (!swSubFeat.IsSuppressed()))
                     {
-                        ConvertMates.ConvertMateToPython(swSubFeat, ref asciitext, mSWApplication, saved_parts, ref num_link, roottrasf, assemblyofmates);
-
+                        if (swSubFeat.GetTypeName2() != "FtrFolder")
+                        {
+                            ConvertMates.ConvertMateToPython(swSubFeat, ref asciitext, mSWApplication, saved_parts, ref num_link, roottrasf, assemblyofmates);
+                        }
+                        else
+                        {
+                            PythonTraverseFeatures_for_links(swSubFeat, nLevel + 1, ref asciitext, ref roottrasf, ref assemblyofmates);
+                            //swSubSubFeat = (Feature)swSubFeat.GetFirstSubFeature();
+                            //while ((swSubSubFeat != null))
+                            //{
+                            //    ConvertMates.ConvertMateToPython(swSubSubFeat, ref asciitext, mSWApplication, saved_parts, ref num_link, roottrasf, assemblyofmates);
+                            //    swSubSubFeat = (Feature)swSubSubFeat.GetNextSubFeature();
+                            //}
+                        }
                         swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
-
                     } // end while loop on subfeatures mates
 
                 } // end if mate group
@@ -495,6 +1110,100 @@ namespace ChronoEngine_SwAddin
 
             } // end while loop on features
 
+        }
+
+        static bool isMateTypeExportable(string typeName2) 
+        {
+            System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>();
+
+            // TODO: check which mates are *actually* exportable to Chrono
+            acceptedMates.Add("MateCamTangent");
+            acceptedMates.Add("MateCoincident");
+            acceptedMates.Add("MateConcentric");
+            acceptedMates.Add("MateDistanceDim");
+            acceptedMates.Add("MateGearDim");
+            acceptedMates.Add("MateHinge");
+            acceptedMates.Add("MateInPlace");
+            acceptedMates.Add("MateLinearCoupler");
+            acceptedMates.Add("MateLock");
+            acceptedMates.Add("MateParallel");
+            acceptedMates.Add("MatePerpendicular");
+            acceptedMates.Add("MatePlanarAngleDim");
+            acceptedMates.Add("MateProfileCenter");
+            acceptedMates.Add("MateRackPinionDim");
+            acceptedMates.Add("MateScrew");
+            acceptedMates.Add("MateSlot");
+            acceptedMates.Add("MateSymmetric");
+            acceptedMates.Add("MateTangent");
+            acceptedMates.Add("MateUniversalJoint");
+            acceptedMates.Add("MateWidth");
+
+            return acceptedMates.Contains(typeName2);
+        }
+
+        public void CppTraverseFeatures_for_links(Feature swFeat, long nLevel, ref string asciitext, ref MathTransform roottrasf, ref Component2 assemblyofmates)
+        {
+            Feature swSubFeat;
+            //Feature swSubSubFeat;
+
+            int num_link = 0;
+
+            while ((swFeat != null))
+            {
+                // Export mates as constraints
+
+                if ((swFeat.GetTypeName2() == "MateGroup") && (this.checkBox_constraints.Checked))
+                {
+                    swSubFeat = (Feature)swFeat.GetFirstSubFeature();
+
+                    while ((swSubFeat != null)) 
+                    {
+                        if (!swSubFeat.IsSuppressed())
+                        {
+                            if (isMateTypeExportable(swSubFeat.GetTypeName2()))
+                            {
+                                ConvertMates.ConvertMateToCpp(swSubFeat, ref asciitext, mSWApplication, saved_parts, ref num_link, roottrasf, assemblyofmates);
+                            }
+                            else if (swSubFeat.GetTypeName2() == "FtrFolder")
+                            {
+                                CppTraverseFeatures_for_links(swSubFeat, nLevel + 1, ref asciitext, ref roottrasf, ref assemblyofmates);
+                            }
+                        }
+                        swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
+                    } // end while loop on subfeatures mates
+
+                } // end if mate group
+
+                swFeat = (Feature)swFeat.GetNextFeature();
+
+            } // end while loop on features
+
+        }
+
+        public void CppTraverseComponent_for_links(Component2 swComp, long nLevel, ref string asciitext, ref MathTransform roottrasf)
+        {
+            // Scan assembly features and save mating info
+
+            if (nLevel > 1)
+            {
+                Feature swFeat = (Feature)swComp.FirstFeature();
+                CppTraverseFeatures_for_links(swFeat, nLevel, ref asciitext, ref roottrasf, ref swComp);
+            }
+
+            // Recursive scan of subassemblies
+
+            object[] vChildComp;
+            Component2 swChildComp;
+
+            vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                if (swChildComp.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
+                    CppTraverseComponent_for_links(swChildComp, nLevel + 1, ref asciitext, ref roottrasf);
+            }
         }
 
         public void JsonTraverseComponent_for_links(Component2 swComp, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf)
@@ -618,6 +1327,69 @@ namespace ChronoEngine_SwAddin
                 swFeat = (Feature)swFeat.GetNextFeature();
             }
         }
+
+        public void CppTraverseComponent_for_markers(Component2 swComp, long nLevel, ref string asciitext, int nbody)
+        {
+            // Look if component contains markers
+            Feature swFeat = (Feature)swComp.FirstFeature();
+            MathTransform swCompTotalTrasf = swComp.GetTotalTransform(true);
+            CppTraverseFeatures_for_markers(swFeat, nLevel, ref asciitext, nbody, swCompTotalTrasf);
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                CppTraverseComponent_for_markers(swChildComp, nLevel + 1, ref asciitext, nbody);
+            }
+        }
+
+        public void CppTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref string asciitext, int nbody, MathTransform swCompTotalTrasf)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+
+            int nmarker = 0;
+
+            String bodyname = "body_" + nbody;
+
+            while ((swFeat != null))
+            {
+                // asciitext += "# feature: " + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
+
+                // Export markers, if any (as coordinate systems)
+                if (swFeat.GetTypeName2() == "CoordSys")
+                {
+                    nmarker++;
+                    CoordinateSystemFeatureData swCoordSys = (CoordinateSystemFeatureData)swFeat.GetDefinition();
+                    MathTransform tr = swCoordSys.Transform;
+
+                    MathTransform tr_part = swCompTotalTrasf;
+                    MathTransform tr_abs = tr.IMultiply(tr_part);  // row-ordered transf. -> reverse mult.order!
+
+                    double[] quat = GetQuaternionFromMatrix(ref tr_abs);
+                    double[] amatr = (double[])tr_abs.ArrayData;
+                    String markername = "marker_" + nbody + "_" + nmarker;
+                    asciitext += "\n// Auxiliary marker (coordinate system feature)\n";
+                    asciitext += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChMarker>();\n", markername);
+                    asciitext += String.Format(bz, "{0}->SetName(\"{1}\");\n", markername, swFeat.Name);
+                    asciitext += String.Format(bz, "{0}->AddMarker({1});\n", bodyname, markername);
+                    asciitext += String.Format(bz, "{0}->Impose_Abs_Coord(chrono::ChCoordsys<>(chrono::ChVector<>({1},{2},{3}),chrono::ChQuaternion<>({4},{5},{6},{7})));\n",
+                               markername,
+                               amatr[9] * ChScale.L,
+                               amatr[10] * ChScale.L,
+                               amatr[11] * ChScale.L,
+                               quat[0], quat[1], quat[2], quat[3]);
+                }
+
+                swFeat = (Feature)swFeat.GetNextFeature();
+            }
+        }
+
+
 
         public void JsonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode)
         {
@@ -846,6 +1618,127 @@ namespace ChronoEngine_SwAddin
                     PythonTraverseComponent_for_visualizationshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref nvisshape, chbody_comp);
             }
         }
+
+
+        public void CppTraverseComponent_for_visualizationshapes(Component2 swComp, long nLevel, ref string asciitext, int nbody, ref int nvisshape, Component2 chbody_comp)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+            object[] bodies;
+            object bodyInfo;
+            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+
+            if (bodies != null)
+                if (bodies.Length > 0)
+                {
+                    // Export the component shape to a .OBJ file representing its SW body(s)
+                    nvisshape += 1;
+                    string bodyname = "body_" + nbody;
+                    string shapename = "body_" + nbody + "_" + nvisshape;
+                    string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+
+                    ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
+                    if (!this.saved_shapes.ContainsKey(swCompModel.GetPathName()))
+                    {
+                        try
+                        {
+                            FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
+                            StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
+                            string asciiobj = "";
+                            if (this.swProgress != null)
+                                this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
+                            // Write the OBJ converted visualization shapes:
+                            TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress, true, false);
+                            writer.Write(asciiobj);
+                            writer.Flush();
+                            ostream.Close();
+
+                            this.saved_shapes.Add(swCompModel.GetPathName(), shapename);
+                        }
+                        catch (Exception)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + "\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
+                        }
+                    }
+                    else
+                    {
+                        // reuse the already-saved shape name
+                        shapename = (String)saved_shapes[swCompModel.GetPathName()];
+                    }
+
+                    asciitext += String.Format(bz, "\n// Visualization shape\n");
+                    asciitext += String.Format(bz, "body_shape = chrono_types::make_shared<chrono::ChModelFileShape>();\n");
+                    asciitext += String.Format(bz, "body_shape->SetFilename(shapes_dir + \"{0}.obj\");\n", shapename);
+
+                    object foo = null;
+                    double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
+
+                    if (vMatProperties != null)
+                        if (vMatProperties[0] != -1)
+                        {
+                            asciitext += String.Format(bz, "body_shape->SetColor(chrono::ChColor((float){1},(float){2},(float){3}));\n", shapename, vMatProperties[0], vMatProperties[1], vMatProperties[2]);
+                            asciitext += String.Format(bz, "body_shape->SetOpacity({1});\n", shapename, 1.0 - vMatProperties[7]);
+                        }
+
+                    MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
+                    MathTransform absframe_shape = swComp.GetTotalTransform(true);
+                    MathTransform absframe_chbody_inv = absframe_chbody.IInverse();
+                    MathTransform relframe_shape = absframe_shape.IMultiply(absframe_chbody_inv);  // row-ordered transf. -> reverse mult.order!
+                    double[] amatr = (double[])relframe_shape.ArrayData;
+                    double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
+
+                    asciitext += String.Format(bz, "{0}->AddVisualShape(body_shape, chrono::ChFrame<>(", bodyname, shapename);
+                    asciitext += String.Format(bz, "chrono::ChVector<>({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                    asciitext += String.Format(bz, "chrono::ChQuaternion<>({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
+                    asciitext += String.Format(bz, "));\n");
+
+
+                    //asciitext += String.Format(bz, "\n// Visualization shape\n");
+                    //asciitext += String.Format(bz, "auto {0}_shape = chrono_types::make_shared<chrono::ChModelFileShape>();\n", shapename);
+                    //asciitext += String.Format(bz, "{0}_shape->SetFilename(shapes_dir + \"{0}.obj\");\n", shapename);
+
+                    //object foo = null;
+                    //double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
+
+                    //if (vMatProperties != null)
+                    //    if (vMatProperties[0] != -1)
+                    //    {
+                    //        asciitext += String.Format(bz, "{0}_shape->SetColor(chrono::ChColor({1},{2},{3}));\n", shapename, vMatProperties[0], vMatProperties[1], vMatProperties[2]);
+                    //        asciitext += String.Format(bz, "{0}_shape->SetOpacity({1});\n", shapename, 1.0 - vMatProperties[7]);
+                    //    }
+
+                    //MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
+                    //MathTransform absframe_shape = swComp.GetTotalTransform(true);
+                    //MathTransform absframe_chbody_inv = absframe_chbody.IInverse();
+                    //MathTransform relframe_shape = absframe_shape.IMultiply(absframe_chbody_inv);  // row-ordered transf. -> reverse mult.order!
+                    //double[] amatr = (double[])relframe_shape.ArrayData;
+                    //double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
+
+                    //asciitext += String.Format(bz, "{0}->AddVisualShape({1}_shape, chrono::ChFrame<>(", bodyname, shapename);
+                    //asciitext += String.Format(bz, "chrono::ChVector<>({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                    //asciitext += String.Format(bz, "chrono::ChQuaternion<>({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
+                    //asciitext += String.Format(bz, "));\n");
+                }
+
+
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                if (swChildComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                    CppTraverseComponent_for_visualizationshapes(swChildComp, nLevel + 1, ref asciitext, nbody, ref nvisshape, chbody_comp);
+            }
+        }
+
+
+
+
+
 
         public void JsonTraverseComponent_for_visualizationshapes(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode, ref int nvisshape, Component2 chbody_comp)
         {
@@ -1353,7 +2246,7 @@ namespace ChronoEngine_SwAddin
                             // Insert to a list of exported items
                             asciitext += String.Format(bz, "\n" + "exported_items.append({0})\n", bodyname);
 
-                            // End writing body in Python-
+                            // End writing body in Python
                             asciitext += "\n\n\n";
 
 

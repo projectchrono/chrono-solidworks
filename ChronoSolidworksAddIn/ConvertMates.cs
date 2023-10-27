@@ -412,7 +412,7 @@ namespace ChronoEngine_SwAddin
                 MateEntity2 swEntityN = swMate.MateEntity(e);
                 Component2 swCompN = swEntityN.ReferenceComponent;
                 String ce_nameN = (String)saved_parts[swModelDocExt.GetPersistReference3(swCompN)];
-                if (ce_nameN == "")
+                if (swEntityN.ReferenceType2 == 4)
                     ce_nameN = "body_0"; // reference assembly
                 asciitext += "#   Entity " + e + ": C::E name: " + ce_nameN + " , SW name: " + swCompN.Name2 + " ,  SW ref.type:" + swEntityN.Reference.GetType() + " (" + swEntityN.ReferenceType2 + ")\n";
             }
@@ -488,7 +488,7 @@ namespace ChronoEngine_SwAddin
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                     if (link_params.do_parallel_flip)
-                        asciitext += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
+                        asciitext += String.Format(bz, "{0}->SetFlipped(true)\n", linkname);
 
                     // Initialize link, by setting the two csys, in absolute space,
                     if (!link_params.swapAB_1)
@@ -678,6 +678,330 @@ namespace ChronoEngine_SwAddin
 
             return true;
         }
+
+
+        //// 
+        //// CONVERT TO C++
+        //// 
+        public static bool ConvertMateToCpp(
+                    in Feature swMateFeature,
+                    ref string asciitext,
+                    in ISldWorks mSWApplication,
+                    in Hashtable saved_parts,
+                    ref int num_link,
+                    in MathTransform roottrasf,
+                    in Component2 assemblyofmates
+                    )
+        {
+
+            LinkParams link_params;
+            GetLinkParameters(swMateFeature, out link_params, mSWApplication, saved_parts, roottrasf, assemblyofmates);
+
+            // TODO: redundant part of code
+            Mate2 swMate = (Mate2)swMateFeature.GetSpecificFeature2();
+            // Fetch the python names using hash map (python names added when scanning parts)
+            ModelDocExtension swModelDocExt = default(ModelDocExtension);
+            ModelDoc2 swModel = (ModelDoc2)mSWApplication.ActiveDoc;
+            swModelDocExt = swModel.Extension;
+
+            // Add some comment in C++, to list the referenced SW items
+            asciitext += "\n// Mate constraint: " + swMateFeature.Name + " [" + swMateFeature.GetTypeName2() + "]" + " type:" + swMate.Type + " align:" + swMate.Alignment + " flip:" + swMate.Flipped + "\n";
+            for (int e = 0; e < swMate.GetMateEntityCount(); e++)
+            {
+                MateEntity2 swEntityN = swMate.MateEntity(e);
+                Component2 swCompN = swEntityN.ReferenceComponent;
+                String ce_nameN = (String)saved_parts[swModelDocExt.GetPersistReference3(swCompN)];
+                if (swEntityN.ReferenceType2 == 4)
+                    ce_nameN = "body_0"; // reference assembly
+                asciitext += "//   Entity " + e + ": C::E name: " + ce_nameN + " , SW name: " + swCompN.Name2 + " ,  SW ref.type:" + swEntityN.Reference.GetType() + " (" + swEntityN.ReferenceType2 + ")\n";
+            }
+            asciitext += "\n";
+
+            //// 
+            //// WRITE CPP CODE CORRESPONDING TO CONSTRAINTS
+            ////
+            CultureInfo bz = new CultureInfo("en-BZ");
+
+
+            if (link_params.ref1 == null)
+                link_params.ref1 = "body_0";
+
+            if (link_params.ref2 == null)
+                link_params.ref2 = "body_0";
+
+            if (link_params.do_ChLinkMateXdistance)
+            {
+                num_link++;
+                String linkname = "link_" + num_link;
+                asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateXdistance>();\n", linkname);
+
+                asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cA.X * ChScale.L,
+                          link_params.cA.Y * ChScale.L,
+                          link_params.cA.Z * ChScale.L);
+                asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cB.X * ChScale.L,
+                          link_params.cB.Y * ChScale.L,
+                          link_params.cB.Z * ChScale.L);
+                if (!link_params.entity_0_as_VERTEX)
+                    asciitext += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                             linkname,
+                             link_params.dA.X, 
+                             link_params.dA.Y, 
+                             link_params.dA.Z);
+                if (!link_params.entity_1_as_VERTEX)
+                    asciitext += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                             linkname,
+                             link_params.dB.X,
+                             link_params.dB.Y, 
+                             link_params.dB.Z);
+
+                // Initialize link, by setting the two csys, in absolute space,
+                if (!link_params.swapAB_1)
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cA,cB,dB);\n", linkname, link_params.ref1, link_params.ref2);
+                else
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cB,cA,dA);\n", linkname, link_params.ref2, link_params.ref1);
+
+                //if (link_params.do_distance_val!=0)
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->SetDistance({1});\n", linkname,
+                    link_params.do_distance_val * ChScale.L * -1);
+
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                // Insert to a list of exported items
+                asciitext += String.Format(bz, "linklist.push_back(link);\n\n", linkname);
+            }
+
+            if (link_params.do_ChLinkMateParallel)
+            {
+                if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) > 0.98)
+                {
+                    num_link++;
+                    String linkname = "link_" + num_link;
+                    asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateParallel>();\n", linkname);
+
+                    asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname,
+                              link_params.cA.X * ChScale.L,
+                              link_params.cA.Y * ChScale.L,
+                              link_params.cA.Z * ChScale.L);
+                    asciitext += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                    asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname,
+                              link_params.cB.X * ChScale.L,
+                              link_params.cB.Y * ChScale.L,
+                              link_params.cB.Z * ChScale.L);
+                    asciitext += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+
+                    if (link_params.do_parallel_flip)
+                        asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateParallel>(link)->SetFlipped(true);\n", linkname);
+
+                    // Initialize link, by setting the two csys, in absolute space,
+                    if (!link_params.swapAB_1)
+                        asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateParallel>(link)->Initialize({1},{2},false,cA,cB,dA,dB);\n", linkname, link_params.ref1, link_params.ref2);
+                    else
+                        asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateParallel>(link)->Initialize({1},{2},false,cB,cA,dB,dA);\n", linkname, link_params.ref2, link_params.ref1);
+
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateParallel>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                    // Insert to a list of exported items
+                    asciitext += String.Format(bz, "linklist.push_back(link);\n\n", linkname);
+                }
+                else
+                {
+                    asciitext += "\n// chrono_types::make_shared<ChLinkMateParallel> skipped because directions not parallel!\n";
+                }
+            }
+
+            if (link_params.do_ChLinkMateOrthogonal)
+            {
+                if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) < 0.02)
+                {
+                    num_link++;
+                    String linkname = "link_" + num_link;
+                    asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateOrthogonal>();\n", linkname);
+
+                    asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname,
+                              link_params.cA.X * ChScale.L,
+                              link_params.cA.Y * ChScale.L,
+                              link_params.cA.Z * ChScale.L);
+                    asciitext += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                    asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname,
+                              link_params.cB.X * ChScale.L,
+                              link_params.cB.Y * ChScale.L,
+                              link_params.cB.Z * ChScale.L);
+                    asciitext += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                              linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+
+                    // Initialize link, by setting the two csys, in absolute space,
+                    if (!link_params.swapAB_1)
+                        asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateOrthogonal>(link)->Initialize({1},{2},false,cA,cB,dA,dB);\n", linkname, link_params.ref1, link_params.ref2);
+                    else
+                        asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateOrthogonal>(link)->Initialize({1},{2},false,cB,cA,dB,dA);\n", linkname, link_params.ref2, link_params.ref1);
+
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateOrthogonal>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                    // Insert to a list of exported items
+                    asciitext += String.Format(bz, "linklist.push_back(link);\n\n", linkname);
+                }
+                else
+                {
+                    asciitext += ";\n// chrono_types::make_shared<chrono::ChLinkMateOrthogonal> skipped because directions not orthogonal! ;\n";
+                }
+            }
+
+            if (link_params.do_ChLinkMateSpherical)
+            {
+                num_link++;
+                String linkname = "link_" + num_link;
+                asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateSpherical>();\n", linkname);
+
+                asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cA.X * ChScale.L,
+                          link_params.cA.Y * ChScale.L,
+                          link_params.cA.Z * ChScale.L);
+                asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cB.X * ChScale.L,
+                          link_params.cB.Y * ChScale.L,
+                          link_params.cB.Z * ChScale.L);
+
+                // Initialize link, by setting the two csys, in absolute space,
+                if (!link_params.swapAB_1)
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateSpherical>(link)->Initialize({1},{2},false,cA,cB);\n", linkname, link_params.ref1, link_params.ref2);
+                else
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateSpherical>(link)->Initialize({1},{2},false,cB,cA);\n", linkname, link_params.ref2, link_params.ref1);
+
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateSpherical>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                // Insert to a list of exported items
+                asciitext += String.Format(bz, "linklist.push_back(link);\n\n", linkname);
+            }
+
+            if (link_params.do_ChLinkMatePointLine)
+            {
+                num_link++;
+                String linkname = "link_" + num_link;
+                asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateGeneric>();\n", linkname);
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateGeneric>(link)->SetConstrainedCoords(false, true, true, false, false, false);\n", linkname);
+
+                asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cA.X * ChScale.L,
+                          link_params.cA.Y * ChScale.L,
+                          link_params.cA.Z * ChScale.L);
+                asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cB.X * ChScale.L,
+                          link_params.cB.Y * ChScale.L,
+                          link_params.cB.Z * ChScale.L);
+                if (!link_params.entity_0_as_VERTEX)
+                    asciitext += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n", linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                else
+                    asciitext += String.Format(bz, "dA = VNULL;\n");
+                if (!link_params.entity_1_as_VERTEX)
+                    asciitext += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n", linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+                else
+                    asciitext += String.Format(bz, "dB = VNULL;\n");
+
+                // Initialize link, by setting the two csys, in absolute space,
+                if (!link_params.swapAB_1)
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateGeneric>(link)->Initialize({1},{2},false,cA,cB,dA,dB);\n", linkname, link_params.ref1, link_params.ref2);
+                else
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateGeneric>(link)->Initialize({1},{2},false,cB,cA,dB,dA);\n", linkname, link_params.ref2, link_params.ref1);
+
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateGeneric>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                // Insert to a list of exported items
+                asciitext += String.Format(bz, "linklist.push_back(link);\n\n", linkname);
+            }
+
+
+
+            // Now, do some other special mate type that did not fall in combinations
+            // of link_params.do_ChLinkMatePointLine, link_params.do_ChLinkMateSpherical, etc etc
+
+            if (swMateFeature.GetTypeName2() == "MateHinge")
+            {
+                // auto flip direction if anti aligned (seems that this is assumed automatically in MateHinge in SW)
+                if (Vector3D.DotProduct(link_params.dA, link_params.dB) < 0)
+                    link_params.dB.Negate();
+
+                // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
+                num_link++;
+                String linkname = "link_" + num_link;
+                asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateCoaxial>();\n", linkname);
+
+                asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cA.X * ChScale.L,
+                          link_params.cA.Y * ChScale.L,
+                          link_params.cA.Z * ChScale.L);
+                asciitext += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cB.X * ChScale.L,
+                          link_params.cB.Y * ChScale.L,
+                          link_params.cB.Z * ChScale.L);
+                asciitext += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateCoaxial>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+
+
+                // Initialize link, by setting the two csys, in absolute space,
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateCoaxial>(link)->Initialize({1},{2},false,cA,cB,dA,dB);\n", linkname, link_params.ref1, link_params.ref2);
+
+                // Insert to a list of exported items
+                asciitext += String.Format(bz, "linklist.push_back(link);\n", linkname);
+
+
+
+
+                num_link++;
+                linkname = "link_" + num_link;
+                asciitext += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateXdistance>();\n", linkname);
+
+                asciitext += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cC.X * ChScale.L,
+                          link_params.cC.Y * ChScale.L,
+                          link_params.cC.Z * ChScale.L);
+                asciitext += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname, link_params.dC.X, link_params.dC.Y, link_params.dC.Z);
+                asciitext += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname,
+                          link_params.cD.X * ChScale.L,
+                          link_params.cD.Y * ChScale.L,
+                          link_params.cD.Z * ChScale.L);
+                asciitext += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                          linkname, link_params.dD.X, link_params.dD.Y, link_params.dD.Z);
+
+                asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+
+
+                // Initialize link, by setting the two csys, in absolute space,
+                if (link_params.entity_2_as_VERTEX)
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cA,cB,dA);\n", linkname, link_params.ref3, link_params.ref4);
+                else
+                    asciitext += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cA,cB,dB);\n", linkname, link_params.ref3, link_params.ref4);
+
+                // Insert to a list of exported items
+                asciitext += String.Format(bz, "linklist.push_back(link);\n", linkname);
+            }
+
+
+            return true;
+        }
+
+
+
+
+
 
         public static bool GetLinkParameters(
                                     in Feature swMateFeature,
