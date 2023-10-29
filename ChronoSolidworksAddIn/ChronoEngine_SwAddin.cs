@@ -85,7 +85,19 @@ public class SWIntegration : ISwAddin
     }
     private void UISetup()
     {
-        mTaskpaneView = mSWApplication.CreateTaskpaneView2(string.Empty, "Chrono::Engine tools");
+
+        string addinPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        string[] imagePaths = new string[6]
+        {
+            addinPath+"/icons/ChronoEngineAddIn_20.png",
+            addinPath+"/icons/ChronoEngineAddIn_32.png",
+            addinPath+"/icons/ChronoEngineAddIn_40.png",
+            addinPath+"/icons/ChronoEngineAddIn_64.png",
+            addinPath+"/icons/ChronoEngineAddIn_96.png",
+            addinPath+"/icons/ChronoEngineAddIn_128.png"
+        };
+
+        mTaskpaneView = mSWApplication.CreateTaskpaneView3(imagePaths, "Chrono::Engine tools");
         mTaskpaneHost = (SWTaskpaneHost)mTaskpaneView.AddControl(SWTaskpaneHost.SWTASKPANE_PROGID,"");
         mTaskpaneHost.mSWApplication = this.mSWApplication;
         mTaskpaneHost.mSWintegration = this;
