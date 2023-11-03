@@ -143,6 +143,12 @@
     <Compile Include="EditChBody.Designer.cs">
       <DependentUpon>EditChBody.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditChLink.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditChLink.Designer.cs">
+      <DependentUpon>EditChLink.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -182,6 +188,9 @@
     <EmbeddedResource Include="EditChBody.resx">
       <DependentUpon>EditChBody.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditChLink.resx">
+      <DependentUpon>EditChLink.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SidePanel.resx">
       <DependentUpon>SidePanel.cs</DependentUpon>

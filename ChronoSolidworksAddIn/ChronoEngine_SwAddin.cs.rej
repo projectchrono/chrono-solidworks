@@ -1,0 +1,10 @@
+diff a/ChronoSolidworksAddIn/ChronoEngine_SwAddin.cs b/ChronoSolidworksAddIn/ChronoEngine_SwAddin.cs	(rejected hunks)
+@@ -18,7 +18,7 @@
+ using SWPublished;
+ */
+ 
+-namespace ChronoEngine_SwAddin
++namespace ChronoEngineAddIn
+ {
+ 
+ [ComVisible(true)]

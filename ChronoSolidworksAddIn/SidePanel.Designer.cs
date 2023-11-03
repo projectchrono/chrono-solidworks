@@ -68,6 +68,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.butt_chronoLinks = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -358,7 +359,7 @@
             // 
             this.button_chrono_property.Location = new System.Drawing.Point(17, 523);
             this.button_chrono_property.Name = "button_chrono_property";
-            this.button_chrono_property.Size = new System.Drawing.Size(184, 25);
+            this.button_chrono_property.Size = new System.Drawing.Size(102, 25);
             this.button_chrono_property.TabIndex = 22;
             this.button_chrono_property.Text = "Chrono properties";
             this.button_chrono_property.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -637,11 +638,24 @@
             this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
+            // butt_chronoLinks
+            // 
+            this.butt_chronoLinks.Location = new System.Drawing.Point(125, 523);
+            this.butt_chronoLinks.Name = "butt_chronoLinks";
+            this.butt_chronoLinks.Size = new System.Drawing.Size(76, 25);
+            this.butt_chronoLinks.TabIndex = 37;
+            this.butt_chronoLinks.Text = "Chrono links";
+            this.butt_chronoLinks.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.butt_chronoLinks, "Open the properties for Chrono links");
+            this.butt_chronoLinks.UseVisualStyleBackColor = true;
+            this.butt_chronoLinks.Click += new System.EventHandler(this.butt_chronoLinks_Click);
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.butt_chronoLinks);
             this.Controls.Add(this.button_ExportToCpp);
             this.Controls.Add(this.button_ExportToJson);
             this.Controls.Add(this.button_settrimeshcoll);
@@ -737,5 +751,6 @@
         private System.Windows.Forms.Button button_settrimeshcoll;
         private System.Windows.Forms.Button button_ExportToJson;
         private System.Windows.Forms.Button button_ExportToCpp;
+        private System.Windows.Forms.Button butt_chronoLinks;
     }
 }

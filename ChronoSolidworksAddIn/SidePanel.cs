@@ -19,11 +19,13 @@ using Microsoft.Win32;
 // for JSON export
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 
 namespace ChronoEngine_SwAddin
 {
-    public struct JObjectCreator {
+    public struct JObjectCreator
+    {
         public static JObject CreateChVector(double[] vect)
         {
             if (vect.Length != 3)
@@ -268,7 +270,7 @@ namespace ChronoEngine_SwAddin
                     File.WriteAllText(SaveFileDialog1.FileName, ChSystemWrapper.ToString(Formatting.Indented));
 
                 }
-                
+
                 if (this.checkBox_savetest.Checked && sender.ToString() == "button_ExportToPython") // TODO: Json cannot handle collisions yet
                 {
                     string save_directory = System.IO.Path.GetDirectoryName(SaveFileDialog1.FileName);
@@ -764,33 +766,46 @@ namespace ChronoEngine_SwAddin
 
             bool selected_part = false;
             for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+            {
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
                 {
                     selected_part = true;
-                }
 
+                    // Open modal dialog
+                    EditChBody myCustomerDialog = new EditChBody();
+
+                    // Update dialog properties properties from the selected part(s) (i.e. ChBody in C::E) 
+                    if (myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_chbody))
+                    {
+                        // Show the modal dialog
+                        if (myCustomerDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
+                            myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
+                        }
+                    }
+
+                }
+            }
 
             if (!selected_part)
             {
                 System.Windows.Forms.MessageBox.Show("Chrono properties can be edited only for parts! Select one or more parts before using it.");
                 return;
             }
+        }
 
+        private void butt_chronoLinks_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.MessageBox.Show("CLICKED CHRONO LINKS BUTTON");
 
-            // Open modal dialog
-            EditChBody myCustomerDialog = new EditChBody();
+            ModelDoc2 swModel;
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
 
-            // Update dialog properties properties from the selected part(s) (i.e. ChBody in C::E) 
-            if (myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_chbody))
-            {
-                // Show the modal dialog
-                if (myCustomerDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
-                    myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
-                }
-            }
-
+            EditChLink myCustomerDialog = new EditChLink(ref swSelMgr);
+            //myCustomerDialog.ShowDialog(); // show modal
+            myCustomerDialog.Show();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -978,7 +993,7 @@ namespace ChronoEngine_SwAddin
             return M.Transform(dir);
         }
 
-        
+
 
         // ============================================================================================================
         // Export utility functions
@@ -2004,7 +2019,7 @@ namespace ChronoEngine_SwAddin
             asciitext += "std::string shapes_dir = \"" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes/\";\n\n";
 
             asciitext += "// Prepare some data for later use\n";
-            asciitext += "std::shared_ptr<chrono::ChModelFileShape> body_shape;\n"; 
+            asciitext += "std::shared_ptr<chrono::ChModelFileShape> body_shape;\n";
             asciitext += "chrono::ChMatrix33<> mr;\n";
             asciitext += "std::shared_ptr<chrono::ChLinkBase> link;\n";
             asciitext += "chrono::ChVector<> cA;\n";
@@ -2069,7 +2084,7 @@ namespace ChronoEngine_SwAddin
                 {
                     swSubFeat = (Feature)swFeat.GetFirstSubFeature();
 
-                    while ((swSubFeat != null)) 
+                    while ((swSubFeat != null))
                     {
                         if (!swSubFeat.IsSuppressed())
                         {
@@ -3094,7 +3109,7 @@ namespace ChronoEngine_SwAddin
                 ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion", JObjectCreator.CreateChQuaternion(1, 0, 0, 0));
 
                 // Write 'fixed' state
-                ChBodyAuxRefNode.Add("_c_SetBodyFixed", swComp.IsFixed() ? true: false);
+                ChBodyAuxRefNode.Add("_c_SetBodyFixed", swComp.IsFixed() ? true : false);
 
 
 
