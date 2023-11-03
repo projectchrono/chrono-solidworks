@@ -239,8 +239,13 @@ namespace ChronoEngine_SwAddin
 
                     asciitext_header += "#include <vector>\n";
                     asciitext_header += "#include \"chrono/physics/ChBodyAuxRef.h\"\n";
-                    asciitext_header += "#include \"chrono/physics/ChLinkMate.h\"\n\n";
+                    asciitext_header += "#include \"chrono/physics/ChLinkMate.h\"\n";
+                    asciitext_header += "#include \"chrono/physics/ChSystem.h\"\n\n";
 
+                    asciitext_header += "/// Function to import Solidworks assembly directly into Chrono ChSystem.\n";
+                    asciitext_header += "void ImportSolidworksSystemCpp(chrono::ChSystem& system);\n\n";
+
+                    asciitext_header += "/// Function to import Solidworks bodies and mates into dedicated containers.\n";
                     asciitext_header += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist);\n\n";
 
                     asciitext_header += "#endif // end CH_IMPORT_SLDW_CPP_H\n";
@@ -1977,7 +1982,19 @@ namespace ChronoEngine_SwAddin
 
             asciitext += "#include \"" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + ".h\"\n";
 
-            asciitext += "\n\nvoid ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist) {\n\n";
+            asciitext += "\n\n/// Function to import Solidworks assembly directly into Chrono ChSystem.\n";
+            asciitext += "void ImportSolidworksSystemCpp(chrono::ChSystem& system) {\n";
+            asciitext += "std::vector<std::shared_ptr<chrono::ChBodyAuxRef>> bodylist;\n";
+            asciitext += "std::vector<std::shared_ptr<chrono::ChLinkBase>> linklist;\n";
+            asciitext += "ImportSolidworksSystemCpp(bodylist, linklist);\n";
+            asciitext += "for (auto& body : bodylist)\n";
+            asciitext += "    system.Add(body);\n";
+            asciitext += "for (auto& link : linklist)\n";
+            asciitext += "    system.Add(link);\n";
+            asciitext += "}\n";
+
+            asciitext += "\n\n/// Function to import Solidworks bodies and mates into dedicated containers.\n";
+            asciitext += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist) {\n\n";
             asciitext += "// Some global settings\n" +
                          "double sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + ";\n" +
                          "chrono::collision::ChCollisionModel::SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ");\n" +
