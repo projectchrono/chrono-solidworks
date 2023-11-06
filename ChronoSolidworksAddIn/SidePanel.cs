@@ -20,6 +20,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using static ChronoEngine_SwAddin.ConvertMates;
 
 
 namespace ChronoEngine_SwAddin
@@ -797,13 +798,11 @@ namespace ChronoEngine_SwAddin
 
         private void butt_chronoLinks_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show("CLICKED CHRONO LINKS BUTTON");
-
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
 
-            EditChLink myCustomerDialog = new EditChLink(ref swSelMgr);
+            EditChLink myCustomerDialog = new EditChLink(ref swSelMgr, ref mSWintegration);
             //myCustomerDialog.ShowDialog(); // show modal
             myCustomerDialog.Show();
         }
@@ -2054,7 +2053,6 @@ namespace ChronoEngine_SwAddin
 
                 CppTraverseComponent_for_links(swRootComp, 1, ref asciitext, ref roottrasf);
 
-
                 // Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
                 swFeat = (Feature)swModel.FirstFeature();
                 CppTraverseFeatures_for_markers(swFeat, 1, ref asciitext, 0, roottrasf);
@@ -2757,14 +2755,88 @@ namespace ChronoEngine_SwAddin
                     asciitext += String.Format(bz, "{0}->SetName(\"{1}\");\n", markername, swFeat.Name);
                     asciitext += String.Format(bz, "{0}->AddMarker({1});\n", bodyname, markername);
                     asciitext += String.Format(bz, "{0}->Impose_Abs_Coord(chrono::ChCoordsys<>(chrono::ChVector<>({1},{2},{3}),chrono::ChQuaternion<>({4},{5},{6},{7})));\n",
-                               markername,
-                               amatr[9] * ChScale.L,
-                               amatr[10] * ChScale.L,
-                               amatr[11] * ChScale.L,
-                               quat[0], quat[1], quat[2], quat[3]);
+                        markername,
+                        amatr[9] * ChScale.L,
+                        amatr[10] * ChScale.L,
+                        amatr[11] * ChScale.L,
+                        quat[0], quat[1], quat[2], quat[3]);
+
+
+
+                    ///////// ADDED FOR MOTORS DIRECTLY IN SOLIDWORKS
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(mSWintegration.defattr_chlink, 0) != null)
+                    {
+                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(mSWintegration.defattr_chlink, 0);
+
+                        string motorMarker      = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
+                        string motorBody1       = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
+                        string motorBody2       = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+                        string motorType        = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+                        string motorControl     = ((Parameter)motorAttribute.GetParameter("motor_control")).GetStringValue();
+                        string motorMotionlaw   = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+
+
+                        ModelDoc2 swModel = (ModelDoc2)mSWintegration.mSWApplication.ActiveDoc;
+
+                        byte[] selMarkerRef = (byte[])EditChLink.GetIDFromString(swModel, motorMarker);
+                        byte[] selBody1Ref = (byte[])EditChLink.GetIDFromString(swModel, motorBody1);
+                        byte[] selBody2Ref = (byte[])EditChLink.GetIDFromString(swModel, motorBody2);
+
+                        Feature selectedMarker = (Feature)EditChLink.GetObjectFromID(swModel, selMarkerRef);
+                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChLink.GetObjectFromID(swModel, selBody1Ref);
+                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChLink.GetObjectFromID(swModel, selBody2Ref);
+
+                        string debugString = "";
+                        debugString += "READING ATTRIBUTES\n";
+                        debugString += "motor_marker: " + motorMarker + "\n";
+                        debugString += "motor_body1: " + motorBody1 + "\n";
+                        debugString += "motor_body2: " + motorBody2 + "\n";
+                        debugString += "motor_type: " + motorType + "\n";
+                        debugString += "motor_control: " + motorControl + "\n";
+                        debugString += "motor_motionlaw: " + motorMotionlaw + "\n";
+                        System.Windows.Forms.MessageBox.Show(debugString);
+
+                        string chMotorClassName = "ChLinkMotor";
+                        if (motorType == "Rotation")
+                        {
+                            chMotorClassName += "Rotation";
+
+                            if (motorControl == "Position")
+                                chMotorClassName += "Angle";
+                            else if (motorControl == "Velocity")
+                                chMotorClassName += "Speed";
+                            else if (motorControl == "Torque")
+                                chMotorClassName += "Torque";
+                        }
+                        else if (motorType == "Translation")
+                        {
+                            chMotorClassName += "Linear";
+
+                            if (motorControl == "Position")
+                                chMotorClassName += "Position";
+                            else if (motorControl == "Velocity")
+                                chMotorClassName += "Speed";
+                            else if (motorControl == "Torque")
+                                chMotorClassName += "Force";
+                        }
+                        
+
+                        String motorInstanceName = "motor_" + nbody + "_" + nmarker;
+                        asciitext += "\n// Motor from Solidworks marker\n";                        
+                        asciitext += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
+                        asciitext += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, "motor_" + swFeat.Name);
+                        asciitext += String.Format(bz, "{0}->Initialize({1},{2}," + selectedMarker.Name + "->GetAbsFrame());\n", motorInstanceName, selectedBody1.Name, selectedBody2.Name);
+                    
+                        //
+                        // TODO: FIX GET OF NAMES -> not sw name but chrono exported names!!
+                        //
+                    
+                    }
+                    //////////////////////////////////////////////
+
                 }
 
-                swFeat = (Feature)swFeat.GetNextFeature();
+                    swFeat = (Feature)swFeat.GetNextFeature();
             }
         }
 

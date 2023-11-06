@@ -32,7 +32,8 @@ public class SWIntegration : ISwAddin
     public AttributeDef defattr_chbody = default(AttributeDef);
     //public AttributeDef defattr_chconveyor = default(AttributeDef);
     public AttributeDef defattr_test = default(AttributeDef);
-    
+    public AttributeDef defattr_chlink = default(AttributeDef);
+
     public bool ConnectToSW(object ThisSW, int Cookie)
     {
         //System.Windows.Forms.MessageBox.Show("Add-in: ConnectToSW");
@@ -42,8 +43,7 @@ public class SWIntegration : ISwAddin
             mSWCookie = Cookie;
             bool result = mSWApplication.SetAddinCallbackInfo(0, this, Cookie);
 
-            // Attributes register
-            
+            // Attributes register          
 
             defattr_chbody = (AttributeDef)mSWApplication.DefineAttribute("chrono_ChBody");
             defattr_chbody.AddParameter("friction",             (int)swParamType_e.swParamTypeDouble, 0.6, 0);
@@ -55,11 +55,20 @@ public class SWIntegration : ISwAddin
             defattr_chbody.AddParameter("collision_envelope",   (int)swParamType_e.swParamTypeDouble, 0.03, 0);
             defattr_chbody.AddParameter("collision_family",     (int)swParamType_e.swParamTypeDouble, 0, 0);
             defattr_chbody.Register();
-            /*
-            defattr_chconveyor = (AttributeDef)moSWApplication.DefineAttribute("chrono_ChConveyor");
-            defattr_chconveyor.AddParameter("conveyor_speed",   (int)swParamType_e.swParamTypeDouble, 1.0, 0);
-            defattr_chconveyor.Register();
-            */
+
+           
+            defattr_chlink = (AttributeDef)mSWApplication.DefineAttribute("chrono_ChLink");
+            defattr_chlink.AddParameter("motor_marker", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_body1", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_body2", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_type", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_control", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_motionlaw", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.Register();
+
+            //defattr_chconveyor = (AttributeDef)moSWApplication.DefineAttribute("chrono_ChConveyor");
+            //defattr_chconveyor.AddParameter("conveyor_speed",   (int)swParamType_e.swParamTypeDouble, 1.0, 0);
+            //defattr_chconveyor.Register();
 
             // Register the taskpane
             this.UISetup();
@@ -119,7 +128,7 @@ public class SWIntegration : ISwAddin
         {
             rk.SetValue(null, 1); // Load at startup
             rk.SetValue("Title", "ChronoEngine SwAddin"); // Title
-            rk.SetValue("Description", "Add-in for designing Chrono::Engine assets with SolidWorks"); // Description
+            rk.SetValue("Description", "Add-in for modeling Chrono::Engine system with SolidWorks"); // Description
         }
     }
 

@@ -62,7 +62,7 @@ namespace ChronoEngineAddin
             this.comboBox_collision_family.Enabled = mval;
         }
 
-        public void  Set_friction(double mval)
+        public void Set_friction(double mval)
         {
             m_friction = mval;
             this.numeric_friction.Value = (decimal)m_friction;

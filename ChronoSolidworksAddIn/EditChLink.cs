@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
+using ChronoEngine_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
@@ -21,14 +21,25 @@ namespace ChronoEngineAddin
     {
         //public ISldWorks m_SWApplication;
         SelectionMgr m_swSelMgr;
-        bool butt_addMate_clicked = false;
+        ChronoEngine_SwAddin.SWIntegration m_SWintegration;
+        //public bool m_isMotor;
+
+        //string m_motorMarkerName;
+        //string m_motorBody1Name;
+        //string m_motorBody2Name;
+        SolidWorks.Interop.sldworks.Feature m_selectedMarker;
+        SolidWorks.Interop.sldworks.Component2 m_selectedBody1;
+        SolidWorks.Interop.sldworks.Component2 m_selectedBody2;
 
 
+        ////////////////////////////////////////////////////////////////////////
 
-        public EditChLink(ref SelectionMgr swSelMgr)
+
+        public EditChLink(ref SelectionMgr swSelMgr, ref ChronoEngine_SwAddin.SWIntegration SWintegration)
         {
             InitializeComponent();
             m_swSelMgr = swSelMgr;
+            m_SWintegration = SWintegration;
         }
 
         public void AddMate() // , ref AttributeDef mdefattr_chbody
@@ -49,8 +60,8 @@ namespace ChronoEngineAddin
                     ////MateEntity2 swMate = (MateEntity2)m_swSelMgr.GetSelectedObjectsComponent3(isel, -1);
 
 
-                    lst_matesSelected.Items.Add(feat.Name);
-                    //
+                    lst_bodiesSelected.Items.Add(feat.Name);
+
 
 
                     //Mate2 swMate = (Mate2)swMateFeature.GetSpecificFeature2();
@@ -69,82 +80,201 @@ namespace ChronoEngineAddin
                     //System.Windows.Forms.MessageBox.Show("Mate type: " + feat.Name); //+ swMate.GetType().Name
 
 
-
-
                     //swMate.GetConcentricAlignmentType
-
-                    //Feature swMateFeature = (Feature)m_swSelMgr.GetSelectedObjectsComponent3(isel, -1);
-                    //string name = swMateFeature.Name;
-                    //System.Windows.Forms.MessageBox.Show(name);
-
-                    ////Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(isel, -1);
-                    //Component2 swPart = swSelMgr.GetSelectedObjectsComponent3(isel, -1);
-                    //ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
-                    ////Component2 swPartcorr = swPart;
-                    ////Component2 swPartcorr = swPartModel.Extension.GetCorresponding(swPart);// ***TODO*** for instanced parts? does not work...
-
-                    //// fetch SW attribute with Chrono parameters for ChBody
-                    //SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(mdefattr_chbody, 0);
-                    //if (myattr == null)
-                    //{
-                    //    // if not already added to part, create and attach it
-                    //    System.Windows.Forms.MessageBox.Show("[store settings failed - should not happen]");
-                    //    return;
-                    //}
-
-                    //((Parameter)myattr.GetParameter("collision_on")).SetDoubleValue2(
-                    //              Convert.ToDouble(m_collide), (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("friction")).SetDoubleValue2(
-                    //              m_friction, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("rolling_friction")).SetDoubleValue2(
-                    //              m_rolling_friction, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("spinning_friction")).SetDoubleValue2(
-                    //              m_spinning_friction, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("restitution")).SetDoubleValue2(
-                    //              m_restitution, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("collision_margin")).SetDoubleValue2(
-                    //              m_collision_margin, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("collision_envelope")).SetDoubleValue2(
-                    //              m_collision_envelope, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-
-                    //((Parameter)myattr.GetParameter("collision_family")).SetDoubleValue2(
-                    //              (double)m_collision_family, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-                    ///*
-                    //// fetch SW attribute with Chrono parameters for ChConveyor
-                    //SolidWorks.Interop.sldworks.Attribute myattr_conveyor = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(defattr_chconveyor, 0);
-                    //if (myattr_conveyor == null)
-                    //{
-                    //    // if not already added to part, create and attach it
-                    //    myattr_conveyor = defattr_chconveyor.CreateInstance5(swPartModel, swPart, "Chrono ChConveyor data", 0, (int)swInConfigurationOpts_e.swThisConfiguration);
-                    //    if (myattr_conveyor == null) 
-                    //        System.Windows.Forms.MessageBox.Show("myattr null in setting!!");
-                    //}
-
-                    //((Parameter)myattr_conveyor.GetParameter("conveyor_speed")).SetDoubleValue2(
-                    //              m_conveyor_speed, (int)swInConfigurationOpts_e.swThisConfiguration, "");
-                    //*/
-                    //swPartModel.ForceRebuild3(false);
                 }
             }
         }
 
-
-        private void butt_addMate_Click(object sender, EventArgs e)
+        public void StoreToSelection(ref SelectionMgr swSelMgr, ref ChronoEngine_SwAddin.SWIntegration SWintegration) // ref AttributeDef mdefattr_chlink
         {
-            //System.Windows.Forms.MessageBox.Show("pressed AddMate button");
-            AddMate();
+            int isel = 1; // start from 1 not from 0!
+            Feature feat = m_swSelMgr.GetSelectedObject6(isel, -1);
+
+            Component2 swPart = m_swSelMgr.GetSelectedObjectsComponent3(isel, -1);
+
+            SolidWorks.Interop.sldworks.Attribute myattr = null;
+            if (swPart != null)
+                myattr = (SolidWorks.Interop.sldworks.Attribute)swPart.FindAttribute(SWintegration.defattr_chlink, 0);
+
+            if (myattr == null)
+            {
+
+                //////////////////////////    
+                //TODO
+                //////////////////////////
+
+                ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
+
+                // if not already added to part, create and attach it
+                myattr = SWintegration.defattr_chlink.CreateInstance5(swPartModel, swPart, "Chrono::ChBody_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+
+                if (myattr == null)
+                {
+                    System.Windows.Forms.MessageBox.Show("Error in setting link attribute.");
+                }
+                //swPartModel.ForceRebuild3(false); // needed, but does not work...
+                //swPartModel.Rebuild((int)swRebuildOptions_e.swRebuildAll); // needed but does not work...
+
+
+                //Set_collision_on(Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue()));
+            }
         }
 
-        private void EditChLink_Load(object sender, EventArgs e)
+        private void butt_addMarker_Click(object sender, EventArgs e)
         {
+            if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1) == swSelectType_e.swSelCOORDSYS)
+            {
+                Feature feat = m_swSelMgr.GetSelectedObject6(1, -1);
+                m_selectedMarker = feat;
+                lst_markerSelected.Items.Add(feat.Name);
+            }
+        }
+
+        private void butt_addBody_Click(object sender, EventArgs e)
+        {
+            for (int isel = 1; isel <= m_swSelMgr.GetSelectedObjectCount2(-1); isel++)
+            {
+                if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(isel, -1) == swSelectType_e.swSelCOMPONENTS)
+                {
+                    Component2 swPart = m_swSelMgr.GetSelectedObjectsComponent3(isel, -1);
+                    if (swPart == null)
+                    {
+                        System.Windows.Forms.MessageBox.Show("swPart == null");
+                        return;
+                    }
+                    else
+                    {
+                        if (isel == 1)                                  // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                        {                                               // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                            m_selectedBody1 = swPart;                   // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                            lst_bodiesSelected.Items.Add(swPart.Name);  // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                        }                                               // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                        else if (isel == 2)                             // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                        {                                               // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                            m_selectedBody2 = swPart;                   // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                            lst_bodiesSelected.Items.Add(swPart.Name);  // WRONG SELECTION: TO FIX (works only if two bodies selected together) -> replace with two selection boxes or simil
+                        }
+                    }
+                }
+            }
+        }
+
+        //public void SetMotorBody1Name(string bodyName)
+        //{
+        //    m_motorBody1Name = bodyName;
+        //    //this.numeric_friction.Value = (decimal)m_friction;
+        //}
+
+        //public void SetMotorBody2Name(string bodyName)
+        //{
+        //    m_motorBody2Name = bodyName;
+        //}
+
+        //public void SetMotorMarkerName(string markerName)
+        //{
+        //    m_motorMarkerName = markerName;
+        //}
+
+        private void butt_createMotor_Click(object sender, EventArgs e)
+        {
+            //System.Windows.Forms.MessageBox.Show("enum: " + (swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1));
+
+            ModelDoc2 swModel = (ModelDoc2)m_SWintegration.mSWApplication.ActiveDoc;
+
+            byte[] motorMarkerRef = (byte[])swModel.Extension.GetPersistReference3(m_selectedMarker);
+            byte[] motorBody1Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody1);
+            byte[] motorBody2Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody2);
+
+            string motorMarker      = GetStringFromID(swModel, motorMarkerRef);
+            string motorBody1       = GetStringFromID(swModel, motorBody1Ref);
+            string motorBody2       = GetStringFromID(swModel, motorBody2Ref);
+            string motorType        = cb_motorType.SelectedItem.ToString();
+            string motorControl     = cb_motorControl.SelectedItem.ToString();
+            string motorMotionlaw   = cb_motionLaw.SelectedItem.ToString();
+
+            //string selectedMarkerString = GetStringFromID(swModel, selectedMarkerRef);
+            //string selectedBodyString1 = GetStringFromID(swModel, selectedBodyRef1);
+            //string selectedBodyString2 = GetStringFromID(swModel, selectedBodyRef2);
+
+
+
+            SolidWorks.Interop.sldworks.Attribute motorAttribute;
+            motorAttribute = m_SWintegration.defattr_chlink.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+
+            ((Parameter)motorAttribute.GetParameter("motor_marker")).SetStringValue(motorMarker);
+            ((Parameter)motorAttribute.GetParameter("motor_body1")).SetStringValue(motorBody1);
+            ((Parameter)motorAttribute.GetParameter("motor_body2")).SetStringValue(motorBody2);
+            ((Parameter)motorAttribute.GetParameter("motor_type")).SetStringValue(motorType);
+            ((Parameter)motorAttribute.GetParameter("motor_control")).SetStringValue(motorControl);
+            ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).SetStringValue(motorMotionlaw);
+
+            swModel.ForceRebuild3(false); // needed, but does not work...
+            swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll); // needed but does not work...
+
+            string debugString = "";
+            debugString += "WRITING ATTRIBUTES\n";
+            debugString += "motor_marker: " + motorMarker + "\n";
+            debugString += "motor_body1: " + motorBody1 + "\n";
+            debugString += "motor_body2: " + motorBody2 + "\n";
+            debugString += "motor_type: " + motorType + "\n";
+            debugString += "motor_control: " + motorControl + "\n";
+            debugString += "motor_motionlaw: " + motorMotionlaw + "\n";
+            System.Windows.Forms.MessageBox.Show(debugString);
+        }
+
+        public static string GetStringFromID(ModelDoc2 swModel, byte[] vPIDarr)
+        {
+
+            string functionReturnValue = null;
+
+            foreach (int vPID in vPIDarr)
+            {
+                functionReturnValue = functionReturnValue + vPID.ToString("###000");
+            }
+            return functionReturnValue;
 
         }
 
-    }
-}
+        public static object GetIDFromString(ModelDoc2 swModel, string IDstring)
+        {
+            ModelDocExtension swModExt = default(ModelDocExtension);
+            byte[] ByteStream = new byte[IDstring.Length / 3];
+            object vPIDarr = null;
+
+            swModExt = swModel.Extension;
+            for (int i = 0; i <= IDstring.Length - 3; i += 3)
+            {
+                int j;
+                j = i / 3;
+                ByteStream[j] = Convert.ToByte(IDstring.Substring(i, 3));
+            }
+
+            vPIDarr = ByteStream;
+
+            return vPIDarr; // TODO, why passing through an object instead of keeping byte[]?
+
+            //object functionReturnValue = swModExt.GetObjectByPersistReference3((vPIDarr), out nRetval);
+
+            //Debug.Assert((int)swPersistReferencedObjectStates_e.swPersistReferencedObject_Ok == nRetval);
+            //Debug.Assert((functionReturnValue != null));
+            //return functionReturnValue;
+
+        }
+
+        public static object GetObjectFromID(ModelDoc2 swModel, byte[] vPIDarr)
+        {
+            int nRetval = 0;
+            object functionReturnValue = swModel.Extension.GetObjectByPersistReference3((vPIDarr), out nRetval);
+
+            if (nRetval != (int)swPersistReferencedObjectStates_e.swPersistReferencedObject_Ok)
+            {
+                System.Windows.Forms.MessageBox.Show("GetObjectFromID failed");
+            }
+
+            return functionReturnValue;
+
+        }
+
+
+    } // end form
+} // end namespace
