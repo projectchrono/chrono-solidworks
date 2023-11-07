@@ -58,17 +58,14 @@ public class SWIntegration : ISwAddin
 
            
             defattr_chlink = (AttributeDef)mSWApplication.DefineAttribute("chrono_ChLink");
-            defattr_chlink.AddParameter("motor_marker", (int)swParamType_e.swParamTypeString, 0.0, 0);
-            defattr_chlink.AddParameter("motor_body1", (int)swParamType_e.swParamTypeString, 0.0, 0);
-            defattr_chlink.AddParameter("motor_body2", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_name", (int)swParamType_e.swParamTypeString, 0.0, 0);
             defattr_chlink.AddParameter("motor_type", (int)swParamType_e.swParamTypeString, 0.0, 0);
-            defattr_chlink.AddParameter("motor_control", (int)swParamType_e.swParamTypeString, 0.0, 0);
             defattr_chlink.AddParameter("motor_motionlaw", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_constraints", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_marker", (int)swParamType_e.swParamTypeString, 0.0, 0);
+            defattr_chlink.AddParameter("motor_body1", (int)swParamType_e.swParamTypeString, 0.0, 0); // slave
+            defattr_chlink.AddParameter("motor_body2", (int)swParamType_e.swParamTypeString, 0.0, 0); // master
             defattr_chlink.Register();
-
-            //defattr_chconveyor = (AttributeDef)moSWApplication.DefineAttribute("chrono_ChConveyor");
-            //defattr_chconveyor.AddParameter("conveyor_speed",   (int)swParamType_e.swParamTypeDouble, 1.0, 0);
-            //defattr_chconveyor.Register();
 
             // Register the taskpane
             this.UISetup();

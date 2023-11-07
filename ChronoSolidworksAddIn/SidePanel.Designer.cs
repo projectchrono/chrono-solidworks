@@ -57,6 +57,7 @@
             this.button_settrimeshcoll = new System.Windows.Forms.Button();
             this.button_ExportToJson = new System.Windows.Forms.Button();
             this.button_ExportToCpp = new System.Windows.Forms.Button();
+            this.butt_chronoMotors = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -68,7 +69,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.butt_chronoLinks = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).BeginInit();
@@ -84,7 +84,7 @@
             // 
             this.button_ExportToPython.Location = new System.Drawing.Point(17, 41);
             this.button_ExportToPython.Name = "button_ExportToPython";
-            this.button_ExportToPython.Size = new System.Drawing.Size(184, 32);
+            this.button_ExportToPython.Size = new System.Drawing.Size(200, 32);
             this.button_ExportToPython.TabIndex = 0;
             this.button_ExportToPython.Text = "Export to Python";
             this.button_ExportToPython.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -188,7 +188,7 @@
             // 
             // button_runtest
             // 
-            this.button_runtest.Location = new System.Drawing.Point(134, 368);
+            this.button_runtest.Location = new System.Drawing.Point(148, 364);
             this.button_runtest.Name = "button_runtest";
             this.button_runtest.Size = new System.Drawing.Size(69, 22);
             this.button_runtest.TabIndex = 8;
@@ -218,7 +218,7 @@
             0,
             0,
             131072});
-            this.numeric_dt.Location = new System.Drawing.Point(134, 390);
+            this.numeric_dt.Location = new System.Drawing.Point(150, 391);
             this.numeric_dt.Maximum = new decimal(new int[] {
             1,
             0,
@@ -247,7 +247,7 @@
             0,
             0,
             65536});
-            this.numeric_length.Location = new System.Drawing.Point(134, 412);
+            this.numeric_length.Location = new System.Drawing.Point(150, 413);
             this.numeric_length.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -271,7 +271,7 @@
             // numeric_scale_L
             // 
             this.numeric_scale_L.DecimalPlaces = 3;
-            this.numeric_scale_L.Location = new System.Drawing.Point(134, 296);
+            this.numeric_scale_L.Location = new System.Drawing.Point(150, 295);
             this.numeric_scale_L.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -291,7 +291,7 @@
             // numeric_scale_M
             // 
             this.numeric_scale_M.DecimalPlaces = 3;
-            this.numeric_scale_M.Location = new System.Drawing.Point(134, 317);
+            this.numeric_scale_M.Location = new System.Drawing.Point(150, 316);
             this.numeric_scale_M.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -324,7 +324,7 @@
             // numeric_scale_T
             // 
             this.numeric_scale_T.DecimalPlaces = 3;
-            this.numeric_scale_T.Location = new System.Drawing.Point(134, 338);
+            this.numeric_scale_T.Location = new System.Drawing.Point(150, 337);
             this.numeric_scale_T.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -347,7 +347,7 @@
             this.button_convexdecomp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_convexdecomp.Location = new System.Drawing.Point(150, 463);
             this.button_convexdecomp.Name = "button_convexdecomp";
-            this.button_convexdecomp.Size = new System.Drawing.Size(51, 54);
+            this.button_convexdecomp.Size = new System.Drawing.Size(67, 54);
             this.button_convexdecomp.TabIndex = 21;
             this.button_convexdecomp.Text = "Convex decomposition";
             this.button_convexdecomp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -373,7 +373,7 @@
             this.comboBox1.Items.AddRange(new object[] {
             "irrlicht",
             "pov"});
-            this.comboBox1.Location = new System.Drawing.Point(134, 435);
+            this.comboBox1.Location = new System.Drawing.Point(150, 436);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(67, 21);
             this.comboBox1.TabIndex = 23;
@@ -388,7 +388,7 @@
             0,
             0,
             196608});
-            this.numeric_envelope.Location = new System.Drawing.Point(136, 590);
+            this.numeric_envelope.Location = new System.Drawing.Point(150, 590);
             this.numeric_envelope.Maximum = new decimal(new int[] {
             10,
             0,
@@ -418,7 +418,7 @@
             0,
             0,
             196608});
-            this.numeric_margin.Location = new System.Drawing.Point(136, 612);
+            this.numeric_margin.Location = new System.Drawing.Point(150, 612);
             this.numeric_margin.Maximum = new decimal(new int[] {
             10,
             0,
@@ -448,7 +448,7 @@
             0,
             0,
             196608});
-            this.numeric_contactbreaking.Location = new System.Drawing.Point(136, 634);
+            this.numeric_contactbreaking.Location = new System.Drawing.Point(150, 634);
             this.numeric_contactbreaking.Maximum = new decimal(new int[] {
             10,
             0,
@@ -473,7 +473,7 @@
             0,
             0,
             196608});
-            this.numeric_sphereswept.Location = new System.Drawing.Point(136, 657);
+            this.numeric_sphereswept.Location = new System.Drawing.Point(150, 657);
             this.numeric_sphereswept.Maximum = new decimal(new int[] {
             10,
             0,
@@ -506,7 +506,7 @@
             // 
             this.button_ExportToJson.Location = new System.Drawing.Point(17, 109);
             this.button_ExportToJson.Name = "button_ExportToJson";
-            this.button_ExportToJson.Size = new System.Drawing.Size(184, 32);
+            this.button_ExportToJson.Size = new System.Drawing.Size(200, 32);
             this.button_ExportToJson.TabIndex = 35;
             this.button_ExportToJson.Text = "Export to JSON";
             this.button_ExportToJson.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -518,7 +518,7 @@
             // 
             this.button_ExportToCpp.Location = new System.Drawing.Point(17, 75);
             this.button_ExportToCpp.Name = "button_ExportToCpp";
-            this.button_ExportToCpp.Size = new System.Drawing.Size(184, 32);
+            this.button_ExportToCpp.Size = new System.Drawing.Size(200, 32);
             this.button_ExportToCpp.TabIndex = 36;
             this.button_ExportToCpp.Text = "Export to C++";
             this.button_ExportToCpp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -526,10 +526,22 @@
             this.button_ExportToCpp.UseVisualStyleBackColor = true;
             this.button_ExportToCpp.Click += new System.EventHandler(this.Export_Click);
             // 
+            // butt_chronoMotors
+            // 
+            this.butt_chronoMotors.Location = new System.Drawing.Point(125, 523);
+            this.butt_chronoMotors.Name = "butt_chronoMotors";
+            this.butt_chronoMotors.Size = new System.Drawing.Size(92, 25);
+            this.butt_chronoMotors.TabIndex = 37;
+            this.butt_chronoMotors.Text = "Chrono motors";
+            this.butt_chronoMotors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTipSavePython.SetToolTip(this.butt_chronoMotors, "Open the properties for Chrono motors");
+            this.butt_chronoMotors.UseVisualStyleBackColor = true;
+            this.butt_chronoMotors.Click += new System.EventHandler(this.butt_chronoMotors_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(112, 390);
+            this.label2.Location = new System.Drawing.Point(128, 391);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(16, 13);
             this.label2.TabIndex = 10;
@@ -539,7 +551,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(88, 412);
+            this.label3.Location = new System.Drawing.Point(104, 413);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(40, 13);
             this.label3.TabIndex = 12;
@@ -549,7 +561,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(88, 298);
+            this.label4.Location = new System.Drawing.Point(104, 297);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 15;
@@ -559,7 +571,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(85, 319);
+            this.label5.Location = new System.Drawing.Point(101, 318);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(46, 13);
             this.label5.TabIndex = 16;
@@ -569,7 +581,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(85, 340);
+            this.label6.Location = new System.Drawing.Point(101, 339);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(44, 13);
             this.label6.TabIndex = 19;
@@ -579,7 +591,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(61, 436);
+            this.label7.Location = new System.Drawing.Point(77, 437);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 13);
             this.label7.TabIndex = 24;
@@ -599,7 +611,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(34, 592);
+            this.label9.Location = new System.Drawing.Point(48, 592);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(92, 13);
             this.label9.TabIndex = 26;
@@ -609,7 +621,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(47, 614);
+            this.label10.Location = new System.Drawing.Point(61, 614);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(79, 13);
             this.label10.TabIndex = 28;
@@ -619,7 +631,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(38, 636);
+            this.label11.Location = new System.Drawing.Point(52, 636);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(88, 13);
             this.label11.TabIndex = 30;
@@ -630,7 +642,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(13, 659);
+            this.label12.Location = new System.Drawing.Point(27, 659);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(113, 13);
             this.label12.TabIndex = 32;
@@ -638,24 +650,12 @@
             this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
-            // butt_chronoLinks
-            // 
-            this.butt_chronoLinks.Location = new System.Drawing.Point(125, 523);
-            this.butt_chronoLinks.Name = "butt_chronoLinks";
-            this.butt_chronoLinks.Size = new System.Drawing.Size(76, 25);
-            this.butt_chronoLinks.TabIndex = 37;
-            this.butt_chronoLinks.Text = "Chrono links";
-            this.butt_chronoLinks.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.butt_chronoLinks, "Open the properties for Chrono links");
-            this.butt_chronoLinks.UseVisualStyleBackColor = true;
-            this.butt_chronoLinks.Click += new System.EventHandler(this.butt_chronoLinks_Click);
-            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.Controls.Add(this.butt_chronoLinks);
+            this.Controls.Add(this.butt_chronoMotors);
             this.Controls.Add(this.button_ExportToCpp);
             this.Controls.Add(this.button_ExportToJson);
             this.Controls.Add(this.button_settrimeshcoll);
@@ -694,7 +694,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_ExportToPython);
             this.Name = "SWTaskpaneHost";
-            this.Size = new System.Drawing.Size(215, 691);
+            this.Size = new System.Drawing.Size(242, 691);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
@@ -751,6 +751,6 @@
         private System.Windows.Forms.Button button_settrimeshcoll;
         private System.Windows.Forms.Button button_ExportToJson;
         private System.Windows.Forms.Button button_ExportToCpp;
-        private System.Windows.Forms.Button butt_chronoLinks;
+        private System.Windows.Forms.Button butt_chronoMotors;
     }
 }

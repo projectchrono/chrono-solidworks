@@ -90,6 +90,7 @@ namespace ChronoEngine_SwAddin
         internal Hashtable saved_shapes;
         internal Hashtable saved_collisionmeshes;
 
+        private Dictionary<string, string> m_exportNamesMap; // map solidworks names vs chrono script names, ie. map[slwd_name] = chrono_name;
 
         class myBytearrayHashComparer : IEqualityComparer
         {
@@ -141,6 +142,8 @@ namespace ChronoEngine_SwAddin
             ChScale.L = (double)this.numeric_scale_L.Value;
             ChScale.M = (double)this.numeric_scale_M.Value;
             ChScale.T = (double)this.numeric_scale_T.Value;
+
+            m_exportNamesMap = new Dictionary<string, string>();
 
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
@@ -236,20 +239,23 @@ namespace ChronoEngine_SwAddin
 
                     // Export header (.h)
                     string asciitext_header = "";
-                    asciitext_header = "// C++ header generated from SolidWorks using Chrono::SolidWorks add-in\n\n";
-                    asciitext_header += "#ifndef CH_IMPORT_SLDW_CPP_H\n";
-                    asciitext_header += "#define CH_IMPORT_SLDW_CPP_H\n\n";
+                    asciitext_header = "// C++ multibody system automatically generated using Chrono::SolidWorks add-in\n\n";
+                    asciitext_header += "#ifndef CH_IMPORT_SLDW_CPP_" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename).ToUpper() + "_H\n";
+                    asciitext_header += "#define CH_IMPORT_SLDW_CPP_" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename).ToUpper() + "_H\n\n";
 
                     asciitext_header += "#include <vector>\n";
+                    asciitext_header += "#include <unordered_map>\n";
                     asciitext_header += "#include \"chrono/physics/ChBodyAuxRef.h\"\n";
                     asciitext_header += "#include \"chrono/physics/ChLinkMate.h\"\n";
+                    asciitext_header += "#include \"chrono/motion_functions/ChFunction.h\"\n";
                     asciitext_header += "#include \"chrono/physics/ChSystem.h\"\n\n";
 
+
                     asciitext_header += "/// Function to import Solidworks assembly directly into Chrono ChSystem.\n";
-                    asciitext_header += "void ImportSolidworksSystemCpp(chrono::ChSystem& system);\n\n";
+                    asciitext_header += "void ImportSolidworksSystemCpp(chrono::ChSystem& system, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map = nullptr);\n\n";
 
                     asciitext_header += "/// Function to import Solidworks bodies and mates into dedicated containers.\n";
-                    asciitext_header += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist);\n\n";
+                    asciitext_header += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map = nullptr);\n\n";
 
                     asciitext_header += "#endif // end CH_IMPORT_SLDW_CPP_H\n";
 
@@ -796,13 +802,13 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        private void butt_chronoLinks_Click(object sender, EventArgs e)
+        private void butt_chronoMotors_Click(object sender, EventArgs e)
         {
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
 
-            EditChLink myCustomerDialog = new EditChLink(ref swSelMgr, ref mSWintegration);
+            EditChMotor myCustomerDialog = new EditChMotor(ref swSelMgr, ref mSWintegration);
             //myCustomerDialog.ShowDialog(); // show modal
             myCustomerDialog.Show();
         }
@@ -1986,21 +1992,27 @@ namespace ChronoEngine_SwAddin
 
             num_comp = 0;
 
-            asciitext = "// C++ implementation generated from SolidWorks using Chrono::SolidWorks add-in\n" +
+            asciitext = "// C++ multibody system automatically generated using Chrono::SolidWorks add-in\n" +
                         "// Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             asciitext += "#include <string>\n";
             asciitext += "#include \"chrono/assets/ChModelFileShape.h\"\n";
             asciitext += "#include \"chrono/collision/ChCollisionSystemBullet.h\"\n";
             asciitext += "#include \"chrono/physics/ChMaterialSurfaceNSC.h\"\n";
+            asciitext += "#include \"chrono/physics/ChLinkMotorRotationAngle.h\"\n";
+            asciitext += "#include \"chrono/physics/ChLinkMotorRotationSpeed.h\"\n";
+            asciitext += "#include \"chrono/physics/ChLinkMotorRotationTorque.h\"\n";
+            asciitext += "#include \"chrono/physics/ChLinkMotorLinearPosition.h\"\n";
+            asciitext += "#include \"chrono/physics/ChLinkMotorLinearSpeed.h\"\n";
+            asciitext += "#include \"chrono/physics/ChLinkMotorLinearForce.h\"\n";
 
             asciitext += "#include \"" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + ".h\"\n";
 
             asciitext += "\n\n/// Function to import Solidworks assembly directly into Chrono ChSystem.\n";
-            asciitext += "void ImportSolidworksSystemCpp(chrono::ChSystem& system) {\n";
+            asciitext += "void ImportSolidworksSystemCpp(chrono::ChSystem& system, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map) {\n";
             asciitext += "std::vector<std::shared_ptr<chrono::ChBodyAuxRef>> bodylist;\n";
             asciitext += "std::vector<std::shared_ptr<chrono::ChLinkBase>> linklist;\n";
-            asciitext += "ImportSolidworksSystemCpp(bodylist, linklist);\n";
+            asciitext += "ImportSolidworksSystemCpp(bodylist, linklist, motfun_map);\n";
             asciitext += "for (auto& body : bodylist)\n";
             asciitext += "    system.Add(body);\n";
             asciitext += "for (auto& link : linklist)\n";
@@ -2008,7 +2020,7 @@ namespace ChronoEngine_SwAddin
             asciitext += "}\n";
 
             asciitext += "\n\n/// Function to import Solidworks bodies and mates into dedicated containers.\n";
-            asciitext += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist) {\n\n";
+            asciitext += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map) {\n\n";
             asciitext += "// Some global settings\n" +
                          "double sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + ";\n" +
                          "chrono::collision::ChCollisionModel::SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ");\n" +
@@ -2542,6 +2554,8 @@ namespace ChronoEngine_SwAddin
                             asciitext += "// Rigid body part\n";
                             asciitext += "auto " + bodyname + " = chrono_types::make_shared<chrono::ChBodyAuxRef>();\n";
 
+                            m_exportNamesMap[swComp.Name2] = bodyname;
+
                             // Write name
                             asciitext += bodyname + "->SetName(\"" + swComp.Name2 + "\");\n";
 
@@ -2557,7 +2571,6 @@ namespace ChronoEngine_SwAddin
                                        bodyname, quat[0], quat[1], quat[2], quat[3]);
 
                             // Compute mass
-
                             int nvalid_bodies = 0;
                             TraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
 
@@ -2761,78 +2774,66 @@ namespace ChronoEngine_SwAddin
                         amatr[11] * ChScale.L,
                         quat[0], quat[1], quat[2], quat[3]);
 
+                    m_exportNamesMap[swFeat.Name] = markername;
 
-
-                    ///////// ADDED FOR MOTORS DIRECTLY IN SOLIDWORKS
+                    // Export ChMotor from attributes embedded in marker, if any
                     if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(mSWintegration.defattr_chlink, 0) != null)
                     {
                         SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(mSWintegration.defattr_chlink, 0);
 
+                        string motorName        = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
+                        string motorType        = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+                        string motorMotionlaw   = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+                        string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
                         string motorMarker      = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
                         string motorBody1       = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
                         string motorBody2       = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
-                        string motorType        = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
-                        string motorControl     = ((Parameter)motorAttribute.GetParameter("motor_control")).GetStringValue();
-                        string motorMotionlaw   = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
-
 
                         ModelDoc2 swModel = (ModelDoc2)mSWintegration.mSWApplication.ActiveDoc;
+                        byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
+                        byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
+                        byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
 
-                        byte[] selMarkerRef = (byte[])EditChLink.GetIDFromString(swModel, motorMarker);
-                        byte[] selBody1Ref = (byte[])EditChLink.GetIDFromString(swModel, motorBody1);
-                        byte[] selBody2Ref = (byte[])EditChLink.GetIDFromString(swModel, motorBody2);
+                        Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
+                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
+                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
 
-                        Feature selectedMarker = (Feature)EditChLink.GetObjectFromID(swModel, selMarkerRef);
-                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChLink.GetObjectFromID(swModel, selBody1Ref);
-                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChLink.GetObjectFromID(swModel, selBody2Ref);
+                        string chMotorClassName = "ChLinkMotor" + motorType;
+                        string chMotorConstraintName = "";
+                        string chFunctionClassName = "ChFunction_" + motorMotionlaw;
+                        string motorQuaternion = "";
 
-                        string debugString = "";
-                        debugString += "READING ATTRIBUTES\n";
-                        debugString += "motor_marker: " + motorMarker + "\n";
-                        debugString += "motor_body1: " + motorBody1 + "\n";
-                        debugString += "motor_body2: " + motorBody2 + "\n";
-                        debugString += "motor_type: " + motorType + "\n";
-                        debugString += "motor_control: " + motorControl + "\n";
-                        debugString += "motor_motionlaw: " + motorMotionlaw + "\n";
-                        System.Windows.Forms.MessageBox.Show(debugString);
-
-                        string chMotorClassName = "ChLinkMotor";
-                        if (motorType == "Rotation")
+                        if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
                         {
-                            chMotorClassName += "Rotation";
-
-                            if (motorControl == "Position")
-                                chMotorClassName += "Angle";
-                            else if (motorControl == "Velocity")
-                                chMotorClassName += "Speed";
-                            else if (motorControl == "Torque")
-                                chMotorClassName += "Torque";
+                            motorQuaternion = "chrono::Q_ROTATE_X_TO_Z";
+                            chMotorConstraintName = "GuideConstraint";
                         }
-                        else if (motorType == "Translation")
+                        else
                         {
-                            chMotorClassName += "Linear";
-
-                            if (motorControl == "Position")
-                                chMotorClassName += "Position";
-                            else if (motorControl == "Velocity")
-                                chMotorClassName += "Speed";
-                            else if (motorControl == "Torque")
-                                chMotorClassName += "Force";
+                            motorQuaternion = "chrono::QUNIT";
+                            chMotorConstraintName = "SpindleConstraint"; 
                         }
-                        
 
                         String motorInstanceName = "motor_" + nbody + "_" + nmarker;
                         asciitext += "\n// Motor from Solidworks marker\n";                        
                         asciitext += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
-                        asciitext += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, "motor_" + swFeat.Name);
-                        asciitext += String.Format(bz, "{0}->Initialize({1},{2}," + selectedMarker.Name + "->GetAbsFrame());\n", motorInstanceName, selectedBody1.Name, selectedBody2.Name);
-                    
-                        //
-                        // TODO: FIX GET OF NAMES -> not sw name but chrono exported names!!
-                        //
-                    
+                        asciitext += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, motorName);
+                        asciitext += String.Format(bz, 
+                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetPos()," + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", motorInstanceName, 
+                            m_exportNamesMap[selectedBody1.Name], 
+                            m_exportNamesMap[selectedBody2.Name]);
+                        if (motorConstraints == "False")
+                        {
+                            asciitext += String.Format(bz, "{0}->Set" + chMotorConstraintName + "(false, false, false, false, false);\n", motorInstanceName);
+                        }
+                        asciitext += String.Format(bz, "linklist.push_back(" + motorInstanceName + ");\n");
+                        asciitext += String.Format(bz, "//\n");
+                        String motfunInstanceName = "motfun_" + nbody + "_" + nmarker;
+                        asciitext += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::{1}>();\n", motfunInstanceName, chFunctionClassName);
+                        asciitext += String.Format(bz, "{0}->SetMotorFunction({1});\n", motorInstanceName, motfunInstanceName);
+                        asciitext += String.Format(bz, "//\n");
+                        asciitext += String.Format(bz, "(*motfun_map)[\"" + motorName + "\"] = " + motfunInstanceName + ";\n");
                     }
-                    //////////////////////////////////////////////
 
                 }
 
