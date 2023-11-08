@@ -25,6 +25,7 @@ using static ChronoEngine_SwAddin.ConvertMates;
 
 namespace ChronoEngine_SwAddin
 {
+
     public struct JObjectCreator
     {
         public static JObject CreateChVector(double[] vect)
@@ -896,7 +897,9 @@ namespace ChronoEngine_SwAddin
         }
 
 
-
+        // ============================================================================================================
+        // Accessors for private UI items
+        // ============================================================================================================
         public ref System.Windows.Forms.CheckBox GetCheckboxConstraints()
         {
             return ref checkBox_constraints;
@@ -916,12 +919,550 @@ namespace ChronoEngine_SwAddin
         {
             return ref checkBox_collshapes;
         }
+
         public ref System.Windows.Forms.CheckBox GetCheckboxSurfaces()
         {
             return ref checkBox_surfaces;
         }
 
-        
+        public ref System.Windows.Forms.NumericUpDown GetNumericEnvelope()
+        {
+            return ref numeric_envelope;
+        }
+
+        public ref System.Windows.Forms.NumericUpDown GetNumericMargin()
+        {
+            return ref numeric_margin;
+        }
+
+        public ref System.Windows.Forms.NumericUpDown GetNumericContactBreaking()
+        {
+            return ref numeric_contactbreaking;
+        }
+
+        public ref System.Windows.Forms.NumericUpDown GetNumericSphereSwept()
+        {
+            return ref numeric_sphereswept;
+        }
+
+
+
+
+
+
+        // =====================================================================
+        // Json export functions
+        // =====================================================================
+
+        // File export
+        public void ExportToJson(ref JObject ChSystemNode)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+
+            ModelDoc2 swModel;
+            ConfigurationManager swConfMgr;
+            Configuration swConf;
+            Component2 swRootComp;
+
+            this.saved_parts.Clear();
+            this.saved_shapes.Clear();
+            this.saved_collisionmeshes.Clear();
+
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            if (swModel == null) return;
+            swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
+            swConf = (Configuration)swConfMgr.ActiveConfiguration;
+            swRootComp = (Component2)swConf.GetRootComponent3(true);
+
+            this.mSWApplication.GetUserProgressBar(out this.swProgress);
+            if (this.swProgress != null)
+                this.swProgress.Start(0, 5, "Exporting to JSON");
+
+            num_comp = 0;
+            _object_ID_used = 0;
+
+
+            //asciitext += "# Some global settings: \n" +
+            //             "sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + "\n" +
+            //             "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ")\n" +
+            //             "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)this.numeric_margin.Value * ChScale.L).ToString(bz) + ")\n" +
+            //             "chrono.ChCollisionSystemBullet.SetContactBreakingThreshold(" + ((double)this.numeric_contactbreaking.Value * ChScale.L).ToString(bz) + ")\n\n";
+
+
+            if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
+            {
+                // Write down all parts
+                var ChSystemBodylistArray = new JArray();
+
+                // Add world-fixed object
+                var ChBodyGroundNode = new JObject
+                (
+                    new JProperty("_type", "ChBodyAuxRef"),
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("m_name", "ground"),
+                    new JProperty("_c_SetBodyFixed", true)
+                );
+
+                ChSystemBodylistArray.Add(ChBodyGroundNode);
+
+                JsonTraverseComponent_for_ChBody(swRootComp, 1, ref ChSystemBodylistArray);
+
+                ChSystemNode.Add("bodies", ChSystemBodylistArray);
+
+
+                // Write down all constraints
+
+                MathTransform roottrasf = swRootComp.GetTotalTransform(true);
+                if (roottrasf == null)
+                {
+                    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
+                    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
+                    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
+                }
+
+                var ChSystemLinklistArray = new JArray();
+
+                Feature swFeat = (Feature)swModel.FirstFeature();
+                JsonTraverseFeatures_for_links(swFeat, 1, ref ChSystemLinklistArray, ref roottrasf, ref swRootComp);
+                ChSystemNode.Add("links", ChSystemLinklistArray);
+
+                JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
+
+
+                //// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
+                swFeat = (Feature)swModel.FirstFeature();
+                JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
+
+                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + ChSystemLinklistArray.Count.ToString());
+
+
+            }
+
+
+            if (this.swProgress != null)
+                this.swProgress.End();
+        }
+
+        // Links dump
+        public void JsonTraverseComponent_for_links(Component2 swComp, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf)
+        {
+            // Scan assembly features and save mating info
+
+            if (nLevel > 1)
+            {
+                Feature swFeat = (Feature)swComp.FirstFeature();
+                JsonTraverseFeatures_for_links(swFeat, nLevel, ref ChSystemLinklistArray, ref roottrasf, ref swComp);
+            }
+
+            // Recursive scan of subassemblies
+
+            object[] vChildComp;
+            Component2 swChildComp;
+
+            vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                if (swChildComp.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
+                    JsonTraverseComponent_for_links(swChildComp, nLevel + 1, ref ChSystemLinklistArray, ref roottrasf);
+            }
+        }
+
+        public void JsonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf, ref Component2 assemblyofmates)
+        {
+            Feature swSubFeat;
+
+            while ((swFeat != null))
+            {
+                // Export mates as constraints
+
+                if ((swFeat.GetTypeName2() == "MateGroup") &&
+                    (this.checkBox_constraints.Checked))
+                {
+                    swSubFeat = (Feature)swFeat.GetFirstSubFeature();
+
+                    while ((swSubFeat != null))
+                    {
+                        ConvertMates.ConvertMateToJson(swSubFeat, ref ChSystemLinklistArray, mSWApplication, saved_parts, ref _object_ID_used, roottrasf, assemblyofmates);
+
+                        swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
+
+                    } // end while loop on subfeatures mates
+
+                } // end if mate group
+
+                swFeat = (Feature)swFeat.GetNextFeature();
+
+            } // end while loop on features
+
+        }
+
+        // Visual shapes dump
+        public void JsonTraverseComponent_for_visualizationshapes(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode, ref int nvisshape, Component2 chbody_comp)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+            object[] bodies;
+            object bodyInfo;
+            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+
+            if (bodies != null && bodies.Length > 0)
+            {
+                // Export the component shape to a .OBJ file representing its SW body(s)
+                nvisshape += 1;
+                string shapename = ChBodyAuxRefNode.GetValue("m_name") + "_" + nvisshape;
+                string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+
+                ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
+                if (!this.saved_shapes.ContainsKey(swCompModel.GetPathName()))
+                {
+                    try
+                    {
+                        FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
+                        StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
+                        string asciiobj = "";
+                        if (this.swProgress != null)
+                            this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
+                        // Write the OBJ converted visualization shapes:
+                        TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress, true, false);
+                        writer.Write(asciiobj);
+                        writer.Flush();
+                        ostream.Close();
+
+                        this.saved_shapes.Add(swCompModel.GetPathName(), shapename);
+                    }
+                    catch (Exception)
+                    {
+                        System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + "\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
+                    }
+                }
+                else
+                {
+                    // reuse the already-saved shape name
+                    shapename = (String)saved_shapes[swCompModel.GetPathName()];
+                }
+
+
+
+
+                object foo = null;
+                double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
+
+
+                MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
+                MathTransform absframe_shape = swComp.GetTotalTransform(true);
+                MathTransform absframe_chbody_inv = absframe_chbody.IInverse();
+                MathTransform relframe_shape = absframe_shape.IMultiply(absframe_chbody_inv);  // row-ordered transf. -> reverse mult.order!
+                double[] amatr = (double[])relframe_shape.ArrayData;
+                double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
+
+                // TODO: DARIOM should I check if is using shape of other objects?
+                var _c_AddVisualShape_ChVisualShape = new JObject
+                (
+                    new JProperty("_type", "ChModelFileShape"),
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("filename", obj_filename)
+                );
+                if (vMatProperties != null && vMatProperties[0] != -1)
+                    _c_AddVisualShape_ChVisualShape.Add("_c_SetColor", new JObject(
+                        new JProperty("R", vMatProperties[0]),
+                        new JProperty("G", vMatProperties[1]),
+                        new JProperty("B", vMatProperties[2])
+                        ));
+
+                var _c_AddVisualShape_ChFrame = new JObject // TODO: _object_ID
+                (
+                    new JProperty("_type", "ChFrame"), // TODO: in the export it seems that the type is not exported
+                    new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
+                    new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
+                );
+
+                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChVisualShapes", new JArray(_c_AddVisualShape_ChVisualShape));
+                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChFrames", new JArray(_c_AddVisualShape_ChFrame));
+            }
+
+
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                if (swChildComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                    JsonTraverseComponent_for_visualizationshapes(swChildComp, nLevel + 1, ref ChBodyAuxRefNode, ref nvisshape, chbody_comp);
+            }
+        }
+
+        // Bodies dump
+        public void JsonTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref JArray ChSystemBodylistArray)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+            object[] vmyChildComp = (object[])swComp.GetChildren();
+            //bool found_chbody_equivalent = false;
+
+            if (nLevel > 1 & _object_ID_used == 0 & !swComp.IsSuppressed() && (swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
+            {
+                // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
+
+                //found_chbody_equivalent = true;
+
+                this.num_comp++;
+
+                if (this.swProgress != null)
+                {
+                    this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
+                    this.swProgress.UpdateProgress(this.num_comp % 5);
+                }
+
+                // fetch SW attribute with Chrono parameters
+                SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
+
+                MathTransform chbodytransform = swComp.GetTotalTransform(true);
+                double[] amatr;
+                amatr = (double[])chbodytransform.ArrayData;
+
+                double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
+
+                var ChBodyAuxRefNode = new JObject
+                {
+                    new JProperty("_type", "ChBodyAuxRef"),
+                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("m_name", swComp.Name2),
+                    new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
+                    new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
+                };
+
+                // Compute mass
+
+                int nvalid_bodies = 0;
+                TraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
+
+                int addedb = 0; // number of added bodies
+                object[] bodies_nocollshapes = new object[nvalid_bodies];
+                TraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
+
+                MassProperty swMass;
+                swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                bool boolstatus = false;
+                boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
+                swMass.SetCoordinateSystem(chbodytransform);
+                swMass.UseSystemUnits = true;
+                //note: do not set here the COG-to-REF position because here SW express it in absolute coords
+                // double cogX = ((double[])swMass.CenterOfMass)[0];
+                // double cogY = ((double[])swMass.CenterOfMass)[1];
+                // double cogZ = ((double[])swMass.CenterOfMass)[2];
+                double mass = swMass.Mass;
+                double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
+                double Ixx = Itensor[0];
+                double Iyy = Itensor[4];
+                double Izz = Itensor[8];
+                double Ixy = Itensor[1];
+                double Izx = Itensor[2];
+                double Iyz = Itensor[5];
+
+                MassProperty swMassb;
+                swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
+                bool boolstatusb = false;
+                boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
+                swMassb.UseSystemUnits = true;
+                double cogXb = ((double[])swMassb.CenterOfMass)[0];
+                double cogYb = ((double[])swMassb.CenterOfMass)[1];
+                double cogZb = ((double[])swMassb.CenterOfMass)[2];
+
+                ChBodyAuxRefNode.Add("_c_SetMass", mass * ChScale.M);
+                ChBodyAuxRefNode.Add("_c_SetInertiaXX", JObjectCreator.CreateChVector(
+                               Ixx * ChScale.M * ChScale.L * ChScale.L,
+                               Iyy * ChScale.M * ChScale.L * ChScale.L,
+                               Izz * ChScale.M * ChScale.L * ChScale.L));
+                //// Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
+                ChBodyAuxRefNode.Add("_c_SetInertiaXY", JObjectCreator.CreateChVector(
+                               -Ixy * ChScale.M * ChScale.L * ChScale.L,
+                               -Izx * ChScale.M * ChScale.L * ChScale.L,
+                               -Iyz * ChScale.M * ChScale.L * ChScale.L));
+
+                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChVector", JObjectCreator.CreateChVector(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L));
+                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion", JObjectCreator.CreateChQuaternion(1, 0, 0, 0));
+
+                // Write 'fixed' state
+                ChBodyAuxRefNode.Add("_c_SetBodyFixed", swComp.IsFixed() ? true : false);
+
+
+
+                // Write shapes (saving also Wavefront files .obj)
+                if (this.checkBox_surfaces.Checked)
+                {
+                    int nvisshape = 0;
+
+                    if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
+                        JsonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref ChBodyAuxRefNode, ref nvisshape, swComp);
+                }
+
+                // Write markers (SW coordsystems) contained in this component or subcomponents
+                // if any.
+                JsonTraverseComponent_for_markers(swComp, nLevel, ref ChBodyAuxRefNode);
+
+                // TODO: Chrono serialization is not capable of handling collisions yet
+
+                //// Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
+                //// if any.
+                //bool param_collide = true;
+                //if (myattr != null)
+                //    param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
+
+                //if (param_collide)
+                //{
+                //    bool found_collisionshapes = false;
+                //    int ncollshapes = 0;
+
+                //    PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
+                //    if (found_collisionshapes)
+                //    {
+                //        asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
+                //        asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
+                //    }
+                //}
+
+                ChSystemBodylistArray.Add(ChBodyAuxRefNode);
+
+                // store in hashtable, will be useful later when adding constraints
+                // TODO: before, it was after this 'if' with the condition 'if ((nLevel > 1) && (_object_ID_used != 0))'
+
+                try
+                {
+                    ModelDocExtension swModelDocExt = default(ModelDocExtension);
+                    ModelDoc2 swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+                    //if (swModel != null)
+                    swModelDocExt = swModel.Extension;
+                    this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), ChBodyAuxRefNode.GetValue("_object_ID"));
+                }
+                catch
+                {
+                    System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
+                }
+
+            } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+
+
+            // Things to do also for sub-components of 'non flexible' assemblies: 
+            //
+
+
+
+
+            // Traverse all children, proceeding to subassemblies and parts, if any
+            // 
+
+            object[] vChildComp;
+            Component2 swChildComp;
+
+            vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                JsonTraverseComponent_for_ChBody(swChildComp, nLevel + 1, ref ChSystemBodylistArray);
+            }
+
+
+        }
+
+        // Markers dump
+        public void JsonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode)
+        {
+            // Look if component contains markers
+            Feature swFeat = (Feature)swComp.FirstFeature();
+            MathTransform swCompTotalTrasf = swComp.GetTotalTransform(true);
+            JsonTraverseFeatures_for_markers(swFeat, nLevel, ref ChBodyAuxRefNode, swCompTotalTrasf);
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                JsonTraverseComponent_for_markers(swChildComp, nLevel + 1, ref ChBodyAuxRefNode);
+            }
+        }
+
+        public void JsonTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref JObject ChBodyAuxRefNode, MathTransform swCompTotalTrasf)
+        {
+            CultureInfo bz = new CultureInfo("en-BZ");
+
+            int nmarker = 0;
+
+            var marklist = new JArray();
+
+            while ((swFeat != null))
+            {
+                // asciitext += "# feature: " + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
+
+
+                // TODO: DARIOM are markers attached to the proper body and in the proper way?
+                if (swFeat.GetTypeName2() == "CoordSys")
+                {
+                    nmarker++;
+                    CoordinateSystemFeatureData swCoordSys = (CoordinateSystemFeatureData)swFeat.GetDefinition();
+                    MathTransform tr = swCoordSys.Transform;
+
+                    MathTransform tr_part = swCompTotalTrasf;
+                    MathTransform tr_abs = tr.IMultiply(tr_part);  // row-ordered transf. -> reverse mult.order!
+
+                    double[] quat = GetQuaternionFromMatrix(ref tr_abs);
+                    double[] amatr = (double[])tr_abs.ArrayData;
+                    double[] vect = { amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L };
+
+                    var marklist_node = new JObject {
+                        new JProperty("_type", "ChMarker"),
+                        new JProperty("_object_ID", ++_object_ID_used),
+                        new JProperty("m_name", swFeat.Name),
+                        // while the ChBody::ArchiveIn would already take care of setting it through AddMarker,
+                        // this call will happen after the following Impose_Abs_Coord, thus causing crash
+                        new JProperty("Body", new JObject(
+                            new JProperty("_type", "ChBodyAuxRef"),
+                            new JProperty("_reference_ID", ChBodyAuxRefNode.GetValue("_object_ID"))
+                            )
+                        ),
+                        new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChVector", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
+                        new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChQuaternion", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
+                    };
+
+                    marklist.Add(marklist_node);
+                }
+
+                swFeat = (Feature)swFeat.GetNextFeature();
+            }
+
+            ChBodyAuxRefNode.Add("markers", marklist);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // ============================================================================================================
         // Math functions
@@ -1024,14 +1565,14 @@ namespace ChronoEngine_SwAddin
         }
 
 
+         //============================================================================================================
+         //Export utility functions
+         //============================================================================================================
 
-        // ============================================================================================================
-        // Export utility functions
-        // ============================================================================================================
         
-        //
-        // METHOD MOVED TO ConvertMates.cs !!!!
-        //
+         //METHOD MOVED TO ConvertMates.cs !!!!
+
+
         //static bool IsMateTypeExportable(string typeName2)
         //{
         //    System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>();
@@ -2810,13 +3351,13 @@ namespace ChronoEngine_SwAddin
                     {
                         SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(mSWintegration.defattr_chlink, 0);
 
-                        string motorName        = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
-                        string motorType        = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
-                        string motorMotionlaw   = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+                        string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
+                        string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+                        string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
                         string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
-                        string motorMarker      = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
-                        string motorBody1       = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
-                        string motorBody2       = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+                        string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
+                        string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
+                        string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
 
                         ModelDoc2 swModel = (ModelDoc2)mSWintegration.m_swApplication.ActiveDoc;
                         byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
@@ -2840,16 +3381,16 @@ namespace ChronoEngine_SwAddin
                         else
                         {
                             motorQuaternion = "chrono::QUNIT";
-                            chMotorConstraintName = "SpindleConstraint"; 
+                            chMotorConstraintName = "SpindleConstraint";
                         }
 
                         String motorInstanceName = "motor_" + nbody + "_" + nmarker;
-                        asciitext += "\n// Motor from Solidworks marker\n";                        
+                        asciitext += "\n// Motor from Solidworks marker\n";
                         asciitext += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
                         asciitext += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, motorName);
-                        asciitext += String.Format(bz, 
-                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetPos()," + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", motorInstanceName, 
-                            m_exportNamesMap[selectedBody1.Name], 
+                        asciitext += String.Format(bz,
+                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetPos()," + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", motorInstanceName,
+                            m_exportNamesMap[selectedBody1.Name],
                             m_exportNamesMap[selectedBody2.Name]);
                         if (motorConstraints == "False")
                         {
@@ -2866,506 +3407,13 @@ namespace ChronoEngine_SwAddin
 
                 }
 
-                    swFeat = (Feature)swFeat.GetNextFeature();
-            }
-        }
-
-
-
-        // =====================================================================
-        // Json export functions
-        // =====================================================================
-
-        // File export
-        public void ExportToJson(ref JObject ChSystemNode)
-        {
-            CultureInfo bz = new CultureInfo("en-BZ");
-
-            ModelDoc2 swModel;
-            ConfigurationManager swConfMgr;
-            Configuration swConf;
-            Component2 swRootComp;
-
-            this.saved_parts.Clear();
-            this.saved_shapes.Clear();
-            this.saved_collisionmeshes.Clear();
-
-            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
-            if (swModel == null) return;
-            swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
-            swConf = (Configuration)swConfMgr.ActiveConfiguration;
-            swRootComp = (Component2)swConf.GetRootComponent3(true);
-
-            this.mSWApplication.GetUserProgressBar(out this.swProgress);
-            if (this.swProgress != null)
-                this.swProgress.Start(0, 5, "Exporting to JSON");
-
-            num_comp = 0;
-            _object_ID_used = 0;
-
-
-            //asciitext += "# Some global settings: \n" +
-            //             "sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + "\n" +
-            //             "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)this.numeric_envelope.Value * ChScale.L).ToString(bz) + ")\n" +
-            //             "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)this.numeric_margin.Value * ChScale.L).ToString(bz) + ")\n" +
-            //             "chrono.ChCollisionSystemBullet.SetContactBreakingThreshold(" + ((double)this.numeric_contactbreaking.Value * ChScale.L).ToString(bz) + ")\n\n";
-
-
-            if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
-            {
-                // Write down all parts
-                var ChSystemBodylistArray = new JArray();
-
-                // Add world-fixed object
-                var ChBodyGroundNode = new JObject
-                (
-                    new JProperty("_type", "ChBodyAuxRef"),
-                    new JProperty("_object_ID", ++_object_ID_used),
-                    new JProperty("m_name", "ground"),
-                    new JProperty("_c_SetBodyFixed", true)
-                );
-
-                ChSystemBodylistArray.Add(ChBodyGroundNode);
-
-                JsonTraverseComponent_for_ChBody(swRootComp, 1, ref ChSystemBodylistArray);
-
-                ChSystemNode.Add("bodies", ChSystemBodylistArray);
-
-
-                // Write down all constraints
-
-                MathTransform roottrasf = swRootComp.GetTotalTransform(true);
-                if (roottrasf == null)
-                {
-                    IMathUtility swMath = (IMathUtility)this.mSWApplication.GetMathUtility();
-                    double[] nulltr = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 };
-                    roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
-                }
-
-                var ChSystemLinklistArray = new JArray();
-
-                Feature swFeat = (Feature)swModel.FirstFeature();
-                JsonTraverseFeatures_for_links(swFeat, 1, ref ChSystemLinklistArray, ref roottrasf, ref swRootComp);
-                ChSystemNode.Add("links", ChSystemLinklistArray);
-
-                JsonTraverseComponent_for_links(swRootComp, 1, ref ChSystemLinklistArray, ref roottrasf);
-
-
-                //// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
-                swFeat = (Feature)swModel.FirstFeature();
-                JsonTraverseFeatures_for_markers(swFeat, 1, ref ChBodyGroundNode, roottrasf);
-
-                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + ChSystemLinklistArray.Count.ToString());
-
-
-            }
-
-
-            if (this.swProgress != null)
-                this.swProgress.End();
-        }
-
-        // Links dump
-        public void JsonTraverseComponent_for_links(Component2 swComp, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf)
-        {
-            // Scan assembly features and save mating info
-
-            if (nLevel > 1)
-            {
-                Feature swFeat = (Feature)swComp.FirstFeature();
-                JsonTraverseFeatures_for_links(swFeat, nLevel, ref ChSystemLinklistArray, ref roottrasf, ref swComp);
-            }
-
-            // Recursive scan of subassemblies
-
-            object[] vChildComp;
-            Component2 swChildComp;
-
-            vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                if (swChildComp.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
-                    JsonTraverseComponent_for_links(swChildComp, nLevel + 1, ref ChSystemLinklistArray, ref roottrasf);
-            }
-        }
-
-        public void JsonTraverseFeatures_for_links(Feature swFeat, long nLevel, ref JArray ChSystemLinklistArray, ref MathTransform roottrasf, ref Component2 assemblyofmates)
-        {
-            Feature swSubFeat;
-
-            while ((swFeat != null))
-            {
-                // Export mates as constraints
-
-                if ((swFeat.GetTypeName2() == "MateGroup") &&
-                    (this.checkBox_constraints.Checked))
-                {
-                    swSubFeat = (Feature)swFeat.GetFirstSubFeature();
-
-                    while ((swSubFeat != null))
-                    {
-                        ConvertMates.ConvertMateToJson(swSubFeat, ref ChSystemLinklistArray, mSWApplication, saved_parts, ref _object_ID_used, roottrasf, assemblyofmates);
-
-                        swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
-
-                    } // end while loop on subfeatures mates
-
-                } // end if mate group
-
-                swFeat = (Feature)swFeat.GetNextFeature();
-
-            } // end while loop on features
-
-        }
-
-        // Visual shapes dump
-        public void JsonTraverseComponent_for_visualizationshapes(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode, ref int nvisshape, Component2 chbody_comp)
-        {
-            CultureInfo bz = new CultureInfo("en-BZ");
-            object[] bodies;
-            object bodyInfo;
-            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
-
-            if (bodies != null && bodies.Length > 0)
-            {
-                // Export the component shape to a .OBJ file representing its SW body(s)
-                nvisshape += 1;
-                string shapename = ChBodyAuxRefNode.GetValue("m_name") + "_" + nvisshape;
-                string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
-
-                ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
-                if (!this.saved_shapes.ContainsKey(swCompModel.GetPathName()))
-                {
-                    try
-                    {
-                        FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
-                        StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
-                        string asciiobj = "";
-                        if (this.swProgress != null)
-                            this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
-                        // Write the OBJ converted visualization shapes:
-                        TesselateToObj.Convert(swComp, ref asciiobj, this.checkBox_saveUV.Checked, ref this.swProgress, true, false);
-                        writer.Write(asciiobj);
-                        writer.Flush();
-                        ostream.Close();
-
-                        this.saved_shapes.Add(swCompModel.GetPathName(), shapename);
-                    }
-                    catch (Exception)
-                    {
-                        System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + "\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
-                    }
-                }
-                else
-                {
-                    // reuse the already-saved shape name
-                    shapename = (String)saved_shapes[swCompModel.GetPathName()];
-                }
-
-
-
-
-                object foo = null;
-                double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
-
-
-                MathTransform absframe_chbody = chbody_comp.GetTotalTransform(true);
-                MathTransform absframe_shape = swComp.GetTotalTransform(true);
-                MathTransform absframe_chbody_inv = absframe_chbody.IInverse();
-                MathTransform relframe_shape = absframe_shape.IMultiply(absframe_chbody_inv);  // row-ordered transf. -> reverse mult.order!
-                double[] amatr = (double[])relframe_shape.ArrayData;
-                double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
-
-                // TODO: DARIOM should I check if is using shape of other objects?
-                var _c_AddVisualShape_ChVisualShape = new JObject
-                (
-                    new JProperty("_type", "ChModelFileShape"),
-                    new JProperty("_object_ID", ++_object_ID_used),
-                    new JProperty("filename", obj_filename)
-                );
-                if (vMatProperties != null && vMatProperties[0] != -1)
-                    _c_AddVisualShape_ChVisualShape.Add("_c_SetColor", new JObject(
-                        new JProperty("R", vMatProperties[0]),
-                        new JProperty("G", vMatProperties[1]),
-                        new JProperty("B", vMatProperties[2])
-                        ));
-
-                var _c_AddVisualShape_ChFrame = new JObject // TODO: _object_ID
-                (
-                    new JProperty("_type", "ChFrame"), // TODO: in the export it seems that the type is not exported
-                    new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
-                    new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
-                );
-
-                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChVisualShapes", new JArray(_c_AddVisualShape_ChVisualShape));
-                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChFrames", new JArray(_c_AddVisualShape_ChFrame));
-            }
-
-
-
-            // Recursive scan of subcomponents
-
-            Component2 swChildComp;
-            object[] vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                if (swChildComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
-                    JsonTraverseComponent_for_visualizationshapes(swChildComp, nLevel + 1, ref ChBodyAuxRefNode, ref nvisshape, chbody_comp);
-            }
-        }
-
-        // Bodies dump
-        public void JsonTraverseComponent_for_ChBody(Component2 swComp, long nLevel, ref JArray ChSystemBodylistArray)
-        {
-            CultureInfo bz = new CultureInfo("en-BZ");
-            object[] vmyChildComp = (object[])swComp.GetChildren();
-            //bool found_chbody_equivalent = false;
-
-            if (nLevel > 1 & _object_ID_used == 0 & !swComp.IsSuppressed() && (swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
-            {
-                // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
-
-                //found_chbody_equivalent = true;
-
-                this.num_comp++;
-
-                if (this.swProgress != null)
-                {
-                    this.swProgress.UpdateTitle("Exporting " + swComp.Name2 + " ...");
-                    this.swProgress.UpdateProgress(this.num_comp % 5);
-                }
-
-                // fetch SW attribute with Chrono parameters
-                SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(this.mSWintegration.defattr_chbody, 0);
-
-                MathTransform chbodytransform = swComp.GetTotalTransform(true);
-                double[] amatr;
-                amatr = (double[])chbodytransform.ArrayData;
-
-                double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
-
-                var ChBodyAuxRefNode = new JObject
-                {
-                    new JProperty("_type", "ChBodyAuxRef"),
-                    new JProperty("_object_ID", ++_object_ID_used),
-                    new JProperty("m_name", swComp.Name2),
-                    new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
-                    new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
-                };
-
-                // Compute mass
-
-                int nvalid_bodies = 0;
-                TraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
-
-                int addedb = 0; // number of added bodies
-                object[] bodies_nocollshapes = new object[nvalid_bodies];
-                TraverseComponent_for_massbodies(swComp, ref bodies_nocollshapes, ref addedb);
-
-                MassProperty swMass;
-                swMass = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
-                bool boolstatus = false;
-                boolstatus = swMass.AddBodies((object[])bodies_nocollshapes);
-                swMass.SetCoordinateSystem(chbodytransform);
-                swMass.UseSystemUnits = true;
-                //note: do not set here the COG-to-REF position because here SW express it in absolute coords
-                // double cogX = ((double[])swMass.CenterOfMass)[0];
-                // double cogY = ((double[])swMass.CenterOfMass)[1];
-                // double cogZ = ((double[])swMass.CenterOfMass)[2];
-                double mass = swMass.Mass;
-                double[] Itensor = (double[])swMass.GetMomentOfInertia((int)swMassPropertyMoment_e.swMassPropertyMomentAboutCenterOfMass);
-                double Ixx = Itensor[0];
-                double Iyy = Itensor[4];
-                double Izz = Itensor[8];
-                double Ixy = Itensor[1];
-                double Izx = Itensor[2];
-                double Iyz = Itensor[5];
-
-                MassProperty swMassb;
-                swMassb = (MassProperty)swComp.IGetModelDoc().Extension.CreateMassProperty();
-                bool boolstatusb = false;
-                boolstatusb = swMassb.AddBodies(bodies_nocollshapes);
-                swMassb.UseSystemUnits = true;
-                double cogXb = ((double[])swMassb.CenterOfMass)[0];
-                double cogYb = ((double[])swMassb.CenterOfMass)[1];
-                double cogZb = ((double[])swMassb.CenterOfMass)[2];
-
-                ChBodyAuxRefNode.Add("_c_SetMass", mass * ChScale.M);
-                ChBodyAuxRefNode.Add("_c_SetInertiaXX", JObjectCreator.CreateChVector(
-                               Ixx * ChScale.M * ChScale.L * ChScale.L,
-                               Iyy * ChScale.M * ChScale.L * ChScale.L,
-                               Izz * ChScale.M * ChScale.L * ChScale.L));
-                //// Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                ChBodyAuxRefNode.Add("_c_SetInertiaXY", JObjectCreator.CreateChVector(
-                               -Ixy * ChScale.M * ChScale.L * ChScale.L,
-                               -Izx * ChScale.M * ChScale.L * ChScale.L,
-                               -Iyz * ChScale.M * ChScale.L * ChScale.L));
-
-                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChVector", JObjectCreator.CreateChVector(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L));
-                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion", JObjectCreator.CreateChQuaternion(1, 0, 0, 0));
-
-                // Write 'fixed' state
-                ChBodyAuxRefNode.Add("_c_SetBodyFixed", swComp.IsFixed() ? true : false);
-
-
-
-                // Write shapes (saving also Wavefront files .obj)
-                if (this.checkBox_surfaces.Checked)
-                {
-                    int nvisshape = 0;
-
-                    if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
-                        JsonTraverseComponent_for_visualizationshapes(swComp, nLevel, ref ChBodyAuxRefNode, ref nvisshape, swComp);
-                }
-
-                // Write markers (SW coordsystems) contained in this component or subcomponents
-                // if any.
-                JsonTraverseComponent_for_markers(swComp, nLevel, ref ChBodyAuxRefNode);
-
-                // TODO: Chrono serialization is not capable of handling collisions yet
-
-                //// Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
-                //// if any.
-                //bool param_collide = true;
-                //if (myattr != null)
-                //    param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
-
-                //if (param_collide)
-                //{
-                //    bool found_collisionshapes = false;
-                //    int ncollshapes = 0;
-
-                //    PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
-                //    if (found_collisionshapes)
-                //    {
-                //        asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
-                //        asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
-                //    }
-                //}
-
-                ChSystemBodylistArray.Add(ChBodyAuxRefNode);
-
-                // store in hashtable, will be useful later when adding constraints
-                // TODO: before, it was after this 'if' with the condition 'if ((nLevel > 1) && (_object_ID_used != 0))'
-
-                try
-                {
-                    ModelDocExtension swModelDocExt = default(ModelDocExtension);
-                    ModelDoc2 swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
-                    //if (swModel != null)
-                    swModelDocExt = swModel.Extension;
-                    this.saved_parts.Add(swModelDocExt.GetPersistReference3(swComp), ChBodyAuxRefNode.GetValue("_object_ID"));
-                }
-                catch
-                {
-                    System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
-                }
-
-            } // end if ChBody equivalent (tree leaf or non-flexible assembly)
-
-
-            // Things to do also for sub-components of 'non flexible' assemblies: 
-            //
-
-
-
-
-            // Traverse all children, proceeding to subassemblies and parts, if any
-            // 
-
-            object[] vChildComp;
-            Component2 swChildComp;
-
-            vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                JsonTraverseComponent_for_ChBody(swChildComp, nLevel + 1, ref ChSystemBodylistArray);
-            }
-
-
-        }
-
-        // Markers dump
-        public void JsonTraverseComponent_for_markers(Component2 swComp, long nLevel, ref JObject ChBodyAuxRefNode)
-        {
-            // Look if component contains markers
-            Feature swFeat = (Feature)swComp.FirstFeature();
-            MathTransform swCompTotalTrasf = swComp.GetTotalTransform(true);
-            JsonTraverseFeatures_for_markers(swFeat, nLevel, ref ChBodyAuxRefNode, swCompTotalTrasf);
-
-            // Recursive scan of subcomponents
-
-            Component2 swChildComp;
-            object[] vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                JsonTraverseComponent_for_markers(swChildComp, nLevel + 1, ref ChBodyAuxRefNode);
-            }
-        }
-
-        public void JsonTraverseFeatures_for_markers(Feature swFeat, long nLevel, ref JObject ChBodyAuxRefNode, MathTransform swCompTotalTrasf)
-        {
-            CultureInfo bz = new CultureInfo("en-BZ");
-
-            int nmarker = 0;
-
-            var marklist = new JArray();
-
-            while ((swFeat != null))
-            {
-                // asciitext += "# feature: " + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
-
-
-                // TODO: DARIOM are markers attached to the proper body and in the proper way?
-                if (swFeat.GetTypeName2() == "CoordSys")
-                {
-                    nmarker++;
-                    CoordinateSystemFeatureData swCoordSys = (CoordinateSystemFeatureData)swFeat.GetDefinition();
-                    MathTransform tr = swCoordSys.Transform;
-
-                    MathTransform tr_part = swCompTotalTrasf;
-                    MathTransform tr_abs = tr.IMultiply(tr_part);  // row-ordered transf. -> reverse mult.order!
-
-                    double[] quat = GetQuaternionFromMatrix(ref tr_abs);
-                    double[] amatr = (double[])tr_abs.ArrayData;
-                    double[] vect = { amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L };
-
-                    var marklist_node = new JObject {
-                        new JProperty("_type", "ChMarker"),
-                        new JProperty("_object_ID", ++_object_ID_used),
-                        new JProperty("m_name", swFeat.Name),
-                        // while the ChBody::ArchiveIn would already take care of setting it through AddMarker,
-                        // this call will happen after the following Impose_Abs_Coord, thus causing crash
-                        new JProperty("Body", new JObject(
-                            new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", ChBodyAuxRefNode.GetValue("_object_ID"))
-                            )
-                        ),
-                        new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChVector", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
-                        new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChQuaternion", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
-                    };
-
-                    marklist.Add(marklist_node);
-                }
-
                 swFeat = (Feature)swFeat.GetNextFeature();
             }
-
-            ChBodyAuxRefNode.Add("markers", marklist);
-
         }
+
+
+
+
 
 
     }  // end class

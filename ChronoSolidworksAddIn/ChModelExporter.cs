@@ -20,16 +20,279 @@ namespace ChronoEngineAddin
         protected string save_dir_shapes = "";
         protected string save_filename = "";
         protected int num_comp;
-        protected int _object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
+        //protected int _object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
         protected Dictionary<string, string> m_exportNamesMap; // map solidworks names vs chrono script names, ie. map[slwd_name] = chrono_name;
+
 
         public ChModelExporter(ChronoEngine_SwAddin.SWIntegration swIntegration)
         {
             m_swIntegration = swIntegration;
         }
 
- 
 
+
+        // ============================================================================================================
+        // Abstract methods
+        // ============================================================================================================
+        #region Abstract methods
+
+        public abstract bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates); //ref int num_link
+
+        public abstract void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, ref int nVisShape, Component2 chBodyComp); //, int nBody
+
+        public abstract void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, ref MathTransform chBodyTransform, ref bool foundCollShapes, Component2 swCompBase, ref int nCollShape); //, int nBody
+
+        public abstract void TraverseComponentForBodies(Component2 swComp, long nLevel); //, int nBody
+
+        public abstract void TraverseComponentForMarkers(Component2 swComp, long nLevel); //, int nBody
+
+        public abstract void TraverseFeaturesForMarkers(Feature swFeat, long nLevel, MathTransform swCompTotalTransform); //, int nBody
+
+        #endregion
+
+
+        // ============================================================================================================
+        // Common functions
+        // ============================================================================================================
+        #region Utility functions
+
+        public void TraverseFeaturesForLinks(Feature swFeat, long nLevel, ref MathTransform rootTransform, ref Component2 assemblyOfMates)
+        {
+            Feature swSubFeat;
+            int num_link = 0;
+
+            while (swFeat != null)
+            {
+                // Export mates as constraints
+                if ((swFeat.GetTypeName2() == "MateGroup") && m_swIntegration.m_taskpaneHost.GetCheckboxConstraints().Checked)
+                {
+                    swSubFeat = (Feature)swFeat.GetFirstSubFeature();
+
+                    while (swSubFeat != null)
+                    {
+                        if (!swSubFeat.IsSuppressed())
+                        {
+                            if (ChronoEngine_SwAddin.ConvertMates.IsMateTypeExportable(swSubFeat.GetTypeName2()))
+                            {
+                                ConvertMate(swSubFeat, rootTransform, assemblyOfMates);
+                            }
+                            else if (swSubFeat.GetTypeName2() == "FtrFolder")
+                            {
+                                TraverseFeaturesForLinks(swSubFeat, nLevel + 1, ref rootTransform, ref assemblyOfMates);
+                            }
+                        }
+                        swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
+                    } // end while loop on subfeatures mates
+
+                } // end if mate group
+
+                swFeat = (Feature)swFeat.GetNextFeature();
+
+            } // end while loop on features
+        }
+
+        public void TraverseComponentForLinks(Component2 swComp, long nLevel, ref MathTransform rootTransform)
+        {
+            // Scan assembly features and save mating info
+            if (nLevel > 1)
+            {
+                Feature swFeat = (Feature)swComp.FirstFeature();
+                TraverseFeaturesForLinks(swFeat, nLevel, ref rootTransform, ref swComp);
+            }
+
+            // Recursive scan of subassemblies
+
+            object[] vChildComp;
+            Component2 swChildComp;
+
+            vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                if (swChildComp.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
+                    TraverseComponentForLinks(swChildComp, nLevel + 1, ref rootTransform);
+            }
+        }
+
+        public void TraverseComponentForCollisionShapes(Component2 swComp, long nLevel, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
+        {
+            // Look if component contains collision shapes (customized SW solid bodies):
+            TraverseFeaturesForCollisionShapes(swComp, nLevel, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                TraverseComponentForCollisionShapes(swChildComp, nLevel + 1, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
+            }
+        }
+
+        public void TraverseComponent_for_countingmassbodies(in Component2 swComp, ref int valid_bodies)
+        {
+            // Add bodies of this component to the list
+            object[] bodies;
+            object bodyInfo;
+            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+
+            if (bodies != null)
+            {
+                // note: some bodies might be collision shapes and must not enter the mass computation:
+                for (int ib = 0; ib < bodies.Length; ib++)
+                {
+                    Body2 abody = (Body2)bodies[ib];
+                    if (!(abody.Name.StartsWith("COLL.")))
+                    {
+                        valid_bodies += 1;
+                    }
+                }
+            }
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+                TraverseComponent_for_countingmassbodies(swChildComp, ref valid_bodies);
+            }
+        }
+
+        public void TraverseComponent_for_massbodies(in Component2 swComp, ref object[] obodies, ref int addedb)
+        {
+            // Add bodies of this component to the list
+            object[] bodies;
+            object bodyInfo;
+            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+
+            if (bodies != null)
+            {
+                // note: some bodies might be collision shapes and must not enter the mass computation:
+                for (int ib = 0; ib < bodies.Length; ib++)
+                {
+                    Body2 abody = (Body2)bodies[ib];
+                    if (!(abody.Name.StartsWith("COLL.")))
+                    {
+                        obodies[addedb] = bodies[ib];
+                        addedb += 1;
+                    }
+                }
+
+            }
+
+            // Recursive scan of subcomponents
+
+            Component2 swChildComp;
+            object[] vChildComp = (object[])swComp.GetChildren();
+
+            for (long i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                TraverseComponent_for_massbodies(swChildComp, ref obodies, ref addedb);
+            }
+        }
+
+        public void ExportToDump(ref string asciitext)
+        {
+            ModelDoc2 swModel;
+            ConfigurationManager swConfMgr;
+            Configuration swConf;
+            Component2 swRootComp;
+
+            swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+            swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
+            swConf = (Configuration)swConfMgr.ActiveConfiguration;
+            swRootComp = (Component2)swConf.GetRootComponent3(true);
+
+            asciitext = "# Dump hierarchy from SolidWorks \n" +
+                        "# Assembly: " + swModel.GetPathName() + "\n\n\n";
+
+            // The root component (root assembly) cannot work in DumpTraverseComponent() 
+            // cause SW api limit, so call feature traversal using this custom step:
+            Feature swFeat = (Feature)swModel.FirstFeature();
+            DumpTraverseFeatures(swFeat, 1, ref asciitext);
+
+            // Traverse all sub components
+            if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
+            {
+                DumpTraverseComponent(swRootComp, 1, ref asciitext);
+            }
+        }
+
+        public void DumpTraverseFeatures(Feature swFeat, long nLevel, ref string asciitext)
+        {
+            Feature swSubFeat;
+            string sPadStr = " ";
+            long i = 0;
+
+            for (i = 0; i <= nLevel; i++)
+            {
+                sPadStr = sPadStr + "  ";
+            }
+
+            while ((swFeat != null))
+            {
+                asciitext += sPadStr + "    -" + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
+                swSubFeat = (Feature)swFeat.GetFirstSubFeature();
+                if ((swSubFeat != null))
+                {
+                    DumpTraverseFeatures(swSubFeat, nLevel + 1, ref asciitext);
+                }
+                if (nLevel == 1)
+                {
+                    swFeat = (Feature)swFeat.GetNextFeature();
+                }
+                else
+                {
+                    swFeat = (Feature)swFeat.GetNextSubFeature();
+                }
+            }
+        }
+
+        public void DumpTraverseComponent(Component2 swComp, long nLevel, ref string asciitext)
+        {
+            // *** SCAN THE COMPONENT FEATURES
+
+            if (!swComp.IsRoot())
+            {
+                Feature swFeat;
+                swFeat = (Feature)swComp.FirstFeature();
+                DumpTraverseFeatures(swFeat, nLevel, ref asciitext);
+            }
+
+            // *** RECURSIVE SCAN CHILDREN COMPONENTS
+
+            object[] vChildComp;
+            Component2 swChildComp;
+            string sPadStr = " ";
+            long i = 0;
+
+            for (i = 0; i <= nLevel - 1; i++)
+            {
+                sPadStr = sPadStr + "  ";
+            }
+
+            vChildComp = (object[])swComp.GetChildren();
+
+            for (i = 0; i < vChildComp.Length; i++)
+            {
+                swChildComp = (Component2)vChildComp[i];
+
+                asciitext += sPadStr + "+" + swChildComp.Name2 + " <" + swChildComp.ReferencedConfiguration + ">" + "\n";
+
+                // DumpTraverseComponentFeatures(swChildComp, nLevel, ref asciitext);
+
+                DumpTraverseComponent(swChildComp, nLevel + 1, ref asciitext);
+            }
+        }
 
         protected struct LinkParams
         {
@@ -67,12 +330,7 @@ namespace ChronoEngineAddin
             public string ref4;
         };
 
-        protected bool GetLinkParameters(
-            in Feature swMateFeature,
-            out LinkParams link_params,
-            in MathTransform roottrasf,
-            in Component2 assemblyofmates
-            )
+        protected bool GetLinkParameters(in Feature swMateFeature, out LinkParams link_params, in MathTransform roottrasf, in Component2 assemblyofmates)
         {
             link_params = new LinkParams
             {
@@ -221,20 +479,20 @@ namespace ChronoEngineAddin
 
 
             Point3D cAloc = new Point3D(paramsA[0], paramsA[1], paramsA[2]);
-            link_params.cA = SWTaskpaneHost.PointTransform(cAloc, ref trA);
+            link_params.cA = PointTransform(cAloc, ref trA);
             Point3D cBloc = new Point3D(paramsB[0], paramsB[1], paramsB[2]);
-            link_params.cB = SWTaskpaneHost.PointTransform(cBloc, ref trB);
+            link_params.cB = PointTransform(cBloc, ref trB);
 
             if (!link_params.entity_0_as_VERTEX)
             {
                 Vector3D dAloc = new Vector3D(paramsA[3], paramsA[4], paramsA[5]);
-                link_params.dA = SWTaskpaneHost.DirTransform(dAloc, ref trA);
+                link_params.dA = DirTransform(dAloc, ref trA);
             }
 
             if (!link_params.entity_1_as_VERTEX)
             {
                 Vector3D dBloc = new Vector3D(paramsB[3], paramsB[4], paramsB[5]);
-                link_params.dB = SWTaskpaneHost.DirTransform(dBloc, ref trB);
+                link_params.dB = DirTransform(dBloc, ref trB);
             }
 
 
@@ -489,20 +747,20 @@ namespace ChronoEngineAddin
 
 
                 Point3D cCloc = new Point3D(paramsC[0], paramsC[1], paramsC[2]);
-                link_params.cC = SWTaskpaneHost.PointTransform(cCloc, ref trC);
+                link_params.cC = PointTransform(cCloc, ref trC);
                 Point3D cDloc = new Point3D(paramsD[0], paramsD[1], paramsD[2]);
-                link_params.cD = SWTaskpaneHost.PointTransform(cDloc, ref trD);
+                link_params.cD = PointTransform(cDloc, ref trD);
 
                 if (!link_params.entity_2_as_VERTEX)
                 {
                     Vector3D dCloc = new Vector3D(paramsC[3], paramsC[4], paramsC[5]);
-                    link_params.dC = SWTaskpaneHost.DirTransform(dCloc, ref trC);
+                    link_params.dC = DirTransform(dCloc, ref trC);
                 }
 
                 if (!link_params.entity_3_as_VERTEX)
                 {
                     Vector3D dDloc = new Vector3D(paramsD[3], paramsD[4], paramsD[5]);
-                    link_params.dD = SWTaskpaneHost.DirTransform(dDloc, ref trD);
+                    link_params.dD = DirTransform(dDloc, ref trD);
                 }
             }
 
@@ -539,275 +797,13 @@ namespace ChronoEngineAddin
         }
 
 
-
-        public abstract bool ConvertMate(
-            in Feature swMateFeature,
-            ref int num_link,
-            in MathTransform roottrasf,
-            in Component2 assemblyofmates
-            );
-
-        public void TraverseFeaturesForLinks(Feature swFeat, long nLevel, ref MathTransform rootTransform, ref Component2 assemblyOfMates)
-        {
-            Feature swSubFeat;
-            int num_link = 0;
-
-            while (swFeat != null)
-            {
-                // Export mates as constraints
-                if ((swFeat.GetTypeName2() == "MateGroup") && m_swIntegration.m_taskpaneHost.GetCheckboxConstraints().Checked)
-                {
-                    swSubFeat = (Feature)swFeat.GetFirstSubFeature();
-
-                    while (swSubFeat != null)
-                    {
-                        if (!swSubFeat.IsSuppressed())
-                        {
-                            if (ChronoEngine_SwAddin.ConvertMates.IsMateTypeExportable(swSubFeat.GetTypeName2()))
-                            {
-                                ConvertMate(swSubFeat, ref num_link, rootTransform, assemblyOfMates);
-                            }
-                            else if (swSubFeat.GetTypeName2() == "FtrFolder")
-                            {
-                                TraverseFeaturesForLinks(swSubFeat, nLevel + 1, ref rootTransform, ref assemblyOfMates);
-                            }
-                        }
-                        swSubFeat = (Feature)swSubFeat.GetNextSubFeature();
-                    } // end while loop on subfeatures mates
-
-                } // end if mate group
-
-                swFeat = (Feature)swFeat.GetNextFeature();
-
-            } // end while loop on features
-        }
-
-        public void TraverseComponentForLinks(Component2 swComp, long nLevel, ref MathTransform rootTransform)
-        {
-            // Scan assembly features and save mating info
-            if (nLevel > 1)
-            {
-                Feature swFeat = (Feature)swComp.FirstFeature();
-                TraverseFeaturesForLinks(swFeat, nLevel, ref rootTransform, ref swComp);
-            }
-
-            // Recursive scan of subassemblies
-
-            object[] vChildComp;
-            Component2 swChildComp;
-
-            vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                if (swChildComp.Solving == (int)swComponentSolvingOption_e.swComponentFlexibleSolving)
-                    TraverseComponentForLinks(swChildComp, nLevel + 1, ref rootTransform);
-            }
-        }
-
-        public abstract void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, int nBody, ref int nVisShape, Component2 chBodyComp);
-       
-        public void TraverseComponentForCollisionShapes(Component2 swComp, long nLevel, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
-        {
-            // Look if component contains collision shapes (customized SW solid bodies):
-            TraverseFeaturesForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
-
-            // Recursive scan of subcomponents
-
-            Component2 swChildComp;
-            object[] vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                TraverseComponentForCollisionShapes(swChildComp, nLevel + 1, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
-            }
-        }
-        
-        public abstract void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, int nBody, ref MathTransform chBodyTransform, ref bool foundCollShapes, Component2 swCompBase, ref int nCollShape);
-
-        public abstract void TraverseComponentForBodies(Component2 swComp, long nLevel, int nBody);
-
-        public abstract void TraverseComponentForMarkers(Component2 swComp, long nLevel, int nBody);
-
-        public abstract void TraverseFeaturesForMarkers(Feature swFeat, long nLevel, int nBody, MathTransform swCompTotalTransform);
-
-
-        #region Utility Functions
-        // ============================================================================================================
-        // Utility functions
-        // ============================================================================================================
-
-        public void TraverseComponent_for_countingmassbodies(in Component2 swComp, ref int valid_bodies)
-        {
-            // Add bodies of this component to the list
-            object[] bodies;
-            object bodyInfo;
-            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
-
-            if (bodies != null)
-            {
-                // note: some bodies might be collision shapes and must not enter the mass computation:
-                for (int ib = 0; ib < bodies.Length; ib++)
-                {
-                    Body2 abody = (Body2)bodies[ib];
-                    if (!(abody.Name.StartsWith("COLL.")))
-                    {
-                        valid_bodies += 1;
-                    }
-                }
-            }
-
-            // Recursive scan of subcomponents
-
-            Component2 swChildComp;
-            object[] vChildComp = (object[])swComp.GetChildren();
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-                TraverseComponent_for_countingmassbodies(swChildComp, ref valid_bodies);
-            }
-        }
-
-        public void TraverseComponent_for_massbodies(in Component2 swComp, ref object[] obodies, ref int addedb)
-        {
-            // Add bodies of this component to the list
-            object[] bodies;
-            object bodyInfo;
-            bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
-
-            if (bodies != null)
-            {
-                // note: some bodies might be collision shapes and must not enter the mass computation:
-                for (int ib = 0; ib < bodies.Length; ib++)
-                {
-                    Body2 abody = (Body2)bodies[ib];
-                    if (!(abody.Name.StartsWith("COLL.")))
-                    {
-                        obodies[addedb] = bodies[ib];
-                        addedb += 1;
-                    }
-                }
-
-            }
-
-            // Recursive scan of subcomponents
-
-            Component2 swChildComp;
-            object[] vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                TraverseComponent_for_massbodies(swChildComp, ref obodies, ref addedb);
-            }
-        }
-
-        public void ExportToDump(ref string asciitext)
-        {
-            ModelDoc2 swModel;
-            ConfigurationManager swConfMgr;
-            Configuration swConf;
-            Component2 swRootComp;
-
-            swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
-            swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
-            swConf = (Configuration)swConfMgr.ActiveConfiguration;
-            swRootComp = (Component2)swConf.GetRootComponent3(true);
-
-            asciitext = "# Dump hierarchy from SolidWorks \n" +
-                        "# Assembly: " + swModel.GetPathName() + "\n\n\n";
-
-            // The root component (root assembly) cannot work in DumpTraverseComponent() 
-            // cause SW api limit, so call feature traversal using this custom step:
-            Feature swFeat = (Feature)swModel.FirstFeature();
-            DumpTraverseFeatures(swFeat, 1, ref asciitext);
-
-            // Traverse all sub components
-            if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
-            {
-                DumpTraverseComponent(swRootComp, 1, ref asciitext);
-            }
-        }
-
-        public void DumpTraverseFeatures(Feature swFeat, long nLevel, ref string asciitext)
-        {
-            Feature swSubFeat;
-            string sPadStr = " ";
-            long i = 0;
-
-            for (i = 0; i <= nLevel; i++)
-            {
-                sPadStr = sPadStr + "  ";
-            }
-
-            while ((swFeat != null))
-            {
-                asciitext += sPadStr + "    -" + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
-                swSubFeat = (Feature)swFeat.GetFirstSubFeature();
-                if ((swSubFeat != null))
-                {
-                    DumpTraverseFeatures(swSubFeat, nLevel + 1, ref asciitext);
-                }
-                if (nLevel == 1)
-                {
-                    swFeat = (Feature)swFeat.GetNextFeature();
-                }
-                else
-                {
-                    swFeat = (Feature)swFeat.GetNextSubFeature();
-                }
-            }
-        }
-
-        public void DumpTraverseComponent(Component2 swComp, long nLevel, ref string asciitext)
-        {
-            // *** SCAN THE COMPONENT FEATURES
-
-            if (!swComp.IsRoot())
-            {
-                Feature swFeat;
-                swFeat = (Feature)swComp.FirstFeature();
-                DumpTraverseFeatures(swFeat, nLevel, ref asciitext);
-            }
-
-            // *** RECURSIVE SCAN CHILDREN COMPONENTS
-
-            object[] vChildComp;
-            Component2 swChildComp;
-            string sPadStr = " ";
-            long i = 0;
-
-            for (i = 0; i <= nLevel - 1; i++)
-            {
-                sPadStr = sPadStr + "  ";
-            }
-
-            vChildComp = (object[])swComp.GetChildren();
-
-            for (i = 0; i < vChildComp.Length; i++)
-            {
-                swChildComp = (Component2)vChildComp[i];
-
-                asciitext += sPadStr + "+" + swChildComp.Name2 + " <" + swChildComp.ReferencedConfiguration + ">" + "\n";
-
-                // DumpTraverseComponentFeatures(swChildComp, nLevel, ref asciitext);
-
-                DumpTraverseComponent(swChildComp, nLevel + 1, ref asciitext);
-            }
-        }
-
         #endregion
 
 
-        #region Math Functions
         // ============================================================================================================
         // Math functions
         // ============================================================================================================
+        #region Math functions
 
         public double[] GetQuaternionFromMatrix(ref MathTransform trasf)
         {
