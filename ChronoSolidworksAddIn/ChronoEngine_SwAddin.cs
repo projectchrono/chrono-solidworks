@@ -24,10 +24,11 @@ namespace ChronoEngine_SwAddin
 [ComVisible(true)]
 public class SWIntegration : ISwAddin
 {
-    public SldWorks mSWApplication;
+    public SldWorks m_swApplication;
+    public SWTaskpaneHost m_taskpaneHost;
+    
+    private TaskpaneView m_TaskpaneView;
     private int mSWCookie;
-    private TaskpaneView mTaskpaneView;
-    private SWTaskpaneHost mTaskpaneHost;
     
     public AttributeDef defattr_chbody = default(AttributeDef);
     //public AttributeDef defattr_chconveyor = default(AttributeDef);
@@ -39,13 +40,13 @@ public class SWIntegration : ISwAddin
         //System.Windows.Forms.MessageBox.Show("Add-in: ConnectToSW");
         try
         {
-            mSWApplication = (SldWorks)ThisSW;
+                m_swApplication = (SldWorks)ThisSW;
             mSWCookie = Cookie;
-            bool result = mSWApplication.SetAddinCallbackInfo(0, this, Cookie);
+            bool result = m_swApplication.SetAddinCallbackInfo(0, this, Cookie);
 
             // Attributes register          
 
-            defattr_chbody = (AttributeDef)mSWApplication.DefineAttribute("chrono_ChBody");
+            defattr_chbody = (AttributeDef)m_swApplication.DefineAttribute("chrono_ChBody");
             defattr_chbody.AddParameter("friction",             (int)swParamType_e.swParamTypeDouble, 0.6, 0);
             defattr_chbody.AddParameter("rolling_friction",     (int)swParamType_e.swParamTypeDouble, 0, 0);
             defattr_chbody.AddParameter("spinning_friction",    (int)swParamType_e.swParamTypeDouble, 0, 0);
@@ -57,7 +58,7 @@ public class SWIntegration : ISwAddin
             defattr_chbody.Register();
 
            
-            defattr_chlink = (AttributeDef)mSWApplication.DefineAttribute("chrono_ChLink");
+            defattr_chlink = (AttributeDef)m_swApplication.DefineAttribute("chrono_ChLink");
             defattr_chlink.AddParameter("motor_name", (int)swParamType_e.swParamTypeString, 0.0, 0);
             defattr_chlink.AddParameter("motor_type", (int)swParamType_e.swParamTypeString, 0.0, 0);
             defattr_chlink.AddParameter("motor_motionlaw", (int)swParamType_e.swParamTypeString, 0.0, 0);
@@ -71,7 +72,7 @@ public class SWIntegration : ISwAddin
             this.UISetup();
 
             // Event register: here is an example of how to do...
-            SldWorks moSWApplication = (SldWorks)mSWApplication;
+            SldWorks moSWApplication = (SldWorks)m_swApplication;
             moSWApplication.ActiveDocChangeNotify += new DSldWorksEvents_ActiveDocChangeNotifyEventHandler(test_event_ActiveDocChangeNotify);
             moSWApplication.ActiveModelDocChangeNotify += new DSldWorksEvents_ActiveModelDocChangeNotifyEventHandler(test_event_ActiveModelDocChangeNotify);
         }
@@ -103,17 +104,17 @@ public class SWIntegration : ISwAddin
             addinPath+"/icons/ChronoEngineAddIn_128.png"
         };
 
-        mTaskpaneView = mSWApplication.CreateTaskpaneView3(imagePaths, "Chrono::Engine tools");
-        mTaskpaneHost = (SWTaskpaneHost)mTaskpaneView.AddControl(SWTaskpaneHost.SWTASKPANE_PROGID,"");
-        mTaskpaneHost.mSWApplication = this.mSWApplication;
-        mTaskpaneHost.mSWintegration = this;
+        m_TaskpaneView = m_swApplication.CreateTaskpaneView3(imagePaths, "Chrono::Engine tools");
+        m_taskpaneHost = (SWTaskpaneHost)m_TaskpaneView.AddControl(SWTaskpaneHost.SWTASKPANE_PROGID,"");
+        m_taskpaneHost.mSWApplication = this.m_swApplication;
+        m_taskpaneHost.mSWintegration = this;
     }
     private void UITeardown()
     {
-        mTaskpaneHost = null;
-        mTaskpaneView.DeleteView();
-        Marshal.ReleaseComObject(mTaskpaneView);
-        mTaskpaneView = null;
+        m_taskpaneHost = null;
+        m_TaskpaneView.DeleteView();
+        Marshal.ReleaseComObject(m_TaskpaneView);
+        m_TaskpaneView = null;
     }
 
     [ComRegisterFunction()]

@@ -897,6 +897,31 @@ namespace ChronoEngine_SwAddin
 
 
 
+        public ref System.Windows.Forms.CheckBox GetCheckboxConstraints()
+        {
+            return ref checkBox_constraints;
+        }
+
+        public ref SolidWorks.Interop.sldworks.UserProgressBar GetProgressBar()
+        {
+            return ref swProgress;
+        }
+
+        public ref System.Windows.Forms.CheckBox GetCheckboxSaveUV()
+        {
+            return ref checkBox_saveUV;
+        }
+
+        public ref System.Windows.Forms.CheckBox GetCheckboxCollisionShapes()
+        {
+            return ref checkBox_collshapes;
+        }
+        public ref System.Windows.Forms.CheckBox GetCheckboxSurfaces()
+        {
+            return ref checkBox_surfaces;
+        }
+
+        
 
         // ============================================================================================================
         // Math functions
@@ -1003,34 +1028,38 @@ namespace ChronoEngine_SwAddin
         // ============================================================================================================
         // Export utility functions
         // ============================================================================================================
-        static bool IsMateTypeExportable(string typeName2)
-        {
-            System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>();
+        
+        //
+        // METHOD MOVED TO ConvertMates.cs !!!!
+        //
+        //static bool IsMateTypeExportable(string typeName2)
+        //{
+        //    System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>();
 
-            // TODO: check which mates are *actually* exportable to Chrono
-            acceptedMates.Add("MateCamTangent");
-            acceptedMates.Add("MateCoincident");
-            acceptedMates.Add("MateConcentric");
-            acceptedMates.Add("MateDistanceDim");
-            acceptedMates.Add("MateGearDim");
-            acceptedMates.Add("MateHinge");
-            acceptedMates.Add("MateInPlace");
-            acceptedMates.Add("MateLinearCoupler");
-            acceptedMates.Add("MateLock");
-            acceptedMates.Add("MateParallel");
-            acceptedMates.Add("MatePerpendicular");
-            acceptedMates.Add("MatePlanarAngleDim");
-            acceptedMates.Add("MateProfileCenter");
-            acceptedMates.Add("MateRackPinionDim");
-            acceptedMates.Add("MateScrew");
-            acceptedMates.Add("MateSlot");
-            acceptedMates.Add("MateSymmetric");
-            acceptedMates.Add("MateTangent");
-            acceptedMates.Add("MateUniversalJoint");
-            acceptedMates.Add("MateWidth");
+        //    // TODO: check which mates are *actually* exportable to Chrono
+        //    acceptedMates.Add("MateCamTangent");
+        //    acceptedMates.Add("MateCoincident");
+        //    acceptedMates.Add("MateConcentric");
+        //    acceptedMates.Add("MateDistanceDim");
+        //    acceptedMates.Add("MateGearDim");
+        //    acceptedMates.Add("MateHinge");
+        //    acceptedMates.Add("MateInPlace");
+        //    acceptedMates.Add("MateLinearCoupler");
+        //    acceptedMates.Add("MateLock");
+        //    acceptedMates.Add("MateParallel");
+        //    acceptedMates.Add("MatePerpendicular");
+        //    acceptedMates.Add("MatePlanarAngleDim");
+        //    acceptedMates.Add("MateProfileCenter");
+        //    acceptedMates.Add("MateRackPinionDim");
+        //    acceptedMates.Add("MateScrew");
+        //    acceptedMates.Add("MateSlot");
+        //    acceptedMates.Add("MateSymmetric");
+        //    acceptedMates.Add("MateTangent");
+        //    acceptedMates.Add("MateUniversalJoint");
+        //    acceptedMates.Add("MateWidth");
 
-            return acceptedMates.Contains(typeName2);
-        }
+        //    return acceptedMates.Contains(typeName2);
+        //}
 
         public void TraverseComponent_for_countingmassbodies(in Component2 swComp, ref int valid_bodies)
         {
@@ -2098,7 +2127,7 @@ namespace ChronoEngine_SwAddin
                     {
                         if (!swSubFeat.IsSuppressed())
                         {
-                            if (IsMateTypeExportable(swSubFeat.GetTypeName2()))
+                            if (ChronoEngine_SwAddin.ConvertMates.IsMateTypeExportable(swSubFeat.GetTypeName2()))
                             {
                                 ConvertMates.ConvertMateToCpp(swSubFeat, ref asciitext, mSWApplication, saved_parts, ref num_link, roottrasf, assemblyofmates);
                             }
@@ -2789,7 +2818,7 @@ namespace ChronoEngine_SwAddin
                         string motorBody1       = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
                         string motorBody2       = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
 
-                        ModelDoc2 swModel = (ModelDoc2)mSWintegration.mSWApplication.ActiveDoc;
+                        ModelDoc2 swModel = (ModelDoc2)mSWintegration.m_swApplication.ActiveDoc;
                         byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
                         byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
                         byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);

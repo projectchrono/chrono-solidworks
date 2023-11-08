@@ -501,6 +501,34 @@ namespace ChronoEngine_SwAddin
             return true;
         }
 
+        public static bool IsMateTypeExportable(string typeName2)
+        {
+            System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>();
+
+            // TODO: check which mates are *actually* exportable to Chrono
+            acceptedMates.Add("MateCamTangent");
+            acceptedMates.Add("MateCoincident");
+            acceptedMates.Add("MateConcentric");
+            acceptedMates.Add("MateDistanceDim");
+            acceptedMates.Add("MateGearDim");
+            acceptedMates.Add("MateHinge");
+            acceptedMates.Add("MateInPlace");
+            acceptedMates.Add("MateLinearCoupler");
+            acceptedMates.Add("MateLock");
+            acceptedMates.Add("MateParallel");
+            acceptedMates.Add("MatePerpendicular");
+            acceptedMates.Add("MatePlanarAngleDim");
+            acceptedMates.Add("MateProfileCenter");
+            acceptedMates.Add("MateRackPinionDim");
+            acceptedMates.Add("MateScrew");
+            acceptedMates.Add("MateSlot");
+            acceptedMates.Add("MateSymmetric");
+            acceptedMates.Add("MateTangent");
+            acceptedMates.Add("MateUniversalJoint");
+            acceptedMates.Add("MateWidth");
+
+            return acceptedMates.Contains(typeName2);
+        }
 
 
         // ============================================================================================================

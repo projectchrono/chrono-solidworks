@@ -123,6 +123,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChModelExporter.cs" />
+    <Compile Include="ChModelExporterCpp.cs" />
+    <Compile Include="ChModelExporterPython.cs" />
     <Compile Include="ChronoEngine_SwAddin.cs" />
     <Compile Include="ChScale.cs" />
     <Compile Include="ConvexDecomp2.cs">

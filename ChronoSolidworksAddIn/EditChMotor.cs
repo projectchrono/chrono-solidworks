@@ -58,7 +58,7 @@ namespace ChronoEngineAddin
                     string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
                     string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
 
-                    ModelDoc2 swModel = (ModelDoc2)m_SWintegration.mSWApplication.ActiveDoc;
+                    ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
                     byte[] selBody1Ref = (byte[])GetIDFromString(swModel, motorBody1);
                     byte[] selBody2Ref = (byte[])GetIDFromString(swModel, motorBody2);
 
@@ -118,7 +118,7 @@ namespace ChronoEngineAddin
 
         private void butt_createMotor_Click(object sender, EventArgs e)
         {
-            ModelDoc2 swModel = (ModelDoc2)m_SWintegration.mSWApplication.ActiveDoc;
+            ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
 
             byte[] motorMarkerRef = (byte[])swModel.Extension.GetPersistReference3(m_selectedMarker);
             byte[] motorBody1Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody1);
