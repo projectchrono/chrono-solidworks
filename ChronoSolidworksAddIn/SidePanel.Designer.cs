@@ -90,7 +90,7 @@
             this.button_ExportToPython.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_ExportToPython, resources.GetString("button_ExportToPython.ToolTip"));
             this.button_ExportToPython.UseVisualStyleBackColor = true;
-            this.button_ExportToPython.Click += new System.EventHandler(this.Export_Click);
+            this.button_ExportToPython.Click += new System.EventHandler(this.ExportClick);
             // 
             // label1
             // 
@@ -142,7 +142,6 @@
             this.checkBox_constraints.Text = "Export constraints";
             this.toolTipSavePython.SetToolTip(this.checkBox_constraints, resources.GetString("checkBox_constraints.ToolTip"));
             this.checkBox_constraints.UseVisualStyleBackColor = true;
-            this.checkBox_constraints.CheckedChanged += new System.EventHandler(this.checkBox_constraints_CheckedChanged);
             // 
             // toolTipSavePython
             // 
@@ -500,7 +499,6 @@
             this.button_settrimeshcoll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_settrimeshcoll, resources.GetString("button_settrimeshcoll.ToolTip"));
             this.button_settrimeshcoll.UseVisualStyleBackColor = true;
-            this.button_settrimeshcoll.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // button_ExportToJson
             // 
@@ -512,7 +510,7 @@
             this.button_ExportToJson.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_ExportToJson, resources.GetString("button_ExportToJson.ToolTip"));
             this.button_ExportToJson.UseVisualStyleBackColor = true;
-            this.button_ExportToJson.Click += new System.EventHandler(this.Export_Click);
+            this.button_ExportToJson.Click += new System.EventHandler(this.ExportClick);
             // 
             // button_ExportToCpp
             // 
@@ -524,7 +522,7 @@
             this.button_ExportToCpp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_ExportToCpp, resources.GetString("button_ExportToCpp.ToolTip"));
             this.button_ExportToCpp.UseVisualStyleBackColor = true;
-            this.button_ExportToCpp.Click += new System.EventHandler(this.Export_Click);
+            this.button_ExportToCpp.Click += new System.EventHandler(this.ExportClick);
             // 
             // butt_chronoMotors
             // 
@@ -637,7 +635,6 @@
             this.label11.TabIndex = 30;
             this.label11.Text = "Contact breaking";
             this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label11.Click += new System.EventHandler(this.label11_Click);
             // 
             // label12
             // 
@@ -648,7 +645,6 @@
             this.label12.TabIndex = 32;
             this.label12.Text = "Trimesh sphereswept r";
             this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
             // SWTaskpaneHost
             // 
@@ -696,7 +692,6 @@
             this.Name = "SWTaskpaneHost";
             this.Size = new System.Drawing.Size(242, 691);
             this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
-            this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_length)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_scale_L)).EndInit();

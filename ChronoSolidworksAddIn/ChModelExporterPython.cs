@@ -4,6 +4,7 @@ using SolidWorks.Interop.swconst;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Windows;
 using System.Windows.Media.Media3D;
 
 /// Derived class for exporting a Solidworks assembly to a Chrono::Engine  model.
@@ -14,14 +15,17 @@ namespace ChronoEngineAddin
     {
         private string m_asciiText = "";
         private int num_link = 0;
-        private int nbody = 0; //-1 ??
+        private int nbody = -1;
 
 
-        public ChModelExporterPython(ChronoEngine_SwAddin.SWIntegration swIntegration)
-            : base(swIntegration) { }
+        public ChModelExporterPython(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+            : base(swIntegration, save_dir_shapes, save_filename) { }
 
 
-        public void Export()
+        // ============================================================================================================
+        // Override base class methods
+        // ============================================================================================================
+        public override void Export()
         {
             CultureInfo bz = new CultureInfo("en-BZ");
 
@@ -34,51 +38,50 @@ namespace ChronoEngineAddin
             m_savedShapes.Clear();
             m_savedCollisionMeshes.Clear();
 
-            swModel = (ModelDoc2)this.m_swIntegration.m_swApplication.ActiveDoc;
-            if (swModel == null) return;
+            swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+            if (swModel == null) 
+                return;
             swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
             swConf = (Configuration)swConfMgr.ActiveConfiguration;
             swRootComp = (Component2)swConf.GetRootComponent3(true);
 
             m_swIntegration.m_swApplication.GetUserProgressBar(out m_swIntegration.m_taskpaneHost.GetProgressBar());
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
-                m_swIntegration.m_taskpaneHost.GetProgressBar().Start(0, 5, "Exporting to ");
+                m_swIntegration.m_taskpaneHost.GetProgressBar().Start(0, 5, "Exporting to Python");
 
             num_comp = 0;
 
-            m_asciiText = "# PyChrono script generated from SolidWorks using Chrono::SolidWorks add-in \n" +
-                        "# Assembly: " + swModel.GetPathName() + "\n\n\n";
+            m_asciiText = "";
+            m_asciiText += "# PyChrono model automatically generated using Chrono::SolidWorks add-in\n";
+            m_asciiText += "# Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             m_asciiText += "import pychrono as chrono \n";
             m_asciiText += "import builtins \n\n";
 
-            m_asciiText += "# Some global settings \n" + 
-                         "sphereswept_r = " + m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value.ToString(bz) + "\n" +
-                         "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericEnvelope().Value * ChScale.L).ToString(bz) + ")\n" +
-                         "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericMargin().Value * ChScale.L).ToString(bz) + ")\n" +
-                         "chrono.ChCollisionSystemBullet.SetContactBreakingThreshold(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L).ToString(bz) + ")\n\n";
+            m_asciiText += "# Some global settings \n";
+            m_asciiText += "sphereswept_r = " + m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value.ToString(bz) + "\n";
+            m_asciiText += "chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericEnvelope().Value * ChScale.L).ToString(bz) + ")\n";
+            m_asciiText += "chrono.ChCollisionModel.SetDefaultSuggestedMargin(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericMargin().Value * ChScale.L).ToString(bz) + ")\n";
+            m_asciiText += "chrono.ChCollisionSystemBullet.SetContactBreakingThreshold(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L).ToString(bz) + ")\n\n";
 
-            m_asciiText += "shapes_dir = '" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes" + "/' \n\n";
+            m_asciiText += "shapes_dir = '" + System.IO.Path.GetFileNameWithoutExtension(m_saveFilename) + "_shapes" + "/' \n\n";
 
             m_asciiText += "if hasattr(builtins, 'exported_system_relpath'): \n";
             m_asciiText += "    shapes_dir = builtins.exported_system_relpath + shapes_dir \n\n";
 
             m_asciiText += "exported_items = [] \n\n";
 
-            m_asciiText += "body_0 = chrono.ChBodyAuxRef()\n" +
-                         "body_0.SetName('ground')\n" +
-                         "body_0.SetBodyFixed(True)\n" +
-                         "exported_items.append(body_0)\n\n";
+            m_asciiText += "body_0 = chrono.ChBodyAuxRef()\n";
+            m_asciiText += "body_0.SetName('ground')\n";
+            m_asciiText += "body_0.SetBodyFixed(True)\n";
+            m_asciiText += "exported_items.append(body_0)\n\n";
 
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts
-
                 TraverseComponentForBodies(swRootComp, 1);
 
-
                 // Write down all constraints
-
                 MathTransform rootTransform = swRootComp.GetTotalTransform(true);
                 if (rootTransform == null)
                 {
@@ -100,10 +103,14 @@ namespace ChronoEngineAddin
 
             }
 
-            System.Windows.Forms.MessageBox.Show("Export to  completed.");
+            System.Windows.Forms.MessageBox.Show("Export to Python completed.");
 
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                 m_swIntegration.m_taskpaneHost.GetProgressBar().End();
+
+
+            // Write on file
+            System.IO.File.WriteAllText(m_saveFilename, m_asciiText);
         }
 
         public override bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates)
@@ -394,12 +401,6 @@ namespace ChronoEngineAddin
             return true;
         }
 
-
-
-        // ============================================================================================================
-        // Override base class methods
-        // ============================================================================================================
-
         public override void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, ref int nvisshape, Component2 chbody_comp)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
@@ -414,7 +415,7 @@ namespace ChronoEngineAddin
                     nvisshape += 1;
                     string bodyname = "body_" + nbody;
                     string shapename = "body_" + nbody + "_" + nvisshape;
-                    string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+                    string obj_filename = m_saveDirShapes + "\\" + shapename + ".obj";
 
                     ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
                     if (!m_savedShapes.ContainsKey(swCompModel.GetPathName()))
@@ -669,7 +670,7 @@ namespace ChronoEngineAddin
                             // fallback if no primitive collision shape found: use concave trimesh collision model (although inefficient)
                             ncollshape += 1;
                             string shapename = "body_" + nbody + "_" + ncollshape + "_collision";
-                            string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+                            string obj_filename = m_saveDirShapes + "\\" + shapename + ".obj";
 
                             ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
                             if (!m_savedCollisionMeshes.ContainsKey(swCompModel.GetPathName()))
@@ -727,26 +728,24 @@ namespace ChronoEngineAddin
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] vmyChildComp = (object[])swComp.GetChildren();
-            //bool found_chbody_equivalent = false;
 
             if (nLevel > 1)
+            {
                 if (nbody == -1)
+                {
                     if (!swComp.IsSuppressed()) // skip body if marked as 'suppressed'
                     {
                         if ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
                         {
                             // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
+                            num_comp++;
 
-                            //found_chbody_equivalent = true;
-
-                            this.num_comp++;
-
-                            nbody = this.num_comp;  // mark the rest of recursion as 'n-th body found'
+                            nbody = num_comp;  // mark the rest of recursion as 'n-th body found'
 
                             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                             {
                                 m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateTitle("Exporting " + swComp.Name2 + " ...");
-                                m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateProgress(this.num_comp % 5);
+                                m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateProgress(num_comp % 5);
                             }
 
                             // fetch SW attribute with Chrono parameters
@@ -755,7 +754,7 @@ namespace ChronoEngineAddin
                             MathTransform chbodytransform = swComp.GetTotalTransform(true);
                             double[] amatr;
                             amatr = (double[])chbodytransform.ArrayData;
-                            string bodyname = "body_" + this.num_comp;
+                            string bodyname = "body_" + num_comp;
 
                             // Write create body
                             m_asciiText += "# Rigid body part\n";
@@ -766,14 +765,13 @@ namespace ChronoEngineAddin
 
                             // Write position
                             m_asciiText += bodyname + ".SetPos(chrono.ChVectorD("
-                                       + (amatr[9] * ChScale.L).ToString("g", bz) + ","
-                                       + (amatr[10] * ChScale.L).ToString("g", bz) + ","
-                                       + (amatr[11] * ChScale.L).ToString("g", bz) + "))" + "\n";
+                                + (amatr[9] * ChScale.L).ToString("g", bz) + ","
+                                + (amatr[10] * ChScale.L).ToString("g", bz) + ","
+                                + (amatr[11] * ChScale.L).ToString("g", bz) + "))" + "\n";
 
                             // Write rotation
                             double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
-                            m_asciiText += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n",
-                                       bodyname, quat[0], quat[1], quat[2], quat[3]);
+                            m_asciiText += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n", bodyname, quat[0], quat[1], quat[2], quat[3]);
 
                             // Compute mass
 
@@ -842,7 +840,7 @@ namespace ChronoEngineAddin
 
 
                             // Write shapes (saving also Wavefront files .obj)
-                            if (m_swIntegration.m_taskpaneHost.GetCheckboxSurfaces().Checked)
+                            if ((bool)m_swIntegration.m_taskpaneHost.GetCheckboxSurfaces().Checked)
                             {
                                 int nvisshape = 0;
 
@@ -882,7 +880,8 @@ namespace ChronoEngineAddin
 
                         } // end if ChBody equivalent (tree leaf or non-flexible assembly)
                     }
-
+                }
+            }
 
             // Things to do also for sub-components of 'non flexible' assemblies: 
             //
@@ -908,19 +907,16 @@ namespace ChronoEngineAddin
             // Traverse all children, proceeding to subassemblies and parts, if any
             // 
 
+            nbody = -1; // RESET COUNTER
             object[] vChildComp;
             Component2 swChildComp;
-
             vChildComp = (object[])swComp.GetChildren();
 
             for (long i = 0; i < vChildComp.Length; i++)
             {
                 swChildComp = (Component2)vChildComp[i];
-
                 TraverseComponentForBodies(swChildComp, nLevel + 1);
             }
-
-
         }
 
         public override void TraverseComponentForMarkers(Component2 swComp, long nLevel)

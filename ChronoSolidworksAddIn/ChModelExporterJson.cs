@@ -11,18 +11,12 @@ namespace ChronoEngineAddin
 {
     internal class ChModelExporterJson : ChModelExporter
     {
-        private JArray ChSystemLinklistArray;
-        private JArray ChSystemBodylistArray;
-        private JObject ChBodyAuxRefNode;
-        private int _object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
-
-        public ChModelExporterJson(ChronoEngine_SwAddin.SWIntegration swIntegration)
-            : base(swIntegration) 
-        {
-            ChSystemLinklistArray = new JArray();
-        }
-
-        public struct JObjectCreator
+        private JArray m_ChSystemLinklistArray;
+        private JArray m_ChSystemBodylistArray;
+        private JObject m_ChBodyAuxRefNode;
+        private JObject m_ChSystemNode;
+        private int m_object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
+        private struct JObjectCreator
         {
             public static JObject CreateChVector(double[] vect)
             {
@@ -69,7 +63,23 @@ namespace ChronoEngineAddin
             }
         };
 
-        public void Export(ref JObject ChSystemNode)
+
+        public ChModelExporterJson(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+            : base(swIntegration, save_dir_shapes, save_filename) 
+        {
+            m_ChSystemLinklistArray = new JArray();
+            m_ChSystemNode = new JObject();
+        }
+
+
+
+
+
+        // ============================================================================================================
+        // Override base class methods
+        // ============================================================================================================
+
+        public override void Export()
         {
             CultureInfo bz = new CultureInfo("en-BZ");
 
@@ -93,7 +103,7 @@ namespace ChronoEngineAddin
                 m_swIntegration.m_taskpaneHost.GetProgressBar().Start(0, 5, "Exporting to JSON");
 
             num_comp = 0;
-            _object_ID_used = 0;
+            m_object_ID_used = 0;
 
 
             //asciitext += "# Some global settings: \n" +
@@ -106,22 +116,22 @@ namespace ChronoEngineAddin
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts
-                var ChSystemBodylistArray = new JArray();
+                var m_ChSystemBodylistArray = new JArray();
 
                 // Add world-fixed object
                 var ChBodyGroundNode = new JObject
                 (
                     new JProperty("_type", "ChBodyAuxRef"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("m_name", "ground"),
                     new JProperty("_c_SetBodyFixed", true)
                 );
 
-                ChSystemBodylistArray.Add(ChBodyGroundNode);
+                m_ChSystemBodylistArray.Add(ChBodyGroundNode);
 
                 TraverseComponentForBodies(swRootComp, 1);
 
-                ChSystemNode.Add("bodies", ChSystemBodylistArray);
+                m_ChSystemNode.Add("bodies", m_ChSystemBodylistArray);
 
 
                 // Write down all constraints
@@ -134,11 +144,11 @@ namespace ChronoEngineAddin
                     roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
                 }
 
-                var ChSystemLinklistArray = new JArray();
+                var m_ChSystemLinklistArray = new JArray();
 
                 Feature swFeat = (Feature)swModel.FirstFeature();
                 TraverseFeaturesForLinks(swFeat, 1, ref roottrasf, ref swRootComp);
-                ChSystemNode.Add("links", ChSystemLinklistArray);
+                m_ChSystemNode.Add("links", m_ChSystemLinklistArray);
 
                 TraverseComponentForLinks(swRootComp, 1, ref roottrasf);
 
@@ -147,21 +157,19 @@ namespace ChronoEngineAddin
                 swFeat = (Feature)swModel.FirstFeature();
                 TraverseFeaturesForMarkers(swFeat, 1, roottrasf);
 
-                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + ChSystemLinklistArray.Count.ToString());
+                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (m_ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + m_ChSystemLinklistArray.Count.ToString());
 
 
             }
 
-
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                 m_swIntegration.m_taskpaneHost.GetProgressBar().End();
+
+
+            // Write on file
+            var ChSystemWrapper = new JObject(new JProperty("system", m_ChSystemNode));
+            File.WriteAllText(m_saveFilename, ChSystemWrapper.ToString(Newtonsoft.Json.Formatting.Indented));
         }
-
-
-
-        // ============================================================================================================
-        // Override base class methods
-        // ============================================================================================================
 
         public override bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates)
         {
@@ -188,7 +196,7 @@ namespace ChronoEngineAddin
                 var link_node = new JObject
                 (
                     new JProperty("_type", "ChLinkMateXdistance"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -215,7 +223,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
-                ChSystemLinklistArray.Add(link_node);
+                m_ChSystemLinklistArray.Add(link_node);
             }
 
             if (link_params.do_ChLinkMateParallel)
@@ -226,7 +234,7 @@ namespace ChronoEngineAddin
                     var link_node = new JObject
                     (
                         new JProperty("_type", "ChLinkMateParallel"),
-                        new JProperty("_object_ID", ++_object_ID_used),
+                        new JProperty("_object_ID", ++m_object_ID_used),
                         new JProperty("_c_Initialize_Body1",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
@@ -256,7 +264,7 @@ namespace ChronoEngineAddin
                     if (link_params.do_parallel_flip)
                         link_node.Add("_c_SetFlipped", true);
 
-                    ChSystemLinklistArray.Add(link_node);
+                    m_ChSystemLinklistArray.Add(link_node);
 
                 }
                 else
@@ -272,7 +280,7 @@ namespace ChronoEngineAddin
                     var link_node = new JObject
                     (
                         new JProperty("_type", "ChLinkMateOrthogonal"),
-                        new JProperty("_object_ID", ++_object_ID_used),
+                        new JProperty("_object_ID", ++m_object_ID_used),
                         new JProperty("_c_Initialize_Body1",
                             new JObject(
                                 new JProperty("_type", "ChBodyAuxRef"),
@@ -299,7 +307,7 @@ namespace ChronoEngineAddin
                         new JProperty("m_name", swMateFeature.Name)
                     );
 
-                    ChSystemLinklistArray.Add(link_node);
+                    m_ChSystemLinklistArray.Add(link_node);
 
                 }
                 else
@@ -313,7 +321,7 @@ namespace ChronoEngineAddin
                 var link_node = new JObject
                 (
                     new JProperty("_type", "ChLinkMateSpherical"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -338,7 +346,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
-                ChSystemLinklistArray.Add(link_node);
+                m_ChSystemLinklistArray.Add(link_node);
 
             }
 
@@ -360,7 +368,7 @@ namespace ChronoEngineAddin
                 var link_node = new JObject
                 (
                     new JProperty("_type", "ChLinkMateGeneric"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("_c_SetConstrainedCoords", new JArray(false, true, true, false, false, false)),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
@@ -388,7 +396,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
-                ChSystemLinklistArray.Add(link_node);
+                m_ChSystemLinklistArray.Add(link_node);
 
             }
 
@@ -404,7 +412,7 @@ namespace ChronoEngineAddin
                 var link_node1 = new JObject
                 (
                     new JProperty("_type", "ChLinkMateCoaxial"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -431,7 +439,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name + "_1")
                 );
 
-                ChSystemLinklistArray.Add(link_node1);
+                m_ChSystemLinklistArray.Add(link_node1);
 
 
                 ////////////
@@ -441,7 +449,7 @@ namespace ChronoEngineAddin
                 var link_node2 = new JObject
                 (
                     new JProperty("_type", "ChLinkMateXdistance"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("_c_Initialize_Body1",
                         new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
@@ -467,7 +475,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name + "_2")
                 );
 
-                ChSystemLinklistArray.Add(link_node2);
+                m_ChSystemLinklistArray.Add(link_node2);
 
             }
 
@@ -487,8 +495,8 @@ namespace ChronoEngineAddin
             {
                 // Export the component shape to a .OBJ file representing its SW body(s)
                 nvisshape += 1;
-                string shapename = ChBodyAuxRefNode.GetValue("m_name") + "_" + nvisshape;
-                string obj_filename = this.save_dir_shapes + "\\" + shapename + ".obj";
+                string shapename = m_ChBodyAuxRefNode.GetValue("m_name") + "_" + nvisshape;
+                string obj_filename = m_saveDirShapes + "\\" + shapename + ".obj";
 
                 ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
                 if (!m_savedShapes.ContainsKey(swCompModel.GetPathName()))
@@ -537,7 +545,7 @@ namespace ChronoEngineAddin
                 var _c_AddVisualShape_ChVisualShape = new JObject
                 (
                     new JProperty("_type", "ChModelFileShape"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("filename", obj_filename)
                 );
                 if (vMatProperties != null && vMatProperties[0] != -1)
@@ -554,8 +562,8 @@ namespace ChronoEngineAddin
                     new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
                 );
 
-                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChVisualShapes", new JArray(_c_AddVisualShape_ChVisualShape));
-                ChBodyAuxRefNode.Add("_c_AddVisualShape_ChFrames", new JArray(_c_AddVisualShape_ChFrame));
+                m_ChBodyAuxRefNode.Add("_c_AddVisualShape_ChVisualShapes", new JArray(_c_AddVisualShape_ChVisualShape));
+                m_ChBodyAuxRefNode.Add("_c_AddVisualShape_ChFrames", new JArray(_c_AddVisualShape_ChFrame));
             }
 
 
@@ -587,7 +595,7 @@ namespace ChronoEngineAddin
             object[] vmyChildComp = (object[])swComp.GetChildren();
             //bool found_chbody_equivalent = false;
 
-            if (nLevel > 1 & _object_ID_used == 0 & !swComp.IsSuppressed() && (swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
+            if (nLevel > 1 & m_object_ID_used == 0 & !swComp.IsSuppressed() && (swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
             {
                 // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
 
@@ -610,10 +618,10 @@ namespace ChronoEngineAddin
 
                 double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
 
-                ChBodyAuxRefNode = new JObject
+                m_ChBodyAuxRefNode = new JObject
                 {
                     new JProperty("_type", "ChBodyAuxRef"),
-                    new JProperty("_object_ID", ++_object_ID_used),
+                    new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("m_name", swComp.Name2),
                     new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
                     new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
@@ -656,22 +664,22 @@ namespace ChronoEngineAddin
                 double cogYb = ((double[])swMassb.CenterOfMass)[1];
                 double cogZb = ((double[])swMassb.CenterOfMass)[2];
 
-                ChBodyAuxRefNode.Add("_c_SetMass", mass * ChScale.M);
-                ChBodyAuxRefNode.Add("_c_SetInertiaXX", JObjectCreator.CreateChVector(
+                m_ChBodyAuxRefNode.Add("_c_SetMass", mass * ChScale.M);
+                m_ChBodyAuxRefNode.Add("_c_SetInertiaXX", JObjectCreator.CreateChVector(
                                Ixx * ChScale.M * ChScale.L * ChScale.L,
                                Iyy * ChScale.M * ChScale.L * ChScale.L,
                                Izz * ChScale.M * ChScale.L * ChScale.L));
                 //// Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                ChBodyAuxRefNode.Add("_c_SetInertiaXY", JObjectCreator.CreateChVector(
+                m_ChBodyAuxRefNode.Add("_c_SetInertiaXY", JObjectCreator.CreateChVector(
                                -Ixy * ChScale.M * ChScale.L * ChScale.L,
                                -Izx * ChScale.M * ChScale.L * ChScale.L,
                                -Iyz * ChScale.M * ChScale.L * ChScale.L));
 
-                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChVector", JObjectCreator.CreateChVector(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L));
-                ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion", JObjectCreator.CreateChQuaternion(1, 0, 0, 0));
+                m_ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChVector", JObjectCreator.CreateChVector(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L));
+                m_ChBodyAuxRefNode.Add("_c_SetFrame_COG_to_REF__ChFrame__ChQuaternion", JObjectCreator.CreateChQuaternion(1, 0, 0, 0));
 
                 // Write 'fixed' state
-                ChBodyAuxRefNode.Add("_c_SetBodyFixed", swComp.IsFixed() ? true : false);
+                m_ChBodyAuxRefNode.Add("_c_SetBodyFixed", swComp.IsFixed() ? true : false);
 
 
 
@@ -709,10 +717,10 @@ namespace ChronoEngineAddin
                 //    }
                 //}
 
-                ChSystemBodylistArray.Add(ChBodyAuxRefNode);
+                m_ChSystemBodylistArray.Add(m_ChBodyAuxRefNode);
 
                 // store in hashtable, will be useful later when adding constraints
-                // TODO: before, it was after this 'if' with the condition 'if ((nLevel > 1) && (_object_ID_used != 0))'
+                // TODO: before, it was after this 'if' with the condition 'if ((nLevel > 1) && (m_object_ID_used != 0))'
 
                 try
                 {
@@ -720,7 +728,7 @@ namespace ChronoEngineAddin
                     ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
                     //if (swModel != null)
                     swModelDocExt = swModel.Extension;
-                    m_savedParts.Add(swModelDocExt.GetPersistReference3(swComp), ChBodyAuxRefNode.GetValue("_object_ID"));
+                    m_savedParts.Add(swModelDocExt.GetPersistReference3(swComp), m_ChBodyAuxRefNode.GetValue("_object_ID"));
                 }
                 catch
                 {
@@ -803,13 +811,13 @@ namespace ChronoEngineAddin
 
                     var marklist_node = new JObject {
                         new JProperty("_type", "ChMarker"),
-                        new JProperty("_object_ID", ++_object_ID_used),
+                        new JProperty("_object_ID", ++m_object_ID_used),
                         new JProperty("m_name", swFeat.Name),
                         // while the ChBody::ArchiveIn would already take care of setting it through AddMarker,
                         // this call will happen after the following Impose_Abs_Coord, thus causing crash
                         new JProperty("Body", new JObject(
                             new JProperty("_type", "ChBodyAuxRef"),
-                            new JProperty("_reference_ID", ChBodyAuxRefNode.GetValue("_object_ID"))
+                            new JProperty("_reference_ID", m_ChBodyAuxRefNode.GetValue("_object_ID"))
                             )
                         ),
                         new JProperty("_c_Impose_Abs_Coord__ChCoordsys__ChVector", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
@@ -822,7 +830,7 @@ namespace ChronoEngineAddin
                 swFeat = (Feature)swFeat.GetNextFeature();
             }
 
-            ChBodyAuxRefNode.Add("markers", marklist);
+            m_ChBodyAuxRefNode.Add("markers", marklist);
 
         }
    

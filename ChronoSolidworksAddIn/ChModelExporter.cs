@@ -17,16 +17,49 @@ namespace ChronoEngineAddin
         protected Hashtable m_savedParts;
         protected Hashtable m_savedShapes;
         protected Hashtable m_savedCollisionMeshes;
-        protected string save_dir_shapes = "";
-        protected string save_filename = "";
-        protected int num_comp;
+        protected string m_saveDirShapes = "";
+        protected string m_saveFilename = "";
+        protected int num_comp = 0;
         //protected int _object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
-        protected Dictionary<string, string> m_exportNamesMap; // map solidworks names vs chrono script names, ie. map[slwd_name] = chrono_name;
 
-
-        public ChModelExporter(ChronoEngine_SwAddin.SWIntegration swIntegration)
+        class myBytearrayHashComparer : IEqualityComparer
         {
+            public new bool Equals(object x, object y)
+            {
+                byte[] a1 = (byte[])x;
+                byte[] a2 = (byte[])y;
+                if (a1.Length != a2.Length)
+                    return false;
+
+                for (int i = 0; i < a1.Length; i++)
+                    if (a1[i] != a2[i])
+                        return false;
+
+                return true;
+            }
+
+            public int GetHashCode(object x)
+            {
+                byte[] obj = (byte[])x;
+                if (obj == null || obj.Length == 0)
+                    return 0;
+                var hashCode = 0;
+                for (var i = 0; i < obj.Length; i++)
+                    // Rotate by 3 bits and XOR the new value.
+                    hashCode = (hashCode << 3) | (hashCode >> (29)) ^ obj[i];
+                return hashCode;
+            }
+
+        }
+
+        public ChModelExporter(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+        {
+            m_saveDirShapes = save_dir_shapes;
+            m_saveFilename = save_filename;
             m_swIntegration = swIntegration;
+            m_savedParts = new Hashtable(new myBytearrayHashComparer());
+            m_savedShapes = new Hashtable();
+            m_savedCollisionMeshes = new Hashtable();
         }
 
 
@@ -35,6 +68,8 @@ namespace ChronoEngineAddin
         // Abstract methods
         // ============================================================================================================
         #region Abstract methods
+
+        public abstract void Export();
 
         public abstract bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates); //ref int num_link
 
@@ -72,7 +107,7 @@ namespace ChronoEngineAddin
                     {
                         if (!swSubFeat.IsSuppressed())
                         {
-                            if (ChronoEngine_SwAddin.ConvertMates.IsMateTypeExportable(swSubFeat.GetTypeName2()))
+                            if (IsMateTypeExportable(swSubFeat.GetTypeName2()))
                             {
                                 ConvertMate(swSubFeat, rootTransform, assemblyOfMates);
                             }
