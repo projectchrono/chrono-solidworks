@@ -499,6 +499,7 @@
             this.button_settrimeshcoll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTipSavePython.SetToolTip(this.button_settrimeshcoll, resources.GetString("button_settrimeshcoll.ToolTip"));
             this.button_settrimeshcoll.UseVisualStyleBackColor = true;
+            this.button_settrimeshcoll.Click += new System.EventHandler(this.button_settrimeshcoll_Click);
             // 
             // button_ExportToJson
             // 

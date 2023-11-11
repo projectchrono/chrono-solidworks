@@ -83,6 +83,7 @@ namespace ChronoEngineAddin
             m_asciiTextCpp += "#include <string>\n";
             m_asciiTextCpp += "#include \"chrono/assets/ChModelFileShape.h\"\n";
             m_asciiTextCpp += "#include \"chrono/collision/ChCollisionSystemBullet.h\"\n";
+            m_asciiTextCpp += "#include \"chrono/geometry/ChTriangleMeshConnected.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChMaterialSurfaceNSC.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChLinkMotorRotationAngle.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChLinkMotorRotationSpeed.h\"\n";
@@ -150,6 +151,7 @@ namespace ChronoEngineAddin
                 TraverseComponentForLinks(swRootComp, 1, ref roottrasf);
 
                 // Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
+                nbody = 0; // RESET TO body_0 (ground)
                 swFeat = (Feature)swModel.FirstFeature();
                 TraverseFeaturesForMarkers(swFeat, 1, roottrasf);
             }
@@ -388,11 +390,11 @@ namespace ChronoEngineAddin
                 if (!link_params.entity_0_as_VERTEX)
                     m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n", linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
                 else
-                    m_asciiTextCpp += String.Format(bz, "dA = VNULL;\n");
+                    m_asciiTextCpp += String.Format(bz, "dA = chrono::VNULL;\n");
                 if (!link_params.entity_1_as_VERTEX)
                     m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n", linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
                 else
-                    m_asciiTextCpp += String.Format(bz, "dB = VNULL;\n");
+                    m_asciiTextCpp += String.Format(bz, "dB = chrono::VNULL;\n");
 
                 // Initialize link, by setting the two csys, in absolute space,
                 if (!link_params.swapAB_1)
@@ -752,7 +754,7 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToConvexHull(swBody, ref vertexes, 30);
                                     if (vertexes.Length > 0)
                                     {
-                                        m_asciiTextCpp += String.Format(bz, "std::vector<ChVector<>> pt_vect_{0};\n", bodyname);
+                                        m_asciiTextCpp += String.Format(bz, "std::vector<chrono::ChVector<>> pt_vect_{0};\n", bodyname);
                                         for (int iv = 0; iv < vertexes.Length; iv++)
                                         {
                                             Point3D vert_l = vertexes[iv];
@@ -814,10 +816,9 @@ namespace ChronoEngineAddin
                             double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
                             double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
 
-                            m_asciiTextCpp += String.Format(bz, ";\n// Triangle mesh collision shape\n", bodyname);
-                            m_asciiTextCpp += String.Format(bz, "std::shared_ptr<chrono::ChTriangleMeshConnected> {0}_mesh;\n", shapename);
-                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->CreateFromWavefrontFile(shapes_dir + \"{0}.obj\", false, true);\n", shapename);
-                            m_asciiTextCpp += String.Format(bz, "chrono::ChMatrix33<> mr;\n");
+                            m_asciiTextCpp += String.Format(bz, "\n// Triangle mesh collision shape\n", bodyname);
+                            m_asciiTextCpp += String.Format(bz, "auto {0}_mesh = chrono_types::make_shared<chrono::geometry::ChTriangleMeshConnected>();\n", shapename);
+                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->LoadWavefrontMesh(shapes_dir + \"{0}.obj\", false, true);\n", shapename);
                             m_asciiTextCpp += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L, shapename);
                             m_asciiTextCpp += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L, shapename);
                             m_asciiTextCpp += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L, shapename);

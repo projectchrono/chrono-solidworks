@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media.Media3D;
 using ChronoEngine_SwAddin;
 using SolidWorks.Interop.sldworks;
@@ -94,7 +95,6 @@ namespace ChronoEngineAddin
         public void TraverseFeaturesForLinks(Feature swFeat, long nLevel, ref MathTransform rootTransform, ref Component2 assemblyOfMates)
         {
             Feature swSubFeat;
-            int num_link = 0;
 
             while (swFeat != null)
             {
@@ -442,7 +442,6 @@ namespace ChronoEngineAddin
                     trB = partrasfB.IMultiply(invroottrasf); // row-ordered transf. -> reverse mult.order!
             }
 
-
             // Fetch the python names using hash map (python names added when scanning parts)
             ModelDocExtension swModelDocExt = default(ModelDocExtension);
             ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
@@ -484,34 +483,67 @@ namespace ChronoEngineAddin
                                         (swMate.MateEntity(1).Reference.GetType() == (int)swSelectType_e.swSelDATUMPOINTS);
             */
 
-            // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to  swMate.MateEntity(0).ReferenceType2  
+
+
+            // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to swMate.MateEntity(0).ReferenceType2  
             // but in some cases the latter fails. However, sometimes swMate.MateEntity(0).Reference.GetType() is null ReferenceType2 is ok,
             // so do the following trick:
-            link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
-            if (link_params.entity0_ref == (int)swSelectType_e.swSelNOTHING)
-                link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2;
-            link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
-            if (link_params.entity1_ref == (int)swSelectType_e.swSelNOTHING)
-                link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2;
 
-            link_params.entity_0_as_FACE = (link_params.entity0_ref == (int)swSelectType_e.swSelFACES) ||
-                                                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPLANES);
-            link_params.entity_0_as_EDGE = (link_params.entity0_ref == (int)swSelectType_e.swSelEDGES) ||
-                                                (link_params.entity0_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
-                                                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMAXES);
-            link_params.entity_0_as_VERTEX = (link_params.entity0_ref == (int)swSelectType_e.swSelVERTICES) ||
-                                                (link_params.entity0_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPOINTS);
 
-            link_params.entity_1_as_FACE = (link_params.entity1_ref == (int)swSelectType_e.swSelFACES) ||
-                                                (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMPLANES);
-            link_params.entity_1_as_EDGE = (link_params.entity1_ref == (int)swSelectType_e.swSelEDGES) ||
-                                                (link_params.entity1_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
-                                                (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMAXES);
-            link_params.entity_1_as_VERTEX = (link_params.entity1_ref == (int)swSelectType_e.swSelVERTICES) ||
-                                                (link_params.entity1_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                                                (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMPOINTS);
+            if (swMate.MateEntity(0).Reference == null)
+            {
+                MessageBox.Show("swMate.MateEntity(0).Reference is null");
+                return false;
+            }
 
+            // NEW WAY
+            if (swMate.MateEntity(0).ReferenceType != 0)
+                link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
+            else
+                link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2; // fallback
+
+            if (swMate.MateEntity(1).ReferenceType != 0)
+                link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
+            else
+                link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2; // fallback
+
+            //// OLD WAY
+            //link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
+            //if (link_params.entity0_ref == (int)swSelectType_e.swSelNOTHING)
+            //    link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2;
+
+            //link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
+            //if (link_params.entity1_ref == (int)swSelectType_e.swSelNOTHING)
+            //    link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2;
+
+
+
+            // TODO (?): also add
+            // swSelCOORDSYS 
+            link_params.entity_0_as_FACE = 
+                (link_params.entity0_ref == (int)swSelectType_e.swSelFACES) ||
+                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPLANES);
+            link_params.entity_0_as_EDGE = 
+                (link_params.entity0_ref == (int)swSelectType_e.swSelEDGES) ||
+                (link_params.entity0_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
+                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMAXES);
+            link_params.entity_0_as_VERTEX = 
+                (link_params.entity0_ref == (int)swSelectType_e.swSelVERTICES) ||
+                (link_params.entity0_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPOINTS);
+
+            link_params.entity_1_as_FACE = 
+                (link_params.entity1_ref == (int)swSelectType_e.swSelFACES) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMPLANES);
+            link_params.entity_1_as_EDGE = 
+                (link_params.entity1_ref == (int)swSelectType_e.swSelEDGES) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelSKETCHSEGS) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMAXES);
+            link_params.entity_1_as_VERTEX = 
+                (link_params.entity1_ref == (int)swSelectType_e.swSelVERTICES) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMPOINTS) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelEXTSKETCHPOINTS);
 
             Point3D cAloc = new Point3D(paramsA[0], paramsA[1], paramsA[2]);
             link_params.cA = PointTransform(cAloc, ref trA);
@@ -529,8 +561,6 @@ namespace ChronoEngineAddin
                 Vector3D dBloc = new Vector3D(paramsB[3], paramsB[4], paramsB[5]);
                 link_params.dB = DirTransform(dBloc, ref trB);
             }
-
-
 
             if (swMateFeature.GetTypeName2() == "MateCoincident")
             {
@@ -661,7 +691,6 @@ namespace ChronoEngineAddin
                 if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
                     link_params.do_parallel_flip = true;
             }
-
 
             if (swMateFeature.GetTypeName2() == "MatePerpendicular")
             {
@@ -804,29 +833,30 @@ namespace ChronoEngineAddin
 
         protected static bool IsMateTypeExportable(string typeName2)
         {
-            System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>();
-
             // TODO: check which mates are *actually* exportable to Chrono
-            acceptedMates.Add("MateCamTangent");
-            acceptedMates.Add("MateCoincident");
-            acceptedMates.Add("MateConcentric");
-            acceptedMates.Add("MateDistanceDim");
-            acceptedMates.Add("MateGearDim");
-            acceptedMates.Add("MateHinge");
-            acceptedMates.Add("MateInPlace");
-            acceptedMates.Add("MateLinearCoupler");
-            acceptedMates.Add("MateLock");
-            acceptedMates.Add("MateParallel");
-            acceptedMates.Add("MatePerpendicular");
-            acceptedMates.Add("MatePlanarAngleDim");
-            acceptedMates.Add("MateProfileCenter");
-            acceptedMates.Add("MateRackPinionDim");
-            acceptedMates.Add("MateScrew");
-            acceptedMates.Add("MateSlot");
-            acceptedMates.Add("MateSymmetric");
-            acceptedMates.Add("MateTangent");
-            acceptedMates.Add("MateUniversalJoint");
-            acceptedMates.Add("MateWidth");
+            System.Collections.Generic.List<string> acceptedMates = new System.Collections.Generic.List<string>
+            {
+                //"MateCamTangent"
+                "MateCoincident",
+                "MateConcentric",
+                "MateDistanceDim",
+                //"MateGearDim"
+                "MateHinge",
+                "MateInPlace",
+                //"MateLinearCoupler"
+                "MateLock",
+                "MateParallel",
+                "MatePerpendicular",
+                "MatePlanarAngleDim",
+                "MateProfileCenter",
+                //"MateRackPinionDim"
+                //"MateScrew"
+                //"MateSlot"
+                //"MateSymmetric"
+                "MateTangent",
+                //"MateUniversalJoint"
+                "MateWidth"
+            };
 
             return acceptedMates.Contains(typeName2);
         }

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Media3D;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 /// Derived class for exporting a Solidworks assembly to a Chrono::Engine  model.
 
@@ -51,6 +52,7 @@ namespace ChronoEngineAddin
 
             num_comp = 0;
 
+            // Write preamble
             m_asciiText = "";
             m_asciiText += "# PyChrono model automatically generated using Chrono::SolidWorks add-in\n";
             m_asciiText += "# Assembly: " + swModel.GetPathName() + "\n\n\n";
@@ -95,12 +97,10 @@ namespace ChronoEngineAddin
 
                 TraverseComponentForLinks(swRootComp, 1, ref rootTransform);
 
-
                 // Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
-
+                nbody = 0; // RESET TO body_0 (ground)
                 swFeat = (Feature)swModel.FirstFeature();
                 TraverseFeaturesForMarkers(swFeat, 1, rootTransform);
-
             }
 
             System.Windows.Forms.MessageBox.Show("Export to Python completed.");
@@ -210,7 +210,7 @@ namespace ChronoEngineAddin
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                     if (link_params.do_parallel_flip)
-                        m_asciiText += String.Format(bz, "{0}->SetFlipped(true)\n", linkname);
+                        m_asciiText += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
 
                     // Initialize link, by setting the two csys, in absolute space,
                     if (!link_params.swapAB_1)
@@ -945,7 +945,7 @@ namespace ChronoEngineAddin
 
             int nmarker = 0;
 
-            String bodyname = "body_" + nbody;
+            string bodyname = "body_" + nbody;
 
             while ((swFeat != null))
             {

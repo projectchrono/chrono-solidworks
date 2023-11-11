@@ -642,6 +642,72 @@ namespace ChronoEngine_SwAddin
             }
         }
 
+        private void button_settrimeshcoll_Click(object sender, EventArgs e)
+        {
+            ModelDoc2 swModel;
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            if (swModel == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body!");
+                return;
+            }
+
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+
+            if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies!");
+                return;
+            }
+
+            string message = "";
+
+            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+            {
+                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
+                {
+                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
+                    return;
+                }
+
+                bool rbody_converted = false;
+                Body2 swBody = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
+
+                string mname = swBody.Name;
+                mname.Replace("COLLMESH-", "");
+                swBody.Name = "COLLMESH-" + mname;
+                rbody_converted = true;
+
+                swModel.ForceRebuild3(false);
+
+
+                // ----- Try to see if it was possible to use a faster method.
+
+                if (ConvertToCollisionShapes.SWbodyToSphere(swBody))
+                {
+                    message += "  " + swBody.Name + " is a sphere primitive, \n";
+                }
+                if (ConvertToCollisionShapes.SWbodyToBox(swBody))
+                {
+                    message += "  " + swBody.Name + " is a box primitive, \n";
+                }
+                if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
+                {
+                    message += "  " + swBody.Name + " is a cylinder primitive, \n";
+                }
+                if (ConvertToCollisionShapes.SWbodyToConvexHull(swBody, 30) && !rbody_converted)
+                {
+                    message += "  " + swBody.Name + " is a convex hull primitive, \n";
+                }
+
+            } // end loop on selected items
+
+            if (message != "")
+            {
+                System.Windows.Forms.MessageBox.Show("Hint: \n" + message + "so you might better use the conversion into primitive collision shapes, that is faster and more robust thatn the generic triangle mesh collision.");
+            }
+        }
+
         private void butt_chronoMotors_Click(object sender, EventArgs e)
         {
             ModelDoc2 swModel;
@@ -808,6 +874,7 @@ namespace ChronoEngine_SwAddin
             }
         }
 
+        
 
     }  // end class
 
