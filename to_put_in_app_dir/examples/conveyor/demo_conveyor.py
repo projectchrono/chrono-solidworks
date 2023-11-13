@@ -61,7 +61,7 @@ chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.005)
 
 # Load the CAD file
 
-exported_items = chrono.ImportSolidWorksSystem('./conveyor')
+exported_items = chrono.ImportSolidWorksSystem('./conveyor.py')
 
 # Print exported items
 for my_item in exported_items:
@@ -116,15 +116,16 @@ pebbles = chrono.ChParticleCloud()
 pebbles.SetMass(mass_pebble)
 pebbles.SetInertiaXX(chrono.ChVectorD(inertia_pebble,inertia_pebble,inertia_pebble))
 
-pebbles.GetCollisionModel().ClearModel()
-pebbles.GetCollisionModel().AddSphere(pebble_material, diameter_pebble/2.)
-pebbles.GetCollisionModel().BuildModel()
+mySphere = chrono.ChCollisionShapeSphere(pebble_material, diameter_pebble/2.)
+
+pebbles.GetCollisionModel().Clear()
+pebbles.GetCollisionModel().AddShape(mySphere)
+pebbles.GetCollisionModel().Build()
 pebbles.SetCollide(True)
 
 pebbles.AddParticle(chrono.ChCoordsysD()) # at least one particle or Irrlicht crashes
 
-pebbles_shape = chrono.ChSphereShape()
-pebbles_shape.GetGeometry().rad = diameter_pebble/2.
+pebbles_shape = chrono.ChVisualShapeSphere(diameter_pebble/2)
 pebbles.AddVisualShape(pebbles_shape)
 
 my_system.Add(pebbles)
@@ -172,14 +173,14 @@ body_floor.SetBodyFixed(True)
 body_floor.SetPos(chrono.ChVectorD(0, -1, 0 ))
 
 # Collision shape (shared by all particle clones)
-body_floor.GetCollisionModel().ClearModel()
-body_floor.GetCollisionModel().AddBox(pebble_material, 6, 2, 6)
-body_floor.GetCollisionModel().BuildModel()
+myBox = chrono.ChCollisionShapeBox(pebble_material, 6, 2, 6)
+body_floor.GetCollisionModel().Clear()
+body_floor.GetCollisionModel().AddShape(myBox)
+body_floor.GetCollisionModel().Build()
 body_floor.SetCollide(True)
 
 # Visualization shape (shared by all particle clones)
-body_floor_shape = chrono.ChBoxShape()
-body_floor_shape.GetGeometry().Size = chrono.ChVectorD(6, 2, 6)
+body_floor_shape = chrono.ChVisualShapeBox(6, 2, 6)
 body_floor_shape.SetTexture('concrete.jpg')
 body_floor.AddVisualShape(body_floor_shape)
 

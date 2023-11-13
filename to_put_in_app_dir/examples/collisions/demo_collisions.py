@@ -65,7 +65,7 @@ m_timestep = 0.001
 
 print ("Loading C::E scene...");
 
-exported_items = chrono.ImportSolidWorksSystem('./capitel')
+exported_items = chrono.ImportSolidWorksSystem('./portal.py')
 
 print ("...loading done!");
 

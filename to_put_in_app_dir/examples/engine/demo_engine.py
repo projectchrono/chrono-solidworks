@@ -56,7 +56,7 @@ chrono.SetChronoDataPath(m_datapath)
 
 print ("Loading C::E scene...");
 
-exported_items = chrono.ImportSolidWorksSystem('./engine4c')
+exported_items = chrono.ImportSolidWorksSystem('./Engine4c.py')
 
 print ("...loading done!");
 
@@ -283,6 +283,8 @@ if m_visualization == "irrlicht":
     				# Irrlicht, just use application.AssetBind(myitem); on a per-item basis.
     #vis.BindAll()
        
+    m_realtime_timer = chrono.ChRealtimeStepTimer()
+
     
     # Simulation loop
     while vis.Run():
@@ -290,6 +292,6 @@ if m_visualization == "irrlicht":
         vis.Render()
         vis.EndScene()
         my_system.DoStepDynamics(m_timestep)
-
+        m_realtime_timer.Spin(m_timestep)
 
 
