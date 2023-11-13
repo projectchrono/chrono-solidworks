@@ -872,19 +872,25 @@ namespace ChronoEngineAddin
 
         public double[] GetQuaternionFromMatrix(ref MathTransform trasf)
         {
-            double[] q = new double[4];
             double[] amatr = (double[])trasf.ArrayData;
+            double[] q = GetQuaternionFromMatrix(ref amatr);
+            return q;
+        }
+
+        public double[] GetQuaternionFromMatrix(ref double[] rotmat)
+        {
+            double[] q = new double[4];
             double s, tr;
             // for speed reasons: ..
-            double m00 = amatr[0];
-            double m01 = amatr[3];
-            double m02 = amatr[6];
-            double m10 = amatr[1];
-            double m11 = amatr[4];
-            double m12 = amatr[7];
-            double m20 = amatr[2];
-            double m21 = amatr[5];
-            double m22 = amatr[8];
+            double m00 = rotmat[0];
+            double m10 = rotmat[1];
+            double m20 = rotmat[2];
+            double m01 = rotmat[3];
+            double m11 = rotmat[4];
+            double m21 = rotmat[5];
+            double m02 = rotmat[6];
+            double m12 = rotmat[7];
+            double m22 = rotmat[8];
 
             tr = m00 + m11 + m22;       // diag sum
 

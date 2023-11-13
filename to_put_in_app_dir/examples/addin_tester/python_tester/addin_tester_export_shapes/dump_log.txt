@@ -1,5 +1,5 @@
 # Dump hierarchy from SolidWorks 
-# Assembly: C:\WORKSPACE\chrono-solidworks_source\to_put_in_app_dir\examples\addin_tester\cad\Assem1.SLDASM
+# Assembly: C:\workspace\chrono-solidworks\to_put_in_app_dir\examples\addin_tester\cad\Assem1.SLDASM
 
 
          -Commenti [CommentsFolder]
@@ -90,31 +90,51 @@
            -Distance25 [MateDistanceDim]
            -Distance26 [MateDistanceDim]
          -MARKER_SPRING [CoordSys]
+   +Part3-4 <Default>
+           -Commenti [CommentsFolder]
+           -Sketch1 [ProfileFeature]
+   +Part3-2 <Default>
+           -Commenti [CommentsFolder]
+           -Sketch1 [ProfileFeature]
    +Part5-1 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
    +Part5-2 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
-   +Part4-2 <Default>
-           -Commenti [CommentsFolder]
-           -Sketch1 [ProfileFeature]
-   +Part3-1 <Default>
-           -Commenti [CommentsFolder]
-           -Sketch1 [ProfileFeature]
    +Part4-1 <Default>
-           -Commenti [CommentsFolder]
-           -Sketch1 [ProfileFeature]
-   +Part3-2 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
    +Part2-1 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
+   +Part3-1 <Default>
+           -Commenti [CommentsFolder]
+           -Sketch1 [ProfileFeature]
    +Part3-3 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
-   +Part3-4 <Default>
+   +Part4-2 <Default>
+           -Commenti [CommentsFolder]
+           -Sketch1 [ProfileFeature]
+   +SubAssem1-1 <Default>
+           -Commenti [CommentsFolder]
+     +SubAssem1-1/Part3-1 <Default>
+             -Commenti [CommentsFolder]
+             -Sketch1 [ProfileFeature]
+     +SubAssem1-1/Part1-1 <Default>
+             -Commenti [CommentsFolder]
+             -Sketch1 [ProfileFeature]
+     +SubAssem1-1/Part3-2 <Default>
+             -Commenti [CommentsFolder]
+             -Sketch1 [ProfileFeature]
+     +SubAssem1-1/Part7-1 <Default>
+             -Commenti [CommentsFolder]
+             -Sketch1 [ProfileFeature]
+   +Part6-1 <Default>
+           -Commenti [CommentsFolder]
+           -Sketch1 [ProfileFeature]
+   +Part5-3 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
    +Part8-1 <Default>
@@ -123,29 +143,9 @@
    +Part9-1 <Default>
            -Comments [CommentsFolder]
            -Sketch2 [ProfileFeature]
-   +Part5-3 <Default>
-           -Commenti [CommentsFolder]
-           -Sketch1 [ProfileFeature]
    +Part4-3 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]
-   +SubAssem1-1 <Default>
-           -Commenti [CommentsFolder]
-     +SubAssem1-1/Part7-1 <Default>
-             -Commenti [CommentsFolder]
-             -Sketch1 [ProfileFeature]
-     +SubAssem1-1/Part3-1 <Default>
-             -Commenti [CommentsFolder]
-             -Sketch1 [ProfileFeature]
-     +SubAssem1-1/Part3-2 <Default>
-             -Commenti [CommentsFolder]
-             -Sketch1 [ProfileFeature]
-     +SubAssem1-1/Part1-1 <Default>
-             -Commenti [CommentsFolder]
-             -Sketch1 [ProfileFeature]
    +Part8-2 <Default>
-           -Commenti [CommentsFolder]
-           -Sketch1 [ProfileFeature]
-   +Part6-1 <Default>
            -Commenti [CommentsFolder]
            -Sketch1 [ProfileFeature]

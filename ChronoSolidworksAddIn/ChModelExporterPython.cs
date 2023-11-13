@@ -447,7 +447,7 @@ namespace ChronoEngineAddin
                     }
 
                     m_asciiText += String.Format(bz, "\n# Visualization shape \n", bodyname);
-                    m_asciiText += String.Format(bz, "{0}_shape = chrono.ChModelFileShape() \n", shapename);
+                    m_asciiText += String.Format(bz, "{0}_shape = chrono.ChVisualShapeModelFile() \n", shapename);
                     m_asciiText += String.Format(bz, "{0}_shape.SetFilename(shapes_dir +'{0}.obj') \n", shapename);
 
                     object foo = null;
@@ -565,7 +565,7 @@ namespace ChronoEngineAddin
 
                             // clear model only at 1st subcomponent where coll shapes are found in features:
                             m_asciiText += "\n# Collision shapes \n";
-                            m_asciiText += String.Format(bz, "{0}.GetCollisionModel().ClearModel()\n", bodyname);
+                            m_asciiText += String.Format(bz, "{0}.GetCollisionModel().Clear()\n", bodyname);
                         }
 
                         bool has_coll_mesh = false;
@@ -588,9 +588,15 @@ namespace ChronoEngineAddin
                                     double rad = 0;
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = PointTransform(center_l, ref collshape_subcomp_transform);
-                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddSphere({1}, {2}, chrono.ChVectorD({3},{4},{5}))\n",
-                                        bodyname, matname,
-                                        rad * ChScale.L,
+                                    m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33D()\n");
+                                    m_asciiText += String.Format(bz, "mr[0,0]=1; mr[1,0]=0; mr[2,0]=0 \n");
+                                    m_asciiText += String.Format(bz, "mr[0,1]=0; mr[1,1]=1; mr[2,1]=0 \n");
+                                    m_asciiText += String.Format(bz, "mr[0,2]=0; mr[1,2]=0; mr[2,2]=1 \n");
+                                    m_asciiText += String.Format(bz, "collshape = chrono.ChCollisionShapeSphere({0},{1});\n",
+                                        matname,
+                                        rad * ChScale.L);
+                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape,chrono.ChFrameD(chrono.ChVectorD({1},{2},{3}), mr));\n",
+                                        bodyname,
                                         center.X * ChScale.L,
                                         center.Y * ChScale.L,
                                         center.Z * ChScale.L);
@@ -613,14 +619,17 @@ namespace ChronoEngineAddin
                                     m_asciiText += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
                                     m_asciiText += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
                                     m_asciiText += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
-                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddBox({1}, {2},{3},{4},chrono.ChVectorD({5},{6},{7}),mr)\n",
-                                        bodyname, matname,
+                                    m_asciiText += String.Format(bz, "collshape = chrono.ChCollisionShapeBox({0},{1},{2},{3})\n",
+                                        matname,
                                         eX.Length * ChScale.L,
                                         eY.Length * ChScale.L,
-                                        eZ.Length * ChScale.L,
+                                        eZ.Length * ChScale.L);
+                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape,chrono.ChFrameD(chrono.ChVectorD({1},{2},{3}), mr))\n",
+                                        bodyname,
                                         vO.X * ChScale.L,
                                         vO.Y * ChScale.L,
                                         vO.Z * ChScale.L);
+
                                     rbody_converted = true;
                                 }
                                 if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
@@ -653,7 +662,9 @@ namespace ChronoEngineAddin
                                                 vert.Y * ChScale.L,
                                                 vert.Z * ChScale.L);
                                         }
-                                        m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddConvexHull({1}, pt_vect)\n", bodyname, matname);
+                                        m_asciiText += String.Format(bz, "collshape = chrono.ChCollisionShapeConvexHull({0},pt_vect)\n",
+                                            matname);
+                                        m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape)\n", bodyname);
                                     }
                                     rbody_converted = true;
                                 }
@@ -702,7 +713,7 @@ namespace ChronoEngineAddin
                             }
 
                             double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
-                            double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
+                            //double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
 
                             m_asciiText += String.Format(bz, "\n# Triangle mesh collision shape \n", bodyname);
                             m_asciiText += String.Format(bz, "{0}_mesh = chrono.ChTriangleMeshConnected.CreateFromWavefrontFile(shapes_dir + '{1}.obj', False, True) \n", shapename, shapename);
@@ -710,9 +721,12 @@ namespace ChronoEngineAddin
                             m_asciiText += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L);
                             m_asciiText += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L);
                             m_asciiText += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L);
-                            m_asciiText += String.Format(bz, "{0}_mesh.Transform(chrono.ChVectorD({1}, {2}, {3}), mr) \n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
-                            m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddTriangleMesh({1}, {2}_mesh, False, False, ", bodyname, matname, shapename);
-                            m_asciiText += String.Format(bz, "chrono.ChVectorD(0,0,0), chrono.ChMatrix33D(chrono.ChQuaternionD(1,0,0,0)), sphereswept_r) \n");
+                            m_asciiText += String.Format(bz, "{0}_mesh.Transform(chrono.ChVectorD({1}, {2}, {3}), mr) \n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);                            
+                            m_asciiText += String.Format(bz, "collshape = chrono.ChCollisionShapeTriangleMesh({0},{1}_mesh,False,False,sphereswept_r)\n",
+                                matname,
+                                shapename);
+                            m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape)\n",
+                                bodyname);
                             //rbody_converted = true;
                         }
 
@@ -866,7 +880,7 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
+                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().Build()\n", bodyname);
                                     m_asciiText += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
                                 }
                             }

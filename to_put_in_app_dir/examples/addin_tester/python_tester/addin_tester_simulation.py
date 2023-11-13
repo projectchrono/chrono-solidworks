@@ -15,7 +15,7 @@ import pychrono.irrlicht as chronoirr
 system = chrono.ChSystemNSC()
 system.Set_G_acc(chrono.ChVectorD(0, -9.81, 0))
 
-filepath = "./addin_tester_export"
+filepath = "./addin_tester_export.py"
 imported_items = chrono.ImportSolidWorksSystem(filepath)
 for ii in imported_items:
     system.Add(ii)
@@ -38,11 +38,11 @@ spring = chrono.ChLinkTSDA()
 spring.Initialize(part_4_3, ground, False, marker_spring.GetAbsFrame().GetPos(), marker_spring.GetAbsFrame().GetPos() + chrono.ChVectorD(0, 0.5, 0))
 spring.SetSpringCoefficient(10000)
 spring.SetDampingCoefficient(0)
-spring.AddVisualShape(chrono.ChSpringShape())
+spring.AddVisualShape(chrono.ChVisualShapeSpring())
 system.Add(spring) 
 
 # system.DoFullAssembly()
-# system.RemoveRedundantConstraints(False, 1e-6, True)
+# system.RemoveRedundantConstraints(False, 1e-12, True)
 # system.DoFullAssembly()
 
 vis = chronoirr.ChVisualSystemIrrlicht(system, chrono.ChVectorD(0, 0, 5))

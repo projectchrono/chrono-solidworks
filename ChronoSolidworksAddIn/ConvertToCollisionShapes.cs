@@ -53,11 +53,10 @@ namespace ChronoEngine_SwAddin
 
 
 
-        // Try to see if the SolidWorks Body2 shape is a pure box.
-        // If so,return true. If not a box, return false.
-        // If it is a box, in 'corner' and 'Dx,Dy,Dx' one can get 
-        // the box main corner and the three departing edges.
-
+        /// Try to see if the SolidWorks Body2 shape is a pure box.
+        /// If so,return true. If not a box, return false.
+        /// If it is a box, in 'corner' and 'Dx,Dy,Dx' one can get 
+        /// the box main corner and the three departing edges.
         public static bool SWbodyToBox(Body2 swBody,
                                           ref Point3D corner,
                                           ref Vector3D Ex, ref Vector3D Ey, ref Vector3D Ez)

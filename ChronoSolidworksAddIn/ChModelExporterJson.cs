@@ -11,11 +11,13 @@ namespace ChronoEngineAddin
 {
     internal class ChModelExporterJson : ChModelExporter
     {
-        private JArray m_ChSystemLinklistArray;
-        private JArray m_ChSystemBodylistArray;
+        private JArray m_ChSystemLinklist;
+        private JArray m_ChSystemBodylist;
         private JObject m_ChBodyAuxRefNode;
         private JObject m_ChSystemNode;
         private int m_object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
+
+
         private struct JObjectCreator
         {
             public static JObject CreateChVector(double[] vect)
@@ -67,8 +69,6 @@ namespace ChronoEngineAddin
         public ChModelExporterJson(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
             : base(swIntegration, save_dir_shapes, save_filename) 
         {
-            m_ChSystemLinklistArray = new JArray();
-            m_ChSystemNode = new JObject();
         }
 
 
@@ -105,6 +105,8 @@ namespace ChronoEngineAddin
             num_comp = 0;
             m_object_ID_used = 0;
 
+            m_ChSystemNode = new JObject();
+
 
             //asciitext += "# Some global settings: \n" +
             //             "sphereswept_r = " + this.numeric_sphereswept.Value.ToString(bz) + "\n" +
@@ -116,7 +118,7 @@ namespace ChronoEngineAddin
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts
-                var m_ChSystemBodylistArray = new JArray();
+                m_ChSystemBodylist = new JArray();
 
                 // Add world-fixed object
                 var ChBodyGroundNode = new JObject
@@ -127,11 +129,10 @@ namespace ChronoEngineAddin
                     new JProperty("_c_SetBodyFixed", true)
                 );
 
-                m_ChSystemBodylistArray.Add(ChBodyGroundNode);
-
+                m_ChSystemBodylist.Add(ChBodyGroundNode);
+                
                 TraverseComponentForBodies(swRootComp, 1);
-
-                m_ChSystemNode.Add("bodies", m_ChSystemBodylistArray);
+                m_ChSystemNode.Add("bodies", m_ChSystemBodylist);
 
 
                 // Write down all constraints
@@ -144,20 +145,21 @@ namespace ChronoEngineAddin
                     roottrasf = (MathTransform)swMath.CreateTransform(nulltr);
                 }
 
-                var m_ChSystemLinklistArray = new JArray();
+                m_ChSystemLinklist = new JArray();
 
                 Feature swFeat = (Feature)swModel.FirstFeature();
                 TraverseFeaturesForLinks(swFeat, 1, ref roottrasf, ref swRootComp);
-                m_ChSystemNode.Add("links", m_ChSystemLinklistArray);
+                m_ChSystemNode.Add("links", m_ChSystemLinklist);
 
                 TraverseComponentForLinks(swRootComp, 1, ref roottrasf);
 
 
                 //// Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
                 swFeat = (Feature)swModel.FirstFeature();
+                m_ChBodyAuxRefNode = ChBodyGroundNode;
                 TraverseFeaturesForMarkers(swFeat, 1, roottrasf);
 
-                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (m_ChSystemBodylistArray.Count - 1).ToString() + "\nLink count: " + m_ChSystemLinklistArray.Count.ToString());
+                System.Windows.Forms.MessageBox.Show("Export to JSON completed.\nBody count: " + (m_ChSystemBodylist.Count - 1) + "\nLink count: " + m_ChSystemLinklist.Count);
 
 
             }
@@ -223,7 +225,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
-                m_ChSystemLinklistArray.Add(link_node);
+                m_ChSystemLinklist.Add(link_node);
             }
 
             if (link_params.do_ChLinkMateParallel)
@@ -264,7 +266,7 @@ namespace ChronoEngineAddin
                     if (link_params.do_parallel_flip)
                         link_node.Add("_c_SetFlipped", true);
 
-                    m_ChSystemLinklistArray.Add(link_node);
+                    m_ChSystemLinklist.Add(link_node);
 
                 }
                 else
@@ -307,7 +309,7 @@ namespace ChronoEngineAddin
                         new JProperty("m_name", swMateFeature.Name)
                     );
 
-                    m_ChSystemLinklistArray.Add(link_node);
+                    m_ChSystemLinklist.Add(link_node);
 
                 }
                 else
@@ -346,7 +348,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
-                m_ChSystemLinklistArray.Add(link_node);
+                m_ChSystemLinklist.Add(link_node);
 
             }
 
@@ -396,7 +398,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name)
                 );
 
-                m_ChSystemLinklistArray.Add(link_node);
+                m_ChSystemLinklist.Add(link_node);
 
             }
 
@@ -439,7 +441,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name + "_1")
                 );
 
-                m_ChSystemLinklistArray.Add(link_node1);
+                m_ChSystemLinklist.Add(link_node1);
 
 
                 ////////////
@@ -475,7 +477,7 @@ namespace ChronoEngineAddin
                     new JProperty("m_name", swMateFeature.Name + "_2")
                 );
 
-                m_ChSystemLinklistArray.Add(link_node2);
+                m_ChSystemLinklist.Add(link_node2);
 
             }
 
@@ -541,10 +543,10 @@ namespace ChronoEngineAddin
                 double[] amatr = (double[])relframe_shape.ArrayData;
                 double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-                // TODO: DARIOM should I check if is using shape of other objects?
+                // TODO: DARIOM should I check if it is using shape of other objects?
                 var _c_AddVisualShape_ChVisualShape = new JObject
                 (
-                    new JProperty("_type", "ChModelFileShape"),
+                    new JProperty("_type", "ChVisualShapeModelFile"),
                     new JProperty("_object_ID", ++m_object_ID_used),
                     new JProperty("filename", obj_filename)
                 );
@@ -584,20 +586,392 @@ namespace ChronoEngineAddin
 
         public override void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
         {
-            //
-            // TODO
-            //
+            CultureInfo bz = new CultureInfo("en-BZ");
+            Feature swFeat;
+            swFeat = (Feature)swComp.FirstFeature();
+
+            MathTransform subcomp_transform = swComp.GetTotalTransform(true);
+            MathTransform invchbody_trasform = (MathTransform)chbodytransform.Inverse();
+            MathTransform collshape_subcomp_transform = subcomp_transform.IMultiply(invchbody_trasform); // row-ordered transf. -> reverse mult.order!
+
+            // Export collision shapes
+            if (m_swIntegration.m_taskpaneHost.GetCheckboxCollisionShapes().Checked)
+            {
+                object[] bodies;
+                object bodyInfo;
+                bodies = (object[])swComp.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
+
+                if (bodies != null)
+                {
+                    // see if it contains some collision shape
+                    bool build_collision_model = false;
+                    for (int ib = 0; ib < bodies.Length; ib++)
+                    {
+                        Body2 swBody = (Body2)bodies[ib];
+                        if (swBody.Name.StartsWith("COLL.") || swBody.Name.StartsWith("COLLMESH"))
+                            build_collision_model = true;
+                    }
+
+                    if (build_collision_model)
+                    {
+
+                        JObject collision_model = new JObject();
+                        JObject material_collision = new JObject();
+
+                        if (!found_collisionshapes)
+                        {
+                            found_collisionshapes = true;
+
+                            // fetch SW attribute with Chrono parameters
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(m_swIntegration.defattr_chbody, 0);
+
+
+                            if (myattr != null)
+                            {
+                                double param_friction = ((Parameter)myattr.GetParameter("friction")).GetDoubleValue();
+                                double param_restitution = ((Parameter)myattr.GetParameter("restitution")).GetDoubleValue();
+                                double param_rolling_friction = ((Parameter)myattr.GetParameter("rolling_friction")).GetDoubleValue();
+                                double param_spinning_friction = ((Parameter)myattr.GetParameter("spinning_friction")).GetDoubleValue();
+                                double param_collision_envelope = ((Parameter)myattr.GetParameter("collision_envelope")).GetDoubleValue();
+                                double param_collision_margin = ((Parameter)myattr.GetParameter("collision_margin")).GetDoubleValue();
+                                int param_collision_family = (int)((Parameter)myattr.GetParameter("collision_family")).GetDoubleValue();
+
+                                collision_model = new JObject
+                                (
+                                    new JProperty("_type", "ChCollisionModel"),
+                                    new JProperty("_object_ID", ++m_object_ID_used),
+                                    new JProperty("model_envelope", param_collision_envelope * ChScale.L),
+                                    new JProperty("model_safe_margin", param_collision_margin * ChScale.L),
+                                    new JProperty("param_collision_family", param_collision_family)
+                                );
+
+                                material_collision = new JObject
+                                (
+                                    new JProperty("_type", "ChMaterialSurfaceNSC"),
+                                    new JProperty("_object_ID", ++m_object_ID_used),
+                                    new JProperty("static_friction", param_friction),
+                                    new JProperty("restitution", param_restitution),
+                                    new JProperty("rolling_friction", param_rolling_friction),
+                                    new JProperty("spinning_friction", param_spinning_friction)
+                                );
+
+                            }
+                            else {
+                                // TODO: provide default and shared material?
+                            }
+
+                        }
+
+                        bool has_coll_mesh = false;
+
+                        var shape_instances = new JArray();
+
+                        for (int ib = 0; ib < bodies.Length; ib++)
+                        {
+                            Body2 swBody = (Body2)bodies[ib];
+
+                            if (swBody.Name.StartsWith("COLLMESH"))
+                            {
+                                has_coll_mesh = true;
+                            }
+
+                            if (swBody.Name.StartsWith("COLL."))
+                            {
+                                bool rbody_converted = false;
+                                if (ConvertToCollisionShapes.SWbodyToSphere(swBody))
+                                {
+                                    Point3D center_l = new Point3D(); // in local subcomponent
+                                    double rad = 0;
+                                    ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
+                                    Point3D center = PointTransform(center_l, ref collshape_subcomp_transform);
+
+                                    var gsphere = new JObject
+                                    (
+                                        new JProperty("_type", "ChSphere"),
+                                        new JProperty("_object_ID", ++m_object_ID_used),
+                                        new JProperty("rad", rad * ChScale.L)
+                                    );
+
+                                    var collshape = new JObject
+                                    (
+                                        new JProperty("_type", "ChCollisionShapeSphere"),
+                                        new JProperty("_object_ID", ++m_object_ID_used),
+                                        new JProperty("m_material", material_collision),
+                                        new JProperty("gsphere", gsphere)
+                                    );
+
+
+                                    JObject shapeframe = getChFrameObject(
+                                        new double[] { center.X * ChScale.L, center.Y * ChScale.L, center.Z * ChScale.L },
+                                        new double[] { 1, 0, 0, 0 });
+
+
+                                    var shapeInstance = new JObject(
+                                        new JProperty("1", collshape),
+                                        new JProperty("2", shapeframe)
+                                    );
+
+                                    shape_instances.Add(shapeInstance);
+
+                                    rbody_converted = true;
+                                }
+                                if (ConvertToCollisionShapes.SWbodyToBox(swBody))
+                                {
+                                    Point3D vC_l = new Point3D();
+                                    Vector3D eX_l = new Vector3D(); Vector3D eY_l = new Vector3D(); Vector3D eZ_l = new Vector3D();
+                                    ConvertToCollisionShapes.SWbodyToBox(swBody, ref vC_l, ref eX_l, ref eY_l, ref eZ_l);
+                                    Point3D vC = PointTransform(vC_l, ref collshape_subcomp_transform);
+                                    Vector3D eX = DirTransform(eX_l, ref collshape_subcomp_transform);
+                                    Vector3D eY = DirTransform(eY_l, ref collshape_subcomp_transform);
+                                    Vector3D eZ = DirTransform(eZ_l, ref collshape_subcomp_transform);
+                                    Point3D vO = vC + 0.5 * eX + 0.5 * eY + 0.5 * eZ;
+                                    Vector3D Dx = eX; Dx.Normalize();
+                                    Vector3D Dy = eY; Dy.Normalize();
+                                    Vector3D Dz = Vector3D.CrossProduct(Dx, Dy);
+
+                                    double[] rotmat = new double[] { Dx.X, Dx.Y, Dx.Z, Dy.X, Dy.Y, Dy.Z, Dz.X, Dz.Y, Dz.Z };
+                                    double[] quat = GetQuaternionFromMatrix(ref rotmat);
+
+                                    var gbox = new JObject
+                                    (
+                                        new JProperty("_type", "ChBox"),
+                                        new JProperty("_object_ID", ++m_object_ID_used),
+                                        new JProperty("lengths", JObjectCreator.CreateChVector(eX.Length * ChScale.L, eY.Length * ChScale.L, eZ.Length * ChScale.L))
+                                    );
+
+                                    var collshape = new JObject
+                                    (
+                                        new JProperty("_type", "ChCollisionShapeBox"),
+                                        new JProperty("_object_ID", ++m_object_ID_used),
+                                        new JProperty("m_material", material_collision),
+                                        new JProperty("gbox", gbox)
+                                    );
+
+
+                                    JObject shapeframe = getChFrameObject(
+                                        new double[] { vO.X * ChScale.L, vO.Y * ChScale.L, vO.Z * ChScale.L },
+                                        quat);
+
+
+                                    var shapeInstance = new JObject(
+                                        new JProperty("1", collshape),
+                                        new JProperty("2", shapeframe)
+                                    );
+
+                                    shape_instances.Add(shapeInstance);
+                                    rbody_converted = true;
+                                }
+                                if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
+                                {
+                                    Point3D p1_l = new Point3D();
+                                    Point3D p2_l = new Point3D();
+                                    double rad = 0;
+                                    ConvertToCollisionShapes.SWbodyToCylinder(swBody, ref p1_l, ref p2_l, ref rad);
+                                    Point3D p1 = PointTransform(p1_l, ref collshape_subcomp_transform);
+                                    Point3D p2 = PointTransform(p2_l, ref collshape_subcomp_transform);
+                                    double height = (p2 - p1).Length;
+
+                                    // TODO: check correctness
+                                    Vector3D Dz = new Vector3D(p1.X, p1.Y, p1.Z);
+                                    Vector3D Dy = new Vector3D();
+                                    Vector3D Dx = new Vector3D();
+                                    Vector3D Dtest = new Vector3D();
+                                    Dz.Normalize();
+                                    Dtest = Vector3D.CrossProduct(Dz, new Vector3D(1, 0, 0)).Length > 1e-5 ? new Vector3D(1, 0, 0) : new Vector3D(0, 1, 0);
+                                    Dy = Vector3D.CrossProduct(Dz, Dtest);
+                                    Dy.Normalize();
+                                    Dx = Vector3D.CrossProduct(Dy, Dz);
+                                    Dx.Normalize();
+                                    double[] rotmat = new double[] { Dx.X, Dx.Y, Dx.Z, Dy.X, Dy.Y, Dy.Z, Dz.X, Dz.Y, Dz.Z };
+                                    double[] quat = GetQuaternionFromMatrix(ref rotmat);
+
+
+                                    var gcylinder = new JObject
+                                    (
+                                        new JProperty("_type", "ChCylinder"),
+                                        new JProperty("_object_ID", ++m_object_ID_used),
+                                        new JProperty("r", rad * ChScale.L),
+                                        new JProperty("h", height * ChScale.L)
+                                    );
+
+                                    var collshape = new JObject
+                                    (
+                                        new JProperty("_type", "ChCollisionShapeCylinder"),
+                                        new JProperty("_object_ID", ++m_object_ID_used),
+                                        new JProperty("m_material", material_collision),
+                                        new JProperty("gcylinder", gcylinder)
+                                    );
+
+
+                                    JObject shapeframe = getChFrameObject(
+                                        new double[] { p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L },
+                                        quat);
+
+
+                                    var shapeInstance = new JObject(
+                                        new JProperty("1", collshape),
+                                        new JProperty("2", shapeframe)
+                                    );
+                                    shape_instances.Add(shapeInstance);
+
+                                    rbody_converted = true;
+                                }
+
+                                if (ConvertToCollisionShapes.SWbodyToConvexHull(swBody, 30) && !rbody_converted)
+                                {
+                                    Point3D[] vertexes = new Point3D[1]; // will be resized by SWbodyToConvexHull
+                                    var points = new JArray();
+                                    ConvertToCollisionShapes.SWbodyToConvexHull(swBody, ref vertexes, 30);
+                                    if (vertexes.Length > 0)
+                                    {
+                                        for (int iv = 0; iv < vertexes.Length; iv++)
+                                        {
+                                            Point3D vert_l = vertexes[iv];
+                                            Point3D vert = PointTransform(vert_l, ref collshape_subcomp_transform);
+                                            points.Add(JObjectCreator.CreateChVector(vert.X * ChScale.L, vert.Y * ChScale.L, vert.Z * ChScale.L));
+                                        }
+
+                                        var collshape = new JObject
+                                        (
+                                            new JProperty("_type", "ChCollisionShapeConvexHull"),
+                                            new JProperty("_object_ID", ++m_object_ID_used),
+                                            new JProperty("m_material", material_collision),
+                                            new JProperty("points", points)
+                                        );
+
+
+                                        JObject shapeframe = getChFrameObject(
+                                            new double[] { 0, 0, 0 },
+                                            new double[] { 1, 0, 0, 0 });
+
+
+                                        var shapeInstance = new JObject(
+                                            new JProperty("1", collshape),
+                                            new JProperty("2", shapeframe)
+                                        );
+
+                                        shape_instances.Add(shapeInstance);
+                                        rbody_converted = true;
+
+                                    }
+
+
+                                }
+
+
+                            } // end dealing with a collision shape
+
+                        } // end solid bodies traversal for converting to coll.shapes
+
+
+
+                        if (has_coll_mesh)
+                        {
+                            // fallback if no primitive collision shape found: use concave trimesh collision model (although inefficient)
+                            ncollshape += 1;
+                            Body2 swBody = (Body2)bodies[0];
+                            string shapename = swBody.Name;
+                            string obj_filename = m_saveDirShapes + "\\" + shapename + ".obj";
+
+                            ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
+                            if (!m_savedCollisionMeshes.ContainsKey(swCompModel.GetPathName()))
+                            {
+                                try
+                                {
+                                    FileStream ostream = new FileStream(obj_filename, FileMode.Create, FileAccess.ReadWrite);
+                                    StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
+                                    string asciiobj = "";
+                                    if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
+                                        m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateTitle("Exporting collision shape" + swComp.Name2 + " (tesselate) ...");
+                                    // Write the OBJ converted visualization shapes:
+                                    TesselateToObj.Convert(swComp, ref asciiobj, m_swIntegration.m_taskpaneHost.GetCheckboxSaveUV().Checked, ref m_swIntegration.m_taskpaneHost.GetProgressBar(), false, true);
+                                    writer.Write(asciiobj);
+                                    writer.Flush();
+                                    ostream.Close();
+
+                                    m_savedCollisionMeshes.Add(swCompModel.GetPathName(), shapename);
+                                }
+                                catch (Exception)
+                                {
+                                    System.Windows.Forms.MessageBox.Show("Cannot write to file: " + obj_filename + ";\n for component: " + swComp.Name2 + " for path name: " + swCompModel.GetPathName());
+                                }
+                            }
+                            else
+                            {
+                                // reuse the already-saved shape name
+                                shapename = (String)m_savedCollisionMeshes[swCompModel.GetPathName()];
+                            }
+
+                            double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
+                            //double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
+
+                            var trimesh = new JObject
+                            (
+                                new JProperty("_type", "ChTriangleMeshConnected"),
+                                new JProperty("_object_ID", ++m_object_ID_used),
+                                new JProperty("m_filename", shapename + ".obj"),
+                                new JProperty("load_normals", false), // TODO: check why different from default
+                                new JProperty("load_uv", true),
+                                new JProperty("_c_Transform_ChVector", new JObject(
+                                    new JProperty("x", amatr[9] * ChScale.L),
+                                    new JProperty("y", amatr[10] * ChScale.L),
+                                    new JProperty("z", amatr[11] * ChScale.L)
+                                    )
+                                ),
+                                new JProperty("_c_Transform_ChMatrix33", // TODO: check if order is correct; ChMatrix33 is defined as Eigen::Matrix<Real, 3, 3, Eigen::RowMajor>
+                                    new JArray(amatr[0] * ChScale.L, amatr[3] * ChScale.L, amatr[6] * ChScale.L,
+                                               amatr[1] * ChScale.L, amatr[4] * ChScale.L, amatr[7] * ChScale.L,
+                                               amatr[2] * ChScale.L, amatr[5] * ChScale.L, amatr[8] * ChScale.L
+                                    )
+                                )
+                            );
+
+                            var collshape = new JObject
+                            (
+                                new JProperty("_type", "ChCollisionShapeTriangleMesh"),
+                                new JProperty("_object_ID", ++m_object_ID_used),
+                                new JProperty("m_material", material_collision),
+                                new JProperty("trimesh", trimesh),
+                                new JProperty("is_static", false),
+                                new JProperty("is_convex", false),
+                                new JProperty("radius", m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value.ToString(bz))
+                            );
+
+
+                            JObject shapeframe = getChFrameObject(
+                                new double[] { 0, 0, 0 },
+                                new double[] { 1, 0, 0, 0 });
+
+
+                            var shapeInstance = new JObject(
+                                new JProperty("1", collshape),
+                                new JProperty("2", shapeframe)
+                            );
+                            shape_instances.Add(shapeInstance);
+
+
+                            //rbody_converted = true;
+                        }
+
+
+                        m_ChBodyAuxRefNode.Add("collision_model", collision_model);
+                    } // end if build_collision_model
+                }
+
+            } // end collision shapes export
+
         }
 
         public override void TraverseComponentForBodies(Component2 swComp, long nLevel)
         {
+
             CultureInfo bz = new CultureInfo("en-BZ");
-            object[] vmyChildComp = (object[])swComp.GetChildren();
+            object[] childComponentsArray = (object[])swComp.GetChildren();
             //bool found_chbody_equivalent = false;
 
-            if (nLevel > 1 & m_object_ID_used == 0 & !swComp.IsSuppressed() && (swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (vmyChildComp.Length == 0))
+            if (nLevel > 1 && !swComp.IsSuppressed() && ((swComp.Solving == (int)swComponentSolvingOption_e.swComponentRigidSolving) || (childComponentsArray.Length == 0)))
             {
-                // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassebly or part)
+                // OK! this is a 'leaf' of the tree of ChBody equivalents (a SDW subassembly or part)
 
                 //found_chbody_equivalent = true;
 
@@ -613,16 +987,16 @@ namespace ChronoEngineAddin
                 SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(m_swIntegration.defattr_chbody, 0);
 
                 MathTransform chbodytransform = swComp.GetTotalTransform(true);
-                double[] amatr;
-                amatr = (double[])chbodytransform.ArrayData;
-
+                double[] amatr = (double[])chbodytransform.ArrayData;
                 double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
+
+                string sanitized_name = swComp.Name2.Replace("/", "_").Replace("\\", "_");
 
                 m_ChBodyAuxRefNode = new JObject
                 {
                     new JProperty("_type", "ChBodyAuxRef"),
                     new JProperty("_object_ID", ++m_object_ID_used),
-                    new JProperty("m_name", swComp.Name2),
+                    new JProperty("m_name", sanitized_name),
                     new JProperty("_c_SetPos", JObjectCreator.CreateChVector(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L)),
                     new JProperty("_c_SetRot", JObjectCreator.CreateChQuaternion(quat[0], quat[1], quat[2], quat[3]))
                 };
@@ -698,26 +1072,24 @@ namespace ChronoEngineAddin
 
                 // TODO: Chrono serialization is not capable of handling collisions yet
 
-                //// Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
-                //// if any.
-                //bool param_collide = true;
-                //if (myattr != null)
-                //    param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
+                //// Write collision shapes (customized SW solid bodies) contained in this component or subcomponents if any.
+                bool param_collide = true;
+                if (myattr != null)
+                    param_collide = Convert.ToBoolean(((Parameter)myattr.GetParameter("collision_on")).GetDoubleValue());
 
-                //if (param_collide)
-                //{
-                //    bool found_collisionshapes = false;
-                //    int ncollshapes = 0;
+                if (param_collide)
+                {
+                    bool found_collisionshapes = false;
+                    int ncollshapes = 0;
 
-                //    PythonTraverseComponent_for_collshapes(swComp, nLevel, ref asciitext, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
-                //    if (found_collisionshapes)
-                //    {
-                //        asciitext += String.Format(bz, "{0}.GetCollisionModel().BuildModel()\n", bodyname);
-                //        asciitext += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
-                //    }
-                //}
+                    TraverseComponentForCollisionShapes(swComp, nLevel, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
+                    if (found_collisionshapes)
+                    {
+                        m_ChBodyAuxRefNode.Add("_c_SetCollide", true);
+                    }
+                }
 
-                m_ChSystemBodylistArray.Add(m_ChBodyAuxRefNode);
+                m_ChSystemBodylist.Add(new JObject(m_ChBodyAuxRefNode));
 
                 // store in hashtable, will be useful later when adding constraints
                 // TODO: before, it was after this 'if' with the condition 'if ((nLevel > 1) && (m_object_ID_used != 0))'
@@ -735,26 +1107,20 @@ namespace ChronoEngineAddin
                     System.Windows.Forms.MessageBox.Show("Cannot add part to hashtable?");
                 }
 
+
             } // end if ChBody equivalent (tree leaf or non-flexible assembly)
+            else
+            {
+            }
 
 
             // Things to do also for sub-components of 'non flexible' assemblies: 
             //
 
-
-
-
             // Traverse all children, proceeding to subassemblies and parts, if any
-            // 
-
-            object[] vChildComp;
-            Component2 swChildComp;
-
-            vChildComp = (object[])swComp.GetChildren();
-
-            for (long i = 0; i < vChildComp.Length; i++)
+            for (long i = 0; i < childComponentsArray.Length; i++)
             {
-                swChildComp = (Component2)vChildComp[i];
+                Component2 swChildComp = (Component2)childComponentsArray[i];
 
                 TraverseComponentForBodies(swChildComp, nLevel + 1);
             }
@@ -833,6 +1199,38 @@ namespace ChronoEngineAddin
             m_ChBodyAuxRefNode.Add("markers", marklist);
 
         }
-   
+
+
+        private static JObject getChFrameObject(double[] pos, double[] rot) {
+
+            var shapeframe = new JObject
+            (
+                new JProperty("coord",
+                    new JObject(
+                        new JProperty("pos",
+                            new JObject(
+                                new JProperty("x", pos[0]),
+                                new JProperty("y", pos[1]),
+                                new JProperty("z", pos[2])
+
+                            )
+                        ),
+                        new JProperty("rot",
+                            new JObject(
+                                new JProperty("e0", rot[0]),
+                                new JProperty("e1", rot[1]),
+                                new JProperty("e2", rot[2]),
+                                new JProperty("e3", rot[3])
+
+                            )
+                        )
+                    )
+                )
+            );
+
+            return shapeframe;
+
+        }
+
     }
 }

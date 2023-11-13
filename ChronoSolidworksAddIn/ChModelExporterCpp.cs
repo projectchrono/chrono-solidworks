@@ -81,8 +81,8 @@ namespace ChronoEngineAddin
             m_asciiTextCpp += "// Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             m_asciiTextCpp += "#include <string>\n";
-            m_asciiTextCpp += "#include \"chrono/assets/ChModelFileShape.h\"\n";
-            m_asciiTextCpp += "#include \"chrono/collision/ChCollisionSystemBullet.h\"\n";
+            m_asciiTextCpp += "#include \"chrono/assets/ChVisualShapeModelFile.h\"\n";
+            m_asciiTextCpp += "#include \"chrono/collision/bullet/ChCollisionSystemBullet.h\"\n";
             m_asciiTextCpp += "#include \"chrono/geometry/ChTriangleMeshConnected.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChMaterialSurfaceNSC.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChLinkMotorRotationAngle.h\"\n";
@@ -109,14 +109,14 @@ namespace ChronoEngineAddin
             m_asciiTextCpp += "void ImportSolidworksSystemCpp(std::vector<std::shared_ptr<chrono::ChBodyAuxRef>>& bodylist, std::vector<std::shared_ptr<chrono::ChLinkBase>>& linklist, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map) {\n\n";
             m_asciiTextCpp += "// Some global settings\n" +
                          "double sphereswept_r = " + m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value.ToString(bz) + ";\n" +
-                         "chrono::collision::ChCollisionModel::SetDefaultSuggestedEnvelope(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericEnvelope().Value * ChScale.L).ToString(bz) + ");\n" +
-                         "chrono::collision::ChCollisionModel::SetDefaultSuggestedMargin(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericMargin().Value * ChScale.L).ToString(bz) + ");\n" +
-                         "chrono::collision::ChCollisionSystemBullet::SetContactBreakingThreshold(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L).ToString(bz) + ");\n\n";
+                         "chrono::ChCollisionModel::SetDefaultSuggestedEnvelope(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericEnvelope().Value * ChScale.L).ToString(bz) + ");\n" +
+                         "chrono::ChCollisionModel::SetDefaultSuggestedMargin(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericMargin().Value * ChScale.L).ToString(bz) + ");\n" +
+                         "chrono::ChCollisionSystemBullet::SetContactBreakingThreshold(" + ((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L).ToString(bz) + ");\n\n";
 
             m_asciiTextCpp += "std::string shapes_dir = \"" + System.IO.Path.GetFileNameWithoutExtension(m_saveFilename) + "_shapes/\";\n\n";
 
             m_asciiTextCpp += "// Prepare some data for later use\n";
-            m_asciiTextCpp += "std::shared_ptr<chrono::ChModelFileShape> body_shape;\n";
+            m_asciiTextCpp += "std::shared_ptr<chrono::ChVisualShapeModelFile> body_shape;\n";
             m_asciiTextCpp += "chrono::ChMatrix33<> mr;\n";
             m_asciiTextCpp += "std::shared_ptr<chrono::ChLinkBase> link;\n";
             m_asciiTextCpp += "chrono::ChVector<> cA;\n";
@@ -532,7 +532,7 @@ namespace ChronoEngineAddin
                     }
 
                     m_asciiTextCpp += String.Format(bz, "\n// Visualization shape\n");
-                    m_asciiTextCpp += String.Format(bz, "body_shape = chrono_types::make_shared<chrono::ChModelFileShape>();\n");
+                    m_asciiTextCpp += String.Format(bz, "body_shape = chrono_types::make_shared<chrono::ChVisualShapeModelFile>();\n");
                     m_asciiTextCpp += String.Format(bz, "body_shape->SetFilename(shapes_dir + \"{0}.obj\");\n", shapename);
 
                     object foo = null;
@@ -559,7 +559,7 @@ namespace ChronoEngineAddin
 
 
                     //m_asciiTextCpp += String.Format(bz, "\n// Visualization shape\n");
-                    //m_asciiTextCpp += String.Format(bz, "auto {0}_shape = chrono_types::make_shared<chrono::ChModelFileShape>();\n", shapename);
+                    //m_asciiTextCpp += String.Format(bz, "auto {0}_shape = chrono_types::make_shared<chrono::ChVisualShapeModelFile>();\n", shapename);
                     //m_asciiTextCpp += String.Format(bz, "{0}_shape->SetFilename(shapes_dir + \"{0}.obj\");\n", shapename);
 
                     //object foo = null;
@@ -609,6 +609,7 @@ namespace ChronoEngineAddin
 
             String bodyname = "body_" + nbody;
             String matname = "mat_" + nbody;
+            String collshapename = "collshape_" + nbody;
 
             MathTransform subcomp_transform = swComp.GetTotalTransform(true);
             MathTransform invchbody_trasform = (MathTransform)chbodytransform.Inverse();
@@ -645,6 +646,7 @@ namespace ChronoEngineAddin
                             m_asciiTextCpp += "\n// Collision material\n";
 
                             m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChMaterialSurfaceNSC>();\n", matname);
+                            m_asciiTextCpp += String.Format(bz, "std::shared_ptr<chrono::ChCollisionShape> {0};\n", collshapename);
 
 
 
@@ -677,7 +679,7 @@ namespace ChronoEngineAddin
 
                             // clear model only at 1st subcomponent where coll shapes are found in features:
                             m_asciiTextCpp += "\n// Collision shapes\n";
-                            m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->ClearModel();\n", bodyname);
+                            m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->Clear();\n", bodyname);
                         }
 
                         bool has_coll_mesh = false;
@@ -700,9 +702,14 @@ namespace ChronoEngineAddin
                                     double rad = 0;
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = PointTransform(center_l, ref collshape_subcomp_transform);
-                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddSphere({1}, {2}, chrono::ChVector<>({3},{4},{5}));\n",
-                                        bodyname, matname,
-                                        rad * ChScale.L,
+                                    m_asciiTextCpp += String.Format(bz, "mr.setIdentity();\n");
+                                    m_asciiTextCpp += String.Format(bz, "{0} = chrono_types::make_shared<chrono::ChCollisionShapeSphere>({1},{2});\n",
+                                        collshapename,
+                                        matname,
+                                        rad * ChScale.L);
+                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1},chrono::ChFrame<>(chrono::ChVector<>({2},{3},{4}), mr));\n",
+                                        bodyname,
+                                        collshapename,
                                         center.X * ChScale.L,
                                         center.Y * ChScale.L,
                                         center.Z * ChScale.L);
@@ -724,11 +731,15 @@ namespace ChronoEngineAddin
                                     m_asciiTextCpp += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", Dx.X, Dx.Y, Dx.Z, bodyname);
                                     m_asciiTextCpp += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", Dy.X, Dy.Y, Dy.Z, bodyname);
                                     m_asciiTextCpp += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", Dz.X, Dz.Y, Dz.Z, bodyname);
-                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddBox({1},{2},{3},{4},chrono::ChVector<>({5},{6},{7}),mr);\n",
-                                        bodyname, matname,
+                                    m_asciiTextCpp += String.Format(bz, "{0} = chrono_types::make_shared<chrono::ChCollisionShapeBox>({1},{2},{3},{4});\n",
+                                        collshapename, 
+                                        matname,
                                         eX.Length * ChScale.L,
                                         eY.Length * ChScale.L,
-                                        eZ.Length * ChScale.L,
+                                        eZ.Length * ChScale.L);
+                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1},chrono::ChFrame<>(chrono::ChVector<>({2},{3},{4}), mr));\n",
+                                        bodyname,
+                                        collshapename,
                                         vO.X * ChScale.L,
                                         vO.Y * ChScale.L,
                                         vO.Z * ChScale.L);
@@ -765,7 +776,15 @@ namespace ChronoEngineAddin
                                                 vert.Z * ChScale.L,
                                                 bodyname);
                                         }
-                                        m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddConvexHull({1},pt_vect_{0});\n", bodyname, matname);
+
+
+                                        m_asciiTextCpp += String.Format(bz, "{0} = chrono_types::make_shared<chrono::ChCollisionShapeConvexHull>({1},pt_vect_{2});\n",
+                                            collshapename,
+                                            matname,
+                                            bodyname);
+                                        m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1});\n",
+                                            bodyname,
+                                            collshapename);
                                     }
                                     rbody_converted = true;
                                 }
@@ -781,8 +800,8 @@ namespace ChronoEngineAddin
                         {
                             // fallback if no primitive collision shape found: use concave trimesh collision model (although inefficient)
                             ncollshape += 1;
-                            string shapename = "body_" + nbody + "_" + ncollshape + "_collision";
-                            string obj_filename = m_saveDirShapes + "\\" + shapename + ".obj";
+                            string geometryname = "body_" + nbody + "_" + ncollshape + "_collision";
+                            string obj_filename = m_saveDirShapes + "\\" + geometryname + ".obj";
 
                             ModelDoc2 swCompModel = (ModelDoc2)swComp.GetModelDoc();
                             if (!m_savedCollisionMeshes.ContainsKey(swCompModel.GetPathName()))
@@ -800,7 +819,7 @@ namespace ChronoEngineAddin
                                     writer.Flush();
                                     ostream.Close();
 
-                                    m_savedCollisionMeshes.Add(swCompModel.GetPathName(), shapename);
+                                    m_savedCollisionMeshes.Add(swCompModel.GetPathName(), geometryname);
                                 }
                                 catch (Exception)
                                 {
@@ -810,21 +829,26 @@ namespace ChronoEngineAddin
                             else
                             {
                                 // reuse the already-saved shape name
-                                shapename = (String)m_savedCollisionMeshes[swCompModel.GetPathName()];
+                                geometryname = (String)m_savedCollisionMeshes[swCompModel.GetPathName()];
                             }
 
                             double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
-                            double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
+                            //double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
 
-                            m_asciiTextCpp += String.Format(bz, "\n// Triangle mesh collision shape\n", bodyname);
-                            m_asciiTextCpp += String.Format(bz, "auto {0}_mesh = chrono_types::make_shared<chrono::geometry::ChTriangleMeshConnected>();\n", shapename);
-                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->LoadWavefrontMesh(shapes_dir + \"{0}.obj\", false, true);\n", shapename);
-                            m_asciiTextCpp += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L, shapename);
-                            m_asciiTextCpp += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L, shapename);
-                            m_asciiTextCpp += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L, shapename);
-                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->Transform(chrono::ChVector<>({1},{2},{3}),mr);\n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
-                            m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddTriangleMesh({1},{2}_mesh,false,false,", bodyname, matname, shapename);
-                            m_asciiTextCpp += String.Format(bz, "chrono::ChVector<>(0,0,0), chrono::ChMatrix33<>(chrono::ChQuaternion<>(1,0,0,0)), sphereswept_r);\n");
+                            m_asciiTextCpp += String.Format(bz, ";\n// Triangle mesh collision shape\n", bodyname);
+                            m_asciiTextCpp += String.Format(bz, "auto {0}_mesh = chrono_types::make_shared<chrono::geometry::ChTriangleMeshConnected>();\n", geometryname);
+                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->LoadWavefrontMesh(shapes_dir + \"{0}.obj\", false, true);\n", geometryname);
+                            m_asciiTextCpp += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L, geometryname);
+                            m_asciiTextCpp += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L, geometryname);
+                            m_asciiTextCpp += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L, geometryname);
+                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->Transform(chrono::ChVector<>({1},{2},{3}),mr);\n", geometryname, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                            m_asciiTextCpp += String.Format(bz, "{0} = chrono_types::make_shared<chrono::ChCollisionShapeTriangleMesh>({1},{2}_mesh,false,false, sphereswept_r);\n",
+                                collshapename,
+                                matname,
+                                geometryname);
+                            m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1});\n",
+                                bodyname,
+                                collshapename);
                             //rbody_converted = true;
                         }
 
@@ -980,7 +1004,7 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->BuildModel();\n", bodyname);
+                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->Build();\n", bodyname);
                                     m_asciiTextCpp += String.Format(bz, "{0}->SetCollide(true);\n", bodyname);
                                 }
                             }
