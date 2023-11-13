@@ -74,15 +74,15 @@ namespace ChronoEngineAddin
 
         public abstract bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates); //ref int num_link
 
-        public abstract void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, ref int nVisShape, Component2 chBodyComp); //, int nBody
+        public abstract void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, int nbody, ref int nVisShape, Component2 chBodyComp); //, int nBody
 
-        public abstract void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, ref MathTransform chBodyTransform, ref bool foundCollShapes, Component2 swCompBase, ref int nCollShape); //, int nBody
+        public abstract void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, int nbody, ref MathTransform chBodyTransform, ref bool foundCollShapes, Component2 swCompBase, ref int nCollShape); //, int nBody
 
-        public abstract void TraverseComponentForBodies(Component2 swComp, long nLevel); //, int nBody
+        public abstract void TraverseComponentForBodies(Component2 swComp, long nLevel, int nbody); //, int nBody
 
-        public abstract void TraverseComponentForMarkers(Component2 swComp, long nLevel); //, int nBody
+        public abstract void TraverseComponentForMarkers(Component2 swComp, long nLevel, int nbody); //, int nBody
 
-        public abstract void TraverseFeaturesForMarkers(Feature swFeat, long nLevel, MathTransform swCompTotalTransform); //, int nBody
+        public abstract void TraverseFeaturesForMarkers(Feature swFeat, long nLevel, int nbody, MathTransform swCompTotalTransform); //, int nBody
 
         #endregion
 
@@ -151,10 +151,10 @@ namespace ChronoEngineAddin
             }
         }
 
-        public void TraverseComponentForCollisionShapes(Component2 swComp, long nLevel, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
+        public void TraverseComponentForCollisionShapes(Component2 swComp, long nLevel, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
         {
             // Look if component contains collision shapes (customized SW solid bodies):
-            TraverseFeaturesForCollisionShapes(swComp, nLevel, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
+            TraverseFeaturesForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
 
             // Recursive scan of subcomponents
 
@@ -165,7 +165,7 @@ namespace ChronoEngineAddin
             {
                 swChildComp = (Component2)vChildComp[i];
 
-                TraverseComponentForCollisionShapes(swChildComp, nLevel + 1, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
+                TraverseComponentForCollisionShapes(swChildComp, nLevel + 1, nbody, ref chbodytransform, ref found_collisionshapes, swCompBase, ref ncollshape);
             }
         }
 

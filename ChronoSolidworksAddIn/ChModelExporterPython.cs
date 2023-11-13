@@ -16,7 +16,7 @@ namespace ChronoEngineAddin
     {
         private string m_asciiText = "";
         private int num_link = 0;
-        private int nbody = -1;
+        //private int nbody = -1;
 
 
         public ChModelExporterPython(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
@@ -81,7 +81,7 @@ namespace ChronoEngineAddin
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts
-                TraverseComponentForBodies(swRootComp, 1);
+                TraverseComponentForBodies(swRootComp, 1, -1);
 
                 // Write down all constraints
                 MathTransform rootTransform = swRootComp.GetTotalTransform(true);
@@ -98,19 +98,18 @@ namespace ChronoEngineAddin
                 TraverseComponentForLinks(swRootComp, 1, ref rootTransform);
 
                 // Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
-                nbody = 0; // RESET TO body_0 (ground)
+                //nbody = 0; // RESET TO body_0 (ground)
                 swFeat = (Feature)swModel.FirstFeature();
-                TraverseFeaturesForMarkers(swFeat, 1, rootTransform);
+                TraverseFeaturesForMarkers(swFeat, 1, 0, rootTransform);
             }
-
-            System.Windows.Forms.MessageBox.Show("Export to Python completed.");
 
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                 m_swIntegration.m_taskpaneHost.GetProgressBar().End();
 
-
             // Write on file
             System.IO.File.WriteAllText(m_saveFilename, m_asciiText);
+
+            System.Windows.Forms.MessageBox.Show("Export to Python completed.");
         }
 
         public override bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates)
@@ -401,7 +400,7 @@ namespace ChronoEngineAddin
             return true;
         }
 
-        public override void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, ref int nvisshape, Component2 chbody_comp)
+        public override void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, int nbody, ref int nvisshape, Component2 chbody_comp)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] bodies;
@@ -485,11 +484,11 @@ namespace ChronoEngineAddin
                 swChildComp = (Component2)vChildComp[i];
 
                 if (swChildComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
-                    TraverseComponentForVisualShapes(swChildComp, nLevel + 1, ref nvisshape, chbody_comp);
+                    TraverseComponentForVisualShapes(swChildComp, nLevel + 1, nbody, ref nvisshape, chbody_comp);
             }
         }
 
-        public override void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
+        public override void TraverseFeaturesForCollisionShapes(Component2 swComp, long nLevel, int nbody, ref MathTransform chbodytransform, ref bool found_collisionshapes, Component2 swCompBase, ref int ncollshape)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             Feature swFeat;
@@ -738,7 +737,7 @@ namespace ChronoEngineAddin
 
         }
 
-        public override void TraverseComponentForBodies(Component2 swComp, long nLevel)
+        public override void TraverseComponentForBodies(Component2 swComp, long nLevel, int nbody)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] vmyChildComp = (object[])swComp.GetChildren();
@@ -859,12 +858,12 @@ namespace ChronoEngineAddin
                                 int nvisshape = 0;
 
                                 if (swComp.Visible == (int)swComponentVisibilityState_e.swComponentVisible)
-                                    TraverseComponentForVisualShapes(swComp, nLevel, ref nvisshape, swComp);
+                                    TraverseComponentForVisualShapes(swComp, nLevel, nbody, ref nvisshape, swComp);
                             }
 
                             // Write markers (SW coordsystems) contained in this component or subcomponents
                             // if any.
-                            TraverseComponentForMarkers(swComp, nLevel);
+                            TraverseComponentForMarkers(swComp, nLevel, nbody);
 
                             // Write collision shapes (customized SW solid bodies) contained in this component or subcomponents
                             // if any.
@@ -877,7 +876,7 @@ namespace ChronoEngineAddin
                                 bool found_collisionshapes = false;
                                 int ncollshapes = 0;
 
-                                TraverseComponentForCollisionShapes(swComp, nLevel, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
+                                TraverseComponentForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
                                     m_asciiText += String.Format(bz, "{0}.GetCollisionModel().Build()\n", bodyname);
@@ -921,7 +920,7 @@ namespace ChronoEngineAddin
             // Traverse all children, proceeding to subassemblies and parts, if any
             // 
 
-            nbody = -1; // RESET COUNTER
+            //nbody = -1; // RESET COUNTER
             object[] vChildComp;
             Component2 swChildComp;
             vChildComp = (object[])swComp.GetChildren();
@@ -929,16 +928,16 @@ namespace ChronoEngineAddin
             for (long i = 0; i < vChildComp.Length; i++)
             {
                 swChildComp = (Component2)vChildComp[i];
-                TraverseComponentForBodies(swChildComp, nLevel + 1);
+                TraverseComponentForBodies(swChildComp, nLevel + 1, nbody);
             }
         }
 
-        public override void TraverseComponentForMarkers(Component2 swComp, long nLevel)
+        public override void TraverseComponentForMarkers(Component2 swComp, long nLevel, int nbody)
         {
             // Look if component contains markers
             Feature swFeat = (Feature)swComp.FirstFeature();
             MathTransform swCompTotalTrasf = swComp.GetTotalTransform(true);
-            TraverseFeaturesForMarkers(swFeat, nLevel, swCompTotalTrasf);
+            TraverseFeaturesForMarkers(swFeat, nLevel, nbody, swCompTotalTrasf);
 
             // Recursive scan of subcomponents
 
@@ -949,11 +948,11 @@ namespace ChronoEngineAddin
             {
                 swChildComp = (Component2)vChildComp[i];
 
-                TraverseComponentForMarkers(swChildComp, nLevel + 1);
+                TraverseComponentForMarkers(swChildComp, nLevel + 1, nbody);
             }
         }
 
-        public override void TraverseFeaturesForMarkers(Feature swFeat, long nLevel, MathTransform swCompTotalTrasf)
+        public override void TraverseFeaturesForMarkers(Feature swFeat, long nLevel, int nbody, MathTransform swCompTotalTrasf)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
 
