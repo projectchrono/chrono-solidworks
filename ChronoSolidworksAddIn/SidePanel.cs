@@ -131,12 +131,20 @@ namespace ChronoEngine_SwAddin
                     jsonExporter.Export();
                 }
 
-                if (this.checkBox_savetest.Checked && sender.ToString() == "button_ExportToPython") // TODO: Json cannot handle collisions yet
+                // Also export a demo .py file to quickly run the model
+                if (this.checkBox_savetest.Checked && (sender as Button).Name.ToString() == "button_ExportToPython") // TODO: Json cannot handle collisions yet
                 {
                     string save_directory = System.IO.Path.GetDirectoryName(SaveFileDialog1.FileName);
                     try
                     {
-                        string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
+                        // Search InstallPath as install folder built from C#
+                        string InstallPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                        if (!System.IO.Directory.Exists(InstallPath))
+                        {
+                            // If not found, fallback to Registry value set up by installer
+                            InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
+                        }
+                        //string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
 
                         if (!System.IO.File.Exists(save_directory + "\\run_test.py"))
                             System.IO.File.Copy(InstallPath + "\\run_test.py", save_directory + "\\run_test.py");
@@ -145,7 +153,7 @@ namespace ChronoEngine_SwAddin
                     }
                     catch (Exception exc)
                     {
-                        System.Windows.Forms.MessageBox.Show("Cannot write the test Python program. \n Make sure that the template chrono_solidworks\\run_test.py is in your SolidWorks directory.\n\n" + exc.Message);
+                        System.Windows.Forms.MessageBox.Show("Cannot write the test Python program.\nMake sure that the template chrono_solidworks\\run_test.py is in your SolidWorks directory.\n\n" + exc.Message);
                     }
                 }
             }

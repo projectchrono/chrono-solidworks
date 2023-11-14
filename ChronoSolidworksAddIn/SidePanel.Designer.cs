@@ -376,6 +376,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(67, 21);
             this.comboBox1.TabIndex = 23;
+            this.comboBox1.Text = "irrlicht";
             this.toolTipSavePython.SetToolTip(this.comboBox1, "Choose the type of  visualization system used by the test python program");
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
