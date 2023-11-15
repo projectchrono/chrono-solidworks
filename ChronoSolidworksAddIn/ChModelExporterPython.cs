@@ -137,7 +137,7 @@ namespace ChronoEngineAddin
                     ce_nameN = "body_0"; // reference assembly
                 m_asciiText += "#   Entity " + e + ": C::E name: " + ce_nameN + " , SW name: " + swCompN.Name2 + " ,  SW ref.type:" + swEntityN.Reference.GetType() + " (" + swEntityN.ReferenceType2 + ")\n";
             }
-            m_asciiText += "\n";
+            //m_asciiText += "\n";
 
             //// 
             //// WRITE PYHTON CODE CORRESPONDING TO CONSTRAINTS

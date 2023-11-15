@@ -485,41 +485,36 @@ namespace ChronoEngineAddin
 
 
 
-            // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to swMate.MateEntity(0).ReferenceType2  
-            // but in some cases the latter fails. However, sometimes swMate.MateEntity(0).Reference.GetType() is null ReferenceType2 is ok,
-            // so do the following trick:
-
-
             if (swMate.MateEntity(0).Reference == null)
             {
                 MessageBox.Show("swMate.MateEntity(0).Reference is null");
                 return false;
             }
 
-            // NEW WAY
-            if (swMate.MateEntity(0).ReferenceType != 0)
-                link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
-            else
-                link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2; // fallback
+            // NOTE: swMate.MateEntity(0).Reference.GetType() seems equivalent to swMate.MateEntity(0).ReferenceType2  
+            // but in some cases the latter fails. However, sometimes swMate.MateEntity(0).Reference.GetType() is null ReferenceType2 is ok,
+            // so do the following trick:
 
-            if (swMate.MateEntity(1).ReferenceType != 0)
-                link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
-            else
-                link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2; // fallback
+            // Original way -> problematic linking to 'origin' points
+            link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
+            if (link_params.entity0_ref == (int)swSelectType_e.swSelNOTHING)
+                link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2;
 
-            //// OLD WAY
-            //link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
-            //if (link_params.entity0_ref == (int)swSelectType_e.swSelNOTHING)
-            //    link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2;
+            link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
+            if (link_params.entity1_ref == (int)swSelectType_e.swSelNOTHING)
+                link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2;
 
-            //link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
-            //if (link_params.entity1_ref == (int)swSelectType_e.swSelNOTHING)
-            //    link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2;
+            //// Alternative way -> problematic linking to 'sketches'
+            //if (swMate.MateEntity(0).ReferenceType != 0)
+            //    link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
+            //else
+            //    link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2; // fallback
 
+            //if (swMate.MateEntity(1).ReferenceType != 0)
+            //    link_params.entity1_ref = swMate.MateEntity(1).Reference.GetType();
+            //else
+            //    link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2; // fallback
 
-
-            // TODO (?): also add
-            // swSelCOORDSYS 
             link_params.entity_0_as_FACE = 
                 (link_params.entity0_ref == (int)swSelectType_e.swSelFACES) ||
                 (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPLANES);
@@ -530,8 +525,9 @@ namespace ChronoEngineAddin
             link_params.entity_0_as_VERTEX = 
                 (link_params.entity0_ref == (int)swSelectType_e.swSelVERTICES) ||
                 (link_params.entity0_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
-                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPOINTS);
-
+                (link_params.entity0_ref == (int)swSelectType_e.swSelDATUMPOINTS) ||
+                (link_params.entity0_ref == (int)swSelectType_e.swSelCOORDSYS); // treat as vertex
+            
             link_params.entity_1_as_FACE = 
                 (link_params.entity1_ref == (int)swSelectType_e.swSelFACES) ||
                 (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMPLANES);
@@ -543,7 +539,8 @@ namespace ChronoEngineAddin
                 (link_params.entity1_ref == (int)swSelectType_e.swSelVERTICES) ||
                 (link_params.entity1_ref == (int)swSelectType_e.swSelSKETCHPOINTS) ||
                 (link_params.entity1_ref == (int)swSelectType_e.swSelDATUMPOINTS) ||
-                (link_params.entity1_ref == (int)swSelectType_e.swSelEXTSKETCHPOINTS);
+                (link_params.entity1_ref == (int)swSelectType_e.swSelEXTSKETCHPOINTS) ||
+                (link_params.entity1_ref == (int)swSelectType_e.swSelCOORDSYS); // treat as vertex
 
             Point3D cAloc = new Point3D(paramsA[0], paramsA[1], paramsA[2]);
             link_params.cA = PointTransform(cAloc, ref trA);
@@ -739,6 +736,11 @@ namespace ChronoEngineAddin
                     link_params.do_ChLinkMateXdistance = true;
                     link_params.swapAB_1 = true;
                 }
+                //if ((link_params.entity_0_as_VERTEX) &&
+                //    (link_params.entity_1_as_VERTEX))
+                //{
+                //    // TODO: ChLinkDistance
+                //}
 
                 //***TO DO*** cases of distance line-vs-line and line-vs-vertex and vert-vert.
                 //           Those will require another .cpp ChLinkMate specialized class(es).
