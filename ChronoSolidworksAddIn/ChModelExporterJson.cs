@@ -1173,7 +1173,6 @@ namespace ChronoEngineAddin
 
                     double[] quat = GetQuaternionFromMatrix(ref tr_abs);
                     double[] amatr = (double[])tr_abs.ArrayData;
-                    double[] vect = { amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L };
 
                     var marklist_node = new JObject {
                         new JProperty("_type", "ChMarker"),

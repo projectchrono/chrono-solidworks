@@ -126,6 +126,7 @@
     <Compile Include="ChModelExporter.cs" />
     <Compile Include="ChModelExporterCpp.cs" />
     <Compile Include="ChModelExporterJson.cs" />
+    <Compile Include="ChModelExporterSerialize.cs" />
     <Compile Include="ChModelExporterPython.cs" />
     <Compile Include="ChronoEngine_SwAddin.cs" />
     <Compile Include="ChScale.cs" />

@@ -127,7 +127,7 @@ namespace ChronoEngine_SwAddin
                 }
                 else if ((sender as Button).Name.ToString() == "button_ExportToJson")
                 {
-                    ChModelExporterJson jsonExporter = new ChModelExporterJson(mSWintegration, save_dir_shapes, save_filename);
+                    ChModelExporterSerialize jsonExporter = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, save_filename);
                     jsonExporter.Export();
                 }
 

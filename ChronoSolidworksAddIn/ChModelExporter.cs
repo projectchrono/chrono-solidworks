@@ -23,7 +23,7 @@ namespace ChronoEngineAddin
         protected int num_comp = 0;
         //protected int _object_ID_used; // identifies last used value of _object_ID, used to uniquely identify any entity in the JSON file
 
-        class myBytearrayHashComparer : IEqualityComparer
+        public class myBytearrayHashComparer : IEqualityComparer
         {
             public new bool Equals(object x, object y)
             {
