@@ -24,8 +24,8 @@ namespace ChronoEngineAddin
         ChSystemNSC chrono_system = new ChSystemNSC();
         private int num_link = 0;
         private int nbody = -1;
-        Dictionary<byte[], ChBodyAuxRef> m_bodylist;
-        //Hashtable m_bodylist = new Hashtable(new myBytearrayHashComparer());
+        //Dictionary<byte[], ChBodyAuxRef> m_bodylist;
+        Hashtable m_bodylist = new Hashtable(new myBytearrayHashComparer());
 
         string m_saveRelDirShapes;
 
@@ -40,7 +40,7 @@ namespace ChronoEngineAddin
             : base(swIntegration, save_dir_shapes, save_filename) {
 
             m_saveRelDirShapes = System.IO.Path.GetFileNameWithoutExtension(m_saveFilename) + "_shapes";
-            m_bodylist = new Dictionary<byte[], ChBodyAuxRef>();
+            //m_bodylist = new Dictionary<byte[], ChBodyAuxRef>();
 
         }
 
@@ -122,6 +122,47 @@ namespace ChronoEngineAddin
 
             chrono_system.SerializeToJSON(m_saveFilename);
 
+
+
+            //ChVisualSystemIrrlicht vis = new ChVisualSystemIrrlicht();
+            //vis.AttachSystem(chrono_system);
+            //vis.SetWindowSize(800, 600);
+            //vis.SetWindowTitle("NSC collision demo");
+            //vis.Initialize();
+            //vis.AddLogo();
+            //vis.AddSkyBox();
+            //vis.AddCamera(new ChVectorD(0, 14, -20));
+            //vis.AddTypicalLights();
+
+            //// Modify some setting of the physical system for the simulation, if you want
+            //chrono_system.SetSolverType(ChSolver.Type.PSOR);
+            //chrono_system.SetSolverMaxIterations(500);
+            //////sys.SetUseSleeping(true);
+
+            //// Simulation loop
+            //ChRealtimeStepTimer rt = new ChRealtimeStepTimer();
+            //double step_size = 0.003;
+
+            //while (vis.Run())
+            //{
+            //    vis.BeginScene();
+            //    vis.Render();
+            //    vis.EndScene();
+
+            //    chrono_system.DoStepDynamics(step_size);
+
+            //    ////std::cout << std::endl;
+            //    ////auto frc = mixer.GetAppliedForce();
+            //    ////auto trq = mixer.GetAppliedTorque();
+            //    ////std::cout << sys.GetChTime() << "  force: " << frc << "  torque: " << trq << std::endl;
+            //    ////auto c_frc = mixer.GetContactForce();
+            //    ////auto c_trq = mixer.GetContactTorque();
+            //    ////std::cout << sys.GetChTime() << "  ct force: " << c_frc << "  ct torque: " << c_trq << std::endl;
+
+            //    rt.Spin(step_size);
+            //}
+
+
         }
 
         public ChBodyFrame GetChBodyFrameFromEntity(MateEntity2 swEntity)
@@ -133,7 +174,14 @@ namespace ChronoEngineAddin
             ModelDocExtension swModelDocExt = swModel.Extension;
 
 
-            if (!m_bodylist.TryGetValue(swModelDocExt.GetPersistReference3(swComp), out body_auxref))
+            //if (!m_bodylist.TryGetValue(swModelDocExt.GetPersistReference3(swComp), out body_auxref))
+            //{
+            //    body_auxref = body_ground;
+            //}
+
+            body_auxref = m_bodylist[swModelDocExt.GetPersistReference3(swComp)];
+
+            if (body_auxref == null)
             {
                 body_auxref = body_ground;
             }
@@ -768,7 +816,7 @@ namespace ChronoEngineAddin
                             {
                                 ChTriangleMeshConnected newmesh = new ChTriangleMeshConnected();
                                 newmesh.LoadWavefrontMesh(obj_filename_full, false, true);
-                                newmesh._SetFilename(obj_filename_rel); // TWEAK: this function is added just for convenience in the SWIG wrapper, it doesn't exist in pure Chrono
+                                //newmesh._SetFilename(obj_filename_rel); // TWEAK: this function is added just for convenience in the SWIG wrapper, it doesn't exist in pure Chrono
                                 ChMatrix33D mr = new ChMatrix33D();
                                 mr.setitem(0, 0, amatr[0] * ChScale.L); mr.setitem(1, 0, amatr[1] * ChScale.L); mr.setitem(2, 0, amatr[2] * ChScale.L);
                                 mr.setitem(0, 1, amatr[3] * ChScale.L); mr.setitem(1, 1, amatr[4] * ChScale.L); mr.setitem(2, 1, amatr[5] * ChScale.L);
