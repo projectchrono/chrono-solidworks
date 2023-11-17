@@ -95,20 +95,16 @@ namespace ChronoEngine_SwAddin
 
                 if (this.checkBox_surfaces.Checked)
                 {
-                    string save_directory = System.IO.Path.GetDirectoryName(SaveFileDialog1.FileName);
+                    string save_directory = System.IO.Path.GetDirectoryName(this.save_filename);
                     this.save_dir_shapes = save_directory + "\\" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes";
                     DirectoryInfo mi = System.IO.Directory.CreateDirectory(this.save_dir_shapes);
                     if (mi.Exists == false)
                         System.Windows.Forms.MessageBox.Show("ERROR. Can't create directory for .obj surfaces: " + this.save_dir_shapes);
 
                     // ***TEST*** Dump also hierarchy for test
-                    string asciidump = "";
-                    this.ExportToDump(ref asciidump);
-                    FileStream dumpstream = new FileStream(this.save_dir_shapes + "\\" + "dump_log.txt", FileMode.Create, FileAccess.ReadWrite);
-                    StreamWriter dumpwriter = new StreamWriter(dumpstream);
-                    dumpwriter.Write(asciidump);
-                    dumpwriter.Flush();
-                    dumpstream.Close();
+                    ChModelExporterText textExporter = new ChModelExporterText(mSWintegration, save_dir_shapes, save_filename);
+                    textExporter.Export();
+
                 }
 
 
