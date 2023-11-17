@@ -15,7 +15,7 @@ using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 
-
+#if HAS_CHRONO_CSHARP
 
 namespace ChronoEngineAddin
 {
@@ -1025,3 +1025,6 @@ namespace ChronoEngineAddin
 
     }
 }
+
+
+#endif // HAS_CHRONO_CSHARP

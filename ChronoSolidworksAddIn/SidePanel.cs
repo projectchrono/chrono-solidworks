@@ -123,8 +123,12 @@ namespace ChronoEngine_SwAddin
                 }
                 else if ((sender as Button).Name.ToString() == "button_ExportToJson")
                 {
+                #if HAS_CHRONO_CSHARP
                     ChModelExporterSerialize jsonExporter = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, save_filename);
                     jsonExporter.Export();
+                #else
+                    MessageBox.Show("Chono SolidWorks AddIn has been built without JSON support. Only a debugging log will be generated.")
+                #endif
                 }
 
                 // Also export a demo .py file to quickly run the model
