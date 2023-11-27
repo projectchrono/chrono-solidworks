@@ -636,6 +636,10 @@ namespace ChronoEngineAddin
 
                     if (build_collision_model)
                     {
+                        m_asciiTextCpp += "\n// Collision Model\n";
+                        m_asciiTextCpp += String.Format(bz, "\n{0}->AddCollisionModel(chrono_types::make_shared<chrono::ChCollisionModel>());\n", bodyname);
+
+
                         if (!found_collisionshapes)
                         {
                             found_collisionshapes = true;
@@ -1005,7 +1009,6 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->Build();\n", bodyname);
                                     m_asciiTextCpp += String.Format(bz, "{0}->SetCollide(true);\n", bodyname);
                                 }
                             }

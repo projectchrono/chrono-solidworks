@@ -189,7 +189,7 @@ namespace ChronoEngineAddin
             // ChBodyAuxRef inherits from ChBody, ChBody inherits from ChBodyFrame but is its second inheritance
             // since C# have limited support for multiple inheritance is simply takes only the first inheritance
             // here we need to operate on the underlying shared_ptrs and make the cast by ourselves
-            ChBodyFrame body_bframe = core.CastToChBodyFrame(body_auxref);
+            ChBodyFrame body_bframe = chrono.CastToChBodyFrame(body_auxref);
 
             return body_bframe;
 
@@ -629,6 +629,8 @@ namespace ChronoEngineAddin
 
                     if (build_collision_model)
                     {
+                        newbody.AddCollisionModel(new ChCollisionModel());
+
                         if (!found_collisionshapes)
                         {
                             found_collisionshapes = true;
@@ -655,9 +657,9 @@ namespace ChronoEngineAddin
                                 if (param_spinning_friction != 0)
                                     collision_material.SetSpinningFriction((float)param_spinning_friction);
                                 //if (param_collision_envelope != 0.03)
-                                newbody.GetCollisionModel().SetEnvelope(param_collision_envelope * ChScale.L);
+                                newbody.GetCollisionModel().SetEnvelope((float)(param_collision_envelope * ChScale.L));
                                 //if (param_collision_margin != 0.01)
-                                newbody.GetCollisionModel().SetSafeMargin(param_collision_margin * ChScale.L);
+                                newbody.GetCollisionModel().SetSafeMargin((float)(param_collision_margin * ChScale.L));
                                 if (param_collision_family != 0)
                                     newbody.GetCollisionModel().SetFamily(param_collision_family);
                             }
@@ -960,7 +962,6 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    newbody.GetCollisionModel().Build();
                                     newbody.SetCollide(true);
                                 }
                             }

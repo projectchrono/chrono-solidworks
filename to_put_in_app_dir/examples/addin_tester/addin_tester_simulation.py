@@ -15,7 +15,7 @@ import pychrono.irrlicht as chronoirr
 system = chrono.ChSystemNSC()
 system.Set_G_acc(chrono.ChVectorD(0, -9.81, 0))
 
-filepath = "./test_py_export"
+filepath = "./test_py_export.py"
 imported_items = chrono.ImportSolidWorksSystem(filepath)
 for ii in imported_items:
     system.Add(ii)
