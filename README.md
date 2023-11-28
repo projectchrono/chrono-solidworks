@@ -47,7 +47,12 @@ There is no need to build the add-in from source unless you are interested in ex
     - *SolidWorks.Interop.swcommands.dll*
     - *SolidWorks.Interop.swconst.dll*
     - *SolidWorks.Interop.swpublished.dll*  
-* right-click on *ChronoSolidworksAddIn* project, click on *Properties*, *Reference Paths* and add the Solidworks installation folder
+* right-click on *ChronoSolidworksAddIn* project, click on *Properties*, *Reference Paths* and add the Solidworks installation folder (e.g. "C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\")
+* in the *Build* panel close by an additional flag `HAS_CHRONO_CSHARP` is currently set by default: in case you didn't compile Chrono with CSHARP module enabled please remove this flag. This will cause the "Export to JSON" option to be disabled but it will allow to compile the add-in with the remaining export options enabled.
+  + in case you decided to use Chrono CSharp, right click on the *ChronoSolidworksAddIn*, then *Add*>*Existing Time*, go to the Chrono build folder, navigate into _bin/Release_ and select *ChronoEngine.dll* and *ChronoEngine_csharp_core.dll*; in the selection dialog it is better to select *Add as link* instead of a simple *Add*; please mind that the selection dialog has some selection filter that, in this case, should be set to show also *.dll* files; you should now see the picked libraries into the Visual Studio solution;
+  + select both *ChronoEngine.dll* and *ChronoEngine_csharp_core.dll*, right-click and then *Properties*; set the *Copy to Output Directory* to *Copy always*;
+  + right click on the *ChronoSolidworksAddIn*, then *Add*>*New Folder* and call it _Chrono_; this is for convenience;
+  + right click on the _Chrono_ folder, again *Add*>*Existing Item*, go to the Chrono build folder, navigate inside the _chrono_csharp/core_ folder and add all the files contained there; 
 * build the solution. It will generate the **ChronoEngineAddIn.dll** into the *chrono-solidworks_install* together with all its dependencies; the DLLs are automatically registered by the post-build events
 * start SolidWorks, you should find the Chrono::Engine panel in the Task Pane to the right. Note that add-ins can be enabled/disabled with the *Tools>Adds-In* menu in the toolbar
 
@@ -56,6 +61,9 @@ If you find problems to build the add-in, look at [this tutorial](https://www.an
   
 How to use the Chrono::SolidWorks add-in
 ----------------------------------------
+
+In the _ChronoSolidworksImportTemplate_ a CMake solution offers a set of projects to test all the export options: CPP, JSON, Python parsing and PyChrono. CMake will setup a solution according to your IDE including to test the first three types of export, plus it will create a dedicate PyChrono source file that can be run indipendently (it will be created in the _${PROJECT_BINARY_DIR}/pychrono_).  
+The _ChronoSolidworksImportTemplate_ is available in the install folder or inside the *to_put_in_app_ir* folder in the sources.
 
 See the [tutorials](https://api.projectchrono.org/development/tutorial_table_of_content_chrono_solidworks.html) for examples of C++ code and Python code that load systems exported with this add-in.
 
