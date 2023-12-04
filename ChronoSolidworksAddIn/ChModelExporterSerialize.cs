@@ -629,11 +629,11 @@ namespace ChronoEngineAddin
 
                     if (build_collision_model)
                     {
-                        newbody.AddCollisionModel(new ChCollisionModel());
 
                         if (!found_collisionshapes)
                         {
                             found_collisionshapes = true;
+                            newbody.AddCollisionModel(new ChCollisionModel());
 
                             // fetch SW attribute with Chrono parameters
                             SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(m_swIntegration.defattr_chbody, 0);
@@ -664,8 +664,8 @@ namespace ChronoEngineAddin
                                     newbody.GetCollisionModel().SetFamily(param_collision_family);
                             }
 
-                            // clear model only at 1st subcomponent where coll shapes are found in features:
-                            newbody.GetCollisionModel().Clear();
+                            //// clear model only at 1st subcomponent where coll shapes are found in features:
+                            //newbody.GetCollisionModel().Clear();
                         }
 
                         bool has_coll_mesh = false;

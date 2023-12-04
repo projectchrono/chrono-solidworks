@@ -522,8 +522,6 @@ namespace ChronoEngineAddin
                     if (build_collision_model)
                     {
 
-                        m_asciiText += "\n# Collision Model\n";
-                        m_asciiText += String.Format(bz, "\n{0}.AddCollisionModel(chrono.ChCollisionModel())\n", bodyname);
 
                         if (!found_collisionshapes)
                         {
@@ -532,6 +530,8 @@ namespace ChronoEngineAddin
                             // fetch SW attribute with Chrono parameters
                             SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(m_swIntegration.defattr_chbody, 0);
 
+                            m_asciiText += "\n# Collision Model\n";
+                            m_asciiText += String.Format(bz, "\n{0}.AddCollisionModel(chrono.ChCollisionModel())\n", bodyname);
 
                             m_asciiText += "\n# Collision material \n";
 
@@ -566,9 +566,9 @@ namespace ChronoEngineAddin
                                     m_asciiText += String.Format(bz, "{0}.GetCollisionModel().SetFamily({1})\n", bodyname, param_collision_family);
                             }
 
-                            // clear model only at 1st subcomponent where coll shapes are found in features:
-                            m_asciiText += "\n# Collision shapes \n";
-                            m_asciiText += String.Format(bz, "{0}.GetCollisionModel().Clear()\n", bodyname);
+                            //// clear model only at 1st subcomponent where coll shapes are found in features:
+                            //m_asciiText += "\n# Collision shapes \n";
+                            //m_asciiText += String.Format(bz, "{0}.GetCollisionModel().Clear()\n", bodyname);
                         }
 
                         bool has_coll_mesh = false;
