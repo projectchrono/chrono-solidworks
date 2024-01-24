@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.14)
 project(ChronoSolidworksImport)
 
 
-LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/../Chrono/lib")
+LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/../chrono/lib")
 find_package(Chrono
              COMPONENTS Irrlicht
              OPTIONAL_COMPONENTS Parsers
@@ -109,10 +109,6 @@ if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_JSON})
 else()
   message(WARNING "File not found. Skipping JSON import for file: \"${SOLIDWORKS_EXPORTED_FILE_JSON}\".")
 endif()
-
-# ------------ PYTHON PARSER ---------------
-
-
 
 # ------------ PYTHON ---------------
 
