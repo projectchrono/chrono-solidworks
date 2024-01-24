@@ -1,7 +1,7 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v9.2"
+#define MyAppVersion "current"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "http://www.chronoengine.info"
 
@@ -27,6 +27,8 @@ ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: ..\..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\ChronoEngine.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\ChronoEngine_csharp_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
