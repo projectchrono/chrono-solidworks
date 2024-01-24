@@ -77,13 +77,11 @@ print ("  data path for fonts etc.: ", m_datapath)
 #  and add it to the ChSystem.
 #
 
-# Remove the trailing .py and add / in case of file without ./
 m_absfilename = os.path.abspath(m_filename)
-m_modulename = os.path.splitext(m_absfilename)[0]
 
 print ("Loading C::E scene...");
 
-exported_items = chrono.ImportSolidWorksSystem(m_modulename)
+exported_items = chrono.ImportSolidWorksSystem(m_absfilename)
 
 print ("...loading done!");
 
