@@ -882,8 +882,20 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        
+        private void label13_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void SWTaskpaneHost_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
     }  // end class
 
 

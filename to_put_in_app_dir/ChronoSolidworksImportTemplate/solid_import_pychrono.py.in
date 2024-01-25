@@ -35,6 +35,9 @@ sys.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.001);
 chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.001);
 
+sys.SetMaxPenetrationRecoverySpeed(0.002)
+
+
 
 # ---------------------------------------------------------------------
 #
@@ -76,17 +79,19 @@ vis.AddTypicalLights()
 #
 #  Run the simulation
 #
-
-sys.SetSolverType(chrono.ChSolver.Type_BARZILAIBORWEIN)
-sys.SetSolverMaxIterations(250)
-sys.SetMaxPenetrationRecoverySpeed(0.002)
+solver = chrono.ChSolverBB()
+solver.SetMaxIterations(500)
+# solver.EnableWarmStart(True)
+# solver.EnableDiagonalPreconditioner(True)
+sys.SetSolver(solver)
 
 
 while vis.Run():
     vis.BeginScene()
     vis.Render()
     vis.EndScene()
-    sys.DoStepDynamics(0.002)
+    if not vis.GetUtilityFlag():
+        sys.DoStepDynamics(0.002)
 
 
 

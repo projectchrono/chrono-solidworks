@@ -27,7 +27,8 @@ mat = chrono.ChMaterialSurfaceNSC()
 mat.SetFriction(0.3)
 mat.SetRestitution(1)
 for ii in system.Get_bodylist():
-    ii.GetCollisionModel().SetAllShapesMaterial(mat)
+    if (ii.GetCollisionModel()):
+        ii.GetCollisionModel().SetAllShapesMaterial(mat)
 
 system.RemoveRedundantConstraints(False, 1e-6, True)
 system.DoFullAssembly()
@@ -36,7 +37,7 @@ vis = chronoirr.ChVisualSystemIrrlicht(system, chrono.ChVectorD(0, 0, 5))
 
 vis.EnableCollisionShapeDrawing(True)
 
-timestep = 0.005
+timestep = 0.002
 rt_timer = chrono.ChRealtimeStepTimer()
 
 solver = chrono.ChSolverBB()

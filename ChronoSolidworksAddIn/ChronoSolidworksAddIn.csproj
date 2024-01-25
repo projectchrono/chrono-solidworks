@@ -123,11 +123,1712 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\AddContactCallback.cs">
+      <Link>Chrono\AddContactCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\AddProximityCallback.cs">
+      <Link>Chrono\AddProximityCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\AngleSet.cs">
+      <Link>Chrono\AngleSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\BroadphaseCallback.cs">
+      <Link>Chrono\BroadphaseCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\CameraVerticalDir.cs">
+      <Link>Chrono\CameraVerticalDir.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChAABB.cs">
+      <Link>Chrono\ChAABB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChAbsorbed_Power_Vertical.cs">
+      <Link>Chrono\ChAbsorbed_Power_Vertical.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChAddProximityCallbackP.cs">
+      <Link>Chrono\ChAddProximityCallbackP.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChAnalogueFilter.cs">
+      <Link>Chrono\ChAnalogueFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChAssembly.cs">
+      <Link>Chrono\ChAssembly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChAxis.cs">
+      <Link>Chrono\ChAxis.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBezierCurve.cs">
+      <Link>Chrono\ChBezierCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBezierCurveTracker.cs">
+      <Link>Chrono\ChBezierCurveTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBinaryArchive.cs">
+      <Link>Chrono\ChBinaryArchive.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBody.cs">
+      <Link>Chrono\ChBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyAuxRef.cs">
+      <Link>Chrono\ChBodyAuxRef.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyBox.cs">
+      <Link>Chrono\ChBodyEasyBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyClusterOfSpheres.cs">
+      <Link>Chrono\ChBodyEasyClusterOfSpheres.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyConvexHull.cs">
+      <Link>Chrono\ChBodyEasyConvexHull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyConvexHullAuxRef.cs">
+      <Link>Chrono\ChBodyEasyConvexHullAuxRef.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyCylinder.cs">
+      <Link>Chrono\ChBodyEasyCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyEllipsoid.cs">
+      <Link>Chrono\ChBodyEasyEllipsoid.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasyMesh.cs">
+      <Link>Chrono\ChBodyEasyMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyEasySphere.cs">
+      <Link>Chrono\ChBodyEasySphere.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBodyFrame.cs">
+      <Link>Chrono\ChBodyFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChBox.cs">
+      <Link>Chrono\ChBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChButterworth_Highpass.cs">
+      <Link>Chrono\ChButterworth_Highpass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChButterworth_Lowpass.cs">
+      <Link>Chrono\ChButterworth_Lowpass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCamera.cs">
+      <Link>Chrono\ChCamera.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCapsule.cs">
+      <Link>Chrono\ChCapsule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChClassFactory.cs">
+      <Link>Chrono\ChClassFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionInfo.cs">
+      <Link>Chrono\ChCollisionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionModel.cs">
+      <Link>Chrono\ChCollisionModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionModelImpl.cs">
+      <Link>Chrono\ChCollisionModelImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShape.cs">
+      <Link>Chrono\ChCollisionShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeArc2D.cs">
+      <Link>Chrono\ChCollisionShapeArc2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeBarrel.cs">
+      <Link>Chrono\ChCollisionShapeBarrel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeBox.cs">
+      <Link>Chrono\ChCollisionShapeBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeCapsule.cs">
+      <Link>Chrono\ChCollisionShapeCapsule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeCone.cs">
+      <Link>Chrono\ChCollisionShapeCone.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeConvexHull.cs">
+      <Link>Chrono\ChCollisionShapeConvexHull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeCylinder.cs">
+      <Link>Chrono\ChCollisionShapeCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeCylindricalShell.cs">
+      <Link>Chrono\ChCollisionShapeCylindricalShell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeEllipsoid.cs">
+      <Link>Chrono\ChCollisionShapeEllipsoid.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapePath2D.cs">
+      <Link>Chrono\ChCollisionShapePath2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapePoint.cs">
+      <Link>Chrono\ChCollisionShapePoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeRoundedBox.cs">
+      <Link>Chrono\ChCollisionShapeRoundedBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeRoundedCylinder.cs">
+      <Link>Chrono\ChCollisionShapeRoundedCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeSegment2D.cs">
+      <Link>Chrono\ChCollisionShapeSegment2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeSphere.cs">
+      <Link>Chrono\ChCollisionShapeSphere.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeTriangle.cs">
+      <Link>Chrono\ChCollisionShapeTriangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionShapeTriangleMesh.cs">
+      <Link>Chrono\ChCollisionShapeTriangleMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionSystem.cs">
+      <Link>Chrono\ChCollisionSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCollisionSystemBullet.cs">
+      <Link>Chrono\ChCollisionSystemBullet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChColor.cs">
+      <Link>Chrono\ChColor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCone.cs">
+      <Link>Chrono\ChCone.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChConstantDistribution.cs">
+      <Link>Chrono\ChConstantDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContactable.cs">
+      <Link>Chrono\ChContactable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContactable1vars6.cs">
+      <Link>Chrono\ChContactable1vars6.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContactContainer.cs">
+      <Link>Chrono\ChContactContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContactForceTorqueSMC.cs">
+      <Link>Chrono\ChContactForceTorqueSMC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContactMaterialData.cs">
+      <Link>Chrono\ChContactMaterialData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContactMethod.cs">
+      <Link>Chrono\ChContactMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChContinuumDistribution.cs">
+      <Link>Chrono\ChContinuumDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChControllerPID.cs">
+      <Link>Chrono\ChControllerPID.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChConveyor.cs">
+      <Link>Chrono\ChConveyor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCoordsysD.cs">
+      <Link>Chrono\ChCoordsysD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChCylinder.cs">
+      <Link>Chrono\ChCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChDirectSolverLS.cs">
+      <Link>Chrono\ChDirectSolverLS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChDiscreteDistribution.cs">
+      <Link>Chrono\ChDiscreteDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChDistribution.cs">
+      <Link>Chrono\ChDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChEllipsoid.cs">
+      <Link>Chrono\ChEllipsoid.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChException.cs">
+      <Link>Chrono\ChException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFeeder.cs">
+      <Link>Chrono\ChFeeder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFilterD.cs">
+      <Link>Chrono\ChFilterD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFilterI.cs">
+      <Link>Chrono\ChFilterI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFilterPD1.cs">
+      <Link>Chrono\ChFilterPD1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFilterPDT1.cs">
+      <Link>Chrono\ChFilterPDT1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFilterPT1.cs">
+      <Link>Chrono\ChFilterPT1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChForce.cs">
+      <Link>Chrono\ChForce.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChForceList.cs">
+      <Link>Chrono\ChForceList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFrameD.cs">
+      <Link>Chrono\ChFrameD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFrameMovingD.cs">
+      <Link>Chrono\ChFrameMovingD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFseqNode.cs">
+      <Link>Chrono\ChFseqNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction.cs">
+      <Link>Chrono\ChFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionPosition.cs">
+      <Link>Chrono\ChFunctionPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionPosition_line.cs">
+      <Link>Chrono\ChFunctionPosition_line.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionPosition_setpoint.cs">
+      <Link>Chrono\ChFunctionPosition_setpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionPosition_XYZfunctions.cs">
+      <Link>Chrono\ChFunctionPosition_XYZfunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionRotation.cs">
+      <Link>Chrono\ChFunctionRotation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionRotation_ABCfunctions.cs">
+      <Link>Chrono\ChFunctionRotation_ABCfunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionRotation_axis.cs">
+      <Link>Chrono\ChFunctionRotation_axis.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionRotation_setpoint.cs">
+      <Link>Chrono\ChFunctionRotation_setpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionRotation_spline.cs">
+      <Link>Chrono\ChFunctionRotation_spline.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunctionRotation_SQUAD.cs">
+      <Link>Chrono\ChFunctionRotation_SQUAD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_BSpline.cs">
+      <Link>Chrono\ChFunction_BSpline.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Const.cs">
+      <Link>Chrono\ChFunction_Const.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_ConstAcc.cs">
+      <Link>Chrono\ChFunction_ConstAcc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Cycloidal.cs">
+      <Link>Chrono\ChFunction_Cycloidal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Derive.cs">
+      <Link>Chrono\ChFunction_Derive.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_DoubleS.cs">
+      <Link>Chrono\ChFunction_DoubleS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Fillet3.cs">
+      <Link>Chrono\ChFunction_Fillet3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Integrate.cs">
+      <Link>Chrono\ChFunction_Integrate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Mirror.cs">
+      <Link>Chrono\ChFunction_Mirror.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Mocap.cs">
+      <Link>Chrono\ChFunction_Mocap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Noise.cs">
+      <Link>Chrono\ChFunction_Noise.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Operation.cs">
+      <Link>Chrono\ChFunction_Operation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Oscilloscope.cs">
+      <Link>Chrono\ChFunction_Oscilloscope.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Poly.cs">
+      <Link>Chrono\ChFunction_Poly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Poly345.cs">
+      <Link>Chrono\ChFunction_Poly345.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Ramp.cs">
+      <Link>Chrono\ChFunction_Ramp.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Recorder.cs">
+      <Link>Chrono\ChFunction_Recorder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Repeat.cs">
+      <Link>Chrono\ChFunction_Repeat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Sequence.cs">
+      <Link>Chrono\ChFunction_Sequence.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Setpoint.cs">
+      <Link>Chrono\ChFunction_Setpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_SetpointCallback.cs">
+      <Link>Chrono\ChFunction_SetpointCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Sigma.cs">
+      <Link>Chrono\ChFunction_Sigma.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChFunction_Sine.cs">
+      <Link>Chrono\ChFunction_Sine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChGeometry.cs">
+      <Link>Chrono\ChGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChGlyphs.cs">
+      <Link>Chrono\ChGlyphs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChImplicitIterativeTimestepper.cs">
+      <Link>Chrono\ChImplicitIterativeTimestepper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChImplicitTimestepper.cs">
+      <Link>Chrono\ChImplicitTimestepper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIndexedNodes.cs">
+      <Link>Chrono\ChIndexedNodes.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIndexedParticles.cs">
+      <Link>Chrono\ChIndexedParticles.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIntegrable.cs">
+      <Link>Chrono\ChIntegrable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIntegrableIIorder.cs">
+      <Link>Chrono\ChIntegrableIIorder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_1_AVTransition.cs">
+      <Link>Chrono\ChISO2631_1_AVTransition.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_1_UpwardStep.cs">
+      <Link>Chrono\ChISO2631_1_UpwardStep.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_1_Wd.cs">
+      <Link>Chrono\ChISO2631_1_Wd.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_1_Wf.cs">
+      <Link>Chrono\ChISO2631_1_Wf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_1_Wk.cs">
+      <Link>Chrono\ChISO2631_1_Wk.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_5_Wxy.cs">
+      <Link>Chrono\ChISO2631_5_Wxy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_5_Wz.cs">
+      <Link>Chrono\ChISO2631_5_Wz.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_Shock_SeatCushionLogger.cs">
+      <Link>Chrono\ChISO2631_Shock_SeatCushionLogger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChISO2631_Vibration_SeatCushionLogger.cs">
+      <Link>Chrono\ChISO2631_Vibration_SeatCushionLogger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIterativeSolver.cs">
+      <Link>Chrono\ChIterativeSolver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIterativeSolverLS.cs">
+      <Link>Chrono\ChIterativeSolverLS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChIterativeSolverVI.cs">
+      <Link>Chrono\ChIterativeSolverVI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLine.cs">
+      <Link>Chrono\ChLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLineArc.cs">
+      <Link>Chrono\ChLineArc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLineBezier.cs">
+      <Link>Chrono\ChLineBezier.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLineBspline.cs">
+      <Link>Chrono\ChLineBspline.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLineCam.cs">
+      <Link>Chrono\ChLineCam.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLineNurbs.cs">
+      <Link>Chrono\ChLineNurbs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinePath.cs">
+      <Link>Chrono\ChLinePath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinePoly.cs">
+      <Link>Chrono\ChLinePoly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLineSegment.cs">
+      <Link>Chrono\ChLineSegment.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLink.cs">
+      <Link>Chrono\ChLink.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkBase.cs">
+      <Link>Chrono\ChLinkBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkDistance.cs">
+      <Link>Chrono\ChLinkDistance.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkForce.cs">
+      <Link>Chrono\ChLinkForce.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkGear.cs">
+      <Link>Chrono\ChLinkGear.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLimit.cs">
+      <Link>Chrono\ChLinkLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLinActuator.cs">
+      <Link>Chrono\ChLinkLinActuator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLock.cs">
+      <Link>Chrono\ChLinkLock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockAlign.cs">
+      <Link>Chrono\ChLinkLockAlign.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockCylindrical.cs">
+      <Link>Chrono\ChLinkLockCylindrical.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockFree.cs">
+      <Link>Chrono\ChLinkLockFree.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockLock.cs">
+      <Link>Chrono\ChLinkLockLock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockOldham.cs">
+      <Link>Chrono\ChLinkLockOldham.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockParallel.cs">
+      <Link>Chrono\ChLinkLockParallel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockPerpend.cs">
+      <Link>Chrono\ChLinkLockPerpend.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockPlanePlane.cs">
+      <Link>Chrono\ChLinkLockPlanePlane.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockPointLine.cs">
+      <Link>Chrono\ChLinkLockPointLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockPointPlane.cs">
+      <Link>Chrono\ChLinkLockPointPlane.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockPrismatic.cs">
+      <Link>Chrono\ChLinkLockPrismatic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockRevolute.cs">
+      <Link>Chrono\ChLinkLockRevolute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockRevolutePrismatic.cs">
+      <Link>Chrono\ChLinkLockRevolutePrismatic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkLockSpherical.cs">
+      <Link>Chrono\ChLinkLockSpherical.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMarkers.cs">
+      <Link>Chrono\ChLinkMarkers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMate.cs">
+      <Link>Chrono\ChLinkMate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateCoaxial.cs">
+      <Link>Chrono\ChLinkMateCoaxial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateFix.cs">
+      <Link>Chrono\ChLinkMateFix.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateGeneric.cs">
+      <Link>Chrono\ChLinkMateGeneric.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateOrthogonal.cs">
+      <Link>Chrono\ChLinkMateOrthogonal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateParallel.cs">
+      <Link>Chrono\ChLinkMateParallel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMatePlane.cs">
+      <Link>Chrono\ChLinkMatePlane.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMatePrismatic.cs">
+      <Link>Chrono\ChLinkMatePrismatic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateRevolute.cs">
+      <Link>Chrono\ChLinkMateRevolute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateSpherical.cs">
+      <Link>Chrono\ChLinkMateSpherical.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMateXdistance.cs">
+      <Link>Chrono\ChLinkMateXdistance.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotionImposed.cs">
+      <Link>Chrono\ChLinkMotionImposed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotor.cs">
+      <Link>Chrono\ChLinkMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorLinear.cs">
+      <Link>Chrono\ChLinkMotorLinear.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorLinearDriveline.cs">
+      <Link>Chrono\ChLinkMotorLinearDriveline.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorLinearForce.cs">
+      <Link>Chrono\ChLinkMotorLinearForce.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorLinearPosition.cs">
+      <Link>Chrono\ChLinkMotorLinearPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorLinearSpeed.cs">
+      <Link>Chrono\ChLinkMotorLinearSpeed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorRotation.cs">
+      <Link>Chrono\ChLinkMotorRotation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorRotationAngle.cs">
+      <Link>Chrono\ChLinkMotorRotationAngle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorRotationDriveline.cs">
+      <Link>Chrono\ChLinkMotorRotationDriveline.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorRotationSpeed.cs">
+      <Link>Chrono\ChLinkMotorRotationSpeed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkMotorRotationTorque.cs">
+      <Link>Chrono\ChLinkMotorRotationTorque.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkPointSpline.cs">
+      <Link>Chrono\ChLinkPointSpline.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkPulley.cs">
+      <Link>Chrono\ChLinkPulley.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkRevolute.cs">
+      <Link>Chrono\ChLinkRevolute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkRevoluteSpherical.cs">
+      <Link>Chrono\ChLinkRevoluteSpherical.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkRSDA.cs">
+      <Link>Chrono\ChLinkRSDA.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkScrew.cs">
+      <Link>Chrono\ChLinkScrew.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkTrajectory.cs">
+      <Link>Chrono\ChLinkTrajectory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkTSDA.cs">
+      <Link>Chrono\ChLinkTSDA.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLinkUniversal.cs">
+      <Link>Chrono\ChLinkUniversal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadable.cs">
+      <Link>Chrono\ChLoadable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadableU.cs">
+      <Link>Chrono\ChLoadableU.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadableUV.cs">
+      <Link>Chrono\ChLoadableUV.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadableUVW.cs">
+      <Link>Chrono\ChLoadableUVW.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBase.cs">
+      <Link>Chrono\ChLoadBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyBody.cs">
+      <Link>Chrono\ChLoadBodyBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyBodyBushingGeneric.cs">
+      <Link>Chrono\ChLoadBodyBodyBushingGeneric.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyBodyBushingMate.cs">
+      <Link>Chrono\ChLoadBodyBodyBushingMate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyBodyBushingPlastic.cs">
+      <Link>Chrono\ChLoadBodyBodyBushingPlastic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyBodyBushingSpherical.cs">
+      <Link>Chrono\ChLoadBodyBodyBushingSpherical.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyBodyTorque.cs">
+      <Link>Chrono\ChLoadBodyBodyTorque.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyForce.cs">
+      <Link>Chrono\ChLoadBodyForce.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyInertia.cs">
+      <Link>Chrono\ChLoadBodyInertia.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadBodyTorque.cs">
+      <Link>Chrono\ChLoadBodyTorque.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadContainer.cs">
+      <Link>Chrono\ChLoadContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadCustom.cs">
+      <Link>Chrono\ChLoadCustom.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadCustomMultiple.cs">
+      <Link>Chrono\ChLoadCustomMultiple.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoader.cs">
+      <Link>Chrono\ChLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderForceOnSurface.cs">
+      <Link>Chrono\ChLoaderForceOnSurface.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderGravity.cs">
+      <Link>Chrono\ChLoaderGravity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderPressure.cs">
+      <Link>Chrono\ChLoaderPressure.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderU.cs">
+      <Link>Chrono\ChLoaderU.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUatomic.cs">
+      <Link>Chrono\ChLoaderUatomic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUdistributed.cs">
+      <Link>Chrono\ChLoaderUdistributed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUV.cs">
+      <Link>Chrono\ChLoaderUV.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUVatomic.cs">
+      <Link>Chrono\ChLoaderUVatomic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUVdistributed.cs">
+      <Link>Chrono\ChLoaderUVdistributed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUVW.cs">
+      <Link>Chrono\ChLoaderUVW.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUVWatomic.cs">
+      <Link>Chrono\ChLoaderUVWatomic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderUVWdistributed.cs">
+      <Link>Chrono\ChLoaderUVWdistributed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoaderXYZnode.cs">
+      <Link>Chrono\ChLoaderXYZnode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadJacobians.cs">
+      <Link>Chrono\ChLoadJacobians.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnode.cs">
+      <Link>Chrono\ChLoadXYZnode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeBody.cs">
+      <Link>Chrono\ChLoadXYZnodeBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeBodyBushing.cs">
+      <Link>Chrono\ChLoadXYZnodeBodyBushing.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeBodySpring.cs">
+      <Link>Chrono\ChLoadXYZnodeBodySpring.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeForce.cs">
+      <Link>Chrono\ChLoadXYZnodeForce.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeForceAbsolute.cs">
+      <Link>Chrono\ChLoadXYZnodeForceAbsolute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeXYZnode.cs">
+      <Link>Chrono\ChLoadXYZnodeXYZnode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeXYZnodeBushing.cs">
+      <Link>Chrono\ChLoadXYZnodeXYZnodeBushing.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLoadXYZnodeXYZnodeSpring.cs">
+      <Link>Chrono\ChLoadXYZnodeXYZnodeSpring.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLog.cs">
+      <Link>Chrono\ChLog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChLogConsole.cs">
+      <Link>Chrono\ChLogConsole.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMarker.cs">
+      <Link>Chrono\ChMarker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMarkerList.cs">
+      <Link>Chrono\ChMarkerList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialComposite.cs">
+      <Link>Chrono\ChMaterialComposite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialCompositeNSC.cs">
+      <Link>Chrono\ChMaterialCompositeNSC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialCompositeSMC.cs">
+      <Link>Chrono\ChMaterialCompositeSMC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialCompositionStrategy.cs">
+      <Link>Chrono\ChMaterialCompositionStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialSurface.cs">
+      <Link>Chrono\ChMaterialSurface.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialSurfaceNSC.cs">
+      <Link>Chrono\ChMaterialSurfaceNSC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMaterialSurfaceSMC.cs">
+      <Link>Chrono\ChMaterialSurfaceSMC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMatrix33D.cs">
+      <Link>Chrono\ChMatrix33D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMatrixDynamicD.cs">
+      <Link>Chrono\ChMatrixDynamicD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMatrix_dense_version_tag.cs">
+      <Link>Chrono\ChMatrix_dense_version_tag.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMinMaxDistribution.cs">
+      <Link>Chrono\ChMinMaxDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMotionlawFilter.cs">
+      <Link>Chrono\ChMotionlawFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMotionlawFilter_SecondOrder.cs">
+      <Link>Chrono\ChMotionlawFilter_SecondOrder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMotionlawFilter_ThirdOrder.cs">
+      <Link>Chrono\ChMotionlawFilter_ThirdOrder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChMovingAverage.cs">
+      <Link>Chrono\ChMovingAverage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChNodeBase.cs">
+      <Link>Chrono\ChNodeBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChNodeXYZ.cs">
+      <Link>Chrono\ChNodeXYZ.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChNormalDistribution.cs">
+      <Link>Chrono\ChNormalDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChObj.cs">
+      <Link>Chrono\ChObj.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleBase.cs">
+      <Link>Chrono\ChParticleBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleCloud.cs">
+      <Link>Chrono\ChParticleCloud.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleEmitter.cs">
+      <Link>Chrono\ChParticleEmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleEventFlowInRectangle.cs">
+      <Link>Chrono\ChParticleEventFlowInRectangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleEventTrigger.cs">
+      <Link>Chrono\ChParticleEventTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleEventTriggerBox.cs">
+      <Link>Chrono\ChParticleEventTriggerBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleEventTriggerNever.cs">
+      <Link>Chrono\ChParticleEventTriggerNever.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessEvent.cs">
+      <Link>Chrono\ChParticleProcessEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessEventCount.cs">
+      <Link>Chrono\ChParticleProcessEventCount.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessEventDoNothing.cs">
+      <Link>Chrono\ChParticleProcessEventDoNothing.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessEventMassCount.cs">
+      <Link>Chrono\ChParticleProcessEventMassCount.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessEventMassDistribution.cs">
+      <Link>Chrono\ChParticleProcessEventMassDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessEventRemove.cs">
+      <Link>Chrono\ChParticleProcessEventRemove.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleProcessor.cs">
+      <Link>Chrono\ChParticleProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChParticleRemoverBox.cs">
+      <Link>Chrono\ChParticleRemoverBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChPhysicsItem.cs">
+      <Link>Chrono\ChPhysicsItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChProximityContainer.cs">
+      <Link>Chrono\ChProximityContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChQuaternionD.cs">
+      <Link>Chrono\ChQuaternionD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChQuaternionF.cs">
+      <Link>Chrono\ChQuaternionF.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticleAlignment.cs">
+      <Link>Chrono\ChRandomParticleAlignment.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticleAlignmentUniform.cs">
+      <Link>Chrono\ChRandomParticleAlignmentUniform.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticlePosition.cs">
+      <Link>Chrono\ChRandomParticlePosition.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticlePositionOnGeometry.cs">
+      <Link>Chrono\ChRandomParticlePositionOnGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticlePositionRectangleOutlet.cs">
+      <Link>Chrono\ChRandomParticlePositionRectangleOutlet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticleVelocity.cs">
+      <Link>Chrono\ChRandomParticleVelocity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticleVelocityAnyDirection.cs">
+      <Link>Chrono\ChRandomParticleVelocityAnyDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomParticleVelocityConstantDirection.cs">
+      <Link>Chrono\ChRandomParticleVelocityConstantDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreator.cs">
+      <Link>Chrono\ChRandomShapeCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreatorBoxes.cs">
+      <Link>Chrono\ChRandomShapeCreatorBoxes.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreatorConvexHulls.cs">
+      <Link>Chrono\ChRandomShapeCreatorConvexHulls.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreatorCylinders.cs">
+      <Link>Chrono\ChRandomShapeCreatorCylinders.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreatorFromFamilies.cs">
+      <Link>Chrono\ChRandomShapeCreatorFromFamilies.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreatorShavings.cs">
+      <Link>Chrono\ChRandomShapeCreatorShavings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreatorSpheres.cs">
+      <Link>Chrono\ChRandomShapeCreatorSpheres.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRandomShapeCreator_AddBodyCallback.cs">
+      <Link>Chrono\ChRandomShapeCreator_AddBodyCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRayhitResult.cs">
+      <Link>Chrono\ChRayhitResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRealtimeStepTimer.cs">
+      <Link>Chrono\ChRealtimeStepTimer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRecPoint.cs">
+      <Link>Chrono\ChRecPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRefineEdgeCriterion.cs">
+      <Link>Chrono\ChRefineEdgeCriterion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChReportProximityCallbackP.cs">
+      <Link>Chrono\ChReportProximityCallbackP.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\chrono.cs">
+      <Link>Chrono\chrono.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\chronoPINVOKE.cs">
+      <Link>Chrono\chronoPINVOKE.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRoundedBox.cs">
+      <Link>Chrono\ChRoundedBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRoundedCylinder.cs">
+      <Link>Chrono\ChRoundedCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChRunningAverage.cs">
+      <Link>Chrono\ChRunningAverage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaft.cs">
+      <Link>Chrono\ChShaft.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsBody.cs">
+      <Link>Chrono\ChShaftsBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsBodyTranslation.cs">
+      <Link>Chrono\ChShaftsBodyTranslation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsClutch.cs">
+      <Link>Chrono\ChShaftsClutch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsCouple.cs">
+      <Link>Chrono\ChShaftsCouple.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsElasticGear.cs">
+      <Link>Chrono\ChShaftsElasticGear.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsFreewheel.cs">
+      <Link>Chrono\ChShaftsFreewheel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsGear.cs">
+      <Link>Chrono\ChShaftsGear.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsLoad.cs">
+      <Link>Chrono\ChShaftsLoad.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsMotor.cs">
+      <Link>Chrono\ChShaftsMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsMotorAngle.cs">
+      <Link>Chrono\ChShaftsMotorAngle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsMotorBase.cs">
+      <Link>Chrono\ChShaftsMotorBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsMotorSpeed.cs">
+      <Link>Chrono\ChShaftsMotorSpeed.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsMotorTorque.cs">
+      <Link>Chrono\ChShaftsMotorTorque.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsPlanetary.cs">
+      <Link>Chrono\ChShaftsPlanetary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsThermalEngine.cs">
+      <Link>Chrono\ChShaftsThermalEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsTorqueBase.cs">
+      <Link>Chrono\ChShaftsTorqueBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsTorsionSpring.cs">
+      <Link>Chrono\ChShaftsTorsionSpring.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChShaftsTorsionSpringDamper.cs">
+      <Link>Chrono\ChShaftsTorsionSpringDamper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolver.cs">
+      <Link>Chrono\ChSolver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverADMM.cs">
+      <Link>Chrono\ChSolverADMM.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverAPGD.cs">
+      <Link>Chrono\ChSolverAPGD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverBB.cs">
+      <Link>Chrono\ChSolverBB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverBiCGSTAB.cs">
+      <Link>Chrono\ChSolverBiCGSTAB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverGMRES.cs">
+      <Link>Chrono\ChSolverGMRES.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverLS.cs">
+      <Link>Chrono\ChSolverLS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverMINRES.cs">
+      <Link>Chrono\ChSolverMINRES.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverPJacobi.cs">
+      <Link>Chrono\ChSolverPJacobi.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverPSOR.cs">
+      <Link>Chrono\ChSolverPSOR.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverSparseLU.cs">
+      <Link>Chrono\ChSolverSparseLU.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverSparseQR.cs">
+      <Link>Chrono\ChSolverSparseQR.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSolverVI.cs">
+      <Link>Chrono\ChSolverVI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSphere.cs">
+      <Link>Chrono\ChSphere.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChState.cs">
+      <Link>Chrono\ChState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStateDelta.cs">
+      <Link>Chrono\ChStateDelta.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStrainTensorD.cs">
+      <Link>Chrono\ChStrainTensorD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStream.cs">
+      <Link>Chrono\ChStream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamFile.cs">
+      <Link>Chrono\ChStreamFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamIn.cs">
+      <Link>Chrono\ChStreamIn.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInAscii.cs">
+      <Link>Chrono\ChStreamInAscii.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInAsciiFile.cs">
+      <Link>Chrono\ChStreamInAsciiFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInAsciiVector.cs">
+      <Link>Chrono\ChStreamInAsciiVector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInBinary.cs">
+      <Link>Chrono\ChStreamInBinary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInBinaryFile.cs">
+      <Link>Chrono\ChStreamInBinaryFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInBinaryStream.cs">
+      <Link>Chrono\ChStreamInBinaryStream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamInBinaryVector.cs">
+      <Link>Chrono\ChStreamInBinaryVector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamIstreamWrapper.cs">
+      <Link>Chrono\ChStreamIstreamWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOstreamWrapper.cs">
+      <Link>Chrono\ChStreamOstreamWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOut.cs">
+      <Link>Chrono\ChStreamOut.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutAscii.cs">
+      <Link>Chrono\ChStreamOutAscii.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutAsciiFile.cs">
+      <Link>Chrono\ChStreamOutAsciiFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutAsciiVector.cs">
+      <Link>Chrono\ChStreamOutAsciiVector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutBinary.cs">
+      <Link>Chrono\ChStreamOutBinary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutBinaryFile.cs">
+      <Link>Chrono\ChStreamOutBinaryFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutBinaryStream.cs">
+      <Link>Chrono\ChStreamOutBinaryStream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamOutBinaryVector.cs">
+      <Link>Chrono\ChStreamOutBinaryVector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStreamVectorWrapper.cs">
+      <Link>Chrono\ChStreamVectorWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChStressTensorD.cs">
+      <Link>Chrono\ChStressTensorD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSurface.cs">
+      <Link>Chrono\ChSurface.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSurfaceNurbs.cs">
+      <Link>Chrono\ChSurfaceNurbs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSystem.cs">
+      <Link>Chrono\ChSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSystemNSC.cs">
+      <Link>Chrono\ChSystemNSC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChSystemSMC.cs">
+      <Link>Chrono\ChSystemSMC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTexture.cs">
+      <Link>Chrono\ChTexture.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimer.cs">
+      <Link>Chrono\ChTimer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepper.cs">
+      <Link>Chrono\ChTimestepper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperEulerExpl.cs">
+      <Link>Chrono\ChTimestepperEulerExpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperEulerExplIIorder.cs">
+      <Link>Chrono\ChTimestepperEulerExplIIorder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperEulerImplicit.cs">
+      <Link>Chrono\ChTimestepperEulerImplicit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperEulerImplicitLinearized.cs">
+      <Link>Chrono\ChTimestepperEulerImplicitLinearized.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperEulerImplicitProjected.cs">
+      <Link>Chrono\ChTimestepperEulerImplicitProjected.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperEulerSemiImplicit.cs">
+      <Link>Chrono\ChTimestepperEulerSemiImplicit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperHeun.cs">
+      <Link>Chrono\ChTimestepperHeun.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperHHT.cs">
+      <Link>Chrono\ChTimestepperHHT.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperIIorder.cs">
+      <Link>Chrono\ChTimestepperIIorder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperIorder.cs">
+      <Link>Chrono\ChTimestepperIorder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperLeapfrog.cs">
+      <Link>Chrono\ChTimestepperLeapfrog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperNewmark.cs">
+      <Link>Chrono\ChTimestepperNewmark.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperRungeKuttaExpl.cs">
+      <Link>Chrono\ChTimestepperRungeKuttaExpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperTrapezoidal.cs">
+      <Link>Chrono\ChTimestepperTrapezoidal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperTrapezoidalLinearized.cs">
+      <Link>Chrono\ChTimestepperTrapezoidalLinearized.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTimestepperTrapezoidalLinearized2.cs">
+      <Link>Chrono\ChTimestepperTrapezoidalLinearized2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTransformD.cs">
+      <Link>Chrono\ChTransformD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTriangle.cs">
+      <Link>Chrono\ChTriangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTriangleMesh.cs">
+      <Link>Chrono\ChTriangleMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTriangleMeshConnected.cs">
+      <Link>Chrono\ChTriangleMeshConnected.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChTriangleMeshSoup.cs">
+      <Link>Chrono\ChTriangleMeshSoup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVectorD.cs">
+      <Link>Chrono\ChVectorD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVectorDynamicD.cs">
+      <Link>Chrono\ChVectorDynamicD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVectorDynamicI.cs">
+      <Link>Chrono\ChVectorDynamicI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVectorF.cs">
+      <Link>Chrono\ChVectorF.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVectorI.cs">
+      <Link>Chrono\ChVectorI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualMaterial.cs">
+      <Link>Chrono\ChVisualMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualModel.cs">
+      <Link>Chrono\ChVisualModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualModelInstance.cs">
+      <Link>Chrono\ChVisualModelInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShape.cs">
+      <Link>Chrono\ChVisualShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeBarrel.cs">
+      <Link>Chrono\ChVisualShapeBarrel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeBox.cs">
+      <Link>Chrono\ChVisualShapeBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeCapsule.cs">
+      <Link>Chrono\ChVisualShapeCapsule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeCone.cs">
+      <Link>Chrono\ChVisualShapeCone.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeCylinder.cs">
+      <Link>Chrono\ChVisualShapeCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeEllipsoid.cs">
+      <Link>Chrono\ChVisualShapeEllipsoid.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeFEA.cs">
+      <Link>Chrono\ChVisualShapeFEA.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeLine.cs">
+      <Link>Chrono\ChVisualShapeLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeModelFile.cs">
+      <Link>Chrono\ChVisualShapeModelFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapePath.cs">
+      <Link>Chrono\ChVisualShapePath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapePointPoint.cs">
+      <Link>Chrono\ChVisualShapePointPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeRotSpring.cs">
+      <Link>Chrono\ChVisualShapeRotSpring.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeRoundedBox.cs">
+      <Link>Chrono\ChVisualShapeRoundedBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeRoundedCylinder.cs">
+      <Link>Chrono\ChVisualShapeRoundedCylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeSegment.cs">
+      <Link>Chrono\ChVisualShapeSegment.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeSphere.cs">
+      <Link>Chrono\ChVisualShapeSphere.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeSpring.cs">
+      <Link>Chrono\ChVisualShapeSpring.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeSurface.cs">
+      <Link>Chrono\ChVisualShapeSurface.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualShapeTriangleMesh.cs">
+      <Link>Chrono\ChVisualShapeTriangleMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVisualSystem.cs">
+      <Link>Chrono\ChVisualSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVoightTensorD.cs">
+      <Link>Chrono\ChVoightTensorD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChVolume.cs">
+      <Link>Chrono\ChVolume.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChWeibullDistribution.cs">
+      <Link>Chrono\ChWeibullDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ChZhangDistribution.cs">
+      <Link>Chrono\ChZhangDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ColorCallback.cs">
+      <Link>Chrono\ColorCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\CSV_writer.cs">
+      <Link>Chrono\CSV_writer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\CustomCollisionCallback.cs">
+      <Link>Chrono\CustomCollisionCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\double_ptr.cs">
+      <Link>Chrono\double_ptr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\eChCamType.cs">
+      <Link>Chrono\eChCamType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\eigen_assert_exception.cs">
+      <Link>Chrono\eigen_assert_exception.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\eigen_static_assert_exception.cs">
+      <Link>Chrono\eigen_static_assert_exception.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\float_ptr.cs">
+      <Link>Chrono\float_ptr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ForceFunctor.cs">
+      <Link>Chrono\ForceFunctor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\HeightColorCallback.cs">
+      <Link>Chrono\HeightColorCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\int_ptr.cs">
+      <Link>Chrono\int_ptr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\LoadLoaderForceOnSurface.cs">
+      <Link>Chrono\LoadLoaderForceOnSurface.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\LoadLoaderGravity.cs">
+      <Link>Chrono\LoadLoaderGravity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\LoadLoaderPressure.cs">
+      <Link>Chrono\LoadLoaderPressure.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\LoadLoaderXYZnode.cs">
+      <Link>Chrono\LoadLoaderXYZnode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\material_list.cs">
+      <Link>Chrono\material_list.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\NarrowphaseCallback.cs">
+      <Link>Chrono\NarrowphaseCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ODE.cs">
+      <Link>Chrono\ODE.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ReportContactCallback.cs">
+      <Link>Chrono\ReportContactCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\ReportProximityCallback.cs">
+      <Link>Chrono\ReportProximityCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\RSDATorqueFunctor.cs">
+      <Link>Chrono\RSDATorqueFunctor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_bool.cs">
+      <Link>Chrono\SWIGTYPE_p_bool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_cbtCollisionWorld.cs">
+      <Link>Chrono\SWIGTYPE_p_cbtCollisionWorld.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChColor.cs">
+      <Link>Chrono\SWIGTYPE_p_ChColor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChConstraintTwoBodies.cs">
+      <Link>Chrono\SWIGTYPE_p_ChConstraintTwoBodies.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChConvexDecompositionHACDv2.cs">
+      <Link>Chrono\SWIGTYPE_p_ChConvexDecompositionHACDv2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChFile_ps.cs">
+      <Link>Chrono\SWIGTYPE_p_ChFile_ps.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChFrameT_t.cs">
+      <Link>Chrono\SWIGTYPE_p_ChFrameT_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChKblockGeneric.cs">
+      <Link>Chrono\SWIGTYPE_p_ChKblockGeneric.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChLinkMask.cs">
+      <Link>Chrono\SWIGTYPE_p_ChLinkMask.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChMatrix33T_double_t.cs">
+      <Link>Chrono\SWIGTYPE_p_ChMatrix33T_double_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChMatrix44T_t.cs">
+      <Link>Chrono\SWIGTYPE_p_ChMatrix44T_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChProperty.cs">
+      <Link>Chrono\SWIGTYPE_p_ChProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChArchiveIn.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChArchiveIn.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChArchiveOut.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChArchiveOut.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChArrayT_double_t.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChArrayT_double_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChClassRegistrationBase.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChClassRegistrationBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChMatrixDynamicT_chrono__ChVectorT_double_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChMatrixDynamicT_chrono__ChVectorT_double_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChMatrixDynamicT_double_t.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChMatrixDynamicT_double_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChMatrixNMT_double_6_6_t.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChMatrixNMT_double_6_6_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChVectorNT_double_3_t.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChVectorNT_double_3_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__ChVectorNT_double_7_t.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__ChVectorNT_double_7_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__fea__ChMesh.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__fea__ChMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_chrono__geometry__ChProperty.cs">
+      <Link>Chrono\SWIGTYPE_p_chrono__geometry__ChProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChStaticAnalysis.cs">
+      <Link>Chrono\SWIGTYPE_p_ChStaticAnalysis.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChStreamOutAscii.cs">
+      <Link>Chrono\SWIGTYPE_p_ChStreamOutAscii.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChSystemDescriptor.cs">
+      <Link>Chrono\SWIGTYPE_p_ChSystemDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChVariables.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVariables.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChVariablesGeneric.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVariablesGeneric.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChVariablesNode.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVariablesNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChVariablesShaft.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVariablesShaft.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChVariableTupleCarrier_1varsT_6_t__type_constraint_tuple.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVariableTupleCarrier_1varsT_6_t__type_constraint_tuple.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_ChVector2T_float_t.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVector2T_float_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_double.cs">
+      <Link>Chrono\SWIGTYPE_p_double.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__Index.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__Index.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__MatrixT_double_Eigen__Dynamic_1_Eigen__ColMajor_7_1_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__MatrixT_double_Eigen__Dynamic_1_Eigen__ColMajor_7_1_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__MatrixT_double_Eigen__Dynamic_6_Eigen__RowMajor_7_6_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__MatrixT_double_Eigen__Dynamic_6_Eigen__RowMajor_7_6_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__MatrixT_double_Eigen__Dynamic_7_Eigen__RowMajor_7_7_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__MatrixT_double_Eigen__Dynamic_7_Eigen__RowMajor_7_7_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__RefT_Eigen__MatrixT_double_Eigen__Dynamic_1_Eigen__ColMajor_t_const_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__RefT_Eigen__MatrixT_double_Eigen__Dynamic_1_Eigen__ColMajor_t_const_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__RefT_Eigen__MatrixT_double_Eigen__Dynamic_Eigen__Dynamic_Eigen__RowMajor_t_const_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__RefT_Eigen__MatrixT_double_Eigen__Dynamic_Eigen__Dynamic_Eigen__RowMajor_t_const_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__RefT_Eigen__MatrixT_double_Eigen__Dynamic_Eigen__Dynamic_Eigen__RowMajor_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__RefT_Eigen__MatrixT_double_Eigen__Dynamic_Eigen__Dynamic_Eigen__RowMajor_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_Eigen__SparseMatrixT_double_Eigen__RowMajor_int_t.cs">
+      <Link>Chrono\SWIGTYPE_p_Eigen__SparseMatrixT_double_Eigen__RowMajor_int_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_float.cs">
+      <Link>Chrono\SWIGTYPE_p_float.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_int.cs">
+      <Link>Chrono\SWIGTYPE_p_int.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__fstream.cs">
+      <Link>Chrono\SWIGTYPE_p_std__fstream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__functionT_bool_fchrono__ChBody_const_RF_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__functionT_bool_fchrono__ChBody_const_RF_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__ios__openmode.cs">
+      <Link>Chrono\SWIGTYPE_p_std__ios__openmode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__istream.cs">
+      <Link>Chrono\SWIGTYPE_p_std__istream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__listT_chrono__ChFseqNode_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__listT_chrono__ChFseqNode_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__listT_chrono__ChRecPoint_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__listT_chrono__ChRecPoint_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__listT_double_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__listT_double_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__mapT_std__pairT_int_int_t_std__pairT_int_int_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__mapT_std__pairT_int_int_t_std__pairT_int_int_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__ostream.cs">
+      <Link>Chrono\SWIGTYPE_p_std__ostream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__ostringstream.cs">
+      <Link>Chrono\SWIGTYPE_p_std__ostringstream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__pairT_chrono__ChVectorT_double_t_chrono__ChVectorT_double_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__pairT_chrono__ChVectorT_double_t_chrono__ChVectorT_double_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__pairT_int_int_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__pairT_int_int_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__pairT_std__shared_ptrT_chrono__ChCollisionShape_t_chrono__ChFrameT_double_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__pairT_std__shared_ptrT_chrono__ChCollisionShape_t_chrono__ChFrameT_double_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_ChFunction_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChFunction_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_ChNodeBase_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChNodeBase_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_chrono__ChParticleCloud__ColorCallback_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChParticleCloud__ColorCallback_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_chrono__fea__ChMesh_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__fea__ChMesh_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_chrono__geometry__ChBasisToolsBspline_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__geometry__ChBasisToolsBspline_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_ChShaft_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChShaft_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_ChStaticNonLinearRheonomicAnalysis__IterationCallback_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChStaticNonLinearRheonomicAnalysis__IterationCallback_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_ChSystemDescriptor_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChSystemDescriptor_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_RSDATorqueFunctor_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_RSDATorqueFunctor_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_TSDAForceFunctor_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_TSDAForceFunctor_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__shared_ptrT_void_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_void_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__string.cs">
+      <Link>Chrono\SWIGTYPE_p_std__string.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__type_index.cs">
+      <Link>Chrono\SWIGTYPE_p_std__type_index.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__unique_ptrT_chrono__ChMaterialCompositionStrategy_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__unique_ptrT_chrono__ChMaterialCompositionStrategy_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__unique_ptrT_chrono__ChSystemSMC__ChContactForceTorqueSMC_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__unique_ptrT_chrono__ChSystemSMC__ChContactForceTorqueSMC_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__valarrayT_double_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__valarrayT_double_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_char_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_char_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_ChColor_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_ChColor_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_ChProperty_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_ChProperty_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__ChAparticle_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChAparticle_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__ChColor_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChColor_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__ChQuaternionT_double_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChQuaternionT_double_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__ChSystem_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChSystem_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__geometry__ChProperty_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__geometry__ChProperty_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__geometry__ChTriangleMeshConnected_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__geometry__ChTriangleMeshConnected_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_chrono__geometry__ChTriangle_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__geometry__ChTriangle_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_ChVariables_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_ChVariables_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_ChVector2T_double_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_ChVector2T_double_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_double_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_double_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_int_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_int_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__arrayT_int_4_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__arrayT_int_4_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__pairT_std__shared_ptrT_chrono__ChCollisionShape_t_chrono__ChFrameT_double_t_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__pairT_std__shared_ptrT_chrono__ChCollisionShape_t_chrono__ChFrameT_double_t_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__pairT_std__shared_ptrT_chrono__ChVisualShape_t_chrono__ChFrameT_double_t_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__pairT_std__shared_ptrT_chrono__ChVisualShape_t_chrono__ChFrameT_double_t_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChCamera_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChCamera_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChCollisionShapeConvexHull_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChCollisionShapeConvexHull_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLoadBase_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLoadBase_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChVisualShapeFEA_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChVisualShapeFEA_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__geometry__ChLine_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__geometry__ChLine_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChShaft_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChShaft_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__vectorT_bool_t_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__vectorT_bool_t_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__vectorT_chrono__ChVectorT_double_t_t_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__vectorT_chrono__ChVectorT_double_t_t_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__vectorT_chrono__ChVectorT_double_t_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__vectorT_chrono__ChVectorT_double_t_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__vectorT_double_t_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__vectorT_double_t_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_std__vectorT_std__vectorT_int_t_p_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__vectorT_int_t_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\SWIGTYPE_p_void.cs">
+      <Link>Chrono\SWIGTYPE_p_void.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\TorqueFunctor.cs">
+      <Link>Chrono\TorqueFunctor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\TSDAForceFunctor.cs">
+      <Link>Chrono\TSDAForceFunctor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChBody.cs">
+      <Link>Chrono\vector_ChBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChCoordsysD.cs">
+      <Link>Chrono\vector_ChCoordsysD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChLink.cs">
+      <Link>Chrono\vector_ChLink.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChLinkBase.cs">
+      <Link>Chrono\vector_ChLinkBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChLoadable.cs">
+      <Link>Chrono\vector_ChLoadable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChMesh.cs">
+      <Link>Chrono\vector_ChMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChPhysicsItem.cs">
+      <Link>Chrono\vector_ChPhysicsItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChVectorD.cs">
+      <Link>Chrono\vector_ChVectorD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChVectorF.cs">
+      <Link>Chrono\vector_ChVectorF.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\vector_ChVectorI.cs">
+      <Link>Chrono\vector_ChVectorI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\VelocityColorCallback.cs">
+      <Link>Chrono\VelocityColorCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core\VisualizationCallback.cs">
+      <Link>Chrono\VisualizationCallback.cs</Link>
+    </Compile>
     <Compile Include="ChModelExporter.cs" />
     <Compile Include="ChModelExporterCpp.cs" />
-    <Compile Include="ChModelExporterJson.cs" />
     <Compile Include="ChModelExporterSerialize.cs" />
     <Compile Include="ChModelExporterPython.cs" />
+    <Compile Include="ChModelExporterText.cs" />
     <Compile Include="ChronoEngine_SwAddin.cs" />
     <Compile Include="ChScale.cs" />
     <Compile Include="ConvexDecomp2.cs">
@@ -200,6 +1901,16 @@
       <DependentUpon>SidePanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine.dll">
+      <Link>ChronoEngine.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_csharp_core.dll">
+      <Link>ChronoEngine_csharp_core.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
