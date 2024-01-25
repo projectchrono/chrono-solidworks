@@ -653,6 +653,8 @@ namespace ChronoEngineAddin
                             m_asciiTextCpp += "\n// Collision material\n";
 
                             m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChMaterialSurfaceNSC>();\n", matname);
+
+                            m_asciiTextCpp += "\n// Collision shape\n";
                             m_asciiTextCpp += String.Format(bz, "std::shared_ptr<chrono::ChCollisionShape> {0};\n", collshapename);
 
 
@@ -841,7 +843,7 @@ namespace ChronoEngineAddin
                             double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
                             //double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
 
-                            m_asciiTextCpp += String.Format(bz, ";\n// Triangle mesh collision shape\n", bodyname);
+                            m_asciiTextCpp += String.Format(bz, "\n// Triangle mesh collision shape\n", bodyname);
                             m_asciiTextCpp += String.Format(bz, "auto {0}_mesh = chrono_types::make_shared<chrono::geometry::ChTriangleMeshConnected>();\n", geometryname);
                             m_asciiTextCpp += String.Format(bz, "{0}_mesh->LoadWavefrontMesh(shapes_dir + \"{0}.obj\", false, true);\n", geometryname);
                             m_asciiTextCpp += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L, geometryname);
@@ -1162,13 +1164,16 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
                         m_asciiTextCpp += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, motorName);
                         m_asciiTextCpp += String.Format(bz,
-                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetPos()," + m_exportNamesMap[swFeat.Name] + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", motorInstanceName,
+                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", 
+                            motorInstanceName,
                             m_exportNamesMap[selectedBody1.Name],
                             m_exportNamesMap[selectedBody2.Name]);
+
                         if (motorConstraints == "False")
                         {
                             m_asciiTextCpp += String.Format(bz, "{0}->Set" + chMotorConstraintName + "(false, false, false, false, false);\n", motorInstanceName);
                         }
+
                         m_asciiTextCpp += String.Format(bz, "linklist.push_back(" + motorInstanceName + ");\n");
                         m_asciiTextCpp += String.Format(bz, "//\n");
                         String motfunInstanceName = "motfun_" + nbody + "_" + nmarker;

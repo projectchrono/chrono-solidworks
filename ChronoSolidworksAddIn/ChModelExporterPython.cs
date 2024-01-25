@@ -2,6 +2,7 @@
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -18,9 +19,15 @@ namespace ChronoEngineAddin
         private int num_link = 0;
         //private int nbody = -1;
 
+        private Dictionary<string, string> m_exportNamesMap; // map solidworks names vs chrono script names, ie. map[slwd_name] = chrono_name;
+
 
         public ChModelExporterPython(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
-            : base(swIntegration, save_dir_shapes, save_filename) { }
+            : base(swIntegration, save_dir_shapes, save_filename) {
+
+            m_exportNamesMap = new Dictionary<string, string>();
+
+        }
 
 
         // ============================================================================================================
@@ -777,6 +784,9 @@ namespace ChronoEngineAddin
                             m_asciiText += "# Rigid body part\n";
                             m_asciiText += bodyname + " = chrono.ChBodyAuxRef()" + "\n";
 
+                            m_exportNamesMap[swComp.Name2] = bodyname;
+
+
                             // Write name
                             m_asciiText += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
 
@@ -990,6 +1000,63 @@ namespace ChronoEngineAddin
                                amatr[10] * ChScale.L,
                                amatr[11] * ChScale.L,
                                quat[0], quat[1], quat[2], quat[3]);
+
+                    // Export ChMotor from attributes embedded in marker, if any
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0) != null)
+                    {
+                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0);
+
+                        string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
+                        string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+                        string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+                        string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
+                        string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
+                        string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
+                        string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+
+                        ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+                        byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
+                        byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
+                        byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
+
+                        Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
+                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
+                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+
+                        string chMotorClassName = "ChLinkMotor" + motorType;
+                        string chMotorConstraintName = "";
+                        string chFunctionClassName = "ChFunction_" + motorMotionlaw;
+                        string motorQuaternion = "";
+
+                        if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
+                        {
+                            motorQuaternion = "chrono.Q_ROTATE_X_TO_Z";
+                            chMotorConstraintName = "GuideConstraint";
+                        }
+                        else
+                        {
+                            motorQuaternion = "chrono.QUNIT";
+                            chMotorConstraintName = "SpindleConstraint";
+                        }
+
+                        String motorInstanceName = "motor_" + nbody + "_" + nmarker;
+                        m_asciiText += "\n# Motor from Solidworks marker\n";
+                        m_asciiText += String.Format(bz, motorInstanceName + " = chrono." + chMotorClassName + "()\n");
+                        m_asciiText += String.Format(bz, motorInstanceName + ".SetName(\"" + motorName + "\")\n");
+                        System.Windows.Forms.MessageBox.Show(selectedBody1.Name);
+                        m_asciiText += motorInstanceName + ".Initialize(" + m_exportNamesMap[selectedBody1.Name] + ", " + m_exportNamesMap[selectedBody2.Name]
+                                    + ",chrono.ChFrameD(" + markername + ".GetAbsFrame().GetPos()," + markername + ".GetAbsFrame().GetRot()*" + motorQuaternion + "))\n";
+                        m_asciiText += "exported_items.append(" + motorInstanceName  + ")\n\n";
+
+                        if (motorConstraints == "False")
+                        {
+                            m_asciiText += motorInstanceName + ".Set" + chMotorConstraintName + "(False, False, False, False, False)\n";
+                        }
+
+                        String motfunInstanceName = "motfun_" + nbody + "_" + nmarker;
+                        m_asciiText += motfunInstanceName + " = chrono." + chFunctionClassName + "()\n";
+                        m_asciiText += motorInstanceName + ".SetMotorFunction(" + motfunInstanceName + ")\n";
+                    }
                 }
 
                 swFeat = (Feature)swFeat.GetNextFeature();

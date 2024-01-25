@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Media3D;
@@ -1065,6 +1066,131 @@ namespace ChronoEngineAddin
                         new ChCoordsysD(
                             new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
                             new ChQuaternionD(quat[0], quat[1], quat[2], quat[3])));
+
+
+                    // Export ChMotor from attributes embedded in marker, if any
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0) != null)
+                    {
+                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0);
+
+                        string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
+                        string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+                        string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+                        string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
+                        string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
+                        string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
+                        string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+
+                        ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+                        byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
+                        byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
+                        byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
+
+                        Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
+                        //SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
+                        //SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+
+                        ModelDocExtension swModelDocExt = swModel.Extension;
+
+                        ChFunction motfun;
+                        switch (motorMotionlaw)
+                        {
+                            case "Const":
+                                motfun = new ChFunction_Const();
+                                break;
+                            case "ConstAcc":
+                                motfun = new ChFunction_ConstAcc();
+                                break;
+                            case "Cycloidal":
+                                motfun = new ChFunction_Cycloidal();
+                                break;
+                            case "DoubleS":
+                                motfun = new ChFunction_DoubleS();
+                                break;
+                            case "Poly345":
+                                motfun = new ChFunction_Poly345();
+                                break;
+                            case "Setpoint":
+                                motfun = new ChFunction_Setpoint();
+                                break;
+                            case "Sine":
+                                motfun = new ChFunction_Sine();
+                                break;
+                            default:
+                                throw new Exception("ChFunction type does not exist");
+                        }
+
+                        ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selBody1Ref)];
+                        ChBodyAuxRef motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selBody2Ref)];
+
+                        
+                        ChLinkMotor motor;
+                        switch (motorType)
+                        {
+                            case "LinearPosition":
+                                motor = new ChLinkMotorLinearPosition();
+                                if (motorConstraints == "False")
+                                {
+                                    chrono.CastToChLinkMotorLinearPosition(motor).SetGuideConstraint(false, false, false, false, false);
+                                }
+                                break;
+                            case "LinearSpeed":
+                                motor = new ChLinkMotorLinearSpeed();
+                                if (motorConstraints == "False")
+                                {
+                                    chrono.CastToChLinkMotorLinearSpeed(motor).SetGuideConstraint(false, false, false, false, false);
+                                }
+                                break;
+                            case "LinearForce":
+                                motor = new ChLinkMotorLinearForce();
+                                if (motorConstraints == "False")
+                                {
+                                    chrono.CastToChLinkMotorLinearForce(motor).SetGuideConstraint(false, false, false, false, false);
+                                }
+                                break;
+                            case "RotationAngle":
+                                motor = new ChLinkMotorRotationAngle();
+                                if (motorConstraints == "False")
+                                {
+                                    chrono.CastToChLinkMotorRotationAngle(motor).SetSpindleConstraint(false, false, false, false, false);
+                                }
+                                break;
+                            case "RotationSpeed":
+                                motor = new ChLinkMotorRotationSpeed();
+                                if (motorConstraints == "False")
+                                {
+                                    chrono.CastToChLinkMotorRotationSpeed(motor).SetSpindleConstraint(false, false, false, false, false);
+                                }
+                                break;
+                            case "RotationTorque":
+                                motor = new ChLinkMotorRotationTorque();
+                                if (motorConstraints == "False")
+                                {
+                                    chrono.CastToChLinkMotorRotationTorque(motor).SetSpindleConstraint(false, false, false, false, false);
+                                }
+                                break;
+                            default:
+                                throw new Exception("ChLinkMotor type does not exist");
+                        }
+
+                        // rotate frame based on motorized degree of freedom of the link
+                        ChQuaternionD motorQuaternion = new ChQuaternionD();
+                        if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
+                        {
+                            motorQuaternion = chrono.Q_ROTATE_X_TO_Z;
+                        }
+                        else
+                        {
+                            motorQuaternion = chrono.QUNIT;
+                        }
+
+                        
+                        motor.SetName(motorName);
+                        motor.Initialize(motbody1, motbody2, new ChFrameD(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
+                        motor.SetMotorFunction(motfun);
+                        chrono_system.Add(motor);
+
+                    }
                 }
 
                 swFeat = (Feature)swFeat.GetNextFeature();
