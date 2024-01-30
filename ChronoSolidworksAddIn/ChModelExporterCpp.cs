@@ -132,6 +132,12 @@ namespace ChronoEngineAddin
                          "bodylist.push_back(body_0);\n\n";
 
 
+            // Set assembly to Resolved state
+            int resolved = ((AssemblyDoc)swModel).ResolveAllLightWeightComponents(true);
+            if (resolved != 0)
+                MessageBox.Show("Attempt to Resolve assembly failed");
+
+
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
             {
                 // Write down all parts

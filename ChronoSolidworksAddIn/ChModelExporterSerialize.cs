@@ -76,18 +76,21 @@ namespace ChronoEngineAddin
             num_comp = 0;
 
             // Write preamble
-
             sphereswept_r = (double) m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value;
             ChCollisionModel.SetDefaultSuggestedEnvelope((double)m_swIntegration.m_taskpaneHost.GetNumericEnvelope().Value * ChScale.L);
             ChCollisionModel.SetDefaultSuggestedMargin((double)m_swIntegration.m_taskpaneHost.GetNumericMargin().Value * ChScale.L);
             ChCollisionSystemBullet.SetContactBreakingThreshold((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L);
 
-
             body_ground = new ChBodyAuxRef();
             body_ground.SetNameString("ground");
             body_ground.SetBodyFixed(true);
             chrono_system.Add(body_ground);
-            //m_bodylist.Add("body_0", body_0);
+
+
+            // Set assembly to Resolved state
+            int resolved = ((AssemblyDoc)swModel).ResolveAllLightWeightComponents(true);
+            if (resolved != 0)
+                MessageBox.Show("Attempt to Resolve assembly failed");
 
 
             if (swModel.GetType() == (int)swDocumentTypes_e.swDocASSEMBLY)
