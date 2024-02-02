@@ -14,6 +14,8 @@ using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
 using ChronoEngineAddin;
 
+using System.Reflection;
+
 using Microsoft.Win32;
 
 // for JSON export
@@ -32,7 +34,8 @@ namespace ChronoEngine_SwAddin
         public const string SWTASKPANE_PROGID = "ChronoEngine.Taskpane";
         public ISldWorks mSWApplication;
         public SWIntegration mSWintegration;
-        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
+        internal System.Windows.Forms.SaveFileDialog m_saveFileDialog;
+        internal System.Windows.Forms.FolderBrowserDialog m_folderBrowserDialog;
         internal string save_dir_shapes = "";
         internal string save_filename = "";
         internal UserProgressBar swProgress;
@@ -40,7 +43,8 @@ namespace ChronoEngine_SwAddin
         public SWTaskpaneHost()
         {
             InitializeComponent();
-            this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.m_folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
         }
 
 
@@ -72,26 +76,26 @@ namespace ChronoEngine_SwAddin
 
             if ((sender as Button).Name.ToString() == "button_ExportToPython")
             {
-                this.SaveFileDialog1.Filter = "PyChrono Python script (*.py)|*.py";
-                this.SaveFileDialog1.DefaultExt = "py";
+                this.m_saveFileDialog.Filter = "PyChrono Python script (*.py)|*.py";
+                this.m_saveFileDialog.DefaultExt = "py";
             }
             else if ((sender as Button).Name.ToString() == "button_ExportToCpp")
             {
-                this.SaveFileDialog1.Filter = "Chrono C++ File (*.cpp)|*.cpp";
-                this.SaveFileDialog1.DefaultExt = "cpp";
+                this.m_saveFileDialog.Filter = "Chrono C++ File (*.cpp)|*.cpp";
+                this.m_saveFileDialog.DefaultExt = "cpp";
             }
             else if ((sender as Button).Name.ToString() == "button_ExportToJson")
             {
-                this.SaveFileDialog1.Filter = "Chrono JSON File (*.json)|*.json";
-                this.SaveFileDialog1.DefaultExt = "json";
+                this.m_saveFileDialog.Filter = "Chrono JSON File (*.json)|*.json";
+                this.m_saveFileDialog.DefaultExt = "json";
             }
 
-            this.SaveFileDialog1.InitialDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-            DialogResult result = SaveFileDialog1.ShowDialog();
+            this.m_saveFileDialog.InitialDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            DialogResult result = m_saveFileDialog.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                this.save_filename = SaveFileDialog1.FileName;
+                this.save_filename = m_saveFileDialog.FileName;
 
                 if (this.checkBox_surfaces.Checked)
                 {
@@ -132,9 +136,9 @@ namespace ChronoEngine_SwAddin
                 }
 
                 // Also export a demo .py file to quickly run the model
-                if (this.checkBox_savetest.Checked && (sender as Button).Name.ToString() == "button_ExportToPython") // TODO: Json cannot handle collisions yet
+                if (this.checkBox_savetest.Checked && (sender as Button).Name.ToString() == "button_ExportToPython")
                 {
-                    string save_directory = System.IO.Path.GetDirectoryName(SaveFileDialog1.FileName);
+                    string save_directory = System.IO.Path.GetDirectoryName(m_saveFileDialog.FileName);
                     try
                     {
                         // Search InstallPath as install folder built from C#
@@ -882,20 +886,78 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        private void label13_Click(object sender, EventArgs e)
+        private void but_runSimulation_Click(object sender, EventArgs e)
         {
+#if HAS_CHRONO_CSHARP
 
+            m_folderBrowserDialog.SelectedPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments); // InitialDirectory
+            m_folderBrowserDialog.Description = "Select shapes folder";
+            DialogResult result = m_folderBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string save_directory = m_folderBrowserDialog.SelectedPath;
+
+                if (this.checkBox_surfaces.Checked)
+                {
+                    this.save_dir_shapes = save_directory + "\\" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes";
+                    DirectoryInfo mi = System.IO.Directory.CreateDirectory(this.save_dir_shapes);
+                    if (mi.Exists == false)
+                        System.Windows.Forms.MessageBox.Show("ERROR. Can't create directory for .obj surfaces: " + this.save_dir_shapes);
+
+                    // ***TEST*** Dump also hierarchy for test
+                    ChModelExporterText textExporter = new ChModelExporterText(mSWintegration, save_dir_shapes, save_filename);
+                    textExporter.Export();
+
+                }
+
+
+                var chrono_system_creator = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, save_directory + "/dummy.json");
+                chrono_system_creator.PrepareChronoSystem(true);
+
+                string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                chrono.SetChronoDataPath(folder + "/data/");
+
+                ChSystemNSC chrono_system = chrono_system_creator.GetChronoSystem();
+                // TODO: set g acc
+
+                var vis = new ChVisualSystemIrrlicht();
+                vis.SetWindowSize(800, 600);
+                vis.SetWindowTitle("Chrono::SolidWorks Simulation");
+                vis.Initialize();
+                vis.AddLogo();
+                vis.AddSkyBox();
+                vis.AddTypicalLights();
+                vis.AddCamera(new ChVectorD(2, 2, 2));
+                vis.AttachSystem(chrono_system);
+
+                chrono_system.SetSolverType(ChSolver.Type.PSOR);
+                chrono_system.SetSolverMaxIterations((int)nud_numIterations.Value);
+
+                var realtime_timer = new ChRealtimeStepTimer();
+                double timestep = (double)numeric_dt.Value;
+
+                while (vis.Run())
+                {
+                    vis.BeginScene();
+                    vis.Render();
+                    vis.EndScene();
+
+                    chrono_system.DoStepDynamics(timestep);
+                    realtime_timer.Spin(timestep);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Selected folder is invalid");
+            }
+
+#else
+            MessageBox.Show("Chrono::SolidWorks Simulation can run only with C# module enabled")
+#endif
         }
 
-        private void SWTaskpaneHost_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
     }  // end class
 
 

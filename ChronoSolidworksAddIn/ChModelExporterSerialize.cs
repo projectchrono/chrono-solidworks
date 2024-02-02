@@ -8,12 +8,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using static ChronoGlobals;
 
 
 #if HAS_CHRONO_CSHARP
@@ -25,11 +27,10 @@ namespace ChronoEngineAddin
         ChSystemNSC chrono_system = new ChSystemNSC();
         private int num_link = 0;
         private int nbody = -1;
-        //Dictionary<byte[], ChBodyAuxRef> m_bodylist;
         Hashtable m_bodylist = new Hashtable(new myBytearrayHashComparer());
 
         string m_saveRelDirShapes;
-
+        bool m_export_with_fullpath;
         double sphereswept_r = 0.0;
 
         // temporary variables
@@ -41,16 +42,17 @@ namespace ChronoEngineAddin
             : base(swIntegration, save_dir_shapes, save_filename) {
 
             m_saveRelDirShapes = System.IO.Path.GetFileNameWithoutExtension(m_saveFilename) + "_shapes";
-            //m_bodylist = new Dictionary<byte[], ChBodyAuxRef>();
-
         }
 
-
-        // ============================================================================================================
-        // Override base class methods
-        // ============================================================================================================
-        public override void Export()
+        public ChSystemNSC GetChronoSystem()
         {
+            return chrono_system;
+        }
+
+        public void PrepareChronoSystem(bool export_with_fullpath = false)
+        {
+
+            m_export_with_fullpath = export_with_fullpath;
             CultureInfo bz = new CultureInfo("en-BZ");
 
             ModelDoc2 swModel;
@@ -74,6 +76,9 @@ namespace ChronoEngineAddin
                 m_swIntegration.m_taskpaneHost.GetProgressBar().Start(0, 5, "Serializing to JSON");
 
             num_comp = 0;
+
+            chrono_system.SetCollisionSystemType(ChCollisionSystem.Type.BULLET);
+
 
             // Write preamble
             sphereswept_r = (double) m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value;
@@ -119,52 +124,23 @@ namespace ChronoEngineAddin
                 TraverseFeaturesForMarkers(swFeat, 1, nbody, rootTransform);
             }
 
-            System.Windows.Forms.MessageBox.Show("Export to JSON completed.");
 
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                 m_swIntegration.m_taskpaneHost.GetProgressBar().End();
+        }
+
+        
+        // ============================================================================================================
+        // Override base class methods
+        // ============================================================================================================
+        public override void Export()
+        {
+            
+            PrepareChronoSystem(false);
 
             chrono_system.SerializeToJSON(m_saveFilename);
 
-
-
-            //ChVisualSystemIrrlicht vis = new ChVisualSystemIrrlicht();
-            //vis.AttachSystem(chrono_system);
-            //vis.SetWindowSize(800, 600);
-            //vis.SetWindowTitle("NSC collision demo");
-            //vis.Initialize();
-            //vis.AddLogo();
-            //vis.AddSkyBox();
-            //vis.AddCamera(new ChVectorD(0, 14, -20));
-            //vis.AddTypicalLights();
-
-            //// Modify some setting of the physical system for the simulation, if you want
-            //chrono_system.SetSolverType(ChSolver.Type.PSOR);
-            //chrono_system.SetSolverMaxIterations(500);
-            //////sys.SetUseSleeping(true);
-
-            //// Simulation loop
-            //ChRealtimeStepTimer rt = new ChRealtimeStepTimer();
-            //double step_size = 0.003;
-
-            //while (vis.Run())
-            //{
-            //    vis.BeginScene();
-            //    vis.Render();
-            //    vis.EndScene();
-
-            //    chrono_system.DoStepDynamics(step_size);
-
-            //    ////std::cout << std::endl;
-            //    ////auto frc = mixer.GetAppliedForce();
-            //    ////auto trq = mixer.GetAppliedTorque();
-            //    ////std::cout << sys.GetChTime() << "  force: " << frc << "  torque: " << trq << std::endl;
-            //    ////auto c_frc = mixer.GetContactForce();
-            //    ////auto c_trq = mixer.GetContactTorque();
-            //    ////std::cout << sys.GetChTime() << "  ct force: " << c_frc << "  ct torque: " << c_trq << std::endl;
-
-            //    rt.Spin(step_size);
-            //}
+            System.Windows.Forms.MessageBox.Show("Export to JSON completed.");
 
 
         }
@@ -559,7 +535,15 @@ namespace ChronoEngineAddin
                     }
 
                     visshape = new ChVisualShapeModelFile();
-                    ((ChVisualShapeModelFile)visshape).SetFilename(obj_filename_rel);
+                    if (m_export_with_fullpath)
+                    {
+                        ((ChVisualShapeModelFile)visshape).SetFilename(obj_filename_full);
+                    }
+                    else
+                    {
+                        ((ChVisualShapeModelFile)visshape).SetFilename(obj_filename_rel);
+                    }
+                    
 
                     object foo = null;
                     double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);

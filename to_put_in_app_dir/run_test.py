@@ -107,7 +107,7 @@ my_system.Set_G_acc(chrono.ChVectorD(0,-9.8,0))
 	
 		
 		
-if m_visualization == "pov":
+if m_visualization == "PovRay":
 
 	# ---------------------------------------------------------------------
 	#
@@ -184,7 +184,7 @@ if m_visualization == "pov":
 
 	
 	
-if m_visualization == "irrlicht":
+if m_visualization == "Irrlicht":
 
 	# ---------------------------------------------------------------------
 	#
