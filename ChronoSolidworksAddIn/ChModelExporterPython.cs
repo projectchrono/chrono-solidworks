@@ -1050,7 +1050,6 @@ namespace ChronoEngineAddin
                         m_asciiText += "\n# Motor from Solidworks marker\n";
                         m_asciiText += String.Format(bz, motorInstanceName + " = chrono." + chMotorClassName + "()\n");
                         m_asciiText += String.Format(bz, motorInstanceName + ".SetName(\"" + motorName + "\")\n");
-                        System.Windows.Forms.MessageBox.Show(selectedBody1.Name);
                         m_asciiText += motorInstanceName + ".Initialize(" + m_exportNamesMap[selectedBody1.Name] + ", " + m_exportNamesMap[selectedBody2.Name]
                                     + ",chrono.ChFrameD(" + markername + ".GetAbsFrame().GetPos()," + markername + ".GetAbsFrame().GetRot()*" + motorQuaternion + "))\n";
                         m_asciiText += "exported_items.append(" + motorInstanceName  + ")\n\n";
