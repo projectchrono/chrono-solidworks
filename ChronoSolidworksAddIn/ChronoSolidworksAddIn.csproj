@@ -2570,10 +2570,6 @@
       <Link>ChronoEngine.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_cosimulation.dll">
-      <Link>ChronoEngine_cosimulation.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_csharp_core.dll">
       <Link>ChronoEngine_csharp_core.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -2586,20 +2582,8 @@
       <Link>ChronoEngine_irrlicht.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_matlab.dll">
-      <Link>ChronoEngine_matlab.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_modal.dll">
       <Link>ChronoEngine_modal.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_pardisomkl.dll">
-      <Link>ChronoEngine_pardisomkl.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_parsers.dll">
-      <Link>ChronoEngine_parsers.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_postprocess.dll">

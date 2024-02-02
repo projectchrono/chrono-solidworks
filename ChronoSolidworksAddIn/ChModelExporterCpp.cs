@@ -1128,9 +1128,9 @@ namespace ChronoEngineAddin
                     m_exportNamesMap[swFeat.Name] = markername;
 
                     // Export ChMotor from attributes embedded in marker, if any
-                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0) != null)
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0) != null)
                     {
-                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0);
+                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0);
 
                         string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
                         string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();

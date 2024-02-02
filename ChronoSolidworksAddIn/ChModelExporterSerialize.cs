@@ -39,7 +39,8 @@ namespace ChronoEngineAddin
 
 
         public ChModelExporterSerialize(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
-            : base(swIntegration, save_dir_shapes, save_filename) {
+            : base(swIntegration, save_dir_shapes, save_filename)
+        {
 
             m_saveRelDirShapes = System.IO.Path.GetFileNameWithoutExtension(m_saveFilename) + "_shapes";
         }
@@ -81,7 +82,7 @@ namespace ChronoEngineAddin
 
 
             // Write preamble
-            sphereswept_r = (double) m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value;
+            sphereswept_r = (double)m_swIntegration.m_taskpaneHost.GetNumericSphereSwept().Value;
             ChCollisionModel.SetDefaultSuggestedEnvelope((double)m_swIntegration.m_taskpaneHost.GetNumericEnvelope().Value * ChScale.L);
             ChCollisionModel.SetDefaultSuggestedMargin((double)m_swIntegration.m_taskpaneHost.GetNumericMargin().Value * ChScale.L);
             ChCollisionSystemBullet.SetContactBreakingThreshold((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L);
@@ -129,13 +130,13 @@ namespace ChronoEngineAddin
                 m_swIntegration.m_taskpaneHost.GetProgressBar().End();
         }
 
-        
+
         // ============================================================================================================
         // Override base class methods
         // ============================================================================================================
         public override void Export()
         {
-            
+
             PrepareChronoSystem(false);
 
             chrono_system.SerializeToJSON(m_saveFilename);
@@ -221,7 +222,8 @@ namespace ChronoEngineAddin
                     body3 = GetChBodyFrameFromEntity(swMate.MateEntity(2));
                     body4 = GetChBodyFrameFromEntity(swMate.MateEntity(3));
                 }
-                else {
+                else
+                {
                     body3 = null;
                     body4 = null;
                 }
@@ -291,7 +293,7 @@ namespace ChronoEngineAddin
                         newlink.Initialize(body2, body1, false, cB, cA, dB, dA);
 
                     newlink.SetNameString(swMateFeature.Name);
-                    
+
 
                     chrono_system.Add(newlink);
 
@@ -333,7 +335,7 @@ namespace ChronoEngineAddin
 
                     chrono_system.Add(newlink);
 
-                    
+
                 }
                 else
                 {
@@ -388,7 +390,7 @@ namespace ChronoEngineAddin
                 if (!link_params.entity_0_as_VERTEX)
                     dA = new ChVectorD(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
                 else
-                    dA = new ChVectorD(0,0,0);
+                    dA = new ChVectorD(0, 0, 0);
 
                 ChVectorD dB;
                 if (!link_params.entity_1_as_VERTEX)
@@ -419,7 +421,7 @@ namespace ChronoEngineAddin
                 // auto flip direction if anti aligned (seems that this is assumed automatically in MateHinge in SW)
                 if (Vector3D.DotProduct(link_params.dA, link_params.dB) < 0)
                     link_params.dB.Negate();
-                
+
                 {
 
                     // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
@@ -543,7 +545,7 @@ namespace ChronoEngineAddin
                     {
                         ((ChVisualShapeModelFile)visshape).SetFilename(obj_filename_rel);
                     }
-                    
+
 
                     object foo = null;
                     double[] vMatProperties = (double[])swComp.GetMaterialPropertyValues2((int)swInConfigurationOpts_e.swThisConfiguration, foo);
@@ -677,10 +679,10 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = PointTransform(center_l, ref collshape_subcomp_transform);
                                     ChMatrix33D mr = new ChMatrix33D();
-                                    mr.setitem(0,0, 1.0); mr.setitem(1,0, 0.0); mr.setitem(2,0, 0.0);
-                                    mr.setitem(0,1, 0.0); mr.setitem(1,1, 1.0); mr.setitem(2,1, 0.0);
-                                    mr.setitem(0,2, 0.0); mr.setitem(1,2, 0.0); mr.setitem(2, 2, 1.0);
-                                    ChCollisionShapeSphere collshape = new ChCollisionShapeSphere(collision_material, rad *ChScale.L);
+                                    mr.setitem(0, 0, 1.0); mr.setitem(1, 0, 0.0); mr.setitem(2, 0, 0.0);
+                                    mr.setitem(0, 1, 0.0); mr.setitem(1, 1, 1.0); mr.setitem(2, 1, 0.0);
+                                    mr.setitem(0, 2, 0.0); mr.setitem(1, 2, 0.0); mr.setitem(2, 2, 1.0);
+                                    ChCollisionShapeSphere collshape = new ChCollisionShapeSphere(collision_material, rad * ChScale.L);
                                     newbody.GetCollisionModel().AddShape(
                                         collshape,
                                         new ChFrameD(
@@ -861,7 +863,7 @@ namespace ChronoEngineAddin
 
                             // RESET body
                             newbody = new ChBodyAuxRef();
-                            
+
 
                             // Write name
                             newbody.SetName(swComp.Name2);
@@ -918,7 +920,7 @@ namespace ChronoEngineAddin
                             newbody.SetFrame_COG_to_REF(
                                 new ChFrameD(
                                 new ChVectorD(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L),
-                                new ChQuaternionD(1,0,0,0)));
+                                new ChQuaternionD(1, 0, 0, 0)));
 
                             // Write 'fixed' state
                             if (swComp.IsFixed())
@@ -987,7 +989,7 @@ namespace ChronoEngineAddin
 
 
             // Traverse all children, proceeding to subassemblies and parts, if any
-            
+
 
             //nbody = -1; // RESET COUNTER
             object[] vChildComp;
@@ -1056,9 +1058,9 @@ namespace ChronoEngineAddin
 
 
                     // Export ChMotor from attributes embedded in marker, if any
-                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0) != null)
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0) != null)
                     {
-                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chlink, 0);
+                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0);
 
                         string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
                         string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
@@ -1074,8 +1076,8 @@ namespace ChronoEngineAddin
                         byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
 
                         Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
-                        //SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
-                        //SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
+                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
 
                         ModelDocExtension swModelDocExt = swModel.Extension;
 
@@ -1107,10 +1109,10 @@ namespace ChronoEngineAddin
                                 throw new Exception("ChFunction type does not exist");
                         }
 
-                        ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selBody1Ref)];
-                        ChBodyAuxRef motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selBody2Ref)];
+                        ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
+                        ChBodyAuxRef motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody2)];
 
-                        
+
                         ChLinkMotor motor;
                         switch (motorType)
                         {
@@ -1171,7 +1173,6 @@ namespace ChronoEngineAddin
                             motorQuaternion = chrono.QUNIT;
                         }
 
-                        
                         motor.SetName(motorName);
                         motor.Initialize(motbody1, motbody2, new ChFrameD(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
                         motor.SetMotorFunction(motfun);

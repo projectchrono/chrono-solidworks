@@ -46,9 +46,9 @@ namespace ChronoEngineAddin
                 txt_markerSelected.Text = swFeat.Name;
 
                 // If attributes are already present in selected CoordSys, populate Form items
-                if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chlink, 0) != null)
+                if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chmotor, 0) != null)
                 {
-                    SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chlink, 0);
+                    SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chmotor, 0);
 
                     string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
                     string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
@@ -134,13 +134,13 @@ namespace ChronoEngineAddin
 
             // If selected marker has no attributes, create them; otherwise, overwrite
             SolidWorks.Interop.sldworks.Attribute motorAttribute;
-            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chlink, 0) == null)
+            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
             {
-                motorAttribute = m_SWintegration.defattr_chlink.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+                motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
             }
             else
             { 
-                motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chlink, 0); 
+                motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0); 
             }
 
             ((Parameter)motorAttribute.GetParameter("motor_name")).SetStringValue(motorName);
