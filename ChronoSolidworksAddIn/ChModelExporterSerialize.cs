@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static ChronoGlobals;
+using System.Linq;
 
 
 #if HAS_CHRONO_CSHARP
@@ -1069,6 +1070,7 @@ namespace ChronoEngineAddin
                         string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
                         string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
                         string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+                        string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
 
                         ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
                         byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
@@ -1082,28 +1084,47 @@ namespace ChronoEngineAddin
                         ModelDocExtension swModelDocExt = swModel.Extension;
 
                         ChFunction motfun;
+                        double[] numericInputs = motlawInputs.Split(',').Select(r => Convert.ToDouble(r)).ToArray();
                         switch (motorMotionlaw)
                         {
                             case "Const":
-                                motfun = new ChFunction_Const();
+                                if (numericInputs.Length != 0)
+                                    motfun = new ChFunction_Const(numericInputs[0]);
+                                else
+                                    motfun = new ChFunction_Const();
                                 break;
                             case "ConstAcc":
-                                motfun = new ChFunction_ConstAcc();
+                                if (numericInputs.Length != 0)
+                                    motfun = new ChFunction_ConstAcc(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3]);
+                                else
+                                    motfun = new ChFunction_ConstAcc();
                                 break;
                             case "Cycloidal":
-                                motfun = new ChFunction_Cycloidal();
+                                if (numericInputs.Length != 0)
+                                    motfun = new ChFunction_Cycloidal(numericInputs[0], numericInputs[1]);
+                                else
+                                    motfun = new ChFunction_Cycloidal();
                                 break;
                             case "DoubleS":
-                                motfun = new ChFunction_DoubleS();
+                                if (numericInputs.Length != 0)
+                                    motfun = new ChFunction_DoubleS(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3], numericInputs[4], numericInputs[5], numericInputs[6]);
+                                else
+                                    motfun = new ChFunction_DoubleS();
                                 break;
                             case "Poly345":
-                                motfun = new ChFunction_Poly345();
+                                if (numericInputs.Length != 0)
+                                    motfun = new ChFunction_Poly345(numericInputs[0], numericInputs[1]);
+                                else
+                                    motfun = new ChFunction_Poly345();
                                 break;
                             case "Setpoint":
-                                motfun = new ChFunction_Setpoint();
+                                motfun = new ChFunction_Setpoint(); // ???
                                 break;
                             case "Sine":
-                                motfun = new ChFunction_Sine();
+                                if (numericInputs.Length != 0)
+                                    motfun = new ChFunction_Sine(numericInputs[0], numericInputs[1], numericInputs[2]);
+                                else 
+                                    motfun = new ChFunction_Sine();
                                 break;
                             default:
                                 throw new Exception("ChFunction type does not exist");

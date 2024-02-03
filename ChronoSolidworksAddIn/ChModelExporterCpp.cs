@@ -1139,6 +1139,7 @@ namespace ChronoEngineAddin
                         string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
                         string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
                         string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+                        string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
 
                         ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
                         byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
@@ -1183,7 +1184,7 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz, "linklist.push_back(" + motorInstanceName + ");\n");
                         m_asciiTextCpp += String.Format(bz, "//\n");
                         String motfunInstanceName = "motfun_" + nbody + "_" + nmarker;
-                        m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::{1}>();\n", motfunInstanceName, chFunctionClassName);
+                        m_asciiTextCpp += $"auto {motfunInstanceName} = chrono_types::make_shared<chrono::{chFunctionClassName}>({motlawInputs});\n"; // define motion law with inputs, if given
                         m_asciiTextCpp += String.Format(bz, "{0}->SetMotorFunction({1});\n", motorInstanceName, motfunInstanceName);
                         m_asciiTextCpp += String.Format(bz, "//\n");
                         m_asciiTextCpp += String.Format(bz, "(*motfun_map)[\"" + motorName + "\"] = " + motfunInstanceName + ";\n");

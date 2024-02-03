@@ -65,6 +65,7 @@ namespace ChronoEngine_SwAddin
                 defattr_chmotor.AddParameter("motor_marker", (int)swParamType_e.swParamTypeString, 0.0, 0);
                 defattr_chmotor.AddParameter("motor_body1", (int)swParamType_e.swParamTypeString, 0.0, 0); // slave
                 defattr_chmotor.AddParameter("motor_body2", (int)swParamType_e.swParamTypeString, 0.0, 0); // master
+                defattr_chmotor.AddParameter("motor_motlaw_inputs", (int)swParamType_e.swParamTypeString, 0.0, 0); // motion law inputs
                 defattr_chmotor.Register();
 
                 // Register the taskpane

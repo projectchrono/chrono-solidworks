@@ -57,6 +57,7 @@ namespace ChronoEngineAddin
                     string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
                     string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
                     string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+                    string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
 
                     ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
                     byte[] selBody1Ref = (byte[])GetIDFromString(swModel, motorBody1);
@@ -78,6 +79,7 @@ namespace ChronoEngineAddin
                     txt_markerSelected.Text = swFeat.Name;
                     txt_bodySlaveSelected.Text = selectedBody1.Name;
                     txt_bodyMasterSelected.Text = selectedBody2.Name;
+                    txt_motlawInputs.Text = motlawInputs;
                 }
             }
         }
@@ -116,6 +118,69 @@ namespace ChronoEngineAddin
             }
         }
 
+        private bool checkMotlawInputsSanity()
+        {
+            bool isInputSane = false;
+            string motorMotionlaw = cb_motionLaw.SelectedItem.ToString();
+            string motlawInputs = txt_motlawInputs.Text;
+
+            // If empty inputs, acceptable
+            if (String.IsNullOrEmpty(motlawInputs))
+            {
+                return true; 
+            }
+
+            // Try to parse inputs string into numeric array: if error, wrong inputs for sure
+            double[] numericInputs;
+            try
+            {
+                numericInputs = motlawInputs.Split(',').Select(r => Convert.ToDouble(r)).ToArray();
+            }
+            catch
+            {
+                MessageBox.Show("Given motion law inputs are not numeric. Motor not created.");
+                return false;
+            }
+
+            // Check if input number is appropriate for given motion law
+            switch (motorMotionlaw)
+            {
+                case "Const":
+                    isInputSane = (numericInputs.Length == 1) ? true : false;
+                    break;
+                case "ConstAcc":
+                    isInputSane = (numericInputs.Length == 4) ? true : false;
+                    break;
+                case "Cycloidal":
+                    isInputSane = (numericInputs.Length == 2) ? true : false;
+                    break;
+                case "DoubleS":
+                    isInputSane = (numericInputs.Length == 7) ? true : false;
+                    break;
+                case "Poly345":
+                    isInputSane = (numericInputs.Length == 2) ? true : false;
+                    break;
+                case "ChFunction_Setpoint":
+                    isInputSane = (numericInputs.Length == 2) ? true : false;
+                    break;
+                case "Sine":
+                    isInputSane = (numericInputs.Length == 3) ? true : false;
+                    break;
+                default:
+                    break;
+            }
+
+            if (!isInputSane)
+            {
+                string msg = "Wrong number of motion law inputs:\n"
+                    + $"selected {motorMotionlaw} with {numericInputs.Length} inputs.\n\n"
+                    + "Motor not created.";
+                MessageBox.Show(msg);
+            }
+
+            return isInputSane;
+        }
+
         private void butt_createMotor_Click(object sender, EventArgs e)
         {
             ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
@@ -124,35 +189,40 @@ namespace ChronoEngineAddin
             byte[] motorBody1Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody1);
             byte[] motorBody2Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody2);
 
-            string motorName        = txt_motorName.Text;
-            string motorType        = cb_motorType.SelectedItem.ToString();
-            string motorMotionlaw   = cb_motionLaw.SelectedItem.ToString();
-            string motorConstraint  = chb_motorConstraint.Checked.ToString();
-            string motorMarker      = GetStringFromID(swModel, motorMarkerRef);
-            string motorBody1       = GetStringFromID(swModel, motorBody1Ref);
-            string motorBody2       = GetStringFromID(swModel, motorBody2Ref);
+            string motorName = txt_motorName.Text;
+            string motorType = cb_motorType.SelectedItem.ToString();
+            string motorMotionlaw = cb_motionLaw.SelectedItem.ToString();
+            string motorConstraint = chb_motorConstraint.Checked.ToString();
+            string motorMarker = GetStringFromID(swModel, motorMarkerRef);
+            string motorBody1 = GetStringFromID(swModel, motorBody1Ref);
+            string motorBody2 = GetStringFromID(swModel, motorBody2Ref);
+            string motlawInputs = txt_motlawInputs.Text;
 
-            // If selected marker has no attributes, create them; otherwise, overwrite
-            SolidWorks.Interop.sldworks.Attribute motorAttribute;
-            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
+            if (checkMotlawInputsSanity()) // proceed only if given motion law inputs are appropriate
             {
-                motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
-            }
-            else
-            { 
-                motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0); 
-            }
+                // If selected marker has no attributes, create them; otherwise, overwrite
+                SolidWorks.Interop.sldworks.Attribute motorAttribute;
+                if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
+                {
+                    motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+                }
+                else
+                {
+                    motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0);
+                }
 
-            ((Parameter)motorAttribute.GetParameter("motor_name")).SetStringValue(motorName);
-            ((Parameter)motorAttribute.GetParameter("motor_type")).SetStringValue(motorType);
-            ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).SetStringValue(motorMotionlaw);
-            ((Parameter)motorAttribute.GetParameter("motor_constraints")).SetStringValue(motorConstraint);
-            ((Parameter)motorAttribute.GetParameter("motor_marker")).SetStringValue(motorMarker);
-            ((Parameter)motorAttribute.GetParameter("motor_body1")).SetStringValue(motorBody1);
-            ((Parameter)motorAttribute.GetParameter("motor_body2")).SetStringValue(motorBody2);
+                ((Parameter)motorAttribute.GetParameter("motor_name")).SetStringValue(motorName);
+                ((Parameter)motorAttribute.GetParameter("motor_type")).SetStringValue(motorType);
+                ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).SetStringValue(motorMotionlaw);
+                ((Parameter)motorAttribute.GetParameter("motor_constraints")).SetStringValue(motorConstraint);
+                ((Parameter)motorAttribute.GetParameter("motor_marker")).SetStringValue(motorMarker);
+                ((Parameter)motorAttribute.GetParameter("motor_body1")).SetStringValue(motorBody1);
+                ((Parameter)motorAttribute.GetParameter("motor_body2")).SetStringValue(motorBody2);
+                ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).SetStringValue(motlawInputs);
 
-            swModel.ForceRebuild3(false);
-            swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
+                swModel.ForceRebuild3(false);
+                swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
+            }
         }
 
         public static string GetStringFromID(ModelDoc2 swModel, byte[] vPIDarr)
