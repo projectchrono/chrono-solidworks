@@ -3,7 +3,7 @@
 #define MyAppName "ChronoEngine SW Add-In"
 #define MyAppVersion "current"
 #define MyAppPublisher "Alessandro Tasora"
-#define MyAppURL "http://www.chronoengine.info"
+#define MyAppURL "https://projectchrono.org/"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -22,7 +22,7 @@ WizardImageFile=SetupModern20.bmp
 PrivilegesRequired=admin
 ;Compression=none
 OutputDir=.
-OutputBaseFilename=ChronoEngine_SolidWorks_{#MyAppVersion}
+OutputBaseFilename=Chrono_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
