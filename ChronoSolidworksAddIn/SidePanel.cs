@@ -22,6 +22,8 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 //using static ChronoEngine_SwAddin.ConvertMates;
 
 
@@ -128,41 +130,33 @@ namespace ChronoEngine_SwAddin
                 else if ((sender as Button).Name.ToString() == "button_ExportToJson")
                 {
                 #if HAS_CHRONO_CSHARP
-                    ChModelExporterSerialize jsonExporter = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, save_filename);
+                    ChModelExporterCSharp jsonExporter = new ChModelExporterCSharp(mSWintegration, save_dir_shapes, save_filename);
+                    jsonExporter.SetGravityAcceleration(getGravityAcceleration());
+                    jsonExporter.SetSolver(cbSolver.Text);
                     jsonExporter.Export();
                 #else
                     MessageBox.Show("Chono SolidWorks AddIn has been built without JSON support. Only a debugging log will be generated.")
                 #endif
                 }
 
-                // Also export a demo .py file to quickly run the model
-                if (this.checkBox_savetest.Checked && (sender as Button).Name.ToString() == "button_ExportToPython")
-                {
-                    string save_directory = System.IO.Path.GetDirectoryName(m_saveFileDialog.FileName);
-                    try
-                    {
-                        // Search InstallPath as install folder built from C#
-                        string InstallPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                        if (!System.IO.Directory.Exists(InstallPath))
-                        {
-                            // If not found, fallback to Registry value set up by installer
-                            InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
-                        }
-                        //string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
-
-                        if (!System.IO.File.Exists(save_directory + "\\run_test.py"))
-                            System.IO.File.Copy(InstallPath + "\\run_test.py", save_directory + "\\run_test.py");
-                        if (!System.IO.File.Exists(save_directory + "\\_template_POV.pov"))
-                            System.IO.File.Copy(InstallPath + "\\_template_POV.pov", save_directory + "\\_template_POV.pov");
-                    }
-                    catch (Exception exc)
-                    {
-                        System.Windows.Forms.MessageBox.Show("Cannot write the test Python program.\nMake sure that the template chrono_solidworks\\run_test.py is in your SolidWorks directory.\n\n" + exc.Message);
-                    }
-                }
             }
         }
 
+        private double[] getGravityAcceleration()
+        {
+            try
+            {
+                double[] gravity = new double[3];
+                gravity[0] = Convert.ToDouble(this.textGravAccX.Text);
+                gravity[1] = Convert.ToDouble(this.textGravAccY.Text);
+                gravity[2] = Convert.ToDouble(this.textGravAccZ.Text);
+                return gravity;
+            }
+            catch{
+                MessageBox.Show("Invalid gravity acceleration values. Using default values (0, -9.81, 0)");
+                    return new double[] {0, -9.81, 0};
+            }
+        }
 
         private void button_setcollshape_Click(object sender, EventArgs e)
         {
@@ -301,57 +295,6 @@ namespace ChronoEngine_SwAddin
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
-        }
-
-        private void button_runtest_Click(object sender, EventArgs e)
-        {
-            CultureInfo bz = new CultureInfo("en-BZ");
-
-            try
-            {
-                string InstallPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ChronoSolidworks", "InstallPath", "CHRONO_SOLIDWORKS_PATH_NOT_FOUND");
-                System.Diagnostics.ProcessStartInfo startInfo;
-                System.Diagnostics.Process process;
-                string save_directory = System.IO.Path.GetDirectoryName(this.save_filename);
-                string directory = save_directory;
-                string pyArgs = "";
-                pyArgs += " -f " + System.IO.Path.GetFileName(this.save_filename); //was .GetFileNameWithoutExtension(this.save_filename);
-                pyArgs += " -d " + this.numeric_dt.Value.ToString(bz);
-                pyArgs += " -T " + this.numeric_length.Value.ToString(bz);
-                pyArgs += " --datapath " + "\"" + InstallPath + "/data/" + "\"";
-                if (this.comboBox1.SelectedIndex == 0)
-                    pyArgs += " -v irrlicht";
-                if (this.comboBox1.SelectedIndex == 1)
-                    pyArgs += " -v pov";
-
-                string script = "run_test.py";
-                startInfo = new System.Diagnostics.ProcessStartInfo("Python.exe");
-                startInfo.WorkingDirectory = directory;
-                startInfo.Arguments = script + " " + pyArgs;
-                startInfo.UseShellExecute = false;
-                // startInfo.CreateNoWindow = false;
-                startInfo.RedirectStandardOutput = true;
-                startInfo.RedirectStandardError = true;
-
-                process = new System.Diagnostics.Process();
-                process.StartInfo = startInfo;
-                process.Start();
-
-                string cmdError = process.StandardError.ReadToEnd();
-                string cmdOutput = process.StandardOutput.ReadToEnd();
-
-                //  process.WaitForExit();
-                //  process.Close();
-
-                //System.Windows.Forms.MessageBox.Show("Launching Python.exe with parameters: \n" + startInfo.Arguments.ToString());
-                //System.Windows.Forms.MessageBox.Show("Output: \n" + cmdOutput);
-                if (cmdError.Length > 1)
-                    System.Windows.Forms.MessageBox.Show("Error: \n" + cmdError);
-            }
-            catch (Exception myex)
-            {
-                System.Windows.Forms.MessageBox.Show("Cannot execute the test Python program. \n - Make sure that you already saved with 'save test.py' enabled; \n - Make sure you have Python.exe available in command line PATH. \n\n\nException:\n" + myex.ToString());
-            }
         }
 
         private void checkBox_scale_CheckedChanged(object sender, EventArgs e)
@@ -631,7 +574,7 @@ namespace ChronoEngine_SwAddin
                     selected_part = true;
 
                     // Open modal dialog
-                    EditChBody myCustomerDialog = new EditChBody();
+                    EditCollisionParameters myCustomerDialog = new EditCollisionParameters();
 
                     // Update dialog properties properties from the selected part(s) (i.e. ChBody in C::E) 
                     if (myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_chbody))
@@ -886,73 +829,128 @@ namespace ChronoEngine_SwAddin
             }
         }
 
+        private static void createEmptyDirectory(string directoryPath)
+        {
+            const int maxRetries = 5;
+            const int millisecondsDelay = 30;
+
+            bool deleted_folder = false;
+
+            for (int i = 0; i < maxRetries; ++i)
+            {
+                try
+                {
+                    if (Directory.Exists(directoryPath))
+                    {
+                        Directory.Delete(directoryPath, true);
+                    }
+
+                    deleted_folder = true;
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(millisecondsDelay);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Thread.Sleep(millisecondsDelay);
+                }
+            }
+
+            if (deleted_folder)
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            else
+            {
+                MessageBox.Show("ERROR: Cannot create directory: " + directoryPath);
+            }
+
+        }
+
         private void but_runSimulation_Click(object sender, EventArgs e)
         {
 #if HAS_CHRONO_CSHARP
 
-            m_folderBrowserDialog.SelectedPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments); // InitialDirectory
-            m_folderBrowserDialog.Description = "Select shapes folder";
-            DialogResult result = m_folderBrowserDialog.ShowDialog();
+            // Try to write simulation files in temp path
+            string save_directory = Path.GetTempPath();
+            bool hasWritePermission = false;
 
-            if (result == DialogResult.OK)
+            try
             {
-                string save_directory = m_folderBrowserDialog.SelectedPath;
-                this.save_filename = save_directory + "/simulation_temp.dat";
-
-
-                if (this.checkBox_surfaces.Checked)
-                {
-                    this.save_dir_shapes = save_directory + "\\" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes";
-                    DirectoryInfo mi = System.IO.Directory.CreateDirectory(this.save_dir_shapes);
-                    if (mi.Exists == false)
-                        System.Windows.Forms.MessageBox.Show("ERROR. Can't create directory for .obj surfaces: " + this.save_dir_shapes);
-
-                    // ***TEST*** Dump also hierarchy for test
-                    ChModelExporterText textExporter = new ChModelExporterText(mSWintegration, save_dir_shapes, save_filename);
-                    textExporter.Export();
-
-                }
-
-
-                var chrono_system_creator = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, this.save_filename);
-                chrono_system_creator.PrepareChronoSystem(true);
-
-                string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                chrono.SetChronoDataPath(folder + "/data/");
-
-                ChSystemNSC chrono_system = chrono_system_creator.GetChronoSystem();
-                // TODO: set g acc
-
-                var vis = new ChVisualSystemIrrlicht();
-                vis.SetWindowSize(800, 600);
-                vis.SetWindowTitle("Chrono::SolidWorks Simulation");
-                vis.Initialize();
-                vis.AddLogo();
-                vis.AddSkyBox();
-                vis.AddTypicalLights();
-                vis.AddCamera(new ChVectorD(2, 2, 2));
-                vis.AttachSystem(chrono_system);
-
-                chrono_system.SetSolverType(ChSolver.Type.PSOR);
-                chrono_system.SetSolverMaxIterations((int)nud_numIterations.Value);
-
-                var realtime_timer = new ChRealtimeStepTimer();
-                double timestep = (double)numeric_dt.Value;
-
-                while (vis.Run())
-                {
-                    vis.BeginScene();
-                    vis.Render();
-                    vis.EndScene();
-
-                    chrono_system.DoStepDynamics(timestep);
-                    realtime_timer.Spin(timestep);
-                }
-
+                using (FileStream fs = File.Create(
+                    Path.Combine(
+                        save_directory,
+                        Path.GetRandomFileName()
+                    ),
+                    1,
+                    FileOptions.DeleteOnClose)
+                )
+                { }
+                hasWritePermission = true;
             }
-            else
+            catch
             {
-                MessageBox.Show("Selected folder is invalid");
+                hasWritePermission = false;
+            }
+
+            if (!hasWritePermission)
+            {
+                m_folderBrowserDialog.SelectedPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments); // InitialDirectory
+                m_folderBrowserDialog.Description = "Select simulation folder";
+                DialogResult result = m_folderBrowserDialog.ShowDialog();
+
+                if (result != DialogResult.OK)
+                {
+                    MessageBox.Show("Simulation cancelled.");
+                }
+                save_directory = m_folderBrowserDialog.SelectedPath;
+            }
+
+            // at this point save_directory should be set to a writable path
+            this.save_filename = save_directory + "/simulation_temp.dat";
+
+            if (this.checkBox_surfaces.Checked)
+            {
+                this.save_dir_shapes = save_directory + "/" + System.IO.Path.GetFileNameWithoutExtension(this.save_filename) + "_shapes";
+                createEmptyDirectory(this.save_dir_shapes);
+            }
+
+            // initialize the C# model
+            var chrono_system_creator = new ChModelExporterCSharp(mSWintegration, save_dir_shapes, this.save_filename);
+            chrono_system_creator.SetGravityAcceleration(getGravityAcceleration());
+            chrono_system_creator.SetSolver(cbSolver.Text);
+            chrono_system_creator.PrepareChronoSystem(true);
+
+            // locate data folder inside add-in installation folder
+            string addin_folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            chrono.SetChronoDataPath(addin_folder + "/data/");
+
+            ChSystemNSC chrono_system = chrono_system_creator.GetChronoSystem();
+
+            var vis = new ChVisualSystemIrrlicht();
+            vis.SetWindowSize(800, 600);
+            vis.SetWindowTitle("Chrono::SolidWorks Simulation");
+            vis.Initialize();
+            vis.AddLogo();
+            vis.AddSkyBox();
+            vis.AddTypicalLights();
+            vis.AddCamera(new ChVectorD(2, 2, 2));
+            vis.AttachSystem(chrono_system);
+
+            chrono_system.SetSolverMaxIterations((int)nud_numIterations.Value);
+
+            var realtime_timer = new ChRealtimeStepTimer();
+            double timestep = (double)numeric_dt.Value;
+
+            while (vis.Run())
+            {
+                vis.BeginScene();
+                vis.Render();
+                vis.EndScene();
+
+                chrono_system.DoStepDynamics(timestep);
+                realtime_timer.Spin(timestep);
             }
 
 #else

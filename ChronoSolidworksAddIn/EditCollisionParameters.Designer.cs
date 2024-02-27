@@ -1,6 +1,6 @@
 ﻿namespace ChronoEngineAddin
 {
-    partial class EditChBody
+    partial class EditCollisionParameters
     {
         /// <summary>
         /// Required designer variable.
@@ -46,8 +46,6 @@
             this.label_collision_family = new System.Windows.Forms.Label();
             this.checkBox_collide = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numeric_conveyor_speed = new System.Windows.Forms.NumericUpDown();
-            this.label_conveyor_speed = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_friction)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_rolling_friction)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_spinning_friction)).BeginInit();
@@ -55,7 +53,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numeric_collision_margin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_collision_envelope)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numeric_conveyor_speed)).BeginInit();
             this.SuspendLayout();
             // 
             // button_ok
@@ -82,7 +79,7 @@
             // label_friction
             // 
             this.label_friction.AutoSize = true;
-            this.label_friction.Location = new System.Drawing.Point(17, 23);
+            this.label_friction.Location = new System.Drawing.Point(9, 23);
             this.label_friction.Name = "label_friction";
             this.label_friction.Size = new System.Drawing.Size(93, 13);
             this.label_friction.TabIndex = 7;
@@ -109,7 +106,7 @@
             // label_rolling_friction
             // 
             this.label_rolling_friction.AutoSize = true;
-            this.label_rolling_friction.Location = new System.Drawing.Point(17, 49);
+            this.label_rolling_friction.Location = new System.Drawing.Point(9, 49);
             this.label_rolling_friction.Name = "label_rolling_friction";
             this.label_rolling_friction.Size = new System.Drawing.Size(125, 13);
             this.label_rolling_friction.TabIndex = 9;
@@ -136,7 +133,7 @@
             // label_spinning_friction
             // 
             this.label_spinning_friction.AutoSize = true;
-            this.label_spinning_friction.Location = new System.Drawing.Point(17, 71);
+            this.label_spinning_friction.Location = new System.Drawing.Point(9, 71);
             this.label_spinning_friction.Name = "label_spinning_friction";
             this.label_spinning_friction.Size = new System.Drawing.Size(134, 13);
             this.label_spinning_friction.TabIndex = 11;
@@ -163,7 +160,7 @@
             // label_restitution
             // 
             this.label_restitution.AutoSize = true;
-            this.label_restitution.Location = new System.Drawing.Point(17, 96);
+            this.label_restitution.Location = new System.Drawing.Point(9, 96);
             this.label_restitution.Name = "label_restitution";
             this.label_restitution.Size = new System.Drawing.Size(109, 13);
             this.label_restitution.TabIndex = 13;
@@ -190,7 +187,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(17, 141);
+            this.label1.Location = new System.Drawing.Point(9, 141);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(130, 13);
             this.label1.TabIndex = 15;
@@ -217,7 +214,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(17, 163);
+            this.label2.Location = new System.Drawing.Point(9, 163);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(151, 13);
             this.label2.TabIndex = 17;
@@ -269,7 +266,7 @@
             // label_collision_family
             // 
             this.label_collision_family.AutoSize = true;
-            this.label_collision_family.Location = new System.Drawing.Point(23, 210);
+            this.label_collision_family.Location = new System.Drawing.Point(15, 210);
             this.label_collision_family.Name = "label_collision_family";
             this.label_collision_family.Size = new System.Drawing.Size(74, 13);
             this.label_collision_family.TabIndex = 19;
@@ -282,9 +279,9 @@
             this.checkBox_collide.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_collide.Location = new System.Drawing.Point(6, 0);
             this.checkBox_collide.Name = "checkBox_collide";
-            this.checkBox_collide.Size = new System.Drawing.Size(193, 17);
+            this.checkBox_collide.Size = new System.Drawing.Size(99, 17);
             this.checkBox_collide.TabIndex = 20;
-            this.checkBox_collide.Text = "Collide in Chrono::Engine simulation";
+            this.checkBox_collide.Text = "Enable collision";
             this.checkBox_collide.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -303,46 +300,11 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "          ";
             // 
-            // numeric_conveyor_speed
-            // 
-            this.numeric_conveyor_speed.DecimalPlaces = 3;
-            this.numeric_conveyor_speed.Enabled = false;
-            this.numeric_conveyor_speed.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            this.numeric_conveyor_speed.Location = new System.Drawing.Point(201, 251);
-            this.numeric_conveyor_speed.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numeric_conveyor_speed.Name = "numeric_conveyor_speed";
-            this.numeric_conveyor_speed.Size = new System.Drawing.Size(120, 20);
-            this.numeric_conveyor_speed.TabIndex = 22;
-            this.numeric_conveyor_speed.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            // 
-            // label_conveyor_speed
-            // 
-            this.label_conveyor_speed.AutoSize = true;
-            this.label_conveyor_speed.Location = new System.Drawing.Point(23, 253);
-            this.label_conveyor_speed.Name = "label_conveyor_speed";
-            this.label_conveyor_speed.Size = new System.Drawing.Size(111, 13);
-            this.label_conveyor_speed.TabIndex = 23;
-            this.label_conveyor_speed.Text = "Conveyor speed [m/s]";
-            // 
-            // EditChBody
+            // EditCollisionParameters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(337, 353);
-            this.Controls.Add(this.numeric_conveyor_speed);
-            this.Controls.Add(this.label_conveyor_speed);
             this.Controls.Add(this.label_collision_family);
             this.Controls.Add(this.comboBox_collision_family);
             this.Controls.Add(this.numeric_collision_envelope);
@@ -354,8 +316,8 @@
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_ok);
             this.Controls.Add(this.groupBox1);
-            this.Name = "EditChBody";
-            this.Text = "Chrono rigid body properties";
+            this.Name = "EditCollisionParameters";
+            this.Text = "Collision Parameters";
             ((System.ComponentModel.ISupportInitialize)(this.numeric_friction)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_rolling_friction)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_spinning_friction)).EndInit();
@@ -364,7 +326,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numeric_collision_envelope)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numeric_conveyor_speed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -390,7 +351,5 @@
         private System.Windows.Forms.Label label_collision_family;
         private System.Windows.Forms.CheckBox checkBox_collide;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.NumericUpDown numeric_conveyor_speed;
-        private System.Windows.Forms.Label label_conveyor_speed;
     }
 }

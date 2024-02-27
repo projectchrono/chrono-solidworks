@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace ChronoEngineAddin
 {
-    internal class ChModelExporterSerialize : ChModelExporter
+    internal class ChModelExporterCSharp : ChModelExporter
     {
         ChSystemNSC chrono_system = new ChSystemNSC();
         private int num_link = 0;
@@ -34,12 +34,14 @@ namespace ChronoEngineAddin
         bool m_export_with_fullpath;
         double sphereswept_r = 0.0;
 
+        double[] m_gravity_acc;
+
         // temporary variables
         ChBodyAuxRef newbody = new ChBodyAuxRef();
         ChBodyAuxRef body_ground = new ChBodyAuxRef();
 
 
-        public ChModelExporterSerialize(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+        public ChModelExporterCSharp(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
             : base(swIntegration, save_dir_shapes, save_filename)
         {
 
@@ -49,6 +51,29 @@ namespace ChronoEngineAddin
         public ChSystemNSC GetChronoSystem()
         {
             return chrono_system;
+        }
+
+        public void SetGravityAcceleration(double[] g)
+        {
+            m_gravity_acc = g;
+        }
+
+        public void SetSolver(string solvername)
+        {
+            switch (solvername)
+            {
+                case "PSOR":
+                    chrono_system.SetSolverType(ChSolver.Type.PSOR);
+                    break;
+                case "MINRES":
+                    chrono_system.SetSolverType(ChSolver.Type.MINRES);
+                    break;
+                case "BARZILAI":
+                    chrono_system.SetSolverType(ChSolver.Type.BARZILAIBORWEIN);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void PrepareChronoSystem(bool export_with_fullpath = false)
@@ -61,6 +86,8 @@ namespace ChronoEngineAddin
             ConfigurationManager swConfMgr;
             Configuration swConf;
             Component2 swRootComp;
+
+            
 
             m_savedParts.Clear();
             m_savedShapes.Clear();
@@ -75,7 +102,7 @@ namespace ChronoEngineAddin
 
             m_swIntegration.m_swApplication.GetUserProgressBar(out m_swIntegration.m_taskpaneHost.GetProgressBar());
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
-                m_swIntegration.m_taskpaneHost.GetProgressBar().Start(0, 5, "Serializing to JSON");
+                m_swIntegration.m_taskpaneHost.GetProgressBar().Start(0, 5, "Creating C# Chrono Model");
 
             num_comp = 0;
 
@@ -534,7 +561,9 @@ namespace ChronoEngineAddin
                     {
                         // reuse the already-saved shape name
                         shapename = (string)m_savedShapes[swCompModel.GetPathName()];
+                        obj_filename_full = m_saveDirShapes.Replace("\\", "/") + "/" + shapename + ".obj";
                         obj_filename_rel = m_saveRelDirShapes.Replace("\\", "/") + "/" + shapename + ".obj";
+
                     }
 
                     visshape = new ChVisualShapeModelFile();
@@ -801,6 +830,7 @@ namespace ChronoEngineAddin
                                 shapename = (String)m_savedCollisionMeshes[swCompModel.GetPathName()];
                                 obj_filename_full = m_saveDirShapes.Replace("\\", "/") + "/" + shapename + ".obj";
                                 obj_filename_rel = m_saveRelDirShapes.Replace("\\", "/") + "/" + shapename + ".obj";
+
                             }
 
                             double[] amatr = (double[])collshape_subcomp_transform.ArrayData;
@@ -1075,13 +1105,29 @@ namespace ChronoEngineAddin
                         ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
                         byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
                         byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
-                        byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
 
                         Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
                         SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
-                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
 
                         ModelDocExtension swModelDocExt = swModel.Extension;
+
+
+                        ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
+                        ChBodyAuxRef motbody2;
+
+                        // check if master body is ground
+                        if (motorBody2 == "ground")
+                        {
+                            motbody2 = body_ground;
+                        }
+                        else
+                        {
+                            byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
+                            SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                            motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody2)];
+                        }
+
+
 
                         ChFunction motfun;
                         double[] numericInputs = motlawInputs.Split(',').Select(r => Convert.ToDouble(r)).ToArray();
@@ -1129,9 +1175,6 @@ namespace ChronoEngineAddin
                             default:
                                 throw new Exception("ChFunction type does not exist");
                         }
-
-                        ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
-                        ChBodyAuxRef motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody2)];
 
 
                         ChLinkMotor motor;

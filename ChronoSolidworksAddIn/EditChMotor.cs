@@ -183,11 +183,17 @@ namespace ChronoEngineAddin
 
         private void butt_createMotor_Click(object sender, EventArgs e)
         {
+
+            if (!checkMotlawInputsSanity()) // proceed only if given motion law inputs are appropriate
+            {
+                MessageBox.Show("Motor not created: input for motion law are invalid.");
+                return;
+            }
+
             ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
 
             byte[] motorMarkerRef = (byte[])swModel.Extension.GetPersistReference3(m_selectedMarker);
             byte[] motorBody1Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody1);
-            byte[] motorBody2Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody2);
 
             string motorName = txt_motorName.Text;
             string motorType = cb_motorType.SelectedItem.ToString();
@@ -195,34 +201,41 @@ namespace ChronoEngineAddin
             string motorConstraint = chb_motorConstraint.Checked.ToString();
             string motorMarker = GetStringFromID(swModel, motorMarkerRef);
             string motorBody1 = GetStringFromID(swModel, motorBody1Ref);
-            string motorBody2 = GetStringFromID(swModel, motorBody2Ref);
             string motlawInputs = txt_motlawInputs.Text;
 
-            if (checkMotlawInputsSanity()) // proceed only if given motion law inputs are appropriate
+            // If selected marker has no attributes, create them; otherwise, overwrite
+            SolidWorks.Interop.sldworks.Attribute motorAttribute;
+            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
             {
-                // If selected marker has no attributes, create them; otherwise, overwrite
-                SolidWorks.Interop.sldworks.Attribute motorAttribute;
-                if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
-                {
-                    motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
-                }
-                else
-                {
-                    motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0);
-                }
-
-                ((Parameter)motorAttribute.GetParameter("motor_name")).SetStringValue(motorName);
-                ((Parameter)motorAttribute.GetParameter("motor_type")).SetStringValue(motorType);
-                ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).SetStringValue(motorMotionlaw);
-                ((Parameter)motorAttribute.GetParameter("motor_constraints")).SetStringValue(motorConstraint);
-                ((Parameter)motorAttribute.GetParameter("motor_marker")).SetStringValue(motorMarker);
-                ((Parameter)motorAttribute.GetParameter("motor_body1")).SetStringValue(motorBody1);
-                ((Parameter)motorAttribute.GetParameter("motor_body2")).SetStringValue(motorBody2);
-                ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).SetStringValue(motlawInputs);
-
-                swModel.ForceRebuild3(false);
-                swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
+                motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
             }
+            else
+            {
+                motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0);
+            }
+
+            string motorBody2;
+            if (cbMasterGround.Checked)
+            {
+                motorBody2 = "ground";
+            }
+            else
+            {
+                byte[] motorBody2Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody2);
+                motorBody2 = GetStringFromID(swModel, motorBody2Ref);
+            }
+
+            ((Parameter)motorAttribute.GetParameter("motor_name")).SetStringValue(motorName);
+            ((Parameter)motorAttribute.GetParameter("motor_type")).SetStringValue(motorType);
+            ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).SetStringValue(motorMotionlaw);
+            ((Parameter)motorAttribute.GetParameter("motor_constraints")).SetStringValue(motorConstraint);
+            ((Parameter)motorAttribute.GetParameter("motor_marker")).SetStringValue(motorMarker);
+            ((Parameter)motorAttribute.GetParameter("motor_body1")).SetStringValue(motorBody1);
+            ((Parameter)motorAttribute.GetParameter("motor_body2")).SetStringValue(motorBody2);
+            ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).SetStringValue(motlawInputs);
+
+            swModel.ForceRebuild3(false);
+            swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
         }
 
         public static string GetStringFromID(ModelDoc2 swModel, byte[] vPIDarr)
@@ -277,6 +290,20 @@ namespace ChronoEngineAddin
 
         }
 
-
+        private void cbMasterGround_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbMasterGround.Checked)
+            {
+                txt_bodyMasterSelected.Text = "ground";
+                txt_bodyMasterSelected.Enabled = false;
+                butt_addBodyMaster.Enabled = false;
+            }
+            else
+            {
+                txt_bodyMasterSelected.Text = "";
+                txt_bodyMasterSelected.Enabled = true;
+                butt_addBodyMaster.Enabled = true;
+            }
+        }
     } // end form
 } // end namespace

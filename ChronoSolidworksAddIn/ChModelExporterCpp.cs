@@ -1144,11 +1144,23 @@ namespace ChronoEngineAddin
                         ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
                         byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
                         byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
-                        byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
 
                         Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
                         SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
-                        SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+
+                        string slaveBodyName = m_exportNamesMap[selectedBody1.Name];
+
+                        // check if master body is ground
+                        string masterBodyName;
+                        if (motorBody2 == "ground") {
+                            masterBodyName = "ground";
+                        }
+                        else
+                        {
+                            byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
+                            SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                            masterBodyName = m_exportNamesMap[selectedBody2.Name];
+                        }
 
                         string chMotorClassName = "ChLinkMotor" + motorType;
                         string chMotorConstraintName = "";
@@ -1173,8 +1185,8 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz,
                             "{0}->Initialize({1},{2},chrono::ChFrame<>(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", 
                             motorInstanceName,
-                            m_exportNamesMap[selectedBody1.Name],
-                            m_exportNamesMap[selectedBody2.Name]);
+                            slaveBodyName,
+                            masterBodyName);
 
                         if (motorConstraints == "False")
                         {

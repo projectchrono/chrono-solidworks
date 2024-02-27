@@ -15,7 +15,7 @@ using SolidWorks.Interop.swpublished;
 
 namespace ChronoEngineAddin
 {
-    public partial class EditChBody : Form
+    public partial class EditCollisionParameters : Form
     {
         public bool m_collide;
         public double m_friction;
@@ -29,7 +29,7 @@ namespace ChronoEngineAddin
         //bool show_conveyor_params;
         public double m_conveyor_speed;
 
-        public EditChBody()
+        public EditCollisionParameters()
         {
             //show_conveyor_params = false;
             InitializeComponent();
@@ -102,12 +102,6 @@ namespace ChronoEngineAddin
         {
             m_collision_family = mval;
             this.comboBox_collision_family.SelectedIndex = m_collision_family;
-        }
-
-        public void Set_conveyor_speed(double mval)
-        {
-            m_conveyor_speed = mval;
-            this.numeric_conveyor_speed.Value = (decimal)m_conveyor_speed;
         }
 
         public bool UpdateFromSelection(SelectionMgr swSelMgr, ref AttributeDef mdefattr_chbody)//, ref AttributeDef defattr_chconveyor)

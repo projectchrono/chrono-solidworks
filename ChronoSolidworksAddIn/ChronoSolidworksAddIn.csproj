@@ -2495,7 +2495,7 @@
     </Compile>
     <Compile Include="ChModelExporter.cs" />
     <Compile Include="ChModelExporterCpp.cs" />
-    <Compile Include="ChModelExporterSerialize.cs" />
+    <Compile Include="ChModelExporterCSharp.cs" />
     <Compile Include="ChModelExporterPython.cs" />
     <Compile Include="ChModelExporterText.cs" />
     <Compile Include="ChronoEngine_SwAddin.cs" />
@@ -2512,11 +2512,11 @@
     <Compile Include="ConvexDecompForm.Designer.cs">
       <DependentUpon>ConvexDecompForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditChBody.cs">
+    <Compile Include="EditCollisionParameters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditChBody.Designer.cs">
-      <DependentUpon>EditChBody.cs</DependentUpon>
+    <Compile Include="EditCollisionParameters.Designer.cs">
+      <DependentUpon>EditCollisionParameters.cs</DependentUpon>
     </Compile>
     <Compile Include="EditChMotor.cs">
       <SubType>Form</SubType>
@@ -2559,8 +2559,8 @@
       <DependentUpon>ConvexDecompForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="EditChBody.resx">
-      <DependentUpon>EditChBody.cs</DependentUpon>
+    <EmbeddedResource Include="EditCollisionParameters.resx">
+      <DependentUpon>EditCollisionParameters.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="EditChMotor.resx">

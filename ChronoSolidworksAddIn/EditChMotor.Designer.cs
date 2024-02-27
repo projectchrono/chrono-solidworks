@@ -36,18 +36,19 @@
             this.butt_createMotor = new System.Windows.Forms.Button();
             this.butt_addMarker = new System.Windows.Forms.Button();
             this.gp_motorConfig = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txt_motlawInputs = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.chb_motorConstraint = new System.Windows.Forms.CheckBox();
             this.lab_motorConstraints = new System.Windows.Forms.Label();
             this.txt_motorName = new System.Windows.Forms.TextBox();
             this.lab_motorName = new System.Windows.Forms.Label();
             this.gb_entitySelection = new System.Windows.Forms.GroupBox();
+            this.cbMasterGround = new System.Windows.Forms.CheckBox();
             this.butt_bodySlaveSelected = new System.Windows.Forms.Button();
             this.txt_bodyMasterSelected = new System.Windows.Forms.TextBox();
             this.txt_bodySlaveSelected = new System.Windows.Forms.TextBox();
             this.txt_markerSelected = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txt_motlawInputs = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.gp_motorConfig.SuspendLayout();
             this.gb_entitySelection.SuspendLayout();
             this.SuspendLayout();
@@ -105,7 +106,7 @@
             // 
             // butt_addBodyMaster
             // 
-            this.butt_addBodyMaster.Location = new System.Drawing.Point(11, 110);
+            this.butt_addBodyMaster.Location = new System.Drawing.Point(11, 95);
             this.butt_addBodyMaster.Name = "butt_addBodyMaster";
             this.butt_addBodyMaster.Size = new System.Drawing.Size(140, 30);
             this.butt_addBodyMaster.TabIndex = 8;
@@ -153,6 +154,32 @@
             this.gp_motorConfig.TabStop = false;
             this.gp_motorConfig.Text = "Motor Configuration";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(6, 162);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(142, 13);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "(Optional, comma separated)";
+            // 
+            // txt_motlawInputs
+            // 
+            this.txt_motlawInputs.Location = new System.Drawing.Point(170, 178);
+            this.txt_motlawInputs.Name = "txt_motlawInputs";
+            this.txt_motlawInputs.Size = new System.Drawing.Size(180, 20);
+            this.txt_motlawInputs.TabIndex = 20;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 181);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(92, 13);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Motion law inputs:";
+            // 
             // chb_motorConstraint
             // 
             this.chb_motorConstraint.AutoSize = true;
@@ -190,22 +217,34 @@
             // 
             // gb_entitySelection
             // 
+            this.gb_entitySelection.Controls.Add(this.cbMasterGround);
             this.gb_entitySelection.Controls.Add(this.butt_bodySlaveSelected);
             this.gb_entitySelection.Controls.Add(this.txt_bodyMasterSelected);
             this.gb_entitySelection.Controls.Add(this.txt_bodySlaveSelected);
             this.gb_entitySelection.Controls.Add(this.txt_markerSelected);
             this.gb_entitySelection.Controls.Add(this.butt_addMarker);
             this.gb_entitySelection.Controls.Add(this.butt_addBodyMaster);
-            this.gb_entitySelection.Location = new System.Drawing.Point(15, 241);
+            this.gb_entitySelection.Location = new System.Drawing.Point(15, 234);
             this.gb_entitySelection.Name = "gb_entitySelection";
-            this.gb_entitySelection.Size = new System.Drawing.Size(356, 151);
+            this.gb_entitySelection.Size = new System.Drawing.Size(356, 164);
             this.gb_entitySelection.TabIndex = 14;
             this.gb_entitySelection.TabStop = false;
             this.gb_entitySelection.Text = "Entity Selection";
             // 
+            // cbMasterGround
+            // 
+            this.cbMasterGround.AutoSize = true;
+            this.cbMasterGround.Location = new System.Drawing.Point(172, 128);
+            this.cbMasterGround.Name = "cbMasterGround";
+            this.cbMasterGround.Size = new System.Drawing.Size(154, 17);
+            this.cbMasterGround.TabIndex = 17;
+            this.cbMasterGround.Text = "Set ground as Master Body";
+            this.cbMasterGround.UseVisualStyleBackColor = true;
+            this.cbMasterGround.CheckedChanged += new System.EventHandler(this.cbMasterGround_CheckedChanged);
+            // 
             // butt_bodySlaveSelected
             // 
-            this.butt_bodySlaveSelected.Location = new System.Drawing.Point(11, 67);
+            this.butt_bodySlaveSelected.Location = new System.Drawing.Point(11, 58);
             this.butt_bodySlaveSelected.Name = "butt_bodySlaveSelected";
             this.butt_bodySlaveSelected.Size = new System.Drawing.Size(140, 30);
             this.butt_bodySlaveSelected.TabIndex = 15;
@@ -215,7 +254,7 @@
             // 
             // txt_bodyMasterSelected
             // 
-            this.txt_bodyMasterSelected.Location = new System.Drawing.Point(171, 116);
+            this.txt_bodyMasterSelected.Location = new System.Drawing.Point(171, 102);
             this.txt_bodyMasterSelected.Name = "txt_bodyMasterSelected";
             this.txt_bodyMasterSelected.ReadOnly = true;
             this.txt_bodyMasterSelected.Size = new System.Drawing.Size(179, 20);
@@ -223,7 +262,7 @@
             // 
             // txt_bodySlaveSelected
             // 
-            this.txt_bodySlaveSelected.Location = new System.Drawing.Point(171, 73);
+            this.txt_bodySlaveSelected.Location = new System.Drawing.Point(171, 64);
             this.txt_bodySlaveSelected.Name = "txt_bodySlaveSelected";
             this.txt_bodySlaveSelected.ReadOnly = true;
             this.txt_bodySlaveSelected.Size = new System.Drawing.Size(179, 20);
@@ -236,32 +275,6 @@
             this.txt_markerSelected.ReadOnly = true;
             this.txt_markerSelected.Size = new System.Drawing.Size(179, 20);
             this.txt_markerSelected.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 181);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(92, 13);
-            this.label1.TabIndex = 19;
-            this.label1.Text = "Motion law inputs:";
-            // 
-            // txt_motlawInputs
-            // 
-            this.txt_motlawInputs.Location = new System.Drawing.Point(170, 178);
-            this.txt_motlawInputs.Name = "txt_motlawInputs";
-            this.txt_motlawInputs.Size = new System.Drawing.Size(180, 20);
-            this.txt_motlawInputs.TabIndex = 20;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(6, 162);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(142, 13);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "(Optional, comma separated)";
             // 
             // EditChMotor
             // 
@@ -305,5 +318,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txt_motlawInputs;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox cbMasterGround;
     }
 }
