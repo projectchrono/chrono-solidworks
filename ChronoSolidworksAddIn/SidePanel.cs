@@ -897,6 +897,8 @@ namespace ChronoEngine_SwAddin
             if (result == DialogResult.OK)
             {
                 string save_directory = m_folderBrowserDialog.SelectedPath;
+                this.save_filename = save_directory + "/simulation_temp.dat";
+
 
                 if (this.checkBox_surfaces.Checked)
                 {
@@ -912,7 +914,7 @@ namespace ChronoEngine_SwAddin
                 }
 
 
-                var chrono_system_creator = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, save_directory + "/dummy.json");
+                var chrono_system_creator = new ChModelExporterSerialize(mSWintegration, save_dir_shapes, this.save_filename);
                 chrono_system_creator.PrepareChronoSystem(true);
 
                 string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
