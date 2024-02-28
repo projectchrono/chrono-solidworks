@@ -26,7 +26,6 @@
 
 //#define THREAD_DIST_POINTS 1
 
-//#define HACD_DEBUG
 namespace HACD
 { 
 

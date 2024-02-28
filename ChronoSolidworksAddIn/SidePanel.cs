@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using System.Security.Cryptography;
 //using static ChronoEngine_SwAddin.ConvertMates;
 
 
@@ -158,13 +160,14 @@ namespace ChronoEngine_SwAddin
             }
         }
 
-        private void button_setcollshape_Click(object sender, EventArgs e)
+
+        private void button_setPrimitiveCollShape_Click(object sender, EventArgs e)
         {
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null)
             {
-                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body!");
+                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body.");
                 return;
             }
 
@@ -172,7 +175,7 @@ namespace ChronoEngine_SwAddin
 
             if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
             {
-                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies!");
+                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies.");
                 return;
             }
 
@@ -201,12 +204,13 @@ namespace ChronoEngine_SwAddin
             {
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
                 {
-                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
+                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies. Select one or more bodies before using it.");
                     return;
                 }
 
                 bool rbody_converted = false;
                 Body2 swBody = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
+
 
                 // ----- Try to see if this is a sphere
 
@@ -348,6 +352,7 @@ namespace ChronoEngine_SwAddin
                 */
                 //bool rbody_converted = false;
                 Body2 swBodyIn = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
+
 
                 // ----- tesselate
                 Face2 swFace = null;
@@ -577,13 +582,13 @@ namespace ChronoEngine_SwAddin
                     EditCollisionParameters myCustomerDialog = new EditCollisionParameters();
 
                     // Update dialog properties properties from the selected part(s) (i.e. ChBody in C::E) 
-                    if (myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_chbody))
+                    if (myCustomerDialog.UpdateFromSelection(swSelMgr, ref this.mSWintegration.defattr_collisionParams))
                     {
                         // Show the modal dialog
                         if (myCustomerDialog.ShowDialog() == DialogResult.OK)
                         {
                             // If user pressed OK, apply settings to all selected parts (i.e. ChBody in C::E):
-                            myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_chbody);//ref this.mSWintegration.defattr_chconveyor);
+                            myCustomerDialog.StoreToSelection(swSelMgr, ref this.mSWintegration.defattr_collisionParams);//ref this.mSWintegration.defattr_chconveyor);
                         }
                     }
 
@@ -608,6 +613,8 @@ namespace ChronoEngine_SwAddin
             }
 
             SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+
+
 
             if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
             {
@@ -672,11 +679,6 @@ namespace ChronoEngine_SwAddin
             EditChMotor myCustomerDialog = new EditChMotor(ref swSelMgr, ref mSWintegration);
             //myCustomerDialog.ShowDialog(); // show modal
             myCustomerDialog.Show();
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
 

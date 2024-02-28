@@ -30,7 +30,7 @@ namespace ChronoEngine_SwAddin
         private TaskpaneView m_TaskpaneView;
         private int mSWCookie;
 
-        public AttributeDef defattr_chbody = default(AttributeDef);
+        public AttributeDef defattr_collisionParams = default(AttributeDef);
         //public AttributeDef defattr_chconveyor = default(AttributeDef);
         public AttributeDef defattr_test = default(AttributeDef);
         public AttributeDef defattr_chmotor = default(AttributeDef);
@@ -45,16 +45,16 @@ namespace ChronoEngine_SwAddin
                 bool result = m_swApplication.SetAddinCallbackInfo(0, this, Cookie);
 
                 // Register ChBody collision attributes          
-                defattr_chbody = (AttributeDef)m_swApplication.DefineAttribute("chrono_ChBody");
-                defattr_chbody.AddParameter("friction", (int)swParamType_e.swParamTypeDouble, 0.6, 0);
-                defattr_chbody.AddParameter("rolling_friction", (int)swParamType_e.swParamTypeDouble, 0, 0);
-                defattr_chbody.AddParameter("spinning_friction", (int)swParamType_e.swParamTypeDouble, 0, 0);
-                defattr_chbody.AddParameter("restitution", (int)swParamType_e.swParamTypeDouble, 0, 0);
-                defattr_chbody.AddParameter("collision_on", (int)swParamType_e.swParamTypeDouble, 1, 0);
-                defattr_chbody.AddParameter("collision_margin", (int)swParamType_e.swParamTypeDouble, 0.01, 0);
-                defattr_chbody.AddParameter("collision_envelope", (int)swParamType_e.swParamTypeDouble, 0.03, 0);
-                defattr_chbody.AddParameter("collision_family", (int)swParamType_e.swParamTypeDouble, 0, 0);
-                defattr_chbody.Register();
+                defattr_collisionParams = (AttributeDef)m_swApplication.DefineAttribute("chrono_collisionParams");
+                defattr_collisionParams.AddParameter("friction", (int)swParamType_e.swParamTypeDouble, 0.6, 0);
+                defattr_collisionParams.AddParameter("rolling_friction", (int)swParamType_e.swParamTypeDouble, 0, 0);
+                defattr_collisionParams.AddParameter("spinning_friction", (int)swParamType_e.swParamTypeDouble, 0, 0);
+                defattr_collisionParams.AddParameter("restitution", (int)swParamType_e.swParamTypeDouble, 0, 0);
+                defattr_collisionParams.AddParameter("collision_on", (int)swParamType_e.swParamTypeDouble, 1, 0);
+                defattr_collisionParams.AddParameter("collision_margin", (int)swParamType_e.swParamTypeDouble, 0.01, 0);
+                defattr_collisionParams.AddParameter("collision_envelope", (int)swParamType_e.swParamTypeDouble, 0.03, 0);
+                defattr_collisionParams.AddParameter("collision_family", (int)swParamType_e.swParamTypeDouble, 0, 0);
+                defattr_collisionParams.Register();
 
                 // Register ChMotor attributes    
                 defattr_chmotor = (AttributeDef)m_swApplication.DefineAttribute("chrono_ChMotor");

@@ -130,7 +130,7 @@
             this.button_setcollshape.Text = "Primitive Shape";
             this.toolTipSavePython.SetToolTip(this.button_setcollshape, resources.GetString("button_setcollshape.ToolTip"));
             this.button_setcollshape.UseVisualStyleBackColor = true;
-            this.button_setcollshape.Click += new System.EventHandler(this.button_setcollshape_Click);
+            this.button_setcollshape.Click += new System.EventHandler(this.button_setPrimitiveCollShape_Click);
             // 
             // numeric_dt
             // 

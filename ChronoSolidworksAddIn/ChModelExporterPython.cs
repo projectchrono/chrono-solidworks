@@ -542,7 +542,7 @@ namespace ChronoEngineAddin
                             found_collisionshapes = true;
 
                             // fetch SW attribute with Chrono parameters
-                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(m_swIntegration.defattr_chbody, 0);
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swCompBase.FindAttribute(m_swIntegration.defattr_collisionParams, 0);
 
                             m_asciiText += "\n# Collision Model\n";
                             m_asciiText += String.Format(bz, "\n{0}.AddCollisionModel(chrono.ChCollisionModel())\n", bodyname);
@@ -780,7 +780,7 @@ namespace ChronoEngineAddin
                             }
 
                             // fetch SW attribute with Chrono parameters
-                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(m_swIntegration.defattr_chbody, 0);
+                            SolidWorks.Interop.sldworks.Attribute myattr = (SolidWorks.Interop.sldworks.Attribute)swComp.FindAttribute(m_swIntegration.defattr_collisionParams, 0);
 
                             MathTransform chbodytransform = swComp.GetTotalTransform(true);
                             double[] amatr;
