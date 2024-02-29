@@ -96,7 +96,7 @@ namespace ChronoEngineAddin
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Error in part selection.");
+                    System.Windows.Forms.MessageBox.Show("Error in Part selection.");
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace ChronoEngineAddin
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Error in part selection.");
+                    System.Windows.Forms.MessageBox.Show("Error in Part selection.");
                 }
             }
         }
@@ -186,7 +186,7 @@ namespace ChronoEngineAddin
 
             if (!checkMotlawInputsSanity()) // proceed only if given motion law inputs are appropriate
             {
-                MessageBox.Show("Motor not created: input for motion law are invalid.");
+                MessageBox.Show("Motor not created: inputs for motion law are invalid.");
                 return;
             }
 
@@ -195,24 +195,13 @@ namespace ChronoEngineAddin
             byte[] motorMarkerRef = (byte[])swModel.Extension.GetPersistReference3(m_selectedMarker);
             byte[] motorBody1Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody1);
 
-            string motorName = txt_motorName.Text;
-            string motorType = cb_motorType.SelectedItem.ToString();
-            string motorMotionlaw = cb_motionLaw.SelectedItem.ToString();
-            string motorConstraint = chb_motorConstraint.Checked.ToString();
-            string motorMarker = GetStringFromID(swModel, motorMarkerRef);
-            string motorBody1 = GetStringFromID(swModel, motorBody1Ref);
-            string motlawInputs = txt_motlawInputs.Text;
-
-            // If selected marker has no attributes, create them; otherwise, overwrite
-            SolidWorks.Interop.sldworks.Attribute motorAttribute;
-            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
-            {
-                motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
-            }
-            else
-            {
-                motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0);
-            }
+            string motorName        = txt_motorName.Text;
+            string motorType        = cb_motorType.SelectedItem.ToString();
+            string motorMotionlaw   = cb_motionLaw.SelectedItem.ToString();
+            string motorConstraint  = chb_motorConstraint.Checked.ToString();
+            string motlawInputs     = txt_motlawInputs.Text;
+            string motorMarker      = GetStringFromID(swModel, motorMarkerRef);
+            string motorBody1       = GetStringFromID(swModel, motorBody1Ref);
 
             string motorBody2;
             if (cbMasterGround.Checked)
@@ -223,6 +212,17 @@ namespace ChronoEngineAddin
             {
                 byte[] motorBody2Ref = (byte[])swModel.Extension.GetPersistReference3(m_selectedBody2);
                 motorBody2 = GetStringFromID(swModel, motorBody2Ref);
+            }
+
+            // If selected marker has no attributes, create them; otherwise, overwrite
+            SolidWorks.Interop.sldworks.Attribute motorAttribute;
+            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0) == null)
+            {
+                motorAttribute = m_SWintegration.defattr_chmotor.CreateInstance5(swModel, m_selectedMarker, "chrono_motor_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+            }
+            else
+            {
+                motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker).FindAttribute(m_SWintegration.defattr_chmotor, 0);
             }
 
             ((Parameter)motorAttribute.GetParameter("motor_name")).SetStringValue(motorName);

@@ -56,6 +56,7 @@
             this.checkBox_saveUV = new System.Windows.Forms.CheckBox();
             this.numeric_scale_L = new System.Windows.Forms.NumericUpDown();
             this.checkBox_scale = new System.Windows.Forms.CheckBox();
+            this.but_chronoSDA = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -67,16 +68,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.textGravAccZ = new System.Windows.Forms.TextBox();
-            this.textGravAccY = new System.Windows.Forms.TextBox();
-            this.textGravAccX = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.Model = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.Run = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -84,6 +78,14 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.textGravAccZ = new System.Windows.Forms.TextBox();
+            this.textGravAccY = new System.Windows.Forms.TextBox();
+            this.textGravAccX = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_envelope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_margin)).BeginInit();
@@ -98,11 +100,12 @@
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.tabControlMain.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.Model.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.Run.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -141,7 +144,7 @@
             0,
             0,
             131072});
-            this.numeric_dt.Location = new System.Drawing.Point(170, 12);
+            this.numeric_dt.Location = new System.Drawing.Point(159, 16);
             this.numeric_dt.Maximum = new decimal(new int[] {
             1,
             0,
@@ -153,7 +156,7 @@
             0,
             589824});
             this.numeric_dt.Name = "numeric_dt";
-            this.numeric_dt.Size = new System.Drawing.Size(67, 20);
+            this.numeric_dt.Size = new System.Drawing.Size(80, 20);
             this.numeric_dt.TabIndex = 11;
             this.toolTipSavePython.SetToolTip(this.numeric_dt, "Timestep [s]");
             this.numeric_dt.Value = new decimal(new int[] {
@@ -196,7 +199,7 @@
             0,
             0,
             196608});
-            this.numeric_envelope.Location = new System.Drawing.Point(171, 25);
+            this.numeric_envelope.Location = new System.Drawing.Point(159, 25);
             this.numeric_envelope.Maximum = new decimal(new int[] {
             10,
             0,
@@ -208,7 +211,7 @@
             0,
             589824});
             this.numeric_envelope.Name = "numeric_envelope";
-            this.numeric_envelope.Size = new System.Drawing.Size(67, 20);
+            this.numeric_envelope.Size = new System.Drawing.Size(80, 20);
             this.numeric_envelope.TabIndex = 27;
             this.toolTipSavePython.SetToolTip(this.numeric_envelope, "Outward tolerance for detecting potential contacts. Too small, might miss contact" +
         "s. Too large, cause false positives and high CPU times.");
@@ -227,7 +230,7 @@
             0,
             0,
             196608});
-            this.numeric_margin.Location = new System.Drawing.Point(171, 47);
+            this.numeric_margin.Location = new System.Drawing.Point(159, 51);
             this.numeric_margin.Maximum = new decimal(new int[] {
             10,
             0,
@@ -239,7 +242,7 @@
             0,
             589824});
             this.numeric_margin.Name = "numeric_margin";
-            this.numeric_margin.Size = new System.Drawing.Size(67, 20);
+            this.numeric_margin.Size = new System.Drawing.Size(80, 20);
             this.numeric_margin.TabIndex = 29;
             this.toolTipSavePython.SetToolTip(this.numeric_margin, "Inward tolerance for interpenetrating contacts. Too small might cause objects sin" +
         "king. Too large, cause false positives and high CPU times.");
@@ -258,14 +261,14 @@
             0,
             0,
             196608});
-            this.numeric_contactbreaking.Location = new System.Drawing.Point(171, 69);
+            this.numeric_contactbreaking.Location = new System.Drawing.Point(159, 77);
             this.numeric_contactbreaking.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numeric_contactbreaking.Name = "numeric_contactbreaking";
-            this.numeric_contactbreaking.Size = new System.Drawing.Size(67, 20);
+            this.numeric_contactbreaking.Size = new System.Drawing.Size(80, 20);
             this.numeric_contactbreaking.TabIndex = 31;
             this.toolTipSavePython.SetToolTip(this.numeric_contactbreaking, "Nonzero value cause contact persistence between frames when possible, that can he" +
         "lp solver convergence. Too large, anyway, can lead to wrong contacts.");
@@ -284,14 +287,14 @@
             0,
             0,
             196608});
-            this.numeric_sphereswept.Location = new System.Drawing.Point(171, 92);
+            this.numeric_sphereswept.Location = new System.Drawing.Point(159, 103);
             this.numeric_sphereswept.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numeric_sphereswept.Name = "numeric_sphereswept";
-            this.numeric_sphereswept.Size = new System.Drawing.Size(67, 20);
+            this.numeric_sphereswept.Size = new System.Drawing.Size(80, 20);
             this.numeric_sphereswept.TabIndex = 33;
             this.toolTipSavePython.SetToolTip(this.numeric_sphereswept, resources.GetString("numeric_sphereswept.ToolTip"));
             this.numeric_sphereswept.Value = new decimal(new int[] {
@@ -305,9 +308,9 @@
             this.butt_chronoMotors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.butt_chronoMotors.Location = new System.Drawing.Point(9, 21);
             this.butt_chronoMotors.Name = "butt_chronoMotors";
-            this.butt_chronoMotors.Size = new System.Drawing.Size(110, 30);
+            this.butt_chronoMotors.Size = new System.Drawing.Size(224, 30);
             this.butt_chronoMotors.TabIndex = 37;
-            this.butt_chronoMotors.Text = "Motors";
+            this.butt_chronoMotors.Text = "Motor";
             this.toolTipSavePython.SetToolTip(this.butt_chronoMotors, "Open the properties for Chrono motors");
             this.butt_chronoMotors.UseVisualStyleBackColor = true;
             this.butt_chronoMotors.Click += new System.EventHandler(this.butt_chronoMotors_Click);
@@ -327,7 +330,7 @@
             // but_runSimulation
             // 
             this.but_runSimulation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.but_runSimulation.Location = new System.Drawing.Point(149, 84);
+            this.but_runSimulation.Location = new System.Drawing.Point(81, 105);
             this.but_runSimulation.Name = "but_runSimulation";
             this.but_runSimulation.Size = new System.Drawing.Size(90, 30);
             this.but_runSimulation.TabIndex = 25;
@@ -344,7 +347,7 @@
             0,
             0,
             0});
-            this.nud_numIterations.Location = new System.Drawing.Point(170, 57);
+            this.nud_numIterations.Location = new System.Drawing.Point(159, 69);
             this.nud_numIterations.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -356,7 +359,7 @@
             0,
             0});
             this.nud_numIterations.Name = "nud_numIterations";
-            this.nud_numIterations.Size = new System.Drawing.Size(67, 20);
+            this.nud_numIterations.Size = new System.Drawing.Size(80, 20);
             this.nud_numIterations.TabIndex = 27;
             this.toolTipSavePython.SetToolTip(this.nud_numIterations, "Duration of the test simulation [s]");
             this.nud_numIterations.Value = new decimal(new int[] {
@@ -408,7 +411,7 @@
             // 
             this.numeric_scale_T.DecimalPlaces = 3;
             this.numeric_scale_T.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.numeric_scale_T.Location = new System.Drawing.Point(169, 178);
+            this.numeric_scale_T.Location = new System.Drawing.Point(172, 178);
             this.numeric_scale_T.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -457,7 +460,7 @@
             // 
             this.numeric_scale_M.DecimalPlaces = 3;
             this.numeric_scale_M.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.numeric_scale_M.Location = new System.Drawing.Point(169, 157);
+            this.numeric_scale_M.Location = new System.Drawing.Point(172, 157);
             this.numeric_scale_M.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -492,7 +495,7 @@
             // 
             this.checkBox_separateobj.AutoSize = true;
             this.checkBox_separateobj.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.checkBox_separateobj.Location = new System.Drawing.Point(25, 47);
+            this.checkBox_separateobj.Location = new System.Drawing.Point(32, 45);
             this.checkBox_separateobj.Name = "checkBox_separateobj";
             this.checkBox_separateobj.Size = new System.Drawing.Size(172, 17);
             this.checkBox_separateobj.TabIndex = 6;
@@ -506,7 +509,7 @@
             this.checkBox_saveUV.Checked = true;
             this.checkBox_saveUV.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_saveUV.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.checkBox_saveUV.Location = new System.Drawing.Point(25, 68);
+            this.checkBox_saveUV.Location = new System.Drawing.Point(32, 68);
             this.checkBox_saveUV.Name = "checkBox_saveUV";
             this.checkBox_saveUV.Size = new System.Drawing.Size(146, 17);
             this.checkBox_saveUV.TabIndex = 7;
@@ -518,7 +521,7 @@
             // 
             this.numeric_scale_L.DecimalPlaces = 3;
             this.numeric_scale_L.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.numeric_scale_L.Location = new System.Drawing.Point(169, 136);
+            this.numeric_scale_L.Location = new System.Drawing.Point(172, 136);
             this.numeric_scale_L.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -548,11 +551,23 @@
         "(M) and times (T) when exporting output.");
             this.checkBox_scale.UseVisualStyleBackColor = true;
             // 
+            // but_chronoSDA
+            // 
+            this.but_chronoSDA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.but_chronoSDA.Location = new System.Drawing.Point(9, 57);
+            this.but_chronoSDA.Name = "but_chronoSDA";
+            this.but_chronoSDA.Size = new System.Drawing.Size(224, 30);
+            this.but_chronoSDA.TabIndex = 38;
+            this.but_chronoSDA.Text = "Spring-Damper-Actuator";
+            this.toolTipSavePython.SetToolTip(this.but_chronoSDA, "Open the properties for Chrono motors");
+            this.but_chronoSDA.UseVisualStyleBackColor = true;
+            this.but_chronoSDA.Click += new System.EventHandler(this.but_chronoSDA_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(108, 14);
+            this.label2.Location = new System.Drawing.Point(6, 18);
             this.label2.Name = "label2";
             this.label2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label2.Size = new System.Drawing.Size(50, 13);
@@ -564,7 +579,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label9.Location = new System.Drawing.Point(74, 27);
+            this.label9.Location = new System.Drawing.Point(6, 27);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(93, 13);
             this.label9.TabIndex = 26;
@@ -575,7 +590,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label10.Location = new System.Drawing.Point(87, 49);
+            this.label10.Location = new System.Drawing.Point(6, 53);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(80, 13);
             this.label10.TabIndex = 28;
@@ -586,7 +601,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label11.Location = new System.Drawing.Point(27, 71);
+            this.label11.Location = new System.Drawing.Point(6, 79);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(139, 13);
             this.label11.TabIndex = 30;
@@ -597,7 +612,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label12.Location = new System.Drawing.Point(24, 94);
+            this.label12.Location = new System.Drawing.Point(6, 105);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(142, 13);
             this.label12.TabIndex = 32;
@@ -616,7 +631,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(7, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(245, 119);
+            this.groupBox1.Size = new System.Drawing.Size(245, 144);
             this.groupBox1.TabIndex = 45;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Simulation";
@@ -629,9 +644,9 @@
             "PSOR",
             "BARZILAI",
             "MINRES"});
-            this.cbSolver.Location = new System.Drawing.Point(170, 34);
+            this.cbSolver.Location = new System.Drawing.Point(159, 42);
             this.cbSolver.Name = "cbSolver";
-            this.cbSolver.Size = new System.Drawing.Size(68, 21);
+            this.cbSolver.Size = new System.Drawing.Size(80, 21);
             this.cbSolver.TabIndex = 28;
             this.cbSolver.Text = "PSOR";
             // 
@@ -639,7 +654,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(85, 59);
+            this.label8.Location = new System.Drawing.Point(6, 71);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(75, 13);
             this.label8.TabIndex = 26;
@@ -650,7 +665,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(118, 38);
+            this.label3.Location = new System.Drawing.Point(6, 45);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 12;
@@ -668,101 +683,23 @@
             this.groupBox2.Controls.Add(this.numeric_margin);
             this.groupBox2.Controls.Add(this.numeric_sphereswept);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(5, 476);
+            this.groupBox2.Location = new System.Drawing.Point(7, 592);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(245, 121);
+            this.groupBox2.Size = new System.Drawing.Size(245, 134);
             this.groupBox2.TabIndex = 46;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Collision Settings";
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.label16);
-            this.groupBox4.Controls.Add(this.label15);
-            this.groupBox4.Controls.Add(this.label14);
-            this.groupBox4.Controls.Add(this.textGravAccZ);
-            this.groupBox4.Controls.Add(this.textGravAccY);
-            this.groupBox4.Controls.Add(this.textGravAccX);
-            this.groupBox4.Controls.Add(this.label13);
             this.groupBox4.Controls.Add(this.button_chrono_property);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(6, 227);
+            this.groupBox4.Location = new System.Drawing.Point(6, 215);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(245, 183);
+            this.groupBox4.Size = new System.Drawing.Size(245, 69);
             this.groupBox4.TabIndex = 48;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Properties";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label16.Location = new System.Drawing.Point(157, 89);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(14, 13);
-            this.label16.TabIndex = 57;
-            this.label16.Text = "Z";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label15.Location = new System.Drawing.Point(84, 88);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(14, 13);
-            this.label15.TabIndex = 56;
-            this.label15.Text = "Y";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label14.Location = new System.Drawing.Point(10, 88);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(14, 13);
-            this.label14.TabIndex = 55;
-            this.label14.Text = "X";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textGravAccZ
-            // 
-            this.textGravAccZ.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textGravAccZ.Location = new System.Drawing.Point(176, 85);
-            this.textGravAccZ.Name = "textGravAccZ";
-            this.textGravAccZ.Size = new System.Drawing.Size(42, 20);
-            this.textGravAccZ.TabIndex = 54;
-            this.textGravAccZ.Text = "0";
-            // 
-            // textGravAccY
-            // 
-            this.textGravAccY.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textGravAccY.Location = new System.Drawing.Point(100, 85);
-            this.textGravAccY.Name = "textGravAccY";
-            this.textGravAccY.Size = new System.Drawing.Size(42, 20);
-            this.textGravAccY.TabIndex = 53;
-            this.textGravAccY.Text = "-9.81";
-            // 
-            // textGravAccX
-            // 
-            this.textGravAccX.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textGravAccX.Location = new System.Drawing.Point(30, 85);
-            this.textGravAccX.Name = "textGravAccX";
-            this.textGravAccX.Size = new System.Drawing.Size(42, 20);
-            this.textGravAccX.TabIndex = 52;
-            this.textGravAccX.Text = "0";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(9, 67);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(162, 13);
-            this.label13.TabIndex = 51;
-            this.label13.Text = "Gravity Acceleration [m/s2]";
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox5
             // 
@@ -779,40 +716,42 @@
             // 
             // tabControlMain
             // 
-            this.tabControlMain.Controls.Add(this.tabPage1);
             this.tabControlMain.Controls.Add(this.Run);
-            this.tabControlMain.Location = new System.Drawing.Point(8, 41);
+            this.tabControlMain.Controls.Add(this.Model);
+            this.tabControlMain.Location = new System.Drawing.Point(10, 46);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(266, 744);
+            this.tabControlMain.Size = new System.Drawing.Size(266, 798);
             this.tabControlMain.TabIndex = 51;
             // 
-            // tabPage1
+            // Model
             // 
-            this.tabPage1.Controls.Add(this.groupBox7);
-            this.tabPage1.Controls.Add(this.groupBox5);
-            this.tabPage1.Controls.Add(this.groupBox4);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(258, 718);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Model";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.Model.Controls.Add(this.groupBox7);
+            this.Model.Controls.Add(this.groupBox5);
+            this.Model.Controls.Add(this.groupBox4);
+            this.Model.Location = new System.Drawing.Point(4, 22);
+            this.Model.Name = "Model";
+            this.Model.Padding = new System.Windows.Forms.Padding(3);
+            this.Model.Size = new System.Drawing.Size(258, 772);
+            this.Model.TabIndex = 0;
+            this.Model.Text = "Model";
+            this.Model.UseVisualStyleBackColor = true;
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.but_chronoSDA);
             this.groupBox7.Controls.Add(this.butt_chronoMotors);
             this.groupBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
             this.groupBox7.Location = new System.Drawing.Point(7, 108);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(245, 113);
+            this.groupBox7.Size = new System.Drawing.Size(245, 101);
             this.groupBox7.TabIndex = 50;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Items";
             // 
             // Run
             // 
+            this.Run.Controls.Add(this.groupBox8);
             this.Run.Controls.Add(this.groupBox3);
             this.Run.Controls.Add(this.groupBox6);
             this.Run.Controls.Add(this.groupBox1);
@@ -820,7 +759,7 @@
             this.Run.Location = new System.Drawing.Point(4, 22);
             this.Run.Name = "Run";
             this.Run.Padding = new System.Windows.Forms.Padding(3);
-            this.Run.Size = new System.Drawing.Size(258, 718);
+            this.Run.Size = new System.Drawing.Size(258, 772);
             this.Run.TabIndex = 1;
             this.Run.Text = "Run";
             this.Run.UseVisualStyleBackColor = true;
@@ -840,7 +779,7 @@
             this.groupBox3.Controls.Add(this.numeric_scale_L);
             this.groupBox3.Controls.Add(this.checkBox_scale);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(5, 263);
+            this.groupBox3.Location = new System.Drawing.Point(7, 379);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(245, 207);
             this.groupBox3.TabIndex = 52;
@@ -851,7 +790,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label6.Location = new System.Drawing.Point(121, 180);
+            this.label6.Location = new System.Drawing.Point(120, 180);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(44, 13);
             this.label6.TabIndex = 19;
@@ -873,7 +812,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label4.Location = new System.Drawing.Point(122, 138);
+            this.label4.Location = new System.Drawing.Point(120, 138);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 15;
@@ -886,12 +825,100 @@
             this.groupBox6.Controls.Add(this.button_ExportToJson);
             this.groupBox6.Controls.Add(this.button_ExportToPython);
             this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox6.Location = new System.Drawing.Point(5, 129);
+            this.groupBox6.Location = new System.Drawing.Point(7, 245);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(245, 128);
             this.groupBox6.TabIndex = 51;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Export";
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label7);
+            this.groupBox8.Controls.Add(this.label17);
+            this.groupBox8.Controls.Add(this.label18);
+            this.groupBox8.Controls.Add(this.textGravAccZ);
+            this.groupBox8.Controls.Add(this.textGravAccY);
+            this.groupBox8.Controls.Add(this.textGravAccX);
+            this.groupBox8.Controls.Add(this.label19);
+            this.groupBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox8.Location = new System.Drawing.Point(7, 156);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(245, 83);
+            this.groupBox8.TabIndex = 53;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Global Settings";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label7.Location = new System.Drawing.Point(174, 51);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(14, 13);
+            this.label7.TabIndex = 57;
+            this.label7.Text = "Z";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label17.Location = new System.Drawing.Point(90, 50);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(14, 13);
+            this.label17.TabIndex = 56;
+            this.label17.Text = "Y";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label18.Location = new System.Drawing.Point(6, 51);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(14, 13);
+            this.label18.TabIndex = 55;
+            this.label18.Text = "X";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textGravAccZ
+            // 
+            this.textGravAccZ.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textGravAccZ.Location = new System.Drawing.Point(194, 48);
+            this.textGravAccZ.Name = "textGravAccZ";
+            this.textGravAccZ.Size = new System.Drawing.Size(45, 20);
+            this.textGravAccZ.TabIndex = 54;
+            this.textGravAccZ.Text = "0";
+            // 
+            // textGravAccY
+            // 
+            this.textGravAccY.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textGravAccY.Location = new System.Drawing.Point(110, 48);
+            this.textGravAccY.Name = "textGravAccY";
+            this.textGravAccY.Size = new System.Drawing.Size(45, 20);
+            this.textGravAccY.TabIndex = 53;
+            this.textGravAccY.Text = "-9.81";
+            // 
+            // textGravAccX
+            // 
+            this.textGravAccX.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textGravAccX.Location = new System.Drawing.Point(26, 48);
+            this.textGravAccX.Name = "textGravAccX";
+            this.textGravAccX.Size = new System.Drawing.Size(45, 20);
+            this.textGravAccX.TabIndex = 52;
+            this.textGravAccX.Text = "0";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(6, 28);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(135, 13);
+            this.label19.TabIndex = 51;
+            this.label19.Text = "Gravity Acceleration [m/s2]";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // SWTaskpaneHost
             // 
@@ -919,15 +946,16 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.tabControlMain.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.Model.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.Run.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -959,7 +987,7 @@
         private System.Windows.Forms.NumericUpDown nud_numIterations;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TabControl tabControlMain;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage Model;
         private System.Windows.Forms.TabPage Run;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.NumericUpDown numeric_scale_T;
@@ -979,14 +1007,16 @@
         private System.Windows.Forms.Button button_ExportToJson;
         private System.Windows.Forms.Button button_ExportToPython;
         private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cbSolver;
+        private System.Windows.Forms.Button but_chronoSDA;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textGravAccZ;
         private System.Windows.Forms.TextBox textGravAccY;
         private System.Windows.Forms.TextBox textGravAccX;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cbSolver;
+        private System.Windows.Forms.Label label19;
     }
 }

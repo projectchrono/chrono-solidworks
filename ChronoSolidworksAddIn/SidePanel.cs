@@ -681,6 +681,17 @@ namespace ChronoEngine_SwAddin
             myCustomerDialog.Show();
         }
 
+        private void but_chronoSDA_Click(object sender, EventArgs e)
+        {
+            ModelDoc2 swModel;
+            swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
+            SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
+
+            EditChSDA myCustomerDialog = new EditChSDA(ref swSelMgr, ref mSWintegration);
+            //myCustomerDialog.ShowDialog(); // show modal
+            myCustomerDialog.Show();
+        }
+
 
 
         // ============================================================================================================
@@ -959,6 +970,7 @@ namespace ChronoEngine_SwAddin
             MessageBox.Show("Chrono::SolidWorks Simulation can run only with C# module enabled")
 #endif
         }
+
 
     }  // end class
 

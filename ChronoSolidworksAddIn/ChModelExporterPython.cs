@@ -1077,6 +1077,13 @@ namespace ChronoEngineAddin
                         m_asciiText += $"{motfunInstanceName} = chrono.{chFunctionClassName}({motlawInputs})\n"; // define motion law with inputs, if given
                         m_asciiText += motorInstanceName + ".SetMotorFunction(" + motfunInstanceName + ")\n";
                     }
+
+                    // Expor ChSDA from attributes embedded in marker, if any
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0) != null)
+                    {
+                        // TO BE DONE
+                    }
+
                 }
 
                 swFeat = (Feature)swFeat.GetNextFeature();

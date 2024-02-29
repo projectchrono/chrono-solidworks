@@ -345,9 +345,6 @@
     <Compile Include="..\csharp_source\ChException.cs">
       <Link>Chrono\ChException.cs</Link>
     </Compile>
-    <Compile Include="..\csharp_source\ChExplicitTimestepper.cs">
-      <Link>Chrono\ChExplicitTimestepper.cs</Link>
-    </Compile>
     <Compile Include="..\csharp_source\ChFeeder.cs">
       <Link>Chrono\ChFeeder.cs</Link>
     </Compile>
@@ -869,9 +866,6 @@
     </Compile>
     <Compile Include="..\csharp_source\ChLogConsole.cs">
       <Link>Chrono\ChLogConsole.cs</Link>
-    </Compile>
-    <Compile Include="..\csharp_source\ChLumpingParms.cs">
-      <Link>Chrono\ChLumpingParms.cs</Link>
     </Compile>
     <Compile Include="..\csharp_source\ChMarker.cs">
       <Link>Chrono\ChMarker.cs</Link>
@@ -2512,6 +2506,12 @@
     <Compile Include="ConvexDecompForm.Designer.cs">
       <DependentUpon>ConvexDecompForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditChSDA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditChSDA.Designer.cs">
+      <DependentUpon>EditChSDA.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditCollisionParameters.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -2559,6 +2559,9 @@
       <DependentUpon>ConvexDecompForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditChSDA.resx">
+      <DependentUpon>EditChSDA.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditCollisionParameters.resx">
       <DependentUpon>EditCollisionParameters.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -2572,36 +2575,40 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine.dll">
-      <Link>ChronoEngine.dll</Link>
+    <Content Include="ChronoEngine.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_csharp_core.dll">
-      <Link>ChronoEngine_csharp_core.dll</Link>
+    <Content Include="ChronoEngine_cosimulation.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_csharp_irrlicht.dll">
-      <Link>ChronoEngine_csharp_irrlicht.dll</Link>
+    <Content Include="ChronoEngine_csharp_core.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_irrlicht.dll">
-      <Link>ChronoEngine_irrlicht.dll</Link>
+    <Content Include="ChronoEngine_csharp_irrlicht.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_parsers.dll">
-      <Link>ChronoEngine_parsers.dll</Link>
+    <Content Include="ChronoEngine_irrlicht.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoEngine_postprocess.dll">
-      <Link>ChronoEngine_postprocess.dll</Link>
+    <Content Include="ChronoEngine_matlab.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\ChronoModels_robot.dll">
-      <Link>ChronoModels_robot.dll</Link>
+    <Content Include="ChronoEngine_modal.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\chrono_build\bin\Release\Irrlicht.dll">
-      <Link>Irrlicht.dll</Link>
+    <Content Include="ChronoEngine_pardisomkl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ChronoEngine_parsers.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ChronoEngine_postprocess.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ChronoModels_robot.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Irrlicht.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

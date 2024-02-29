@@ -34,6 +34,7 @@ namespace ChronoEngine_SwAddin
         //public AttributeDef defattr_chconveyor = default(AttributeDef);
         public AttributeDef defattr_test = default(AttributeDef);
         public AttributeDef defattr_chmotor = default(AttributeDef);
+        public AttributeDef defattr_chsda = default(AttributeDef);
 
         public bool ConnectToSW(object ThisSW, int Cookie)
         {
@@ -67,6 +68,20 @@ namespace ChronoEngine_SwAddin
                 defattr_chmotor.AddParameter("motor_body2", (int)swParamType_e.swParamTypeString, 0.0, 0); // master
                 defattr_chmotor.AddParameter("motor_motlaw_inputs", (int)swParamType_e.swParamTypeString, 0.0, 0); // motion law inputs
                 defattr_chmotor.Register();
+
+                // Register ChSDA attributes    
+                defattr_chsda = (AttributeDef)m_swApplication.DefineAttribute("chrono_ChSDA");
+                defattr_chsda.AddParameter("sda_name", (int)swParamType_e.swParamTypeString, 0.0, 0);
+                defattr_chsda.AddParameter("sda_type", (int)swParamType_e.swParamTypeString, 0.0, 0);
+                defattr_chsda.AddParameter("sda_spring_coeff", (int)swParamType_e.swParamTypeString, 0.0, 0);
+                defattr_chsda.AddParameter("sda_damping_coeff", (int)swParamType_e.swParamTypeString, 0.0, 0);
+                defattr_chsda.AddParameter("sda_actuator_force", (int)swParamType_e.swParamTypeString, 0.0, 0);
+                defattr_chsda.AddParameter("sda_rest_length", (int)swParamType_e.swParamTypeString, 0.0, 0);
+                defattr_chsda.AddParameter("sda_marker1", (int)swParamType_e.swParamTypeString, 0.0, 0); // slave
+                defattr_chsda.AddParameter("sda_marker2", (int)swParamType_e.swParamTypeString, 0.0, 0); // master
+                defattr_chsda.AddParameter("sda_body1", (int)swParamType_e.swParamTypeString, 0.0, 0); // slave
+                defattr_chsda.AddParameter("sda_body2", (int)swParamType_e.swParamTypeString, 0.0, 0); // master
+                defattr_chsda.Register();
 
                 // Register the taskpane
                 this.UISetup();

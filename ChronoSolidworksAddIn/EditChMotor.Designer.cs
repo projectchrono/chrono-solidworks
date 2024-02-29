@@ -160,9 +160,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(6, 162);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(142, 13);
+            this.label2.Size = new System.Drawing.Size(136, 13);
             this.label2.TabIndex = 21;
-            this.label2.Text = "(Optional, comma separated)";
+            this.label2.Text = "Optional, comma separated";
             // 
             // txt_motlawInputs
             // 
@@ -285,7 +285,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "EditChMotor";
-            this.Text = "Chrono Motor Properties";
+            this.Text = "Chrono Motor";
             this.TopMost = true;
             this.gp_motorConfig.ResumeLayout(false);
             this.gp_motorConfig.PerformLayout();

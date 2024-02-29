@@ -17,6 +17,7 @@ using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using static ChronoGlobals;
 using System.Linq;
+using System.Runtime.Remoting.Metadata;
 
 
 #if HAS_CHRONO_CSHARP
@@ -1074,7 +1075,7 @@ namespace ChronoEngineAddin
                     MathTransform tr = swCoordSys.Transform;
 
                     MathTransform tr_part = swCompTotalTrasf;
-                    MathTransform tr_abs = tr.IMultiply(tr_part);  // row-ordered transf. -> reverse mult.order!
+                    MathTransform tr_abs = tr.IMultiply(tr_part); // row-ordered transf. -> reverse mult. order!
 
                     double[] quat = GetQuaternionFromMatrix(ref tr_abs);
                     double[] amatr = (double[])tr_abs.ArrayData;
@@ -1085,167 +1086,263 @@ namespace ChronoEngineAddin
                     newmarker.Impose_Abs_Coord(
                         new ChCoordsysD(
                             new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
-                            new ChQuaternionD(quat[0], quat[1], quat[2], quat[3])));
+                            new ChQuaternionD(quat[0], quat[1], quat[2], quat[3]))
+                    );
 
 
                     // Export ChMotor from attributes embedded in marker, if any
                     if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0) != null)
                     {
-                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0);
+                        ExportChMotor(swFeat, newmarker);
+                    }
 
-                        string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
-                        string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
-                        string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
-                        string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
-                        string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
-                        string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
-                        string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
-                        string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
-
-                        ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
-                        byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
-                        byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
-
-                        Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
-                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
-
-                        ModelDocExtension swModelDocExt = swModel.Extension;
-
-
-                        ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
-                        ChBodyAuxRef motbody2;
-
-                        // check if master body is ground
-                        if (motorBody2 == "ground")
-                        {
-                            motbody2 = body_ground;
-                        }
-                        else
-                        {
-                            byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
-                            SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
-                            motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody2)];
-                        }
-
-
-
-                        ChFunction motfun;
-                        double[] numericInputs = motlawInputs.Split(',').Select(r => Convert.ToDouble(r)).ToArray();
-                        switch (motorMotionlaw)
-                        {
-                            case "Const":
-                                if (numericInputs.Length != 0)
-                                    motfun = new ChFunction_Const(numericInputs[0]);
-                                else
-                                    motfun = new ChFunction_Const();
-                                break;
-                            case "ConstAcc":
-                                if (numericInputs.Length != 0)
-                                    motfun = new ChFunction_ConstAcc(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3]);
-                                else
-                                    motfun = new ChFunction_ConstAcc();
-                                break;
-                            case "Cycloidal":
-                                if (numericInputs.Length != 0)
-                                    motfun = new ChFunction_Cycloidal(numericInputs[0], numericInputs[1]);
-                                else
-                                    motfun = new ChFunction_Cycloidal();
-                                break;
-                            case "DoubleS":
-                                if (numericInputs.Length != 0)
-                                    motfun = new ChFunction_DoubleS(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3], numericInputs[4], numericInputs[5], numericInputs[6]);
-                                else
-                                    motfun = new ChFunction_DoubleS();
-                                break;
-                            case "Poly345":
-                                if (numericInputs.Length != 0)
-                                    motfun = new ChFunction_Poly345(numericInputs[0], numericInputs[1]);
-                                else
-                                    motfun = new ChFunction_Poly345();
-                                break;
-                            case "Setpoint":
-                                motfun = new ChFunction_Setpoint(); // ???
-                                break;
-                            case "Sine":
-                                if (numericInputs.Length != 0)
-                                    motfun = new ChFunction_Sine(numericInputs[0], numericInputs[1], numericInputs[2]);
-                                else 
-                                    motfun = new ChFunction_Sine();
-                                break;
-                            default:
-                                throw new Exception("ChFunction type does not exist");
-                        }
-
-
-                        ChLinkMotor motor;
-                        switch (motorType)
-                        {
-                            case "LinearPosition":
-                                motor = new ChLinkMotorLinearPosition();
-                                if (motorConstraints == "False")
-                                {
-                                    chrono.CastToChLinkMotorLinearPosition(motor).SetGuideConstraint(false, false, false, false, false);
-                                }
-                                break;
-                            case "LinearSpeed":
-                                motor = new ChLinkMotorLinearSpeed();
-                                if (motorConstraints == "False")
-                                {
-                                    chrono.CastToChLinkMotorLinearSpeed(motor).SetGuideConstraint(false, false, false, false, false);
-                                }
-                                break;
-                            case "LinearForce":
-                                motor = new ChLinkMotorLinearForce();
-                                if (motorConstraints == "False")
-                                {
-                                    chrono.CastToChLinkMotorLinearForce(motor).SetGuideConstraint(false, false, false, false, false);
-                                }
-                                break;
-                            case "RotationAngle":
-                                motor = new ChLinkMotorRotationAngle();
-                                if (motorConstraints == "False")
-                                {
-                                    chrono.CastToChLinkMotorRotationAngle(motor).SetSpindleConstraint(false, false, false, false, false);
-                                }
-                                break;
-                            case "RotationSpeed":
-                                motor = new ChLinkMotorRotationSpeed();
-                                if (motorConstraints == "False")
-                                {
-                                    chrono.CastToChLinkMotorRotationSpeed(motor).SetSpindleConstraint(false, false, false, false, false);
-                                }
-                                break;
-                            case "RotationTorque":
-                                motor = new ChLinkMotorRotationTorque();
-                                if (motorConstraints == "False")
-                                {
-                                    chrono.CastToChLinkMotorRotationTorque(motor).SetSpindleConstraint(false, false, false, false, false);
-                                }
-                                break;
-                            default:
-                                throw new Exception("ChLinkMotor type does not exist");
-                        }
-
-                        // rotate frame based on motorized degree of freedom of the link
-                        ChQuaternionD motorQuaternion = new ChQuaternionD();
-                        if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
-                        {
-                            motorQuaternion = chrono.Q_ROTATE_X_TO_Z;
-                        }
-                        else
-                        {
-                            motorQuaternion = chrono.QUNIT;
-                        }
-
-                        motor.SetName(motorName);
-                        motor.Initialize(motbody1, motbody2, new ChFrameD(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
-                        motor.SetMotorFunction(motfun);
-                        chrono_system.Add(motor);
-
+                    // Export ChSDA from attributes embedded in marker, if any
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0) != null)
+                    {
+                        ExportChSDA(swFeat, newmarker, swCompTotalTrasf);
                     }
                 }
 
                 swFeat = (Feature)swFeat.GetNextFeature();
+            }
+        }
+
+        private void ExportChMotor(Feature swFeat, ChMarker newmarker)
+        {
+            ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+            ModelDocExtension swModelDocExt = swModel.Extension;
+            
+            // Parse attribute
+            SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0);
+            string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
+            string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+            string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+            string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
+            string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
+            string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
+            string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+            string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
+            byte[] selMarkerRef = (byte[])EditChMotor.GetIDFromString(swModel, motorMarker);
+            byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
+
+            // Retrieve Solidworks entities
+            Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
+            Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
+
+            // Create Chrono entities
+            ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
+            ChBodyAuxRef motbody2;
+
+            if (motorBody2 == "ground")
+            {
+                motbody2 = body_ground; // master body is flagged as assembly 'ground'
+            }
+            else
+            {
+                byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
+                Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                motbody2 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody2)];
+            }
+
+
+            ChFunction motfun;
+            double[] numericInputs = motlawInputs.Split(',').Select(r => Convert.ToDouble(r)).ToArray();
+            switch (motorMotionlaw)
+            {
+                case "Const":
+                    if (numericInputs.Length != 0)
+                        motfun = new ChFunction_Const(numericInputs[0]);
+                    else
+                        motfun = new ChFunction_Const();
+                    break;
+                case "ConstAcc":
+                    if (numericInputs.Length != 0)
+                        motfun = new ChFunction_ConstAcc(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3]);
+                    else
+                        motfun = new ChFunction_ConstAcc();
+                    break;
+                case "Cycloidal":
+                    if (numericInputs.Length != 0)
+                        motfun = new ChFunction_Cycloidal(numericInputs[0], numericInputs[1]);
+                    else
+                        motfun = new ChFunction_Cycloidal();
+                    break;
+                case "DoubleS":
+                    if (numericInputs.Length != 0)
+                        motfun = new ChFunction_DoubleS(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3], numericInputs[4], numericInputs[5], numericInputs[6]);
+                    else
+                        motfun = new ChFunction_DoubleS();
+                    break;
+                case "Poly345":
+                    if (numericInputs.Length != 0)
+                        motfun = new ChFunction_Poly345(numericInputs[0], numericInputs[1]);
+                    else
+                        motfun = new ChFunction_Poly345();
+                    break;
+                case "Setpoint":
+                    motfun = new ChFunction_Setpoint(); // ???
+                    break;
+                case "Sine":
+                    if (numericInputs.Length != 0)
+                        motfun = new ChFunction_Sine(numericInputs[0], numericInputs[1], numericInputs[2]);
+                    else
+                        motfun = new ChFunction_Sine();
+                    break;
+                default:
+                    throw new Exception("ChFunction type does not exist");
+            }
+
+            ChLinkMotor motor;
+            switch (motorType)
+            {
+                case "LinearPosition":
+                    motor = new ChLinkMotorLinearPosition();
+                    if (motorConstraints == "False")
+                    {
+                        chrono.CastToChLinkMotorLinearPosition(motor).SetGuideConstraint(false, false, false, false, false);
+                    }
+                    break;
+                case "LinearSpeed":
+                    motor = new ChLinkMotorLinearSpeed();
+                    if (motorConstraints == "False")
+                    {
+                        chrono.CastToChLinkMotorLinearSpeed(motor).SetGuideConstraint(false, false, false, false, false);
+                    }
+                    break;
+                case "LinearForce":
+                    motor = new ChLinkMotorLinearForce();
+                    if (motorConstraints == "False")
+                    {
+                        chrono.CastToChLinkMotorLinearForce(motor).SetGuideConstraint(false, false, false, false, false);
+                    }
+                    break;
+                case "RotationAngle":
+                    motor = new ChLinkMotorRotationAngle();
+                    if (motorConstraints == "False")
+                    {
+                        chrono.CastToChLinkMotorRotationAngle(motor).SetSpindleConstraint(false, false, false, false, false);
+                    }
+                    break;
+                case "RotationSpeed":
+                    motor = new ChLinkMotorRotationSpeed();
+                    if (motorConstraints == "False")
+                    {
+                        chrono.CastToChLinkMotorRotationSpeed(motor).SetSpindleConstraint(false, false, false, false, false);
+                    }
+                    break;
+                case "RotationTorque":
+                    motor = new ChLinkMotorRotationTorque();
+                    if (motorConstraints == "False")
+                    {
+                        chrono.CastToChLinkMotorRotationTorque(motor).SetSpindleConstraint(false, false, false, false, false);
+                    }
+                    break;
+                default:
+                    throw new Exception("ChLinkMotor type does not exist");
+            }
+
+            // rotate frame based on motorized degree of freedom of the link
+            ChQuaternionD motorQuaternion = new ChQuaternionD();
+            if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
+            {
+                motorQuaternion = chrono.Q_ROTATE_X_TO_Z;
+            }
+            else
+            {
+                motorQuaternion = chrono.QUNIT;
+            }
+
+            motor.SetName(motorName);
+            motor.Initialize(motbody1, motbody2, new ChFrameD(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
+            motor.SetMotorFunction(motfun);
+            chrono_system.Add(motor);
+        }
+
+        private void ExportChSDA(Feature swFeat, ChMarker newmarker, MathTransform swCompTotalTrasf)
+        {
+            ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+            ModelDocExtension swModelDocExt = swModel.Extension;
+
+            // Parse attribute
+            SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0);
+            string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
+            string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
+            string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
+            string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
+            string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
+            string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
+            string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
+            string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
+            string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
+            string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
+
+            // Retrieve Solidworks entitie
+            byte[] selBody1Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaBody1);
+            byte[] selMarker1Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaMarker1);
+
+            Feature selectedMarker1 = (Feature)EditChSDA.GetObjectFromID(swModel, selMarker1Ref);
+            //Feature selectedMarker2 = (Feature)EditChMotor.GetObjectFromID(swModel, selMarker2Ref); // actually, already selected through current traverse
+            Component2 selectedBody1 = (Component2)EditChSDA.GetObjectFromID(swModel, selBody1Ref);
+
+            // Create Chrono entities
+            ChBodyAuxRef chSdaBody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
+            ChBodyAuxRef chSdaBody2;            
+
+            if (sdaBody2 == "ground")
+            {
+                chSdaBody2 = body_ground; // master body is flagged as assembly 'ground'
+            }
+            else
+            {
+                byte[] selBody2Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaBody2);
+                Component2 selectedBody2 = (Component2)EditChSDA.GetObjectFromID(swModel, selBody2Ref);
+                chSdaBody2 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody2)];
+            }
+
+            // Setup slave marker
+            CoordinateSystemFeatureData swCoordSys = (CoordinateSystemFeatureData)selectedMarker1.GetDefinition();
+            MathTransform tr1 = swCoordSys.Transform;
+            MathTransform tr1_part = swCompTotalTrasf;
+            MathTransform tr1_abs = tr1.IMultiply(tr1_part); // row-ordered transf. -> reverse mult. order!
+            double[] quat = GetQuaternionFromMatrix(ref tr1_abs);
+            double[] amatr = (double[])tr1_abs.ArrayData;
+
+            ChMarker marker1 = new ChMarker();
+            marker1.SetNameString(swFeat.Name);
+            newbody.AddMarker(marker1);
+            marker1.Impose_Abs_Coord(
+                new ChCoordsysD(
+                    new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
+                    new ChQuaternionD(quat[0], quat[1], quat[2], quat[3]))
+            );
+
+            if (sdaType == "Translational")
+            {
+                ChLinkTSDA tsda = new ChLinkTSDA();
+                tsda.SetName(sdaName);
+                tsda.Initialize(chSdaBody1, chSdaBody2, false, marker1.GetAbsFrame().GetPos(), newmarker.GetAbsFrame().GetPos());
+                tsda.SetSpringCoefficient(Convert.ToDouble(sdaSpringCoeff));
+                tsda.SetDampingCoefficient(Convert.ToDouble(sdaDampingCoeff));
+                tsda.SetActuatorForce(Convert.ToDouble(sdaActuatorForce));
+                if (sdaRestLength != "")
+                {
+                    tsda.SetRestLength(Convert.ToDouble(sdaRestLength));
+                }
+                chrono_system.Add(tsda);
+            }
+            else if (sdaType == "Rotational")
+            {
+                ChLinkRSDA rsda = new ChLinkRSDA();
+                rsda.SetName(sdaName);
+                rsda.Initialize(chSdaBody1, chSdaBody2, false, marker1.GetAbsCoord(), newmarker.GetAbsCoord());
+                rsda.SetSpringCoefficient(Convert.ToDouble(sdaSpringCoeff));
+                rsda.SetDampingCoefficient(Convert.ToDouble(sdaDampingCoeff));
+                rsda.SetActuatorTorque(Convert.ToDouble(sdaActuatorForce));
+                if (sdaRestLength != "")
+                {
+                    rsda.SetRestAngle(Convert.ToDouble(sdaRestLength));
+                }
+                chrono_system.Add(rsda);
             }
         }
 
