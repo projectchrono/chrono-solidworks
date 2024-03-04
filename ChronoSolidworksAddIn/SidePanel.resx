@@ -228,6 +228,12 @@ to modify them if you do some advanced texture mapping afterward,
 for example editing/modifying/texturing the generated OBJ files using
 some other 3d modeling software.</value>
   </data>
+  <data name="cbSolver.ToolTip" xml:space="preserve">
+    <value>Select the solver used:
+- PSOR: for both mechanisms and collisions; fast, but low accuracy
+- BARZILAI: for both mechanisms and collisions; slower, but higher accuracy
+- MINRES: for mechanisms with no collisions; high accuracy</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>

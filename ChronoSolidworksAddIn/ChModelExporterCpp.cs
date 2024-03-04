@@ -21,8 +21,8 @@ namespace ChronoEngineAddin
         private Dictionary<string, string> m_exportNamesMap; // map solidworks names vs chrono script names, ie. map[slwd_name] = chrono_name;
 
 
-        public ChModelExporterCpp(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename) 
-            : base(swIntegration, save_dir_shapes, save_filename) 
+        public ChModelExporterCpp(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+            : base(swIntegration, save_dir_shapes, save_filename)
         {
             m_exportNamesMap = new Dictionary<string, string>();
         }
@@ -39,7 +39,9 @@ namespace ChronoEngineAddin
             m_asciiTextHeader += "#include \"chrono/physics/ChBodyAuxRef.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChLinkMate.h\"\n";
             m_asciiTextHeader += "#include \"chrono/motion_functions/ChFunction.h\"\n";
-            m_asciiTextHeader += "#include \"chrono/physics/ChSystem.h\"\n\n";
+            m_asciiTextHeader += "#include \"chrono/physics/ChSystem.h\"\n";
+            m_asciiTextHeader += "#include \"chrono/physics/ChLinkTSDA.h\"\n";
+            m_asciiTextHeader += "#include \"chrono/physics/ChLinkRSDA.h\"\n";
 
             m_asciiTextHeader += "/// Function to import Solidworks assembly directly into Chrono ChSystem.\n";
             m_asciiTextHeader += "void ImportSolidworksSystemCpp(chrono::ChSystem& system, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map = nullptr);\n\n";
@@ -64,7 +66,7 @@ namespace ChronoEngineAddin
             m_savedCollisionMeshes.Clear();
 
             swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
-            if (swModel == null) 
+            if (swModel == null)
                 return;
             swConfMgr = (ConfigurationManager)swModel.ConfigurationManager;
             swConf = (Configuration)swConfMgr.ActiveConfiguration;
@@ -163,7 +165,7 @@ namespace ChronoEngineAddin
                 TraverseFeaturesForMarkers(swFeat, 1, 0, roottrasf);
             }
 
-            m_asciiTextCpp += "\n\n} // end function\n";           
+            m_asciiTextCpp += "\n\n} // end function\n";
 
             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                 m_swIntegration.m_taskpaneHost.GetProgressBar().End();
@@ -493,7 +495,7 @@ namespace ChronoEngineAddin
             return true;
         }
 
-        public override void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, int nbody, ref int nVisShape, Component2 chBodyComp) 
+        public override void TraverseComponentForVisualShapes(Component2 swComp, long nLevel, int nbody, ref int nVisShape, Component2 chBodyComp)
         {
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] bodies;
@@ -518,7 +520,7 @@ namespace ChronoEngineAddin
                             StreamWriter writer = new StreamWriter(ostream); //, new UnicodeEncoding());
                             string asciiobj = "";
                             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
-                                m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ..."); 
+                                m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
                             // Write the OBJ converted visualization shapes:
                             TesselateToObj.Convert(swComp, ref asciiobj, m_swIntegration.m_taskpaneHost.GetCheckboxSaveUV().Checked, ref m_swIntegration.m_taskpaneHost.GetProgressBar(), true, false);
                             writer.Write(asciiobj);
@@ -621,9 +623,9 @@ namespace ChronoEngineAddin
             MathTransform subcomp_transform = swComp.GetTotalTransform(true);
             MathTransform invchbody_trasform = (MathTransform)chbodytransform.Inverse();
             MathTransform collshape_subcomp_transform = subcomp_transform.IMultiply(invchbody_trasform); // row-ordered transf. -> reverse mult.order!
-            
+
             // Export collision shapes
-            if (m_swIntegration.m_taskpaneHost.GetCheckboxCollisionShapes().Checked) 
+            if (m_swIntegration.m_taskpaneHost.GetCheckboxCollisionShapes().Checked)
             {
                 object[] bodies;
                 object bodyInfo;
@@ -745,7 +747,7 @@ namespace ChronoEngineAddin
                                     m_asciiTextCpp += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", Dy.X, Dy.Y, Dy.Z, bodyname);
                                     m_asciiTextCpp += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", Dz.X, Dz.Y, Dz.Z, bodyname);
                                     m_asciiTextCpp += String.Format(bz, "{0} = chrono_types::make_shared<chrono::ChCollisionShapeBox>({1},{2},{3},{4});\n",
-                                        collshapename, 
+                                        collshapename,
                                         matname,
                                         eX.Length * ChScale.L,
                                         eY.Length * ChScale.L,
@@ -878,8 +880,8 @@ namespace ChronoEngineAddin
             CultureInfo bz = new CultureInfo("en-BZ");
             object[] vmyChildComp = (object[])swComp.GetChildren();
 
-            if (nLevel > 1) 
-            { 
+            if (nLevel > 1)
+            {
                 if (nbody == -1)
                 {
                     if (!swComp.IsSuppressed()) // skip body if marked as 'suppressed'
@@ -1151,7 +1153,8 @@ namespace ChronoEngineAddin
 
                         // check if master body is ground
                         string masterBodyName;
-                        if (motorBody2 == "ground") {
+                        if (motorBody2 == "ground")
+                        {
                             masterBodyName = "ground";
                         }
                         else
@@ -1182,7 +1185,7 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
                         m_asciiTextCpp += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, motorName);
                         m_asciiTextCpp += String.Format(bz,
-                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n", 
+                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n",
                             motorInstanceName,
                             slaveBodyName,
                             masterBodyName);
@@ -1201,6 +1204,82 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz, "(*motfun_map)[\"" + motorName + "\"] = " + motfunInstanceName + ";\n");
                     }
 
+                    // Expor ChSDA from attributes embedded in marker, if any
+                    if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0) != null)
+                    {
+                        ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+
+                        // Parse attribute
+                        SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0);
+                        string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
+                        string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
+                        string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
+                        string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
+                        string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
+                        string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
+                        string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
+                        string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
+                        string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
+                        string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
+
+                        // Retrieve Solidworks entitie
+                        byte[] selBody1Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaBody1);
+                        byte[] selMarker1Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaMarker1);
+                        byte[] selMarker2Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaMarker2);
+
+                        Feature selectedMarker1 = (Feature)EditChSDA.GetObjectFromID(swModel, selMarker1Ref);
+                        Feature selectedMarker2 = (Feature)EditChMotor.GetObjectFromID(swModel, selMarker2Ref);
+                        Component2 selectedBody1 = (Component2)EditChSDA.GetObjectFromID(swModel, selBody1Ref);
+
+                        string body1Name = m_exportNamesMap[selectedBody1.Name];
+
+                        // Export SDA only if both marker1 and marker2 have been traversed
+                        if (m_exportNamesMap.ContainsKey(selectedMarker1.Name) && m_exportNamesMap.ContainsKey(selectedMarker2.Name))
+                        {
+                            string marker1Name = m_exportNamesMap[selectedMarker1.Name];
+                            string marker2Name = m_exportNamesMap[selectedMarker2.Name];
+
+                            // check if master body is ground
+                            string body2Name;
+                            if (sdaBody2 == "ground")
+                            {
+                                body2Name = "ground";
+                            }
+                            else
+                            {
+                                byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, sdaBody2);
+                                Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                                body2Name = m_exportNamesMap[selectedBody2.Name];
+                            }
+
+                            string chSDAClassName = "ChLink";
+                            string sdaInstanceName = "";
+                            if (sdaType == "Translational")
+                            {
+                                chSDAClassName += "TSDA";
+                                sdaInstanceName = "tsda_" + nbody + "_" + nmarker;
+                            }
+                            else if (sdaType == "Rotational")
+                            {
+                                chSDAClassName += "RSDA";
+                                sdaInstanceName = "rsda_" + nbody + "_" + nmarker;
+                            }
+
+                            m_asciiTextCpp += "\n// Spring-Damper-Actuator from Solidworks marker\n";
+                            m_asciiTextCpp += $"auto {sdaInstanceName} = chrono_types::make_shared<chrono::{chSDAClassName}>();\n";
+                            m_asciiTextCpp += $"{sdaInstanceName}->SetName(\"{sdaName}\");\n";
+                            m_asciiTextCpp += $"{sdaInstanceName}->Initialize({body1Name},{body2Name},false,{marker1Name}->GetAbsFrame().GetPos(),{marker2Name}->GetAbsFrame().GetPos());\n";
+                            m_asciiTextCpp += $"{sdaInstanceName}->SetSpringCoefficient({sdaSpringCoeff});\n";
+                            m_asciiTextCpp += $"{sdaInstanceName}->SetDampingCoefficient({sdaDampingCoeff});\n";
+                            m_asciiTextCpp += $"{sdaInstanceName}->SetActuatorForce({sdaActuatorForce});\n";
+                            if (sdaRestLength != "")
+                            {
+                                m_asciiTextCpp += $"{sdaInstanceName}->SetRestLength({sdaRestLength});\n";
+                            }
+
+                            m_asciiTextCpp += $"linklist.push_back({sdaInstanceName});\n\n";
+                        }
+                    }
                 }
 
                 swFeat = (Feature)swFeat.GetNextFeature();

@@ -32,7 +32,7 @@ namespace ChronoEngine_SwAddin
 
         public AttributeDef defattr_collisionParams = default(AttributeDef);
         //public AttributeDef defattr_chconveyor = default(AttributeDef);
-        public AttributeDef defattr_test = default(AttributeDef);
+        //public AttributeDef defattr_test = default(AttributeDef);
         public AttributeDef defattr_chmotor = default(AttributeDef);
         public AttributeDef defattr_chsda = default(AttributeDef);
 

@@ -791,7 +791,7 @@ namespace ChronoEngineAddin
                             m_asciiText += "# Rigid body part\n";
                             m_asciiText += bodyname + " = chrono.ChBodyAuxRef()" + "\n";
 
-                            m_exportNamesMap[swComp.Name2] = bodyname;
+                            m_exportNamesMap[swComp.Name2] = bodyname; // add to name mapping
 
 
                             // Write name
@@ -980,7 +980,7 @@ namespace ChronoEngineAddin
 
             string bodyname = "body_" + nbody;
 
-            while ((swFeat != null))
+            while (swFeat != null)
             {
                 // m_asciiText += "# feature: " + swFeat.Name + " [" + swFeat.GetTypeName2() + "]" + "\n";
 
@@ -996,9 +996,12 @@ namespace ChronoEngineAddin
 
                     double[] quat = GetQuaternionFromMatrix(ref tr_abs);
                     double[] amatr = (double[])tr_abs.ArrayData;
-                    String markername = "marker_" + nbody + "_" + nmarker;
+                    string markername = "marker_" + nbody + "_" + nmarker;
+
+                    m_exportNamesMap[swFeat.Name] = markername; // add to name map
+
                     m_asciiText += "\n# Auxiliary marker (coordinate system feature)\n";
-                    m_asciiText += String.Format(bz, "{0} =chrono.ChMarker()\n", markername);
+                    m_asciiText += String.Format(bz, "{0} = chrono.ChMarker()\n", markername);
                     m_asciiText += String.Format(bz, "{0}.SetName('{1}')" + "\n", markername, swFeat.Name);
                     m_asciiText += String.Format(bz, "{0}.AddMarker({1})\n", bodyname, markername);
                     m_asciiText += String.Format(bz, "{0}.Impose_Abs_Coord(chrono.ChCoordsysD(chrono.ChVectorD({1},{2},{3}),chrono.ChQuaternionD({4},{5},{6},{7})))\n",
@@ -1027,7 +1030,7 @@ namespace ChronoEngineAddin
                         byte[] selBody1Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody1);
 
                         Feature selectedMarker = (Feature)EditChMotor.GetObjectFromID(swModel, selMarkerRef); // actually, already selected through current traverse
-                        SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
+                        Component2 selectedBody1 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody1Ref);
 
                         string slaveBodyName = m_exportNamesMap[selectedBody1.Name];
 
@@ -1040,7 +1043,7 @@ namespace ChronoEngineAddin
                         else
                         {
                             byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, motorBody2);
-                            SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                            Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
                             masterBodyName = m_exportNamesMap[selectedBody2.Name];
                         }
 
@@ -1076,13 +1079,85 @@ namespace ChronoEngineAddin
                         String motfunInstanceName = "motfun_" + nbody + "_" + nmarker;
                         m_asciiText += $"{motfunInstanceName} = chrono.{chFunctionClassName}({motlawInputs})\n"; // define motion law with inputs, if given
                         m_asciiText += motorInstanceName + ".SetMotorFunction(" + motfunInstanceName + ")\n";
-                    }
+                    } // end ChMotor embedded in marker
 
                     // Expor ChSDA from attributes embedded in marker, if any
                     if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0) != null)
                     {
-                        // TO BE DONE
-                    }
+                        ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
+
+                        // Parse attribute
+                        SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chsda, 0);
+                        string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
+                        string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
+                        string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
+                        string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
+                        string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
+                        string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
+                        string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
+                        string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
+                        string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
+                        string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
+
+                        // Retrieve Solidworks entitie
+                        byte[] selBody1Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaBody1);
+                        byte[] selMarker1Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaMarker1);
+                        byte[] selMarker2Ref = (byte[])EditChSDA.GetIDFromString(swModel, sdaMarker2);
+
+                        Feature selectedMarker1 = (Feature)EditChSDA.GetObjectFromID(swModel, selMarker1Ref);
+                        Feature selectedMarker2 = (Feature)EditChMotor.GetObjectFromID(swModel, selMarker2Ref);
+                        Component2 selectedBody1 = (Component2)EditChSDA.GetObjectFromID(swModel, selBody1Ref);
+
+                        string body1Name = m_exportNamesMap[selectedBody1.Name];
+
+                        // Export SDA only if both marker1 and marker2 have been traversed
+                        if (m_exportNamesMap.ContainsKey(selectedMarker1.Name) && m_exportNamesMap.ContainsKey(selectedMarker2.Name))
+                        {
+                            string marker1Name = m_exportNamesMap[selectedMarker1.Name];
+                            string marker2Name = m_exportNamesMap[selectedMarker2.Name];
+
+                            // check if master body is ground
+                            string body2Name;
+                            if (sdaBody2 == "ground")
+                            {
+                                body2Name = "ground";
+                            }
+                            else
+                            {
+                                byte[] selBody2Ref = (byte[])EditChMotor.GetIDFromString(swModel, sdaBody2);
+                                Component2 selectedBody2 = (Component2)EditChMotor.GetObjectFromID(swModel, selBody2Ref);
+                                body2Name = m_exportNamesMap[selectedBody2.Name];
+                            }
+
+                            string chSDAClassName = "ChLink";
+                            string sdaInstanceName = "";
+                            if (sdaType == "Translational")
+                            {
+                                chSDAClassName += "TSDA";
+                                sdaInstanceName = "tsda_" + nbody + "_" + nmarker;
+                            }
+                            else if (sdaType == "Rotational")
+                            {
+                                chSDAClassName += "RSDA";
+                                sdaInstanceName = "rsda_" + nbody + "_" + nmarker;
+                            }
+
+                            m_asciiText += "\n# Spring-Damper-Actuator from Solidworks marker\n";
+                            m_asciiText += $"{sdaInstanceName} = chrono.{chSDAClassName}()\n";
+                            m_asciiText += $"{sdaInstanceName}.SetName(\'{sdaName}\')\n";
+                            m_asciiText += $"{sdaInstanceName}.Initialize({body1Name},{body2Name},False,{marker1Name}.GetAbsFrame().GetPos(),{marker2Name}.GetAbsFrame().GetPos())\n";
+                            m_asciiText += $"{sdaInstanceName}.SetSpringCoefficient({sdaSpringCoeff})\n";
+                            m_asciiText += $"{sdaInstanceName}.SetDampingCoefficient({sdaDampingCoeff})\n";
+                            m_asciiText += $"{sdaInstanceName}.SetActuatorForce({sdaActuatorForce})\n";
+                            if (sdaRestLength != "")
+                            {
+                                m_asciiText += $"{sdaInstanceName}.SetRestLength({sdaRestLength})\n";
+                            }
+
+                            m_asciiText += $"exported_items.append({sdaInstanceName})\n\n";
+                        }
+
+                    } // end ChSDA embedded in marker
 
                 }
 

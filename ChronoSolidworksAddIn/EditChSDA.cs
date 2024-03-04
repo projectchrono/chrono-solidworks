@@ -19,6 +19,7 @@ namespace ChronoEngineAddin
         Feature m_selectedMarker2;
         Component2 m_selectedBody1;
         Component2 m_selectedBody2;
+        int m_ctr = 0; // global counter for inserted attributes
 
 
         ////////////////////////////////////////////////////////////////////////
@@ -51,40 +52,42 @@ namespace ChronoEngineAddin
                 // If attributes are already present in selected CoordSys, populate Form items
                 if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chsda, 0) != null)
                 {
-                    SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chsda, 0);
+                    MessageBox.Show("TODO REIMPLEMENT");
 
-                    string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
-                    string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
-                    string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
-                    string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
-                    string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
-                    string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
-                    string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
-                    string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
-                    string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
-                    string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
+                    //SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chsda, 0);
 
-                    ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
-                    byte[] selBody1Ref = (byte[])GetIDFromString(swModel, sdaBody1);
-                    byte[] selBody2Ref = (byte[])GetIDFromString(swModel, sdaBody2);
-                    byte[] selMarker1Ref = (byte[])GetIDFromString(swModel, sdaMarker1);
+                    //string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
+                    //string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
+                    //string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
+                    //string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
+                    //string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
+                    //string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
+                    //string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
+                    //string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
+                    //string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
+                    //string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
 
-                    Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
-                    Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
-                    Feature selectedMarker1 = (Feature)GetObjectFromID(swModel, selMarker1Ref);
+                    //ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
+                    //byte[] selBody1Ref = (byte[])GetIDFromString(swModel, sdaBody1);
+                    //byte[] selBody2Ref = (byte[])GetIDFromString(swModel, sdaBody2);
+                    //byte[] selMarker1Ref = (byte[])GetIDFromString(swModel, sdaMarker1);
 
-                    m_selectedBody1 = selectedBody1;
-                    m_selectedBody2 = selectedBody2;
+                    //Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
+                    //Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
+                    //Feature selectedMarker1 = (Feature)GetObjectFromID(swModel, selMarker1Ref);
 
-                    txt_sdaName.Text = sdaName;
-                    cb_sdaType.Text = sdaType;
-                    txt_springCoeff.Text = sdaSpringCoeff;
-                    txt_dampingCoeff.Text = sdaDampingCoeff;
-                    txt_actuatorForce.Text = sdaActuatorForce;
-                    txt_restLength.Text = sdaRestLength;
-                    txt_markerSlaveSelected.Text = selectedMarker1.Name;
-                    txt_bodySlaveSelected.Text = selectedBody1.Name;
-                    txt_bodyMasterSelected.Text = selectedBody2.Name;
+                    //m_selectedBody1 = selectedBody1;
+                    //m_selectedBody2 = selectedBody2;
+
+                    //txt_sdaName.Text = sdaName;
+                    //cb_sdaType.Text = sdaType;
+                    //txt_springCoeff.Text = sdaSpringCoeff;
+                    //txt_dampingCoeff.Text = sdaDampingCoeff;
+                    //txt_actuatorForce.Text = sdaActuatorForce;
+                    //txt_restLength.Text = sdaRestLength;
+                    //txt_markerSlaveSelected.Text = selectedMarker1.Name;
+                    //txt_bodySlaveSelected.Text = selectedBody1.Name;
+                    //txt_bodyMasterSelected.Text = selectedBody2.Name;
                 }
             }
         }
@@ -192,26 +195,43 @@ namespace ChronoEngineAddin
             }
 
             // If selected marker has no attributes, create them; otherwise, overwrite
-            SolidWorks.Interop.sldworks.Attribute sdaAttribute;
-            if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker2).FindAttribute(m_SWintegration.defattr_chsda, 0) == null)
-            {
-                sdaAttribute = m_SWintegration.defattr_chsda.CreateInstance5(swModel, m_selectedMarker2, "chrono_sda_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
-            }
-            else
-            {
-                sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker2).FindAttribute(m_SWintegration.defattr_chsda, 0);
-            }
+            SolidWorks.Interop.sldworks.Attribute sdaAttribute1;
+            SolidWorks.Interop.sldworks.Attribute sdaAttribute2;
+            //if ((SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker2).FindAttribute(m_SWintegration.defattr_chsda, 0) == null)
+            //{
+                sdaAttribute1 = m_SWintegration.defattr_chsda.CreateInstance5(swModel, m_selectedMarker1, sdaName + "_" + m_ctr, 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+                ++m_ctr;
+                sdaAttribute2 = m_SWintegration.defattr_chsda.CreateInstance5(swModel, m_selectedMarker2, sdaName + "_" + m_ctr, 0, (int)swInConfigurationOpts_e.swAllConfiguration);
+                ++m_ctr;
+            //}
+            //else
+            //{
+            //    MessageBox.Show("TODO REIMPLEMENT");
+            //    sdaAttribute1 = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker1).FindAttribute(m_SWintegration.defattr_chsda, 0);
+            //    sdaAttribute2 = (SolidWorks.Interop.sldworks.Attribute)((Entity)m_selectedMarker2).FindAttribute(m_SWintegration.defattr_chsda, 0);
+            //}
 
-            ((Parameter)sdaAttribute.GetParameter("sda_name")).SetStringValue(sdaName);
-            ((Parameter)sdaAttribute.GetParameter("sda_type")).SetStringValue(sdaType);
-            ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).SetStringValue(sdaSpringCoeff);
-            ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).SetStringValue(sdaDampingCoeff);
-            ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).SetStringValue(sdaActuatorForce);
-            ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).SetStringValue(sdaRestLength);
-            ((Parameter)sdaAttribute.GetParameter("sda_marker1")).SetStringValue(sdaMarker1);
-            ((Parameter)sdaAttribute.GetParameter("sda_marker2")).SetStringValue(sdaMarker2);
-            ((Parameter)sdaAttribute.GetParameter("sda_body1")).SetStringValue(sdaBody1);
-            ((Parameter)sdaAttribute.GetParameter("sda_body2")).SetStringValue(sdaBody2);
+            ((Parameter)sdaAttribute1.GetParameter("sda_name")).SetStringValue(sdaName);
+            ((Parameter)sdaAttribute1.GetParameter("sda_type")).SetStringValue(sdaType);
+            ((Parameter)sdaAttribute1.GetParameter("sda_spring_coeff")).SetStringValue(sdaSpringCoeff);
+            ((Parameter)sdaAttribute1.GetParameter("sda_damping_coeff")).SetStringValue(sdaDampingCoeff);
+            ((Parameter)sdaAttribute1.GetParameter("sda_actuator_force")).SetStringValue(sdaActuatorForce);
+            ((Parameter)sdaAttribute1.GetParameter("sda_rest_length")).SetStringValue(sdaRestLength);
+            ((Parameter)sdaAttribute1.GetParameter("sda_marker1")).SetStringValue(sdaMarker1);
+            ((Parameter)sdaAttribute1.GetParameter("sda_marker2")).SetStringValue(sdaMarker2);
+            ((Parameter)sdaAttribute1.GetParameter("sda_body1")).SetStringValue(sdaBody1);
+            ((Parameter)sdaAttribute1.GetParameter("sda_body2")).SetStringValue(sdaBody2);
+
+            ((Parameter)sdaAttribute2.GetParameter("sda_name")).SetStringValue(sdaName);
+            ((Parameter)sdaAttribute2.GetParameter("sda_type")).SetStringValue(sdaType);
+            ((Parameter)sdaAttribute2.GetParameter("sda_spring_coeff")).SetStringValue(sdaSpringCoeff);
+            ((Parameter)sdaAttribute2.GetParameter("sda_damping_coeff")).SetStringValue(sdaDampingCoeff);
+            ((Parameter)sdaAttribute2.GetParameter("sda_actuator_force")).SetStringValue(sdaActuatorForce);
+            ((Parameter)sdaAttribute2.GetParameter("sda_rest_length")).SetStringValue(sdaRestLength);
+            ((Parameter)sdaAttribute2.GetParameter("sda_marker1")).SetStringValue(sdaMarker1);
+            ((Parameter)sdaAttribute2.GetParameter("sda_marker2")).SetStringValue(sdaMarker2);
+            ((Parameter)sdaAttribute2.GetParameter("sda_body1")).SetStringValue(sdaBody1);
+            ((Parameter)sdaAttribute2.GetParameter("sda_body2")).SetStringValue(sdaBody2);
 
             swModel.ForceRebuild3(false);
             swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
