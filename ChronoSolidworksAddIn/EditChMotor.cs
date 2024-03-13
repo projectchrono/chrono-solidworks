@@ -206,7 +206,7 @@ namespace ChronoEngineAddin
             string motorBody2;
             if (cbMasterGround.Checked)
             {
-                motorBody2 = "ground";
+                motorBody2 = "SLDW_GROUND";
             }
             else
             {
@@ -294,7 +294,7 @@ namespace ChronoEngineAddin
         {
             if (cbMasterGround.Checked)
             {
-                txt_bodyMasterSelected.Text = "ground";
+                txt_bodyMasterSelected.Text = "SLDW_GROUND";
                 txt_bodyMasterSelected.Enabled = false;
                 butt_addBodyMaster.Enabled = false;
             }

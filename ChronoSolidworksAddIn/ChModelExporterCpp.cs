@@ -129,7 +129,7 @@ namespace ChronoEngineAddin
 
             m_asciiTextCpp += "// Assembly ground body\n";
             m_asciiTextCpp += "auto body_0 = chrono_types::make_shared<chrono::ChBodyAuxRef>();\n" +
-                         "body_0->SetName(\"ground\");\n" +
+                         "body_0->SetName(\"SLDW_GROUND\");\n" +
                          "body_0->SetBodyFixed(true);\n" +
                          "bodylist.push_back(body_0);\n\n";
 
@@ -1153,9 +1153,9 @@ namespace ChronoEngineAddin
 
                         // check if master body is ground
                         string masterBodyName;
-                        if (motorBody2 == "ground")
+                        if (motorBody2 == "SLDW_GROUND")
                         {
-                            masterBodyName = "ground";
+                            masterBodyName = "SLDW_GROUND";
                         }
                         else
                         {
@@ -1241,9 +1241,9 @@ namespace ChronoEngineAddin
 
                             // check if master body is ground
                             string body2Name;
-                            if (sdaBody2 == "ground")
+                            if (sdaBody2 == "SLDW_GROUND")
                             {
-                                body2Name = "ground";
+                                body2Name = "SLDW_GROUND";
                             }
                             else
                             {

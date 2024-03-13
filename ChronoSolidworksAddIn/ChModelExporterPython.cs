@@ -81,7 +81,7 @@ namespace ChronoEngineAddin
             m_asciiText += "exported_items = [] \n\n";
 
             m_asciiText += "body_0 = chrono.ChBodyAuxRef()\n";
-            m_asciiText += "body_0.SetName('ground')\n";
+            m_asciiText += "body_0.SetName('SLDW_GROUND')\n";
             m_asciiText += "body_0.SetBodyFixed(True)\n";
             m_asciiText += "exported_items.append(body_0)\n\n";
 
@@ -111,7 +111,7 @@ namespace ChronoEngineAddin
 
                 TraverseComponentForLinks(swRootComp, 1, ref rootTransform);
 
-                // Write down all markers in assembly (that are not in sub parts, so they belong to 'ground' object)
+                // Write down all markers in assembly (that are not in sub parts, so they belong to 'SLDW_GROUND' object)
                 //nbody = 0; // RESET TO body_0 (ground)
                 swFeat = (Feature)swModel.FirstFeature();
                 TraverseFeaturesForMarkers(swFeat, 1, 0, rootTransform);
@@ -1034,11 +1034,11 @@ namespace ChronoEngineAddin
 
                         string slaveBodyName = m_exportNamesMap[selectedBody1.Name];
 
-                        // check if master body is ground
+                        // check if master body is SLDW_GROUND
                         string masterBodyName;
-                        if (motorBody2 == "ground")
+                        if (motorBody2 == "SLDW_GROUND")
                         {
-                            masterBodyName = "ground";
+                            masterBodyName = "SLDW_GROUND";
                         }
                         else
                         {
@@ -1116,11 +1116,11 @@ namespace ChronoEngineAddin
                             string marker1Name = m_exportNamesMap[selectedMarker1.Name];
                             string marker2Name = m_exportNamesMap[selectedMarker2.Name];
 
-                            // check if master body is ground
+                            // check if master body is SLDW_GROUND
                             string body2Name;
-                            if (sdaBody2 == "ground")
+                            if (sdaBody2 == "SLDW_GROUND")
                             {
-                                body2Name = "ground";
+                                body2Name = "SLDW_GROUND";
                             }
                             else
                             {

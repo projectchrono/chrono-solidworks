@@ -117,7 +117,7 @@ namespace ChronoEngineAddin
             ChCollisionSystemBullet.SetContactBreakingThreshold((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L);
 
             body_ground = new ChBodyAuxRef();
-            body_ground.SetNameString("ground");
+            body_ground.SetNameString("SLDW_GROUND");
             body_ground.SetBodyFixed(true);
             chrono_system.Add(body_ground);
 
@@ -1133,9 +1133,9 @@ namespace ChronoEngineAddin
             ChBodyAuxRef motbody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
             ChBodyAuxRef motbody2;
 
-            if (motorBody2 == "ground")
+            if (motorBody2 == "SLDW_GROUND")
             {
-                motbody2 = body_ground; // master body is flagged as assembly 'ground'
+                motbody2 = body_ground; // master body is flagged as assembly 'SLDW_GROUND'
             }
             else
             {
@@ -1288,9 +1288,9 @@ namespace ChronoEngineAddin
             ChBodyAuxRef chSdaBody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
             ChBodyAuxRef chSdaBody2;            
 
-            if (sdaBody2 == "ground")
+            if (sdaBody2 == "SLDW_GROUND")
             {
-                chSdaBody2 = body_ground; // master body is flagged as assembly 'ground'
+                chSdaBody2 = body_ground; // master body is flagged as assembly 'SLDW_GROUND'
             }
             else
             {

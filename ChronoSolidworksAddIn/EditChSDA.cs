@@ -131,7 +131,7 @@ namespace ChronoEngineAddin
             // Use default assembly 'ground' body as master
             if (cbMasterGround.Checked)
             {
-                txt_bodyMasterSelected.Text = "ground";
+                txt_bodyMasterSelected.Text = "SLDW_GROUND";
                 txt_bodyMasterSelected.Enabled = false;
                 butt_selectMasterBody.Enabled = false;
             }
@@ -186,7 +186,7 @@ namespace ChronoEngineAddin
             string sdaBody2;
             if (cbMasterGround.Checked)
             {
-                sdaBody2 = "ground";
+                sdaBody2 = "SLDW_GROUND";
             }
             else
             {
