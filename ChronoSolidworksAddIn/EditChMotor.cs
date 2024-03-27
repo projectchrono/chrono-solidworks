@@ -48,38 +48,54 @@ namespace ChronoEngineAddin
                 // If attributes are already present in selected CoordSys, populate Form items
                 if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chmotor, 0) != null)
                 {
-                    SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chmotor, 0);
+                    try
+                    {
+                        SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chmotor, 0);
 
-                    string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
-                    string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
-                    string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
-                    string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
-                    string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
-                    string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
-                    string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
-                    string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
+                        string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
+                        string motorType = ((Parameter)motorAttribute.GetParameter("motor_type")).GetStringValue();
+                        string motorMotionlaw = ((Parameter)motorAttribute.GetParameter("motor_motionlaw")).GetStringValue();
+                        string motorConstraints = ((Parameter)motorAttribute.GetParameter("motor_constraints")).GetStringValue();
+                        string motorMarker = ((Parameter)motorAttribute.GetParameter("motor_marker")).GetStringValue();
+                        string motorBody1 = ((Parameter)motorAttribute.GetParameter("motor_body1")).GetStringValue();
+                        string motorBody2 = ((Parameter)motorAttribute.GetParameter("motor_body2")).GetStringValue();
+                        string motlawInputs = ((Parameter)motorAttribute.GetParameter("motor_motlaw_inputs")).GetStringValue();
 
-                    ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
-                    byte[] selBody1Ref = (byte[])GetIDFromString(swModel, motorBody1);
-                    byte[] selBody2Ref = (byte[])GetIDFromString(swModel, motorBody2);
+                        ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
 
-                    SolidWorks.Interop.sldworks.Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
-                    SolidWorks.Interop.sldworks.Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
+                        byte[] selBody1Ref = (byte[])GetIDFromString(swModel, motorBody1);
+                        Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
+                        m_selectedBody1 = selectedBody1;
+                        txt_bodySlaveSelected.Text = selectedBody1.Name;
 
-                    m_selectedBody1 = selectedBody1;
-                    m_selectedBody2 = selectedBody2;
+                        if (motorBody2 != "SLDW_GROUND")
+                        {
+                            byte[] selBody2Ref = (byte[])GetIDFromString(swModel, motorBody2);
+                            Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
+                            m_selectedBody2 = selectedBody2;
+                        }   
+                        else
+                        {
+                            txt_bodyMasterSelected.Text = "SLDW_GROUND";
+                            cbMasterGround.CheckState = CheckState.Checked;
+                            txt_bodyMasterSelected.Enabled = false;
+                            butt_addBodyMaster.Enabled = false;
+                        }
 
-                    txt_motorName.Text = motorName;
-                    cb_motorType.Text = motorType;
-                    cb_motionLaw.Text = motorMotionlaw;
-                    if (motorConstraints == "True")
-                        chb_motorConstraint.CheckState = CheckState.Checked;
-                    else
-                        chb_motorConstraint.CheckState = CheckState.Unchecked;
-                    txt_markerSelected.Text = swFeat.Name;
-                    txt_bodySlaveSelected.Text = selectedBody1.Name;
-                    txt_bodyMasterSelected.Text = selectedBody2.Name;
-                    txt_motlawInputs.Text = motlawInputs;
+                        txt_motorName.Text = motorName;
+                        cb_motorType.Text = motorType;
+                        cb_motionLaw.Text = motorMotionlaw;
+                        if (motorConstraints == "True")
+                            chb_motorConstraint.CheckState = CheckState.Checked;
+                        else
+                            chb_motorConstraint.CheckState = CheckState.Unchecked;
+                        txt_markerSelected.Text = swFeat.Name;
+                        txt_motlawInputs.Text = motlawInputs;
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
                 }
             }
         }

@@ -52,42 +52,60 @@ namespace ChronoEngineAddin
                 // If attributes are already present in selected CoordSys, populate Form items
                 if ((SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chsda, 0) != null)
                 {
-                    MessageBox.Show("TODO REIMPLEMENT");
+                    try
+                    {
+                        SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chsda, 0);
 
-                    //SolidWorks.Interop.sldworks.Attribute sdaAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_SWintegration.defattr_chsda, 0);
+                        string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
+                        string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
+                        string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
+                        string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
+                        string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
+                        string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
+                        string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
+                        string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
+                        string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
+                        string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
 
-                    //string sdaName = ((Parameter)sdaAttribute.GetParameter("sda_name")).GetStringValue();
-                    //string sdaType = ((Parameter)sdaAttribute.GetParameter("sda_type")).GetStringValue();
-                    //string sdaSpringCoeff = ((Parameter)sdaAttribute.GetParameter("sda_spring_coeff")).GetStringValue();
-                    //string sdaDampingCoeff = ((Parameter)sdaAttribute.GetParameter("sda_damping_coeff")).GetStringValue();
-                    //string sdaActuatorForce = ((Parameter)sdaAttribute.GetParameter("sda_actuator_force")).GetStringValue();
-                    //string sdaRestLength = ((Parameter)sdaAttribute.GetParameter("sda_rest_length")).GetStringValue();
-                    //string sdaMarker1 = ((Parameter)sdaAttribute.GetParameter("sda_marker1")).GetStringValue();
-                    //string sdaMarker2 = ((Parameter)sdaAttribute.GetParameter("sda_marker2")).GetStringValue();
-                    //string sdaBody1 = ((Parameter)sdaAttribute.GetParameter("sda_body1")).GetStringValue();
-                    //string sdaBody2 = ((Parameter)sdaAttribute.GetParameter("sda_body2")).GetStringValue();
+                        ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
 
-                    //ModelDoc2 swModel = (ModelDoc2)m_SWintegration.m_swApplication.ActiveDoc;
-                    //byte[] selBody1Ref = (byte[])GetIDFromString(swModel, sdaBody1);
-                    //byte[] selBody2Ref = (byte[])GetIDFromString(swModel, sdaBody2);
-                    //byte[] selMarker1Ref = (byte[])GetIDFromString(swModel, sdaMarker1);
 
-                    //Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
-                    //Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
-                    //Feature selectedMarker1 = (Feature)GetObjectFromID(swModel, selMarker1Ref);
+                        byte[] selBody1Ref = (byte[])GetIDFromString(swModel, sdaBody1);
+                        Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
+                        m_selectedBody1 = selectedBody1;
 
-                    //m_selectedBody1 = selectedBody1;
-                    //m_selectedBody2 = selectedBody2;
+                        if (sdaBody2 != "SLDW_GROUND")
+                        {
+                            byte[] selBody2Ref = (byte[])GetIDFromString(swModel, sdaBody2);
+                            Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
+                            m_selectedBody2 = selectedBody2;
+                            txt_bodyMasterSelected.Text = selectedBody2.Name;
+                        }
+                        else
+                        {
+                            txt_bodyMasterSelected.Text = "SLDW_GROUND";
+                            cbMasterGround.CheckState = CheckState.Checked;
+                            txt_bodyMasterSelected.Enabled = false;
+                            butt_selectMasterBody.Enabled = false;
+                        }
 
-                    //txt_sdaName.Text = sdaName;
-                    //cb_sdaType.Text = sdaType;
-                    //txt_springCoeff.Text = sdaSpringCoeff;
-                    //txt_dampingCoeff.Text = sdaDampingCoeff;
-                    //txt_actuatorForce.Text = sdaActuatorForce;
-                    //txt_restLength.Text = sdaRestLength;
-                    //txt_markerSlaveSelected.Text = selectedMarker1.Name;
-                    //txt_bodySlaveSelected.Text = selectedBody1.Name;
-                    //txt_bodyMasterSelected.Text = selectedBody2.Name;
+                        byte[] selMarker1Ref = (byte[])GetIDFromString(swModel, sdaMarker1);
+                        Feature selectedMarker1 = (Feature)GetObjectFromID(swModel, selMarker1Ref);
+
+
+                        txt_sdaName.Text = sdaName;
+                        cb_sdaType.Text = sdaType;
+                        txt_springCoeff.Text = sdaSpringCoeff;
+                        txt_dampingCoeff.Text = sdaDampingCoeff;
+                        txt_actuatorForce.Text = sdaActuatorForce;
+                        txt_restLength.Text = sdaRestLength;
+                        txt_markerSlaveSelected.Text = selectedMarker1.Name;
+                        txt_bodySlaveSelected.Text = selectedBody1.Name;
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
                 }
             }
         }
