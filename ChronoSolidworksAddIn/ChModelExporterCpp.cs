@@ -38,7 +38,7 @@ namespace ChronoEngineAddin
             m_asciiTextHeader += "#include <unordered_map>\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChBodyAuxRef.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChLinkMate.h\"\n";
-            m_asciiTextHeader += "#include \"chrono/motion_functions/ChFunction.h\"\n";
+            m_asciiTextHeader += "#include \"chrono/functions/ChFunction.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChSystem.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChLinkTSDA.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChLinkRSDA.h\"\n";
@@ -87,7 +87,7 @@ namespace ChronoEngineAddin
             m_asciiTextCpp += "#include \"chrono/assets/ChVisualShapeModelFile.h\"\n";
             m_asciiTextCpp += "#include \"chrono/collision/bullet/ChCollisionSystemBullet.h\"\n";
             m_asciiTextCpp += "#include \"chrono/geometry/ChTriangleMeshConnected.h\"\n";
-            m_asciiTextCpp += "#include \"chrono/physics/ChMaterialSurfaceNSC.h\"\n";
+            m_asciiTextCpp += "#include \"chrono/physics/ChContactMaterialNSC.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChLinkMotorRotationAngle.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChLinkMotorRotationSpeed.h\"\n";
             m_asciiTextCpp += "#include \"chrono/physics/ChLinkMotorRotationTorque.h\"\n";
@@ -122,15 +122,15 @@ namespace ChronoEngineAddin
             m_asciiTextCpp += "std::shared_ptr<chrono::ChVisualShapeModelFile> body_shape;\n";
             m_asciiTextCpp += "chrono::ChMatrix33<> mr;\n";
             m_asciiTextCpp += "std::shared_ptr<chrono::ChLinkBase> link;\n";
-            m_asciiTextCpp += "chrono::ChVector<> cA;\n";
-            m_asciiTextCpp += "chrono::ChVector<> cB;\n";
-            m_asciiTextCpp += "chrono::ChVector<> dA;\n";
-            m_asciiTextCpp += "chrono::ChVector<> dB;\n\n";
+            m_asciiTextCpp += "chrono::ChVector3d cA;\n";
+            m_asciiTextCpp += "chrono::ChVector3d cB;\n";
+            m_asciiTextCpp += "chrono::ChVector3d dA;\n";
+            m_asciiTextCpp += "chrono::ChVector3d dB;\n\n";
 
             m_asciiTextCpp += "// Assembly ground body\n";
             m_asciiTextCpp += "auto body_0 = chrono_types::make_shared<chrono::ChBodyAuxRef>();\n" +
                          "body_0->SetName(\"SLDW_GROUND\");\n" +
-                         "body_0->SetBodyFixed(true);\n" +
+                         "body_0->SetFixed(true);\n" +
                          "bodylist.push_back(body_0);\n\n";
 
 
@@ -226,30 +226,30 @@ namespace ChronoEngineAddin
             if (link_params.ref2 == null)
                 link_params.ref2 = "body_0";
 
-            if (link_params.do_ChLinkMateXdistance)
+            if (link_params.do_ChLinkMateDistanceZ)
             {
                 num_link++;
                 String linkname = "link_" + num_link;
-                m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateXdistance>();\n", linkname);
+                m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateDistanceZ>();\n", linkname);
 
-                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
                 if (!link_params.entity_0_as_VERTEX)
-                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                              linkname,
                              link_params.dA.X,
                              link_params.dA.Y,
                              link_params.dA.Z);
                 if (!link_params.entity_1_as_VERTEX)
-                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                              linkname,
                              link_params.dB.X,
                              link_params.dB.Y,
@@ -257,15 +257,15 @@ namespace ChronoEngineAddin
 
                 // Initialize link, by setting the two csys, in absolute space,
                 if (!link_params.swapAB_1)
-                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cA,cB,dB);\n", linkname, link_params.ref1, link_params.ref2);
+                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->Initialize({1},{2},false,cA,cB,dB);\n", linkname, link_params.ref1, link_params.ref2);
                 else
-                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cB,cA,dA);\n", linkname, link_params.ref2, link_params.ref1);
+                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->Initialize({1},{2},false,cB,cA,dA);\n", linkname, link_params.ref2, link_params.ref1);
 
                 //if (link_params.do_distance_val!=0)
-                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->SetDistance({1});\n", linkname,
+                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->SetDistance({1});\n", linkname,
                     link_params.do_distance_val * ChScale.L * -1);
 
-                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
                 // Insert to a list of exported items
                 m_asciiTextCpp += String.Format(bz, "linklist.push_back(link);\n\n", linkname);
             }
@@ -278,22 +278,22 @@ namespace ChronoEngineAddin
                     String linkname = "link_" + num_link;
                     m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateParallel>();\n", linkname);
 
-                    m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname,
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname,
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
-                    if (link_params.do_parallel_flip)
+                    if (!link_params.is_aligned)
                         m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateParallel>(link)->SetFlipped(true);\n", linkname);
 
                     // Initialize link, by setting the two csys, in absolute space,
@@ -320,19 +320,19 @@ namespace ChronoEngineAddin
                     String linkname = "link_" + num_link;
                     m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateOrthogonal>();\n", linkname);
 
-                    m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname,
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname,
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                               linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                     // Initialize link, by setting the two csys, in absolute space,
@@ -357,12 +357,12 @@ namespace ChronoEngineAddin
                 String linkname = "link_" + num_link;
                 m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateSpherical>();\n", linkname);
 
-                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
@@ -384,24 +384,24 @@ namespace ChronoEngineAddin
                 num_link++;
                 String linkname = "link_" + num_link;
                 m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateGeneric>();\n", linkname);
-                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateGeneric>(link)->SetConstrainedCoords(false, true, true, false, false, false);\n", linkname);
+                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateGeneric>(link)->SetConstrainedCoords(true, true, false, false, false, false);\n", linkname);
 
-                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
                 if (!link_params.entity_0_as_VERTEX)
-                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n", linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                    m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector3d({1:g},{2:g},{3:g});\n", linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
                 else
                     m_asciiTextCpp += String.Format(bz, "dA = chrono::VNULL;\n");
                 if (!link_params.entity_1_as_VERTEX)
-                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n", linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+                    m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector3d({1:g},{2:g},{3:g});\n", linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
                 else
                     m_asciiTextCpp += String.Format(bz, "dB = chrono::VNULL;\n");
 
@@ -430,28 +430,28 @@ namespace ChronoEngineAddin
                 // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
                 num_link++;
                 String linkname = "link_" + num_link;
-                m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateCoaxial>();\n", linkname);
+                m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateCylindrical>();\n", linkname);
 
-                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname, link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname, link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
-                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateCoaxial>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateCylindrical>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
 
 
                 // Initialize link, by setting the two csys, in absolute space,
-                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateCoaxial>(link)->Initialize({1},{2},false,cA,cB,dA,dB);\n", linkname, link_params.ref1, link_params.ref2);
+                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateCylindrical>(link)->Initialize({1},{2},false,cA,cB,dA,dB);\n", linkname, link_params.ref1, link_params.ref2);
 
                 // Insert to a list of exported items
                 m_asciiTextCpp += String.Format(bz, "linklist.push_back(link);\n", linkname);
@@ -461,31 +461,31 @@ namespace ChronoEngineAddin
 
                 num_link++;
                 linkname = "link_" + num_link;
-                m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateXdistance>();\n", linkname);
+                m_asciiTextCpp += String.Format(bz, "link = chrono_types::make_shared<chrono::ChLinkMateDistanceZ>();\n", linkname);
 
-                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cC.X * ChScale.L,
                           link_params.cC.Y * ChScale.L,
                           link_params.cC.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "dA = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname, link_params.dC.X, link_params.dC.Y, link_params.dC.Z);
-                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "cB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname,
                           link_params.cD.X * ChScale.L,
                           link_params.cD.Y * ChScale.L,
                           link_params.cD.Z * ChScale.L);
-                m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector<>({1:g},{2:g},{3:g});\n",
+                m_asciiTextCpp += String.Format(bz, "dB = chrono::ChVector3d({1:g},{2:g},{3:g});\n",
                           linkname, link_params.dD.X, link_params.dD.Y, link_params.dD.Z);
 
-                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
+                m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->SetName(\"{1}\");\n", linkname, swMateFeature.Name);
 
 
                 // Initialize link, by setting the two csys, in absolute space,
                 if (link_params.entity_2_as_VERTEX)
-                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cA,cB,dA);\n", linkname, link_params.ref3, link_params.ref4);
+                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->Initialize({1},{2},false,cA,cB,dA);\n", linkname, link_params.ref3, link_params.ref4);
                 else
-                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateXdistance>(link)->Initialize({1},{2},false,cA,cB,dB);\n", linkname, link_params.ref3, link_params.ref4);
+                    m_asciiTextCpp += String.Format(bz, "std::dynamic_pointer_cast<chrono::ChLinkMateDistanceZ>(link)->Initialize({1},{2},false,cA,cB,dB);\n", linkname, link_params.ref3, link_params.ref4);
 
                 // Insert to a list of exported items
                 m_asciiTextCpp += String.Format(bz, "linklist.push_back(link);\n", linkname);
@@ -561,8 +561,8 @@ namespace ChronoEngineAddin
                     double[] amatr = (double[])relframe_shape.ArrayData;
                     double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-                    m_asciiTextCpp += String.Format(bz, "{0}->AddVisualShape(body_shape, chrono::ChFrame<>(", bodyname, shapename);
-                    m_asciiTextCpp += String.Format(bz, "chrono::ChVector<>({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                    m_asciiTextCpp += String.Format(bz, "{0}->AddVisualShape(body_shape, chrono::ChFramed(", bodyname, shapename);
+                    m_asciiTextCpp += String.Format(bz, "chrono::ChVector3d({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
                     m_asciiTextCpp += String.Format(bz, "chrono::ChQuaternion<>({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
                     m_asciiTextCpp += String.Format(bz, "));\n");
 
@@ -588,8 +588,8 @@ namespace ChronoEngineAddin
                     //double[] amatr = (double[])relframe_shape.ArrayData;
                     //double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-                    //m_asciiTextCpp += String.Format(bz, "{0}->AddVisualShape({1}_shape, chrono::ChFrame<>(", bodyname, shapename);
-                    //m_asciiTextCpp += String.Format(bz, "chrono::ChVector<>({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                    //m_asciiTextCpp += String.Format(bz, "{0}->AddVisualShape({1}_shape, chrono::ChFramed(", bodyname, shapename);
+                    //m_asciiTextCpp += String.Format(bz, "chrono::ChVector3d({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
                     //m_asciiTextCpp += String.Format(bz, "chrono::ChQuaternion<>({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
                     //m_asciiTextCpp += String.Format(bz, "));\n");
                 }
@@ -657,7 +657,7 @@ namespace ChronoEngineAddin
 
                             m_asciiTextCpp += "\n// Collision material\n";
 
-                            m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChMaterialSurfaceNSC>();\n", matname);
+                            m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChContactMaterialNSC>();\n", matname);
 
                             m_asciiTextCpp += "\n// Collision shape\n";
                             m_asciiTextCpp += String.Format(bz, "std::shared_ptr<chrono::ChCollisionShape> {0};\n", collshapename);
@@ -722,7 +722,7 @@ namespace ChronoEngineAddin
                                         collshapename,
                                         matname,
                                         rad * ChScale.L);
-                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1},chrono::ChFrame<>(chrono::ChVector<>({2},{3},{4}), mr));\n",
+                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1},chrono::ChFramed(chrono::ChVector3d({2},{3},{4}), mr));\n",
                                         bodyname,
                                         collshapename,
                                         center.X * ChScale.L,
@@ -752,7 +752,7 @@ namespace ChronoEngineAddin
                                         eX.Length * ChScale.L,
                                         eY.Length * ChScale.L,
                                         eZ.Length * ChScale.L);
-                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1},chrono::ChFrame<>(chrono::ChVector<>({2},{3},{4}), mr));\n",
+                                    m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddShape({1},chrono::ChFramed(chrono::ChVector3d({2},{3},{4}), mr));\n",
                                         bodyname,
                                         collshapename,
                                         vO.X * ChScale.L,
@@ -768,8 +768,8 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToCylinder(swBody, ref p1_l, ref p2_l, ref rad);
                                     Point3D p1 = PointTransform(p1_l, ref collshape_subcomp_transform);
                                     Point3D p2 = PointTransform(p2_l, ref collshape_subcomp_transform);
-                                    m_asciiTextCpp += String.Format(bz, "chrono::ChVector<> p1_{3}({0},{1},{2});\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L, bodyname);
-                                    m_asciiTextCpp += String.Format(bz, "chrono::ChVector<> p2_{3}({0},{1},{2});\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L, bodyname);
+                                    m_asciiTextCpp += String.Format(bz, "chrono::ChVector3d p1_{3}({0},{1},{2});\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L, bodyname);
+                                    m_asciiTextCpp += String.Format(bz, "chrono::ChVector3d p2_{3}({0},{1},{2});\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L, bodyname);
                                     m_asciiTextCpp += String.Format(bz, "{0}->GetCollisionModel()->AddCylinder({1},{2},p1_{0},p2_{0});\n", bodyname, matname, rad * ChScale.L);
                                     rbody_converted = true;
                                 }
@@ -780,12 +780,12 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToConvexHull(swBody, ref vertexes, 30);
                                     if (vertexes.Length > 0)
                                     {
-                                        m_asciiTextCpp += String.Format(bz, "std::vector<chrono::ChVector<>> pt_vect_{0};\n", bodyname);
+                                        m_asciiTextCpp += String.Format(bz, "std::vector<chrono::ChVector3d> pt_vect_{0};\n", bodyname);
                                         for (int iv = 0; iv < vertexes.Length; iv++)
                                         {
                                             Point3D vert_l = vertexes[iv];
                                             Point3D vert = PointTransform(vert_l, ref collshape_subcomp_transform);
-                                            m_asciiTextCpp += String.Format(bz, "pt_vect_{3}.push_back(chrono::ChVector<>({0},{1},{2}));\n",
+                                            m_asciiTextCpp += String.Format(bz, "pt_vect_{3}.push_back(chrono::ChVector3d({0},{1},{2}));\n",
                                                 vert.X * ChScale.L,
                                                 vert.Y * ChScale.L,
                                                 vert.Z * ChScale.L,
@@ -851,12 +851,12 @@ namespace ChronoEngineAddin
                             //double[] quat = GetQuaternionFromMatrix(ref collshape_subcomp_transform);
 
                             m_asciiTextCpp += String.Format(bz, "\n// Triangle mesh collision shape\n", bodyname);
-                            m_asciiTextCpp += String.Format(bz, "auto {0}_mesh = chrono_types::make_shared<chrono::geometry::ChTriangleMeshConnected>();\n", geometryname);
+                            m_asciiTextCpp += String.Format(bz, "auto {0}_mesh = chrono_types::make_shared<chrono::ChTriangleMeshConnected>();\n", geometryname);
                             m_asciiTextCpp += String.Format(bz, "{0}_mesh->LoadWavefrontMesh(shapes_dir + \"{0}.obj\", false, true);\n", geometryname);
                             m_asciiTextCpp += String.Format(bz, "mr(0,0)={0}; mr(1,0)={1}; mr(2,0)={2};\n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L, geometryname);
                             m_asciiTextCpp += String.Format(bz, "mr(0,1)={0}; mr(1,1)={1}; mr(2,1)={2};\n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L, geometryname);
                             m_asciiTextCpp += String.Format(bz, "mr(0,2)={0}; mr(1,2)={1}; mr(2,2)={2};\n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L, geometryname);
-                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->Transform(chrono::ChVector<>({1},{2},{3}),mr);\n", geometryname, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                            m_asciiTextCpp += String.Format(bz, "{0}_mesh->Transform(chrono::ChVector3d({1},{2},{3}),mr);\n", geometryname, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
                             m_asciiTextCpp += String.Format(bz, "{0} = chrono_types::make_shared<chrono::ChCollisionShapeTriangleMesh>({1},{2}_mesh,false,false, sphereswept_r);\n",
                                 collshapename,
                                 matname,
@@ -917,7 +917,7 @@ namespace ChronoEngineAddin
                             m_asciiTextCpp += bodyname + "->SetName(\"" + swComp.Name2 + "\");\n";
 
                             // Write position
-                            m_asciiTextCpp += bodyname + "->SetPos(chrono::ChVector<>("
+                            m_asciiTextCpp += bodyname + "->SetPos(chrono::ChVector3d("
                                        + (amatr[9] * ChScale.L).ToString("g", bz) + ","
                                        + (amatr[10] * ChScale.L).ToString("g", bz) + ","
                                        + (amatr[11] * ChScale.L).ToString("g", bz) + "));\n";
@@ -968,20 +968,20 @@ namespace ChronoEngineAddin
                                        mass * ChScale.M);
 
                             // Write inertia tensor 
-                            m_asciiTextCpp += String.Format(bz, "{0}->SetInertiaXX(chrono::ChVector<>({1:g},{2:g},{3:g}));\n",
+                            m_asciiTextCpp += String.Format(bz, "{0}->SetInertiaXX(chrono::ChVector3d({1:g},{2:g},{3:g}));\n",
                                        bodyname,
                                        Ixx * ChScale.M * ChScale.L * ChScale.L,
                                        Iyy * ChScale.M * ChScale.L * ChScale.L,
                                        Izz * ChScale.M * ChScale.L * ChScale.L);
                             // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                            m_asciiTextCpp += String.Format(bz, "{0}->SetInertiaXY(chrono::ChVector<>({1:g},{2:g},{3:g}));\n",
+                            m_asciiTextCpp += String.Format(bz, "{0}->SetInertiaXY(chrono::ChVector3d({1:g},{2:g},{3:g}));\n",
                                        bodyname,
                                        -Ixy * ChScale.M * ChScale.L * ChScale.L,
                                        -Izx * ChScale.M * ChScale.L * ChScale.L,
                                        -Iyz * ChScale.M * ChScale.L * ChScale.L);
 
                             // Write the position of the COG respect to the REF
-                            m_asciiTextCpp += String.Format(bz, "{0}->SetFrame_COG_to_REF(chrono::ChFrame<>(chrono::ChVector<>({1:g},{2:g},{3:g}),chrono::ChQuaternion<>(1,0,0,0)));\n",
+                            m_asciiTextCpp += String.Format(bz, "{0}->SetFrameCOMToRef(chrono::ChFramed(chrono::ChVector3d({1:g},{2:g},{3:g}),chrono::ChQuaternion<>(1,0,0,0)));\n",
                                         bodyname,
                                         cogXb * ChScale.L,
                                         cogYb * ChScale.L,
@@ -989,7 +989,7 @@ namespace ChronoEngineAddin
 
                             // Write 'fixed' state
                             if (swComp.IsFixed())
-                                m_asciiTextCpp += String.Format(bz, "{0}->SetBodyFixed(true);\n", bodyname);
+                                m_asciiTextCpp += String.Format(bz, "{0}->SetFixed(true);\n", bodyname);
 
 
                             // Write shapes (saving also Wavefront files .obj)
@@ -1019,7 +1019,7 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    m_asciiTextCpp += String.Format(bz, "{0}->SetCollide(true);\n", bodyname);
+                                    m_asciiTextCpp += String.Format(bz, "{0}->EnableCollision(true);\n", bodyname);
                                 }
                             }
 
@@ -1119,7 +1119,7 @@ namespace ChronoEngineAddin
                     m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::ChMarker>();\n", markername);
                     m_asciiTextCpp += String.Format(bz, "{0}->SetName(\"{1}\");\n", markername, swFeat.Name);
                     m_asciiTextCpp += String.Format(bz, "{0}->AddMarker({1});\n", bodyname, markername);
-                    m_asciiTextCpp += String.Format(bz, "{0}->Impose_Abs_Coord(chrono::ChCoordsys<>(chrono::ChVector<>({1},{2},{3}),chrono::ChQuaternion<>({4},{5},{6},{7})));\n",
+                    m_asciiTextCpp += String.Format(bz, "{0}->ImposeAbsoluteTransform(chrono::ChFramed(chrono::ChVector3d({1},{2},{3}),chrono::ChQuaternion<>({4},{5},{6},{7})));\n",
                         markername,
                         amatr[9] * ChScale.L,
                         amatr[10] * ChScale.L,
@@ -1166,7 +1166,7 @@ namespace ChronoEngineAddin
 
                         string chMotorClassName = "ChLinkMotor" + motorType;
                         string chMotorConstraintName = "";
-                        string chFunctionClassName = "ChFunction_" + motorMotionlaw;
+                        string chFunctionClassName = "ChFunction" + motorMotionlaw;
                         string motorQuaternion = "";
 
                         if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
@@ -1185,7 +1185,7 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
                         m_asciiTextCpp += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, motorName);
                         m_asciiTextCpp += String.Format(bz,
-                            "{0}->Initialize({1},{2},chrono::ChFrame<>(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n",
+                            "{0}->Initialize({1},{2},chrono::ChFramed(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n",
                             motorInstanceName,
                             slaveBodyName,
                             masterBodyName);

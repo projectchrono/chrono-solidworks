@@ -71,7 +71,7 @@ vis.SetWindowTitle('ChronoSolidworksImportPy')
 vis.Initialize()
 vis.AddLogo(chrono.GetChronoDataFile('logo_pychrono_alpha.png'))
 vis.AddSkyBox()
-vis.AddCamera(chrono.ChVectorD(0.3,0.3,0.4))
+vis.AddCamera(chrono.ChVector3d(0.3,0.3,0.4))
 vis.AddTypicalLights()
 
 

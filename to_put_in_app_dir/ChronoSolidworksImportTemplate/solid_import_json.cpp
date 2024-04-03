@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 
     SetChronoDataPath(CHRONO_DATA_DIR);
 
-    GetLog() << "Copyright (c) 2023 projectchrono.org\nChrono version: " << CHRONO_VERSION << "\n\n";
+    std::cout << "Copyright (c) 2023 projectchrono.org\nChrono version: " << CHRONO_VERSION << "\n\n";
 
     // Create the physical system
     ChSystemNSC sys;
@@ -43,12 +43,12 @@ int main(int argc, char* argv[]) {
 #ifdef CHRONO_COLLISION
         auto collsys = std::static_pointer_cast<ChCollisionSystemMulticore>(sys.GetCollisionSystem());
         // Change the default number of broadphase bins
-        collsys->SetBroadphaseGridResolution(ChVector<int>(10, 10, 2));
+        collsys->SetBroadphaseGridResolution(ChVector3i(10, 10, 2));
         // Change default narrowphase algorithm
         ////collsys->SetNarrowphaseAlgorithm(ChNarrowphase::Algorithm::MPR);
         collsys->SetEnvelope(0.005);
         // Enable active bounding box
-        collsys->EnableActiveBoundingBox(ChVector<>(-10, -10, -20), ChVector<>(+10, +10, +10));
+        collsys->EnableActiveBoundingBox(ChVector3d(-10, -10, -20), ChVector3d(+10, +10, +10));
         // Set number of threads used by the collision detection system
         collsys->SetNumThreads(4);
 #endif
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 
 
     std::string jsonfile = SOLIDWORKS_EXPORTED_JSON;
-    ChStreamInAsciiFile mfilei(jsonfile.c_str());
+    std::ifstream mfilei(jsonfile.c_str());
 
     // Use a JSON archive object to deserialize C++ objects from the file
     ChArchiveInJSON marchivein(mfilei);
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
             vis_irr->AddLogo();
             vis_irr->AddSkyBox();
             vis_irr->AddTypicalLights();
-            vis_irr->AddCamera(ChVector<>(1, 1, 6), ChVector<>(0, 0, 0));
+            vis_irr->AddCamera(ChVector3d(1, 1, 6), ChVector3d(0, 0, 0));
             vis_irr->AttachSystem(&sys);
             vis_irr->EnableCollisionShapeDrawing(true);
 
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 
     // Modify some setting of the physical system for the simulation, if you want
     sys.SetSolverType(ChSolver::Type::BARZILAIBORWEIN);
-    sys.SetSolverMaxIterations(250);
+    sys.GetSolver()->AsIterative()->SetMaxIterations(250);
     ////sys.SetUseSleeping(true);
 
     // Simulation loop

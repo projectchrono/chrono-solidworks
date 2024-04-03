@@ -82,7 +82,7 @@ namespace ChronoEngineAddin
 
             m_asciiText += "body_0 = chrono.ChBodyAuxRef()\n";
             m_asciiText += "body_0.SetName('SLDW_GROUND')\n";
-            m_asciiText += "body_0.SetBodyFixed(True)\n";
+            m_asciiText += "body_0.SetFixed(True)\n";
             m_asciiText += "exported_items.append(body_0)\n\n";
 
 
@@ -165,25 +165,25 @@ namespace ChronoEngineAddin
             if (link_params.ref2 == null)
                 link_params.ref2 = "body_0";
 
-            if (link_params.do_ChLinkMateXdistance)
+            if (link_params.do_ChLinkMateDistanceZ)
             {
                 num_link++;
                 String linkname = "link_" + num_link;
-                m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateXdistance()\n", linkname);
+                m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateDistanceZ()\n", linkname);
 
-                m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
                 if (!link_params.entity_0_as_VERTEX)
-                    m_asciiText += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "dA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                              link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
                 if (!link_params.entity_1_as_VERTEX)
-                    m_asciiText += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "dB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                              link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                 // Initialize link, by setting the two csys, in absolute space,
@@ -209,20 +209,20 @@ namespace ChronoEngineAddin
                     String linkname = "link_" + num_link;
                     m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateParallel()\n", linkname);
 
-                    m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    m_asciiText += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "dA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    m_asciiText += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "dB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
-                    if (link_params.do_parallel_flip)
+                    if (!link_params.is_aligned)
                         m_asciiText += String.Format(bz, "{0}.SetFlipped(True)\n", linkname);
 
                     // Initialize link, by setting the two csys, in absolute space,
@@ -249,17 +249,17 @@ namespace ChronoEngineAddin
                     String linkname = "link_" + num_link;
                     m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateOrthogonal()\n", linkname);
 
-                    m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    m_asciiText += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "dA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    m_asciiText += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                    m_asciiText += String.Format(bz, "dB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                     // Initialize link, by setting the two csys, in absolute space,
@@ -284,11 +284,11 @@ namespace ChronoEngineAddin
                 String linkname = "link_" + num_link;
                 m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateSpherical()\n", linkname);
 
-                m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
@@ -309,22 +309,22 @@ namespace ChronoEngineAddin
                 num_link++;
                 String linkname = "link_" + num_link;
                 m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateGeneric()\n", linkname);
-                m_asciiText += String.Format(bz, "{0}.SetConstrainedCoords(False, True, True, False, False, False)\n", linkname);
+                m_asciiText += String.Format(bz, "{0}.SetConstrainedCoords(True, True, False, False, False, False)\n", linkname);
 
-                m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
                 if (!link_params.entity_0_as_VERTEX)
-                    m_asciiText += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n", link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                    m_asciiText += String.Format(bz, "dA = chrono.ChVector3d({0:g},{1:g},{2:g})\n", link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
                 else
                     m_asciiText += String.Format(bz, "dA = chrono.VNULL\n");
                 if (!link_params.entity_1_as_VERTEX)
-                    m_asciiText += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n", link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+                    m_asciiText += String.Format(bz, "dB = chrono.ChVector3d({0:g},{1:g},{2:g})\n", link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
                 else
                     m_asciiText += String.Format(bz, "dB = chrono.VNULL\n");
 
@@ -353,19 +353,19 @@ namespace ChronoEngineAddin
                 // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
                 num_link++;
                 String linkname = "link_" + num_link;
-                m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateCoaxial()\n", linkname);
+                m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateCylindrical()\n", linkname);
 
-                m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "dA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "dB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                 m_asciiText += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
@@ -382,19 +382,19 @@ namespace ChronoEngineAddin
 
                 num_link++;
                 linkname = "link_" + num_link;
-                m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateXdistance()\n", linkname);
+                m_asciiText += String.Format(bz, "{0} = chrono.ChLinkMateDistanceZ()\n", linkname);
 
-                m_asciiText += String.Format(bz, "cA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cC.X * ChScale.L,
                           link_params.cC.Y * ChScale.L,
                           link_params.cC.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "dA = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "dA = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.dC.X, link_params.dC.Y, link_params.dC.Z);
-                m_asciiText += String.Format(bz, "cB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "cB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.cD.X * ChScale.L,
                           link_params.cD.Y * ChScale.L,
                           link_params.cD.Z * ChScale.L);
-                m_asciiText += String.Format(bz, "dB = chrono.ChVectorD({0:g},{1:g},{2:g})\n",
+                m_asciiText += String.Format(bz, "dB = chrono.ChVector3d({0:g},{1:g},{2:g})\n",
                           link_params.dD.X, link_params.dD.Y, link_params.dD.Z);
 
                 m_asciiText += String.Format(bz, "{0}.SetName(\"{1}\")\n", linkname, swMateFeature.Name);
@@ -480,9 +480,9 @@ namespace ChronoEngineAddin
                     double[] amatr = (double[])relframe_shape.ArrayData;
                     double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
-                    m_asciiText += String.Format(bz, "{0}.AddVisualShape({1}_shape, chrono.ChFrameD(", bodyname, shapename);
-                    m_asciiText += String.Format(bz, "chrono.ChVectorD({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
-                    m_asciiText += String.Format(bz, "chrono.ChQuaternionD({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
+                    m_asciiText += String.Format(bz, "{0}.AddVisualShape({1}_shape, chrono.ChFramed(", bodyname, shapename);
+                    m_asciiText += String.Format(bz, "chrono.ChVector3d({0},{1},{2}), ", amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);
+                    m_asciiText += String.Format(bz, "chrono.ChQuaterniond({0},{1},{2},{3})", quat[0], quat[1], quat[2], quat[3]);
                     m_asciiText += String.Format(bz, "))\n");
                 }
 
@@ -549,7 +549,7 @@ namespace ChronoEngineAddin
 
                             m_asciiText += "\n# Collision material \n";
 
-                            m_asciiText += String.Format(bz, "{0} = chrono.ChMaterialSurfaceNSC()\n", matname);
+                            m_asciiText += String.Format(bz, "{0} = chrono.ChContactMaterialNSC()\n", matname);
 
 
 
@@ -605,14 +605,14 @@ namespace ChronoEngineAddin
                                     double rad = 0;
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = PointTransform(center_l, ref collshape_subcomp_transform);
-                                    m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33D()\n");
+                                    m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33d()\n");
                                     m_asciiText += String.Format(bz, "mr[0,0]=1; mr[1,0]=0; mr[2,0]=0 \n");
                                     m_asciiText += String.Format(bz, "mr[0,1]=0; mr[1,1]=1; mr[2,1]=0 \n");
                                     m_asciiText += String.Format(bz, "mr[0,2]=0; mr[1,2]=0; mr[2,2]=1 \n");
                                     m_asciiText += String.Format(bz, "collshape = chrono.ChCollisionShapeSphere({0},{1});\n",
                                         matname,
                                         rad * ChScale.L);
-                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape,chrono.ChFrameD(chrono.ChVectorD({1},{2},{3}), mr));\n",
+                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape,chrono.ChFramed(chrono.ChVector3d({1},{2},{3}), mr));\n",
                                         bodyname,
                                         center.X * ChScale.L,
                                         center.Y * ChScale.L,
@@ -632,7 +632,7 @@ namespace ChronoEngineAddin
                                     Vector3D Dx = eX; Dx.Normalize();
                                     Vector3D Dy = eY; Dy.Normalize();
                                     Vector3D Dz = Vector3D.CrossProduct(Dx, Dy);
-                                    m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33D()\n");
+                                    m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33d()\n");
                                     m_asciiText += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", Dx.X, Dx.Y, Dx.Z);
                                     m_asciiText += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", Dy.X, Dy.Y, Dy.Z);
                                     m_asciiText += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", Dz.X, Dz.Y, Dz.Z);
@@ -641,7 +641,7 @@ namespace ChronoEngineAddin
                                         eX.Length * ChScale.L,
                                         eY.Length * ChScale.L,
                                         eZ.Length * ChScale.L);
-                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape,chrono.ChFrameD(chrono.ChVectorD({1},{2},{3}), mr))\n",
+                                    m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddShape(collshape,chrono.ChFramed(chrono.ChVector3d({1},{2},{3}), mr))\n",
                                         bodyname,
                                         vO.X * ChScale.L,
                                         vO.Y * ChScale.L,
@@ -657,8 +657,8 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToCylinder(swBody, ref p1_l, ref p2_l, ref rad);
                                     Point3D p1 = PointTransform(p1_l, ref collshape_subcomp_transform);
                                     Point3D p2 = PointTransform(p2_l, ref collshape_subcomp_transform);
-                                    m_asciiText += String.Format(bz, "p1 = chrono.ChVectorD({0}, {1}, {2})\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L);
-                                    m_asciiText += String.Format(bz, "p2 = chrono.ChVectorD({0}, {1}, {2})\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
+                                    m_asciiText += String.Format(bz, "p1 = chrono.ChVector3d({0}, {1}, {2})\n", p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L);
+                                    m_asciiText += String.Format(bz, "p2 = chrono.ChVector3d({0}, {1}, {2})\n", p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
                                     m_asciiText += String.Format(bz, "{0}.GetCollisionModel().AddCylinder({1}, {2}, p1, p2)\n", bodyname, matname, rad * ChScale.L);
                                     rbody_converted = true;
                                 }
@@ -669,12 +669,12 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToConvexHull(swBody, ref vertexes, 30);
                                     if (vertexes.Length > 0)
                                     {
-                                        m_asciiText += String.Format(bz, "pt_vect = chrono.vector_ChVectorD()\n");
+                                        m_asciiText += String.Format(bz, "pt_vect = chrono.vector_ChVector3d()\n");
                                         for (int iv = 0; iv < vertexes.Length; iv++)
                                         {
                                             Point3D vert_l = vertexes[iv];
                                             Point3D vert = PointTransform(vert_l, ref collshape_subcomp_transform);
-                                            m_asciiText += String.Format(bz, "pt_vect.push_back(chrono.ChVectorD({0},{1},{2}))\n",
+                                            m_asciiText += String.Format(bz, "pt_vect.push_back(chrono.ChVector3d({0},{1},{2}))\n",
                                                 vert.X * ChScale.L,
                                                 vert.Y * ChScale.L,
                                                 vert.Z * ChScale.L);
@@ -734,11 +734,11 @@ namespace ChronoEngineAddin
 
                             m_asciiText += String.Format(bz, "\n# Triangle mesh collision shape \n", bodyname);
                             m_asciiText += String.Format(bz, "{0}_mesh = chrono.ChTriangleMeshConnected.CreateFromWavefrontFile(shapes_dir + '{1}.obj', False, True) \n", shapename, shapename);
-                            m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33D()\n");
+                            m_asciiText += String.Format(bz, "mr = chrono.ChMatrix33d()\n");
                             m_asciiText += String.Format(bz, "mr[0,0]={0}; mr[1,0]={1}; mr[2,0]={2} \n", amatr[0] * ChScale.L, amatr[1] * ChScale.L, amatr[2] * ChScale.L);
                             m_asciiText += String.Format(bz, "mr[0,1]={0}; mr[1,1]={1}; mr[2,1]={2} \n", amatr[3] * ChScale.L, amatr[4] * ChScale.L, amatr[5] * ChScale.L);
                             m_asciiText += String.Format(bz, "mr[0,2]={0}; mr[1,2]={1}; mr[2,2]={2} \n", amatr[6] * ChScale.L, amatr[7] * ChScale.L, amatr[8] * ChScale.L);
-                            m_asciiText += String.Format(bz, "{0}_mesh.Transform(chrono.ChVectorD({1}, {2}, {3}), mr) \n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);                            
+                            m_asciiText += String.Format(bz, "{0}_mesh.Transform(chrono.ChVector3d({1}, {2}, {3}), mr) \n", shapename, amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L);                            
                             m_asciiText += String.Format(bz, "collshape = chrono.ChCollisionShapeTriangleMesh({0},{1}_mesh,False,False,sphereswept_r)\n",
                                 matname,
                                 shapename);
@@ -798,14 +798,14 @@ namespace ChronoEngineAddin
                             m_asciiText += bodyname + ".SetName('" + swComp.Name2 + "')" + "\n";
 
                             // Write position
-                            m_asciiText += bodyname + ".SetPos(chrono.ChVectorD("
+                            m_asciiText += bodyname + ".SetPos(chrono.ChVector3d("
                                 + (amatr[9] * ChScale.L).ToString("g", bz) + ","
                                 + (amatr[10] * ChScale.L).ToString("g", bz) + ","
                                 + (amatr[11] * ChScale.L).ToString("g", bz) + "))" + "\n";
 
                             // Write rotation
                             double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
-                            m_asciiText += String.Format(bz, "{0}.SetRot(chrono.ChQuaternionD({1:g},{2:g},{3:g},{4:g}))\n", bodyname, quat[0], quat[1], quat[2], quat[3]);
+                            m_asciiText += String.Format(bz, "{0}.SetRot(chrono.ChQuaterniond({1:g},{2:g},{3:g},{4:g}))\n", bodyname, quat[0], quat[1], quat[2], quat[3]);
 
                             // Compute mass
 
@@ -849,20 +849,20 @@ namespace ChronoEngineAddin
                                        mass * ChScale.M);
 
                             // Write inertia tensor 
-                            m_asciiText += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
+                            m_asciiText += String.Format(bz, "{0}.SetInertiaXX(chrono.ChVector3d({1:g},{2:g},{3:g}))\n",
                                        bodyname,
                                        Ixx * ChScale.M * ChScale.L * ChScale.L,
                                        Iyy * ChScale.M * ChScale.L * ChScale.L,
                                        Izz * ChScale.M * ChScale.L * ChScale.L);
                             // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                            m_asciiText += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVectorD({1:g},{2:g},{3:g}))\n",
+                            m_asciiText += String.Format(bz, "{0}.SetInertiaXY(chrono.ChVector3d({1:g},{2:g},{3:g}))\n",
                                        bodyname,
                                        -Ixy * ChScale.M * ChScale.L * ChScale.L,
                                        -Izx * ChScale.M * ChScale.L * ChScale.L,
                                        -Iyz * ChScale.M * ChScale.L * ChScale.L);
 
                             // Write the position of the COG respect to the REF
-                            m_asciiText += String.Format(bz, "{0}.SetFrame_COG_to_REF(chrono.ChFrameD(chrono.ChVectorD({1:g},{2:g},{3:g}),chrono.ChQuaternionD(1,0,0,0)))\n",
+                            m_asciiText += String.Format(bz, "{0}.SetFrameCOMToRef(chrono.ChFramed(chrono.ChVector3d({1:g},{2:g},{3:g}),chrono.ChQuaterniond(1,0,0,0)))\n",
                                         bodyname,
                                         cogXb * ChScale.L,
                                         cogYb * ChScale.L,
@@ -870,7 +870,7 @@ namespace ChronoEngineAddin
 
                             // Write 'fixed' state
                             if (swComp.IsFixed())
-                                m_asciiText += String.Format(bz, "{0}.SetBodyFixed(True)\n", bodyname);
+                                m_asciiText += String.Format(bz, "{0}.SetFixed(True)\n", bodyname);
 
 
                             // Write shapes (saving also Wavefront files .obj)
@@ -900,7 +900,7 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    m_asciiText += String.Format(bz, "{0}.SetCollide(True)\n", bodyname);
+                                    m_asciiText += String.Format(bz, "{0}.EnableCollision(True)\n", bodyname);
                                 }
                             }
 
@@ -1004,7 +1004,7 @@ namespace ChronoEngineAddin
                     m_asciiText += String.Format(bz, "{0} = chrono.ChMarker()\n", markername);
                     m_asciiText += String.Format(bz, "{0}.SetName('{1}')" + "\n", markername, swFeat.Name);
                     m_asciiText += String.Format(bz, "{0}.AddMarker({1})\n", bodyname, markername);
-                    m_asciiText += String.Format(bz, "{0}.Impose_Abs_Coord(chrono.ChCoordsysD(chrono.ChVectorD({1},{2},{3}),chrono.ChQuaternionD({4},{5},{6},{7})))\n",
+                    m_asciiText += String.Format(bz, "{0}.ImposeAbsoluteTransform(chrono.ChFramed(chrono.ChVector3d({1},{2},{3}),chrono.ChQuaterniond({4},{5},{6},{7})))\n",
                                markername,
                                amatr[9] * ChScale.L,
                                amatr[10] * ChScale.L,
@@ -1049,7 +1049,7 @@ namespace ChronoEngineAddin
 
                         string chMotorClassName = "ChLinkMotor" + motorType;
                         string chMotorConstraintName = "";
-                        string chFunctionClassName = "ChFunction_" + motorMotionlaw;
+                        string chFunctionClassName = "ChFunction" + motorMotionlaw;
                         string motorQuaternion = "";
 
                         if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
@@ -1068,7 +1068,7 @@ namespace ChronoEngineAddin
                         m_asciiText += String.Format(bz, motorInstanceName + " = chrono." + chMotorClassName + "()\n");
                         m_asciiText += String.Format(bz, motorInstanceName + ".SetName(\"" + motorName + "\")\n");
                         m_asciiText += motorInstanceName + ".Initialize(" + slaveBodyName + ", " + masterBodyName
-                                    + ",chrono.ChFrameD(" + markername + ".GetAbsFrame().GetPos()," + markername + ".GetAbsFrame().GetRot()*" + motorQuaternion + "))\n";
+                                    + ",chrono.ChFramed(" + markername + ".GetAbsFrame().GetPos()," + markername + ".GetAbsFrame().GetRot()*" + motorQuaternion + "))\n";
                         m_asciiText += "exported_items.append(" + motorInstanceName  + ")\n\n";
 
                         if (motorConstraints == "False")

@@ -35,8 +35,6 @@ namespace ChronoEngineAddin
         bool m_export_with_fullpath;
         double sphereswept_r = 0.0;
 
-        double[] m_gravity_acc;
-
         // temporary variables
         ChBodyAuxRef newbody = new ChBodyAuxRef();
         ChBodyAuxRef body_ground = new ChBodyAuxRef();
@@ -45,7 +43,6 @@ namespace ChronoEngineAddin
         public ChModelExporterCSharp(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
             : base(swIntegration, save_dir_shapes, save_filename)
         {
-
             m_saveRelDirShapes = System.IO.Path.GetFileNameWithoutExtension(m_saveFilename) + "_shapes";
         }
 
@@ -56,8 +53,9 @@ namespace ChronoEngineAddin
 
         public void SetGravityAcceleration(double[] g)
         {
-            m_gravity_acc = g;
+            chrono_system.SetGravitationalAcceleration(new ChVector3d(g[0], g[1], g[2]));
         }
+
 
         public void SetSolver(string solvername)
         {
@@ -88,7 +86,7 @@ namespace ChronoEngineAddin
             Configuration swConf;
             Component2 swRootComp;
 
-            
+
 
             m_savedParts.Clear();
             m_savedShapes.Clear();
@@ -117,8 +115,8 @@ namespace ChronoEngineAddin
             ChCollisionSystemBullet.SetContactBreakingThreshold((double)m_swIntegration.m_taskpaneHost.GetNumericContactBreaking().Value * ChScale.L);
 
             body_ground = new ChBodyAuxRef();
-            body_ground.SetNameString("SLDW_GROUND");
-            body_ground.SetBodyFixed(true);
+            body_ground.SetName("SLDW_GROUND");
+            body_ground.SetFixed(true);
             chrono_system.Add(body_ground);
 
 
@@ -259,22 +257,20 @@ namespace ChronoEngineAddin
             }
 
 
-            if (link_params.do_ChLinkMateXdistance)
+            if (link_params.do_ChLinkMateDistanceZ)
             {
                 num_link++;
-                String linkname = "link_" + num_link;
+                ChLinkMateDistanceZ newlink = new ChLinkMateDistanceZ();
+                ChVector3d cA = new ChVector3d(link_params.cA.X * ChScale.L, link_params.cA.Y * ChScale.L, link_params.cA.Z * ChScale.L);
+                ChVector3d cB = new ChVector3d(link_params.cB.X * ChScale.L, link_params.cB.Y * ChScale.L, link_params.cB.Z * ChScale.L);
 
-                ChLinkMateXdistance newlink = new ChLinkMateXdistance();
-                ChVectorD cA = new ChVectorD(link_params.cA.X * ChScale.L, link_params.cA.Y * ChScale.L, link_params.cA.Z * ChScale.L);
-                ChVectorD cB = new ChVectorD(link_params.cB.X * ChScale.L, link_params.cB.Y * ChScale.L, link_params.cB.Z * ChScale.L);
-
-                ChVectorD dA = new ChVectorD();
+                ChVector3d dA = new ChVector3d();
                 if (!link_params.entity_0_as_VERTEX)
-                    dA = new ChVectorD(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                    dA = new ChVector3d(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
 
-                ChVectorD dB = new ChVectorD();
+                ChVector3d dB = new ChVector3d();
                 if (!link_params.entity_1_as_VERTEX)
-                    dB = new ChVectorD(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+                    dB = new ChVector3d(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
 
                 // Initialize link, by setting the two csys, in absolute space
@@ -286,7 +282,7 @@ namespace ChronoEngineAddin
                 //if (link_params.do_distance_val!=0)
                 newlink.SetDistance(link_params.do_distance_val * ChScale.L * -1);
 
-                newlink.SetNameString(swMateFeature.Name);
+                newlink.SetName(swMateFeature.Name);
 
                 chrono_system.Add(newlink);
             }
@@ -296,24 +292,22 @@ namespace ChronoEngineAddin
                 if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) > 0.98)
                 {
                     num_link++;
-                    String linkname = "link_" + num_link;
                     ChLinkMateParallel newlink = new ChLinkMateParallel();
 
-                    ChVectorD cA = new ChVectorD(
+                    ChVector3d cA = new ChVector3d(
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    ChVectorD dA = new ChVectorD(
+                    ChVector3d dA = new ChVector3d(
                               link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    ChVectorD cB = new ChVectorD(
+                    ChVector3d cB = new ChVector3d(
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    ChVectorD dB = new ChVectorD(
+                    ChVector3d dB = new ChVector3d(
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
-                    if (link_params.do_parallel_flip)
-                        newlink.SetFlipped(true);
+                    newlink.SetFlipped(!link_params.is_aligned); // it is the opposite compared to SolidWorks
 
                     // Initialize link, by setting the two csys, in absolute space,
                     if (!link_params.swapAB_1)
@@ -321,15 +315,14 @@ namespace ChronoEngineAddin
                     else
                         newlink.Initialize(body2, body1, false, cB, cA, dB, dA);
 
-                    newlink.SetNameString(swMateFeature.Name);
-
+                    newlink.SetName(swMateFeature.Name);
 
                     chrono_system.Add(newlink);
-
                 }
                 else
                 {
-                    //m_asciiText += "\n# ChLinkMateParallel skipped because directions not parallel! \n";
+
+                    MessageBox.Show("ChLinkMateParallel skipped because directions not parallel.");
                 }
             }
 
@@ -338,20 +331,19 @@ namespace ChronoEngineAddin
                 if (Math.Abs(Vector3D.DotProduct(link_params.dA, link_params.dB)) < 0.02)
                 {
                     num_link++;
-                    String linkname = "link_" + num_link;
                     ChLinkMateOrthogonal newlink = new ChLinkMateOrthogonal();
 
-                    ChVectorD cA = new ChVectorD(
+                    ChVector3d cA = new ChVector3d(
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    ChVectorD dA = new ChVectorD(
+                    ChVector3d dA = new ChVector3d(
                               link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    ChVectorD cB = new ChVectorD(
+                    ChVector3d cB = new ChVector3d(
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    ChVectorD dB = new ChVectorD(
+                    ChVector3d dB = new ChVector3d(
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
                     // Initialize link, by setting the two csys, in absolute space,
@@ -360,11 +352,9 @@ namespace ChronoEngineAddin
                     else
                         newlink.Initialize(body2, body1, false, cB, cA, dB, dA);
 
-                    newlink.SetNameString(swMateFeature.Name);
+                    newlink.SetName(swMateFeature.Name);
 
                     chrono_system.Add(newlink);
-
-
                 }
                 else
                 {
@@ -375,14 +365,13 @@ namespace ChronoEngineAddin
             if (link_params.do_ChLinkMateSpherical)
             {
                 num_link++;
-                String linkname = "link_" + num_link;
                 ChLinkMateSpherical newlink = new ChLinkMateSpherical();
 
-                ChVectorD cA = new ChVectorD(
+                ChVector3d cA = new ChVector3d(
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                ChVectorD cB = new ChVectorD(
+                ChVector3d cB = new ChVector3d(
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
@@ -393,7 +382,7 @@ namespace ChronoEngineAddin
                 else
                     newlink.Initialize(body2, body1, false, cB, cA);
 
-                newlink.SetNameString(swMateFeature.Name);
+                newlink.SetName(swMateFeature.Name);
 
                 chrono_system.Add(newlink);
 
@@ -402,30 +391,29 @@ namespace ChronoEngineAddin
             if (link_params.do_ChLinkMatePointLine)
             {
                 num_link++;
-                String linkname = "link_" + num_link;
                 ChLinkMateGeneric newlink = new ChLinkMateGeneric();
-                newlink.SetConstrainedCoords(false, true, true, false, false, false);
+                newlink.SetConstrainedCoords(true, true, false, false, false, false);
 
-                ChVectorD cA = new ChVectorD(
+                ChVector3d cA = new ChVector3d(
                           link_params.cA.X * ChScale.L,
                           link_params.cA.Y * ChScale.L,
                           link_params.cA.Z * ChScale.L);
-                ChVectorD cB = new ChVectorD(
+                ChVector3d cB = new ChVector3d(
                           link_params.cB.X * ChScale.L,
                           link_params.cB.Y * ChScale.L,
                           link_params.cB.Z * ChScale.L);
 
-                ChVectorD dA;
+                ChVector3d dA;
                 if (!link_params.entity_0_as_VERTEX)
-                    dA = new ChVectorD(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
+                    dA = new ChVector3d(link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
                 else
-                    dA = new ChVectorD(0, 0, 0);
+                    dA = new ChVector3d(0, 0, 0);
 
-                ChVectorD dB;
+                ChVector3d dB;
                 if (!link_params.entity_1_as_VERTEX)
-                    dB = new ChVectorD(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
+                    dB = new ChVector3d(link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
                 else
-                    dB = new ChVectorD(0, 0, 0);
+                    dB = new ChVector3d(0, 0, 0);
 
                 // Initialize link, by setting the two csys, in absolute space,
                 if (!link_params.swapAB_1)
@@ -433,13 +421,10 @@ namespace ChronoEngineAddin
                 else
                     newlink.Initialize(body2, body1, false, cB, cA, dB, dA);
 
-                newlink.SetNameString(swMateFeature.Name);
+                newlink.SetName(swMateFeature.Name);
 
                 chrono_system.Add(newlink);
-
-
             }
-
 
 
             // Now, do some other special mate type that did not fall in combinations
@@ -455,51 +440,48 @@ namespace ChronoEngineAddin
 
                     // Hinge constraint must be splitted in two C::E constraints: a coaxial and a point-vs-plane
                     num_link++;
-                    String linkname = "link_" + num_link;
-                    ChLinkMateCoaxial newlink = new ChLinkMateCoaxial();
+                    ChLinkMateCylindrical newlink = new ChLinkMateCylindrical();
 
-                    ChVectorD cA = new ChVectorD(
+                    ChVector3d cA = new ChVector3d(
                               link_params.cA.X * ChScale.L,
                               link_params.cA.Y * ChScale.L,
                               link_params.cA.Z * ChScale.L);
-                    ChVectorD dA = new ChVectorD(
+                    ChVector3d dA = new ChVector3d(
                               link_params.dA.X, link_params.dA.Y, link_params.dA.Z);
-                    ChVectorD cB = new ChVectorD(
+                    ChVector3d cB = new ChVector3d(
                               link_params.cB.X * ChScale.L,
                               link_params.cB.Y * ChScale.L,
                               link_params.cB.Z * ChScale.L);
-                    ChVectorD dB = new ChVectorD(
+                    ChVector3d dB = new ChVector3d(
                               link_params.dB.X, link_params.dB.Y, link_params.dB.Z);
 
-                    newlink.SetNameString(swMateFeature.Name);
+                    newlink.SetName(swMateFeature.Name);
 
 
                     // Initialize link, by setting the two csys, in absolute space,
                     newlink.Initialize(body1, body2, false, cA, cB, dA, dB);
 
                     chrono_system.Add(newlink);
-
                 }
 
                 {
                     num_link++;
-                    String linkname = "link_" + num_link;
-                    ChLinkMateXdistance newlink = new ChLinkMateXdistance();
+                    ChLinkMateDistanceZ newlink = new ChLinkMateDistanceZ();
 
-                    ChVectorD cA = new ChVectorD(
+                    ChVector3d cA = new ChVector3d(
                               link_params.cC.X * ChScale.L,
                               link_params.cC.Y * ChScale.L,
                               link_params.cC.Z * ChScale.L);
-                    ChVectorD dA = new ChVectorD(
+                    ChVector3d dA = new ChVector3d(
                               link_params.dC.X, link_params.dC.Y, link_params.dC.Z);
-                    ChVectorD cB = new ChVectorD(
+                    ChVector3d cB = new ChVector3d(
                               link_params.cD.X * ChScale.L,
                               link_params.cD.Y * ChScale.L,
                               link_params.cD.Z * ChScale.L);
-                    ChVectorD dB = new ChVectorD(
+                    ChVector3d dB = new ChVector3d(
                               link_params.dD.X, link_params.dD.Y, link_params.dD.Z);
 
-                    newlink.SetNameString(swMateFeature.Name);
+                    newlink.SetName(swMateFeature.Name);
 
 
                     // Initialize link, by setting the two csys, in absolute space,
@@ -509,10 +491,8 @@ namespace ChronoEngineAddin
                         newlink.Initialize(body3, body4, false, cA, cB, dB);
 
                     chrono_system.Add(newlink);
-
                 }
             }
-
 
             return true;
         }
@@ -596,8 +576,8 @@ namespace ChronoEngineAddin
                     double[] quat = GetQuaternionFromMatrix(ref relframe_shape);
 
                     newbody.AddVisualShape(visshape,
-                        new ChFrameD(new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
-                        new ChQuaternionD(quat[0], quat[1], quat[2], quat[3])));
+                        new ChFramed(new ChVector3d(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
+                        new ChQuaterniond(quat[0], quat[1], quat[2], quat[3])));
                 }
 
 
@@ -646,7 +626,7 @@ namespace ChronoEngineAddin
                         if (swBody.Name.StartsWith("COLL.") || swBody.Name.StartsWith("COLLMESH"))
                             build_collision_model = true;
                     }
-                    ChMaterialSurfaceNSC collision_material = new ChMaterialSurfaceNSC();
+                    ChContactMaterialNSC collision_material = new ChContactMaterialNSC();
 
                     if (build_collision_model)
                     {
@@ -709,15 +689,15 @@ namespace ChronoEngineAddin
                                     double rad = 0;
                                     ConvertToCollisionShapes.SWbodyToSphere(swBody, ref rad, ref center_l);
                                     Point3D center = PointTransform(center_l, ref collshape_subcomp_transform);
-                                    ChMatrix33D mr = new ChMatrix33D();
+                                    ChMatrix33d mr = new ChMatrix33d();
                                     mr.setitem(0, 0, 1.0); mr.setitem(1, 0, 0.0); mr.setitem(2, 0, 0.0);
                                     mr.setitem(0, 1, 0.0); mr.setitem(1, 1, 1.0); mr.setitem(2, 1, 0.0);
                                     mr.setitem(0, 2, 0.0); mr.setitem(1, 2, 0.0); mr.setitem(2, 2, 1.0);
                                     ChCollisionShapeSphere collshape = new ChCollisionShapeSphere(collision_material, rad * ChScale.L);
                                     newbody.GetCollisionModel().AddShape(
                                         collshape,
-                                        new ChFrameD(
-                                            new ChVectorD(center.X * ChScale.L,
+                                        new ChFramed(
+                                            new ChVector3d(center.X * ChScale.L,
                                                           center.Y * ChScale.L,
                                                           center.Z * ChScale.L),
                                             mr)
@@ -737,15 +717,15 @@ namespace ChronoEngineAddin
                                     Vector3D Dx = eX; Dx.Normalize();
                                     Vector3D Dy = eY; Dy.Normalize();
                                     Vector3D Dz = Vector3D.CrossProduct(Dx, Dy);
-                                    ChMatrix33D mr = new ChMatrix33D();
+                                    ChMatrix33d mr = new ChMatrix33d();
                                     mr.setitem(0, 0, Dx.X); mr.setitem(1, 0, Dx.Y); mr.setitem(2, 0, Dx.Z);
                                     mr.setitem(0, 1, Dy.X); mr.setitem(1, 1, Dy.Y); mr.setitem(2, 1, Dy.Z);
                                     mr.setitem(0, 2, Dz.X); mr.setitem(1, 2, Dz.Y); mr.setitem(2, 2, Dz.Z);
                                     ChCollisionShapeBox collshape = new ChCollisionShapeBox(collision_material, eX.Length * ChScale.L, eY.Length * ChScale.L, eZ.Length * ChScale.L);
                                     newbody.GetCollisionModel().AddShape(
                                         collshape,
-                                        new ChFrameD(
-                                            new ChVectorD(vO.X * ChScale.L, vO.Y * ChScale.L, vO.Z * ChScale.L),
+                                        new ChFramed(
+                                            new ChVector3d(vO.X * ChScale.L, vO.Y * ChScale.L, vO.Z * ChScale.L),
                                             mr)
                                         );
 
@@ -759,8 +739,8 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToCylinder(swBody, ref p1_l, ref p2_l, ref rad);
                                     Point3D p1 = PointTransform(p1_l, ref collshape_subcomp_transform);
                                     Point3D p2 = PointTransform(p2_l, ref collshape_subcomp_transform);
-                                    ChVectorD ch_p1 = new ChVectorD(p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L);
-                                    ChVectorD ch_p2 = new ChVectorD(p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
+                                    ChVector3d ch_p1 = new ChVector3d(p1.X * ChScale.L, p1.Y * ChScale.L, p1.Z * ChScale.L);
+                                    ChVector3d ch_p2 = new ChVector3d(p2.X * ChScale.L, p2.Y * ChScale.L, p2.Z * ChScale.L);
                                     newbody.GetCollisionModel().AddCylinder(collision_material, rad * ChScale.L, ch_p1, ch_p2);
                                     rbody_converted = true;
                                 }
@@ -771,12 +751,12 @@ namespace ChronoEngineAddin
                                     ConvertToCollisionShapes.SWbodyToConvexHull(swBody, ref vertexes, 30);
                                     if (vertexes.Length > 0)
                                     {
-                                        vector_ChVectorD pt_vect = new vector_ChVectorD();
+                                        vector_ChVector3d pt_vect = new vector_ChVector3d();
                                         for (int iv = 0; iv < vertexes.Length; iv++)
                                         {
                                             Point3D vert_l = vertexes[iv];
                                             Point3D vert = PointTransform(vert_l, ref collshape_subcomp_transform);
-                                            pt_vect.Add(new ChVectorD(
+                                            pt_vect.Add(new ChVector3d(
                                                 vert.X * ChScale.L,
                                                 vert.Y * ChScale.L,
                                                 vert.Z * ChScale.L));
@@ -841,11 +821,11 @@ namespace ChronoEngineAddin
                                 ChTriangleMeshConnected newmesh = new ChTriangleMeshConnected();
                                 newmesh.LoadWavefrontMesh(obj_filename_full, false, true);
                                 //newmesh._SetFilename(obj_filename_rel); // TWEAK: this function is added just for convenience in the SWIG wrapper, it doesn't exist in pure Chrono
-                                ChMatrix33D mr = new ChMatrix33D();
+                                ChMatrix33d mr = new ChMatrix33d();
                                 mr.setitem(0, 0, amatr[0] * ChScale.L); mr.setitem(1, 0, amatr[1] * ChScale.L); mr.setitem(2, 0, amatr[2] * ChScale.L);
                                 mr.setitem(0, 1, amatr[3] * ChScale.L); mr.setitem(1, 1, amatr[4] * ChScale.L); mr.setitem(2, 1, amatr[5] * ChScale.L);
                                 mr.setitem(0, 2, amatr[6] * ChScale.L); mr.setitem(1, 2, amatr[7] * ChScale.L); mr.setitem(2, 2, amatr[8] * ChScale.L);
-                                newmesh.Transform(new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L), mr);
+                                newmesh.Transform(new ChVector3d(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L), mr);
                                 ChCollisionShapeTriangleMesh collshape = new ChCollisionShapeTriangleMesh(collision_material, newmesh, false, false, sphereswept_r);
                                 newbody.GetCollisionModel().AddShape(collshape);
                             }
@@ -899,9 +879,9 @@ namespace ChronoEngineAddin
 
                             // Write name
                             newbody.SetName(swComp.Name2);
-                            newbody.SetPos(new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L));
+                            newbody.SetPos(new ChVector3d(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L));
                             double[] quat = GetQuaternionFromMatrix(ref chbodytransform);
-                            newbody.SetRot(new ChQuaternionD(quat[0], quat[1], quat[2], quat[3]));
+                            newbody.SetRot(new ChQuaterniond(quat[0], quat[1], quat[2], quat[3]));
 
                             int nvalid_bodies = 0;
                             TraverseComponent_for_countingmassbodies(swComp, ref nvalid_bodies);
@@ -940,23 +920,23 @@ namespace ChronoEngineAddin
                             newbody.SetMass(mass * ChScale.M);
 
                             // Write inertia tensor 
-                            newbody.SetInertiaXX(new ChVectorD(Ixx * ChScale.M * ChScale.L * ChScale.L,
+                            newbody.SetInertiaXX(new ChVector3d(Ixx * ChScale.M * ChScale.L * ChScale.L,
                                                                Iyy * ChScale.M * ChScale.L * ChScale.L,
                                                                Izz * ChScale.M * ChScale.L * ChScale.L));
                             // Note: C::E assumes that's up to you to put a 'minus' sign in values of Ixy, Iyz, Izx
-                            newbody.SetInertiaXY(new ChVectorD(-Ixy * ChScale.M * ChScale.L * ChScale.L,
+                            newbody.SetInertiaXY(new ChVector3d(-Ixy * ChScale.M * ChScale.L * ChScale.L,
                                                                -Izx * ChScale.M * ChScale.L * ChScale.L,
                                                                -Iyz * ChScale.M * ChScale.L * ChScale.L));
 
                             // Write the position of the COG respect to the REF
-                            newbody.SetFrame_COG_to_REF(
-                                new ChFrameD(
-                                new ChVectorD(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L),
-                                new ChQuaternionD(1, 0, 0, 0)));
+                            newbody.SetFrameCOMToRef(
+                                new ChFramed(
+                                new ChVector3d(cogXb * ChScale.L, cogYb * ChScale.L, cogZb * ChScale.L),
+                                new ChQuaterniond(1, 0, 0, 0)));
 
                             // Write 'fixed' state
                             if (swComp.IsFixed())
-                                newbody.SetBodyFixed(true);
+                                newbody.SetFixed(true);
 
 
                             // Write shapes (saving also Wavefront files .obj)
@@ -984,7 +964,7 @@ namespace ChronoEngineAddin
                                 TraverseComponentForCollisionShapes(swComp, nLevel, nbody, ref chbodytransform, ref found_collisionshapes, swComp, ref ncollshapes);
                                 if (found_collisionshapes)
                                 {
-                                    newbody.SetCollide(true);
+                                    newbody.EnableCollision(true);
                                 }
                             }
 
@@ -1081,12 +1061,12 @@ namespace ChronoEngineAddin
                     double[] amatr = (double[])tr_abs.ArrayData;
                     String markername = "marker_" + nbody + "_" + nmarker;
                     ChMarker newmarker = new ChMarker();
-                    newmarker.SetNameString(swFeat.Name);
+                    newmarker.SetName(swFeat.Name);
                     newbody.AddMarker(newmarker);
-                    newmarker.Impose_Abs_Coord(
-                        new ChCoordsysD(
-                            new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
-                            new ChQuaternionD(quat[0], quat[1], quat[2], quat[3]))
+                    newmarker.ImposeAbsoluteTransform(
+                        new ChFramed(
+                            new ChVector3d(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
+                            new ChQuaterniond(quat[0], quat[1], quat[2], quat[3]))
                     );
 
 
@@ -1111,7 +1091,7 @@ namespace ChronoEngineAddin
         {
             ModelDoc2 swModel = (ModelDoc2)m_swIntegration.m_swApplication.ActiveDoc;
             ModelDocExtension swModelDocExt = swModel.Extension;
-            
+
             // Parse attribute
             SolidWorks.Interop.sldworks.Attribute motorAttribute = (SolidWorks.Interop.sldworks.Attribute)((Entity)swFeat).FindAttribute(m_swIntegration.defattr_chmotor, 0);
             string motorName = ((Parameter)motorAttribute.GetParameter("motor_name")).GetStringValue();
@@ -1151,42 +1131,42 @@ namespace ChronoEngineAddin
             {
                 case "Const":
                     if (numericInputs.Length != 0)
-                        motfun = new ChFunction_Const(numericInputs[0]);
+                        motfun = new ChFunctionConst(numericInputs[0]);
                     else
-                        motfun = new ChFunction_Const();
+                        motfun = new ChFunctionConst();
                     break;
                 case "ConstAcc":
                     if (numericInputs.Length != 0)
-                        motfun = new ChFunction_ConstAcc(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3]);
+                        motfun = new ChFunctionConstAcc(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3]);
                     else
-                        motfun = new ChFunction_ConstAcc();
+                        motfun = new ChFunctionConstAcc();
                     break;
                 case "Cycloidal":
                     if (numericInputs.Length != 0)
-                        motfun = new ChFunction_Cycloidal(numericInputs[0], numericInputs[1]);
+                        motfun = new ChFunctionCycloidal(numericInputs[0], numericInputs[1]);
                     else
-                        motfun = new ChFunction_Cycloidal();
+                        motfun = new ChFunctionCycloidal();
                     break;
                 case "DoubleS":
                     if (numericInputs.Length != 0)
-                        motfun = new ChFunction_DoubleS(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3], numericInputs[4], numericInputs[5], numericInputs[6]);
+                        motfun = new ChFunctionConstJerk(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3], numericInputs[4], numericInputs[5], numericInputs[6]);
                     else
-                        motfun = new ChFunction_DoubleS();
+                        motfun = new ChFunctionConstJerk();
                     break;
                 case "Poly345":
                     if (numericInputs.Length != 0)
-                        motfun = new ChFunction_Poly345(numericInputs[0], numericInputs[1]);
+                        motfun = new ChFunctionPoly345(numericInputs[0], numericInputs[1]);
                     else
-                        motfun = new ChFunction_Poly345();
+                        motfun = new ChFunctionPoly345();
                     break;
                 case "Setpoint":
-                    motfun = new ChFunction_Setpoint(); // ???
+                    motfun = new ChFunctionSetpoint(); // ???
                     break;
                 case "Sine":
                     if (numericInputs.Length != 0)
-                        motfun = new ChFunction_Sine(numericInputs[0], numericInputs[1], numericInputs[2]);
+                        motfun = new ChFunctionSine(numericInputs[0], numericInputs[1], numericInputs[2]);
                     else
-                        motfun = new ChFunction_Sine();
+                        motfun = new ChFunctionSine();
                     break;
                 default:
                     throw new Exception("ChFunction type does not exist");
@@ -1197,52 +1177,52 @@ namespace ChronoEngineAddin
             {
                 case "LinearPosition":
                     motor = new ChLinkMotorLinearPosition();
-                    if (motorConstraints == "False")
-                    {
-                        chrono.CastToChLinkMotorLinearPosition(motor).SetGuideConstraint(false, false, false, false, false);
-                    }
+                    chrono.CastToChLinkMotorLinearPosition(motor).SetGuideConstraint(
+                        motorConstraints == "False" ?
+                        ChLinkMotorLinear.GuideConstraint.PRISMATIC :
+                        ChLinkMotorLinear.GuideConstraint.FREE);
                     break;
                 case "LinearSpeed":
                     motor = new ChLinkMotorLinearSpeed();
-                    if (motorConstraints == "False")
-                    {
-                        chrono.CastToChLinkMotorLinearSpeed(motor).SetGuideConstraint(false, false, false, false, false);
-                    }
+                    chrono.CastToChLinkMotorLinearSpeed(motor).SetGuideConstraint(
+                        motorConstraints == "False" ?
+                        ChLinkMotorLinear.GuideConstraint.PRISMATIC :
+                        ChLinkMotorLinear.GuideConstraint.FREE);
                     break;
                 case "LinearForce":
                     motor = new ChLinkMotorLinearForce();
-                    if (motorConstraints == "False")
-                    {
-                        chrono.CastToChLinkMotorLinearForce(motor).SetGuideConstraint(false, false, false, false, false);
-                    }
+                    chrono.CastToChLinkMotorLinearForce(motor).SetGuideConstraint(
+                        motorConstraints == "False" ?
+                        ChLinkMotorLinear.GuideConstraint.PRISMATIC :
+                        ChLinkMotorLinear.GuideConstraint.FREE);
                     break;
                 case "RotationAngle":
                     motor = new ChLinkMotorRotationAngle();
-                    if (motorConstraints == "False")
-                    {
-                        chrono.CastToChLinkMotorRotationAngle(motor).SetSpindleConstraint(false, false, false, false, false);
-                    }
+                    chrono.CastToChLinkMotorRotationAngle(motor).SetSpindleConstraint(
+                        motorConstraints == "False" ?
+                        ChLinkMotorRotation.SpindleConstraint.REVOLUTE :
+                        ChLinkMotorRotation.SpindleConstraint.FREE);
                     break;
                 case "RotationSpeed":
                     motor = new ChLinkMotorRotationSpeed();
-                    if (motorConstraints == "False")
-                    {
-                        chrono.CastToChLinkMotorRotationSpeed(motor).SetSpindleConstraint(false, false, false, false, false);
-                    }
+                    chrono.CastToChLinkMotorRotationSpeed(motor).SetSpindleConstraint(
+                        motorConstraints == "False" ?
+                        ChLinkMotorRotation.SpindleConstraint.REVOLUTE :
+                        ChLinkMotorRotation.SpindleConstraint.FREE);
                     break;
                 case "RotationTorque":
                     motor = new ChLinkMotorRotationTorque();
-                    if (motorConstraints == "False")
-                    {
-                        chrono.CastToChLinkMotorRotationTorque(motor).SetSpindleConstraint(false, false, false, false, false);
-                    }
+                    chrono.CastToChLinkMotorRotationTorque(motor).SetSpindleConstraint(
+                        motorConstraints == "False" ?
+                        ChLinkMotorRotation.SpindleConstraint.REVOLUTE :
+                        ChLinkMotorRotation.SpindleConstraint.FREE);
                     break;
                 default:
                     throw new Exception("ChLinkMotor type does not exist");
             }
 
             // rotate frame based on motorized degree of freedom of the link
-            ChQuaternionD motorQuaternion = new ChQuaternionD();
+            ChQuaterniond motorQuaternion = new ChQuaterniond();
             if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
             {
                 motorQuaternion = chrono.Q_ROTATE_X_TO_Z;
@@ -1253,7 +1233,7 @@ namespace ChronoEngineAddin
             }
 
             motor.SetName(motorName);
-            motor.Initialize(motbody1, motbody2, new ChFrameD(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
+            motor.Initialize(motbody1, motbody2, new ChFramed(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
             motor.SetMotorFunction(motfun);
             chrono_system.Add(motor);
         }
@@ -1286,7 +1266,7 @@ namespace ChronoEngineAddin
 
             // Create Chrono entities
             ChBodyAuxRef chSdaBody1 = m_bodylist[swModelDocExt.GetPersistReference3(selectedBody1)];
-            ChBodyAuxRef chSdaBody2;            
+            ChBodyAuxRef chSdaBody2;
 
             if (sdaBody2 == "SLDW_GROUND")
             {
@@ -1308,12 +1288,12 @@ namespace ChronoEngineAddin
             double[] amatr = (double[])tr1_abs.ArrayData;
 
             ChMarker marker1 = new ChMarker();
-            marker1.SetNameString(swFeat.Name);
+            marker1.SetName(swFeat.Name);
             newbody.AddMarker(marker1);
-            marker1.Impose_Abs_Coord(
-                new ChCoordsysD(
-                    new ChVectorD(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
-                    new ChQuaternionD(quat[0], quat[1], quat[2], quat[3]))
+            marker1.ImposeAbsoluteTransform(
+                new ChFramed(
+                    new ChVector3d(amatr[9] * ChScale.L, amatr[10] * ChScale.L, amatr[11] * ChScale.L),
+                    new ChQuaterniond(quat[0], quat[1], quat[2], quat[3]))
             );
 
             if (sdaType == "Translational")
@@ -1334,7 +1314,7 @@ namespace ChronoEngineAddin
             {
                 ChLinkRSDA rsda = new ChLinkRSDA();
                 rsda.SetName(sdaName);
-                rsda.Initialize(chSdaBody1, chSdaBody2, false, marker1.GetAbsCoord(), newmarker.GetAbsCoord());
+                rsda.Initialize(chSdaBody1, chSdaBody2, false, marker1.GetAbsFrame(), newmarker.GetAbsFrame());
                 rsda.SetSpringCoefficient(Convert.ToDouble(sdaSpringCoeff));
                 rsda.SetDampingCoefficient(Convert.ToDouble(sdaDampingCoeff));
                 rsda.SetActuatorTorque(Convert.ToDouble(sdaActuatorForce));

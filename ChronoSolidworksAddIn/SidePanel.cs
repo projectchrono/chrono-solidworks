@@ -49,6 +49,13 @@ namespace ChronoEngine_SwAddin
             InitializeComponent();
             this.m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.m_folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+
+            // Use customized culture info to avoid problems with different decimal separators
+            CultureInfo currentCI = System.Globalization.CultureInfo.CurrentCulture;
+            CultureInfo customCI = (CultureInfo)currentCI.Clone();
+            customCI.NumberFormat.NumberDecimalSeparator = ".";
+            customCI.NumberFormat.NumberGroupSeparator = " ";
+            Thread.CurrentThread.CurrentCulture = customCI;
         }
 
 
@@ -131,14 +138,14 @@ namespace ChronoEngine_SwAddin
                 }
                 else if ((sender as Button).Name.ToString() == "button_ExportToJson")
                 {
-                #if HAS_CHRONO_CSHARP
+#if HAS_CHRONO_CSHARP
                     ChModelExporterCSharp jsonExporter = new ChModelExporterCSharp(mSWintegration, save_dir_shapes, save_filename);
                     jsonExporter.SetGravityAcceleration(getGravityAcceleration());
                     jsonExporter.SetSolver(cbSolver.Text);
                     jsonExporter.Export();
-                #else
+#else
                     MessageBox.Show("Chono SolidWorks AddIn has been built without JSON support. Only a debugging log will be generated.")
-                #endif
+#endif
                 }
 
             }
@@ -149,14 +156,15 @@ namespace ChronoEngine_SwAddin
             try
             {
                 double[] gravity = new double[3];
-                gravity[0] = Convert.ToDouble(this.textGravAccX.Text);
-                gravity[1] = Convert.ToDouble(this.textGravAccY.Text);
-                gravity[2] = Convert.ToDouble(this.textGravAccZ.Text);
+                gravity[0] = Convert.ToDouble(nudGravAccX.Value);
+                gravity[1] = Convert.ToDouble(nudGravAccY.Value);
+                gravity[2] = Convert.ToDouble(nudGravAccZ.Value);
                 return gravity;
             }
-            catch{
+            catch
+            {
                 MessageBox.Show("Invalid gravity acceleration values. Using default values (0, -9.81, 0)");
-                    return new double[] {0, -9.81, 0};
+                return new double[] { 0, -9.81, 0 };
             }
         }
 
@@ -948,13 +956,13 @@ namespace ChronoEngine_SwAddin
             vis.AddLogo();
             vis.AddSkyBox();
             vis.AddTypicalLights();
-            vis.AddCamera(new ChVectorD(2, 2, 2));
+            vis.AddCamera(new ChVector3d(1, 1, 1));
             vis.AttachSystem(chrono_system);
 
-            chrono_system.SetSolverMaxIterations((int)nud_numIterations.Value);
+            chrono_system.GetSolver().AsIterative().SetMaxIterations((int)nud_numIterations.Value);
 
             var realtime_timer = new ChRealtimeStepTimer();
-            double timestep = (double)numeric_dt.Value;
+            double timestep = Convert.ToDouble(numeric_dt.Value);
 
             while (vis.Run())
             {
@@ -962,7 +970,10 @@ namespace ChronoEngine_SwAddin
                 vis.Render();
                 vis.EndScene();
 
-                chrono_system.DoStepDynamics(timestep);
+                if (!vis.GetUtilityFlag())
+                {
+                    chrono_system.DoStepDynamics(timestep);
+                }
                 realtime_timer.Spin(timestep);
             }
 

@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     // Set path to Chrono data directory
     SetChronoDataPath(CHRONO_DATA_DIR);
 
-    GetLog() << "Copyright (c) 2023 projectchrono.org\nChrono version: " << CHRONO_VERSION << "\n\n";
+    std::cout << "Copyright (c) 2023 projectchrono.org\nChrono version: " << CHRONO_VERSION << std::endl;
 
     
     // Create a Chrono physical system
@@ -42,9 +42,9 @@ int main(int argc, char* argv[]) {
     ImportSolidworksSystemCpp(sys, &motfun_map);
 
     sys.SetSolverType(ChSolver::Type::BARZILAIBORWEIN);
-    sys.SetSolverMaxIterations(400);
+    sys.GetSolver()->AsIterative()->SetMaxIterations(400);
 
-    // 4 - Create the Irrlicht visualization system
+    // Create the Irrlicht visualization system
     ChVisualSystemIrrlicht vis;
     vis.SetWindowSize(1024, 768);
     vis.SetWindowTitle("ChronoSolidworksImportCPP");
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
     vis.AddLogo();
     vis.AddSkyBox();
     vis.AddTypicalLights();
-    vis.AddCamera(ChVector<>(1, 1, 6), ChVector<>(0, 0, 0));
+    vis.AddCamera(ChVector3d(1, 1, 6), ChVector3d(0, 0, 0));
     vis.AttachSystem(&sys);
 
     vis.EnableCollisionShapeDrawing(true);

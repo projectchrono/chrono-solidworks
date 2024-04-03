@@ -239,10 +239,10 @@ namespace ChronoEngineAddin
         protected struct LinkParams
         {
             public bool swapAB_1;
-            public bool do_ChLinkMateXdistance;
+            public bool do_ChLinkMateDistanceZ;
             public double do_distance_val;
             public bool do_ChLinkMateParallel;
-            public bool do_parallel_flip;
+            public bool is_aligned;
             public bool do_ChLinkMateOrthogonal;
             public bool do_ChLinkMateSpherical;
             public bool do_ChLinkMatePointLine;
@@ -277,10 +277,10 @@ namespace ChronoEngineAddin
             link_params = new LinkParams
             {
                 swapAB_1 = false,
-                do_ChLinkMateXdistance = false,
+                do_ChLinkMateDistanceZ = false,
                 do_distance_val = 0,
                 do_ChLinkMateParallel = false,
-                do_parallel_flip = false,
+                is_aligned = true,
                 do_ChLinkMateOrthogonal = false,
                 do_ChLinkMateSpherical = false,
                 do_ChLinkMatePointLine = false,
@@ -402,7 +402,7 @@ namespace ChronoEngineAddin
             // but in some cases the latter fails. However, sometimes swMate.MateEntity(0).Reference.GetType() is null ReferenceType2 is ok,
             // so do the following trick:
 
-            // Original way -> problematic linking to 'origin' points
+            // NOTE: original way -> problematic linking to 'origin' points
             link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
             if (link_params.entity0_ref == (int)swSelectType_e.swSelNOTHING)
                 link_params.entity0_ref = swMate.MateEntity(0).ReferenceType2;
@@ -411,7 +411,7 @@ namespace ChronoEngineAddin
             if (link_params.entity1_ref == (int)swSelectType_e.swSelNOTHING)
                 link_params.entity1_ref = swMate.MateEntity(1).ReferenceType2;
 
-            //// Alternative way -> problematic linking to 'sketches'
+            //// NOTE: alternative way -> problematic linking to 'sketches'
             //if (swMate.MateEntity(0).ReferenceType != 0)
             //    link_params.entity0_ref = swMate.MateEntity(0).Reference.GetType();
             //else
@@ -466,190 +466,179 @@ namespace ChronoEngineAddin
                 link_params.dB = DirTransform(dBloc, ref trB);
             }
 
+            //
+            // MAPPING OF SOLIDWORKS MATES INTO CHRONO CONSTRAINTS
+            //
             if (swMateFeature.GetTypeName2() == "MateCoincident")
             {
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_FACE)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_VERTEX) &&
-                    (link_params.entity_1_as_VERTEX))
+                if (link_params.entity_0_as_VERTEX && link_params.entity_1_as_VERTEX)
                 {
                     link_params.do_ChLinkMateSpherical = true;
                 }
-                if ((link_params.entity_0_as_VERTEX) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_VERTEX && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_VERTEX))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_VERTEX)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.swapAB_1 = true;
                 }
-                if ((link_params.entity_0_as_VERTEX) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_VERTEX && link_params.entity_1_as_FACE)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_VERTEX))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_VERTEX)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                     link_params.swapAB_1 = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_FACE)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                     link_params.do_ChLinkMateOrthogonal = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_EDGE)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                     link_params.do_ChLinkMateOrthogonal = true;
                     link_params.swapAB_1 = true;
                 }
 
-                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
-                    link_params.do_parallel_flip = true;
+                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignALIGNED)
+                    link_params.is_aligned = true;
+                else if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
+                    link_params.is_aligned = false;
+           
+
             }
 
             if (swMateFeature.GetTypeName2() == "MateConcentric")
             {
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_VERTEX) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_VERTEX && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_VERTEX))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_VERTEX)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.swapAB_1 = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMatePointLine = true;
                     link_params.do_ChLinkMateParallel = true;
                     link_params.swapAB_1 = true;
                 }
 
-                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
-                    link_params.do_parallel_flip = true;
+                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignALIGNED)
+                    link_params.is_aligned = true;
+                else if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
+                    link_params.is_aligned = false;
+           
             }
 
             if (swMateFeature.GetTypeName2() == "MateParallel")
             {
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMateOrthogonal = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMateOrthogonal = true;
                     link_params.swapAB_1 = true;
                 }
 
-                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
-                    link_params.do_parallel_flip = true;
+                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignALIGNED)
+                    link_params.is_aligned = true;
+                else if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
+                    link_params.is_aligned = false;
+           
             }
 
             if (swMateFeature.GetTypeName2() == "MatePerpendicular")
             {
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMateOrthogonal = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_EDGE))
+                if ((link_params.entity_0_as_EDGE) & (link_params.entity_1_as_EDGE))
                 {
                     link_params.do_ChLinkMateOrthogonal = true;
                 }
-                if ((link_params.entity_0_as_EDGE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_EDGE && link_params.entity_1_as_FACE)
                 {
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_EDGE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_EDGE)
                 {
                     link_params.do_ChLinkMateParallel = true;
                     link_params.swapAB_1 = true;
                 }
 
-                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
-                    link_params.do_parallel_flip = true;
+                if (swMate.Alignment == (int)swMateAlign_e.swMateAlignALIGNED)
+                    link_params.is_aligned = true;
+                else if (swMate.Alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
+                    link_params.is_aligned = false;
+           
             }
 
             if (swMateFeature.GetTypeName2() == "MateDistanceDim")
             {
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_FACE && link_params.entity_1_as_FACE)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                     link_params.do_ChLinkMateParallel = true;
                 }
-                if ((link_params.entity_0_as_VERTEX) &&
-                    (link_params.entity_1_as_FACE))
+                if (link_params.entity_0_as_VERTEX && link_params.entity_1_as_FACE)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                 }
-                if ((link_params.entity_0_as_FACE) &&
-                    (link_params.entity_1_as_VERTEX))
+                if ((link_params.entity_0_as_FACE) && link_params.entity_1_as_VERTEX)
                 {
-                    link_params.do_ChLinkMateXdistance = true;
+                    link_params.do_ChLinkMateDistanceZ = true;
                     link_params.swapAB_1 = true;
                 }
-                //if ((link_params.entity_0_as_VERTEX) &&
-                //    (link_params.entity_1_as_VERTEX))
+                //if (link_params.entity_0_as_VERTEX && link_params.entity_1_as_VERTEX)
                 //{
                 //    // TODO: ChLinkDistance
                 //}
 
-                //***TO DO*** cases of distance line-vs-line and line-vs-vertex and vert-vert.
+                //TODO: cases of distance line-vs-line and line-vs-vertex and vert-vert.
                 //           Those will require another .cpp ChLinkMate specialized class(es).
 
                 // Get the imposed distance value, in SI units
@@ -667,7 +656,7 @@ namespace ChronoEngineAddin
                 }
                 else if (alignment == (int)swMateAlign_e.swMateAlignANTI_ALIGNED)
                 {
-                    link_params.do_parallel_flip = true;
+                    link_params.is_aligned = false;
                     if (!isflipped)
                         link_params.do_distance_val = -link_params.do_distance_val;
                 }

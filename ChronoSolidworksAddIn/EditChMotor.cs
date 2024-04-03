@@ -176,7 +176,7 @@ namespace ChronoEngineAddin
                 case "Poly345":
                     isInputSane = (numericInputs.Length == 2) ? true : false;
                     break;
-                case "ChFunction_Setpoint":
+                case "ChFunctionSetpoint":
                     isInputSane = (numericInputs.Length == 2) ? true : false;
                     break;
                 case "Sine":

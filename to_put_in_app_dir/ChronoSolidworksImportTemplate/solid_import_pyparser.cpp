@@ -36,7 +36,7 @@ using namespace io;
 using namespace gui;
 
 int main(int argc, char* argv[]) {
-    GetLog() << "Copyright (c) 2017 projectchrono.org\nChrono version: " << CHRONO_VERSION << "\n\n";
+    std::cout << "Copyright (c) 2017 projectchrono.org\nChrono version: " << CHRONO_VERSION << "\n\n";
 
     SetChronoDataPath(CHRONO_DATA_DIR);
 
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
                                          sys);  // note, don't type the .py suffix in filename..
 
     } catch (const ChException& myerror) {
-        GetLog() << myerror.what();
+        std::cout << myerror.what();
     }
 
     // From this point, your ChSystem has been populated with objects and
@@ -81,8 +81,8 @@ int main(int argc, char* argv[]) {
     // For example you can add other bodies, etc.
 
     // Log out all the names of the items inserted in the system:
-    GetLog() << "SYSTEM ITEMS: \n";
-    sys.ShowHierarchy(GetLog());
+    std::cout << "SYSTEM ITEMS: \n";
+    sys.ShowHierarchy(std::cout);
 
 
     //
