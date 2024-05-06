@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.18)
+cmake_policy(SET CMP0091 NEW)
 
 
 project(ChronoSolidworksImport)
@@ -61,6 +62,8 @@ endif()
 
 # ------------ CPP ---------------
 if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_CPP})
+  message(STATUS "Run exported C++ model from C++.")
+
   get_filename_component(SLW_EXPORT_DIR ${SOLIDWORKS_EXPORTED_FILE_CPP} DIRECTORY)
   get_filename_component(SLW_EXPORT_FILENAME_NOEXT ${SOLIDWORKS_EXPORTED_FILE_CPP} NAME_WLE)
 
@@ -81,13 +84,15 @@ if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_CPP})
   set(SLW_EXPORT_FILENAME_NOEXT_CPP ${SLW_EXPORT_FILENAME_NOEXT})
 
 else()
-  message(WARNING "File not found. Skipping CPP import for file: \"${SOLIDWORKS_EXPORTED_FILE_CPP}\".")
+  message(WARNING "C++ export file not found. Skipping CPP import for file: \"${SOLIDWORKS_EXPORTED_FILE_CPP}\".")
 
 endif()
 
 # ------------ JSON ---------------
 
 if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_JSON})
+  message(STATUS "Run exported JSON model from C++.")
+
   get_filename_component(SLW_EXPORT_DIR ${SOLIDWORKS_EXPORTED_FILE_JSON} DIRECTORY)
   get_filename_component(SLW_EXPORT_FILENAME_NOEXT ${SOLIDWORKS_EXPORTED_FILE_JSON} NAME_WLE)
 
@@ -107,13 +112,13 @@ if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_JSON})
   set(SLW_EXPORT_FILENAME_NOEXT_JSON ${SLW_EXPORT_FILENAME_NOEXT})
 
 else()
-  message(WARNING "File not found. Skipping JSON import for file: \"${SOLIDWORKS_EXPORTED_FILE_JSON}\".")
+  message(WARNING "JSON export file not found. Skipping JSON import for file: \"${SOLIDWORKS_EXPORTED_FILE_JSON}\".")
 endif()
 
 # ------------ PYTHON ---------------
 
 if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_PY})
-  message(STATUS "Run .")
+  message(STATUS "Run exported Python model from C++.")
 
   get_filename_component(SLW_EXPORT_DIR ${SOLIDWORKS_EXPORTED_FILE_PY} DIRECTORY)
   get_filename_component(SLW_EXPORT_FILENAME_NOEXT ${SOLIDWORKS_EXPORTED_FILE_PY} NAME_WLE)
@@ -151,8 +156,10 @@ if (EXISTS ${SOLIDWORKS_EXPORTED_FILE_PY})
 
   endif()
 
+  
+
 else()
-  message(WARNING "File not found. Skipping PyChrono and Python Parsing for file: \"${SOLIDWORKS_EXPORTED_FILE_PY}\".")
+  message(WARNING "Python export file not found. Skipping PyChrono and Python Parsing for file: \"${SOLIDWORKS_EXPORTED_FILE_PY}\".")
 
 endif()
 

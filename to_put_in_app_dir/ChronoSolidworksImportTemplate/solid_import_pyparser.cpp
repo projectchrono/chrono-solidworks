@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
         my_python.ImportSolidWorksSystem(SOLIDWORKS_EXPORTED_PY,
                                          sys);  // note, don't type the .py suffix in filename..
 
-    } catch (const ChException& myerror) {
+    } catch (std::exception myerror) {
         std::cout << myerror.what();
     }
 
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
     //
 
     sys.SetSolverType(ChSolver::Type::BARZILAIBORWEIN);
-    sys.SetSolverMaxIterations(400);
+    sys.GetSolver()->AsIterative()->SetMaxIterations(400);
 
     // Create the Irrlicht visualization system
     auto vis = chrono_types::make_shared<ChVisualSystemIrrlicht>();
@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
     vis->AddLogo();
     vis->AddSkyBox();
     vis->AddTypicalLights();
-    vis->AddCamera(ChVector<>(1, 1, 6), ChVector<>(0, 0, 0));
+    vis->AddCamera(ChVector3d(1, 1, 6), ChVector3d(0, 0, 0));
     vis->AttachSystem(&sys);
 
     vis->EnableCollisionShapeDrawing(true);
