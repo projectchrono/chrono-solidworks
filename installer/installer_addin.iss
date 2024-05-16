@@ -4,6 +4,7 @@
 #define MyAppVersion "current"
 #define MyAppPublisher "Alessandro Tasora"
 #define MyAppURL "https://projectchrono.org/"
+#define UpdatedToCommit "943359bc8a00b0e31af1423454539af4eb23e1f8"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -208,6 +209,8 @@ begin
   S := S + 'by using the Tools/Add-in... menu. '  + NewLine;
   S := S + 'In the Add-ins panel you should find an item called ' + NewLine;
   S := S + 'ChronoEngine SwAddin; set it as active by flagging it.' + NewLine;
+  S := S + NewLine;
+  S := S + 'Installer updated to commit: ' + '{#UpdatedToCommit}' + NewLine; 
 
   //if (mFoundSolidWorks = 1) then begin
   //  S := S + 'The SolidWorks dll directory is:' + NewLine;
