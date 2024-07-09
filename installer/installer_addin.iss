@@ -1,10 +1,10 @@
 //#include "ModifyPath.iss"
 
 #define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "v9.0"
+#define MyAppVersion "current"
 #define MyAppPublisher "DigitalDynamicsLab"
 #define MyAppURL "https://projectchrono.org/"
-#define UpdatedToCommit "943359bc8a00b0e31af1423454539af4eb23e1f8"
+#define UpdatedToChronoSWCommit "943359bc8a00b0e31af1423454539af4eb23e1f8"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -205,14 +205,13 @@ var
   S: String;
 begin
   { Fill the 'Ready Memo' with the normal settings and the custom settings }
-  S :=     'Assuming NET 4.0 framework is installed.' + NewLine + NewLine;
-  S := S + 'After the installation do this: launch SolidWorks,' + NewLine; 
-  S := S + 'then check that the Chrono add-in is activated ' + NewLine;
-  S := S + 'by using the Tools/Add-in... menu. '  + NewLine;
-  S := S + 'In the Add-ins panel you should find an item called ' + NewLine;
-  S := S + 'ChronoEngine SwAddin; set it as active by flagging it.' + NewLine;
+  S :=     'Assuming NET 4.8 framework is installed.' + NewLine + NewLine;
+  S := S + 'After the installation:' + NewLine;
+  S := S + '- launch SolidWorks;' + NewLine; 
+  S := S + '- in Tools/Add-in make sure Chrono add-in is activated;' + NewLine;
+  S := S + 'The ChronoEngine SwAddin should be now visible as a new panel.' + NewLine;
   S := S + NewLine;
-  S := S + 'Installer updated to commit: ' + '{#UpdatedToCommit}' + NewLine; 
+  S := S + 'Installer updated to Chrono SolidWorks commit: ' + '{#UpdatedToChronoSWCommit}' + NewLine; 
 
   //if (mFoundSolidWorks = 1) then begin
   //  S := S + 'The SolidWorks dll directory is:' + NewLine;
