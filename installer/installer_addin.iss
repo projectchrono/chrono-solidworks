@@ -4,7 +4,7 @@
 #define MyAppVersion "current"
 #define MyAppPublisher "DigitalDynamicsLab"
 #define MyAppURL "https://projectchrono.org/"
-#define UpdatedToChronoSWCommit "943359bc8a00b0e31af1423454539af4eb23e1f8"
+#define UpdatedToChronoSWCommit "da0674d525397152b75cfe23f763881f9523230e"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -29,6 +29,7 @@ ArchitecturesInstallIn64BitMode=x64
 [Files]
 Source: ..\..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\ChronoEngine.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\ChronoEngine_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\ChronoEngine_csharp_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\ChronoEngine_csharp_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
