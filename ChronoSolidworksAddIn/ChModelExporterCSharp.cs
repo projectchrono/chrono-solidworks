@@ -1147,7 +1147,7 @@ namespace ChronoEngineAddin
                     else
                         motfun = new ChFunctionCycloidal();
                     break;
-                case "DoubleS":
+                case "ConstJerk":
                     if (numericInputs.Length != 0)
                         motfun = new ChFunctionConstJerk(numericInputs[0], numericInputs[1], numericInputs[2], numericInputs[3], numericInputs[4], numericInputs[5], numericInputs[6]);
                     else

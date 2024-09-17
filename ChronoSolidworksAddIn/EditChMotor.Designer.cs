@@ -85,7 +85,7 @@
             "Const",
             "ConstAcc",
             "Cycloidal",
-            "DoubleS",
+            "ConstJerk",
             "Poly345",
             "Setpoint",
             "Sine"});

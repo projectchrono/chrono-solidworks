@@ -170,7 +170,7 @@ namespace ChronoEngineAddin
                 case "Cycloidal":
                     isInputSane = (numericInputs.Length == 2) ? true : false;
                     break;
-                case "DoubleS":
+                case "ConstJerk":
                     isInputSane = (numericInputs.Length == 7) ? true : false;
                     break;
                 case "Poly345":
