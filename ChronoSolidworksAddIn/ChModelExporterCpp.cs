@@ -1155,7 +1155,7 @@ namespace ChronoEngineAddin
                         string masterBodyName;
                         if (motorBody2 == "SLDW_GROUND")
                         {
-                            masterBodyName = "SLDW_GROUND";
+                            masterBodyName = "body_0";
                         }
                         else
                         {
