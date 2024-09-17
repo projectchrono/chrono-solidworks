@@ -1221,19 +1221,8 @@ namespace ChronoEngineAddin
                     throw new Exception("ChLinkMotor type does not exist");
             }
 
-            // rotate frame based on motorized degree of freedom of the link
-            ChQuaterniond motorQuaternion = new ChQuaterniond();
-            if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
-            {
-                motorQuaternion = chrono.Q_ROTATE_X_TO_Z;
-            }
-            else
-            {
-                motorQuaternion = chrono.QUNIT;
-            }
-
             motor.SetName(motorName);
-            motor.Initialize(motbody1, motbody2, new ChFramed(newmarker.GetAbsFrame().GetPos(), chrono.Qcross(newmarker.GetAbsFrame().GetRot(), motorQuaternion)));
+            motor.Initialize(motbody1, motbody2, new ChFramed(newmarker.GetAbsFrame().GetPos(), newmarker.GetAbsFrame().GetRot()));
             motor.SetMotorFunction(motfun);
             chrono_system.Add(motor);
         }

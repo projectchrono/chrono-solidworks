@@ -1050,16 +1050,13 @@ namespace ChronoEngineAddin
                         string chMotorClassName = "ChLinkMotor" + motorType;
                         string chMotorConstraintName = "";
                         string chFunctionClassName = "ChFunction" + motorMotionlaw;
-                        string motorQuaternion = "";
 
                         if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
                         {
-                            motorQuaternion = "chrono.Q_ROTATE_X_TO_Z";
                             chMotorConstraintName = "GuideConstraint";
                         }
                         else
                         {
-                            motorQuaternion = "chrono.QUNIT";
                             chMotorConstraintName = "SpindleConstraint";
                         }
 
@@ -1068,13 +1065,12 @@ namespace ChronoEngineAddin
                         m_asciiText += String.Format(bz, motorInstanceName + " = chrono." + chMotorClassName + "()\n");
                         m_asciiText += String.Format(bz, motorInstanceName + ".SetName(\"" + motorName + "\")\n");
                         m_asciiText += motorInstanceName + ".Initialize(" + slaveBodyName + ", " + masterBodyName
-                                    + ",chrono.ChFramed(" + markername + ".GetAbsFrame().GetPos()," + markername + ".GetAbsFrame().GetRot()*" + motorQuaternion + "))\n";
-                        m_asciiText += "exported_items.append(" + motorInstanceName  + ")\n\n";
-
+                                    + ",chrono.ChFramed(" + markername + ".GetAbsFrame().GetPos()," + markername + ".GetAbsFrame().GetRot()" + "))\n";
                         if (motorConstraints == "False")
                         {
                             m_asciiText += motorInstanceName + ".Set" + chMotorConstraintName + "(False, False, False, False, False)\n";
                         }
+                        m_asciiText += "exported_items.append(" + motorInstanceName  + ")\n\n";
 
                         String motfunInstanceName = "motfun_" + nbody + "_" + nmarker;
                         m_asciiText += $"{motfunInstanceName} = chrono.{chFunctionClassName}({motlawInputs})\n"; // define motion law with inputs, if given

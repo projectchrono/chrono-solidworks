@@ -42,6 +42,8 @@ namespace ChronoEngineAddin
             m_asciiTextHeader += "#include \"chrono/physics/ChSystem.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChLinkTSDA.h\"\n";
             m_asciiTextHeader += "#include \"chrono/physics/ChLinkRSDA.h\"\n";
+            m_asciiTextHeader += "\n";
+
 
             m_asciiTextHeader += "/// Function to import Solidworks assembly directly into Chrono ChSystem.\n";
             m_asciiTextHeader += "void ImportSolidworksSystemCpp(chrono::ChSystem& system, std::unordered_map<std::string, std::shared_ptr<chrono::ChFunction>>* motfun_map = nullptr);\n\n";
@@ -1167,16 +1169,13 @@ namespace ChronoEngineAddin
                         string chMotorClassName = "ChLinkMotor" + motorType;
                         string chMotorConstraintName = "";
                         string chFunctionClassName = "ChFunction" + motorMotionlaw;
-                        string motorQuaternion = "";
 
                         if (motorType == "LinearPosition" || motorType == "LinearSpeed" || motorType == "LinearForce")
                         {
-                            motorQuaternion = "chrono::Q_ROTATE_X_TO_Z";
                             chMotorConstraintName = "GuideConstraint";
                         }
                         else
                         {
-                            motorQuaternion = "chrono::QUNIT";
                             chMotorConstraintName = "SpindleConstraint";
                         }
 
@@ -1185,7 +1184,7 @@ namespace ChronoEngineAddin
                         m_asciiTextCpp += String.Format(bz, "auto {0} = chrono_types::make_shared<chrono::" + chMotorClassName + ">();\n", motorInstanceName);
                         m_asciiTextCpp += String.Format(bz, "{0}->SetName(\"{1}\");\n", motorInstanceName, motorName);
                         m_asciiTextCpp += String.Format(bz,
-                            "{0}->Initialize({1},{2},chrono::ChFramed(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()*" + motorQuaternion + "));\n",
+                            "{0}->Initialize({1},{2},chrono::ChFramed(" + markername + "->GetAbsFrame().GetPos()," + markername + "->GetAbsFrame().GetRot()" + "));\n",
                             motorInstanceName,
                             slaveBodyName,
                             masterBodyName);
