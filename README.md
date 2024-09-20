@@ -1,5 +1,7 @@
 CHRONO::SOLIDWORKS
 ==================
+![chrono_solidworks_github_1](http://projectchrono.org/assets/manual/chrono_solidworks_github_1.png) ![chrono_solidworks_github_2](http://projectchrono.org/assets/manual/chrono_solidworks_github_2.png)
+![chrono_solidworks_github_3](http://projectchrono.org/assets/manual/chrono_solidworks_github_3.png)
 
 Chrono::SolidWorks is an add-in for [SolidWorks](https://www.solidworks.com) that allows to simulate the CAD models by leveraging the capabilities of the [Chrono](https://www.projectchrono.org) multibody library.  
 The models created can be also exported for further processing directly in Chrono, either in C++, Python, C# or through JSON files.
