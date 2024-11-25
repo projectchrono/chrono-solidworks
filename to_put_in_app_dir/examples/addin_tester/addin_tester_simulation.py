@@ -1,13 +1,15 @@
-'''
-Test simulation to check integrity of Chrono::Solidworks Addin exporter
-with respect to:
-    1) bodies
-    2) links
-    3) visual shapes, colors, transparencies
-    4) collision shapes
-    5) markers
-    6) rigid sub-assemblies, flexible sub-assemblies
-'''
+#-------------------------------------------------------------------------------
+#
+# Test simulation to check integrity of Chrono::Solidworks Addin exporter
+# with respect to:
+#     1) bodies
+#     2) links
+#     3) visual shapes, colors, transparencies
+#     4) collision shapes
+#     5) markers
+#     6) rigid sub-assemblies, flexible sub-assemblies
+#
+#-------------------------------------------------------------------------------
 
 import pychrono as chrono
 import pychrono.irrlicht as chronoirr
