@@ -4,7 +4,7 @@
 #define MyAppVersion "current"
 #define MyAppPublisher "DigitalDynamicsLab"
 #define MyAppURL "https://projectchrono.org/"
-#define UpdatedToChronoSWCommit "da0674d525397152b75cfe23f763881f9523230e"
+#define UpdatedToChronoSWCommit "11960288f9b301ea856dc5f4a1fec0d100071720"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -28,10 +28,10 @@ ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: ..\..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\..\chrono-solidworks_install\ChronoEngine.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\..\chrono-solidworks_install\ChronoEngine_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\..\chrono-solidworks_install\ChronoEngine_csharp_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\..\chrono-solidworks_install\ChronoEngine_csharp_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\Chrono_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\Chrono_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\Chrono_csharp_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\Chrono_csharp_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
@@ -208,11 +208,11 @@ begin
   { Fill the 'Ready Memo' with the normal settings and the custom settings }
   S :=     'Assuming NET 4.8 framework is installed.' + NewLine + NewLine;
   S := S + 'After the installation:' + NewLine;
-  S := S + '- launch SolidWorks;' + NewLine; 
-  S := S + '- in Tools/Add-in make sure Chrono add-in is activated;' + NewLine;
+  S := S + '- launch SolidWorks' + NewLine; 
+  S := S + '- in Tools/Add-in make sure Chrono add-in is activated' + NewLine;
   S := S + 'The ChronoEngine SwAddin should be now visible as a new panel.' + NewLine;
   S := S + NewLine;
-  S := S + 'Installer updated to Chrono SolidWorks commit: ' + '{#UpdatedToChronoSWCommit}' + NewLine; 
+  S := S + 'Installer updated to Chrono::SolidWorks commit: ' + '{#UpdatedToChronoSWCommit}' + NewLine; 
 
   //if (mFoundSolidWorks = 1) then begin
   //  S := S + 'The SolidWorks dll directory is:' + NewLine;
