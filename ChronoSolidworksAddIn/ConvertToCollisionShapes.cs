@@ -16,11 +16,25 @@ namespace ChronoEngine_SwAddin
 {
     class ConvertToCollisionShapes
     {
+        // Utility function to get center point of a planar face.
+        public static Vector3D GetFaceCenter(Face2 face)
+        {
+            Vector3D center = new Vector3D(0, 0, 0);
+            foreach (Edge edge in face.GetEdges())
+            {
+                double[] vtx1 = edge.GetStartVertex().GetPoint();
+                double[] vtx2 = edge.GetEndVertex().GetPoint();
+                center += new Vector3D(vtx1[0], vtx1[1], vtx1[2]);
+                center += new Vector3D(vtx2[0], vtx2[1], vtx2[2]);
+            }
+            center /= 2 * face.GetEdgeCount();
+            return center;
+        }
+
         // Try to see if the SolidWorks Body2 shape is a pure sphere.
         // If so,return true. If not a sphere, return false.
         // If it is a sphere, in 'radius' and 'center' one can get 
         // the sphere data.
-
         public static bool SWbodyToSphere(Body2 swBody,
                                           ref double radius, 
                                           ref Point3D center)
@@ -225,7 +239,6 @@ namespace ChronoEngine_SwAddin
         // If so,return true. If not a cylinder, return false.
         // If it is a cylinder, in 'P1' and 'P2' and 'radius' one can get 
         // the two ends and the radius.
-
         public static bool SWbodyToCylinder(Body2 swBody,
                                           ref Point3D P1, ref Point3D P2,
                                           ref double radius)
@@ -307,15 +320,10 @@ namespace ChronoEngine_SwAddin
             return SWbodyToCylinder(swBody, ref pA, ref pB, ref rad);
         }
 
-
-
-
         // Try to see if the SolidWorks Body2 shape is a pure convex hull.
         // If so,return true. If not a convex hull, return false.
         // If it is a convex hull, in 'vertexes' get all the points.
-
-        public static bool SWbodyToConvexHull(Body2 swBody,
-                                          ref Point3D[] vertexes, int maxvertexes)
+        public static bool SWbodyToConvexHull(Body2 swBody, ref Point3D[] vertexes, int maxvertexes)
         {
             bool ishull = false;
 
@@ -360,14 +368,31 @@ namespace ChronoEngine_SwAddin
                 if (swBody.GetVertexCount() + swBody.GetFaceCount() - swBody.GetEdgeCount() != 2)
                     return false;
 
+                // rejective test 4: dihedral angle
+                for (int i = 0; i < swBody.GetEdgeCount(); i++)
+                {
+                    Edge edge = (Edge)medges[i];
+                    Face2 face1 = edge.GetTwoAdjacentFaces2()[0];
+                    Face2 face2 = edge.GetTwoAdjacentFaces2()[1];
+
+                    Vector3D center1 = GetFaceCenter(face1);
+                    Vector3D center2 = GetFaceCenter(face2);
+                    Vector3D normal2 = new Vector3D(face2.Normal[0], face2.Normal[1], face2.Normal[2]);
+
+                    // Check if a point of adjacent face 1 is on the same side of a point of adjacent face 2
+                    double dot = Vector3D.DotProduct(Vector3D.Subtract(center1, center2), normal2);
+                    if (dot > 0)
+                        return false;
+                }
+
+
                 if (ishull)
                 {
                     vertexes = new Point3D[swBody.GetVertexCount()];
                     for (int ip = 0; ip < swBody.GetVertexCount(); ip++)
                     {
-                        vertexes[ip] = new  Point3D(((double[])((Vertex)mverts[ip]).GetPoint())[0],
-                                                    ((double[])((Vertex)mverts[ip]).GetPoint())[1],
-                                                    ((double[])((Vertex)mverts[ip]).GetPoint())[2]);  
+                        double[] pt = ((Vertex)mverts[ip]).GetPoint();
+                        vertexes[ip] = new Point3D(pt[0], pt[1], pt[2]);
                     }
                 }
             }
@@ -381,8 +406,6 @@ namespace ChronoEngine_SwAddin
             Point3D[] vertexes = null;
             return SWbodyToConvexHull(swBody, ref vertexes, maxvertexes);
         }
-
-
 
     }
 }
