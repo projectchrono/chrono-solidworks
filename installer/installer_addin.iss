@@ -4,7 +4,7 @@
 #define MyAppVersion "current"
 #define MyAppPublisher "DigitalDynamicsLab"
 #define MyAppURL "https://projectchrono.org/"
-#define UpdatedToChronoSWCommit "11960288f9b301ea856dc5f4a1fec0d100071720"
+#define UpdatedToChronoSWCommit "60653586ddb851679f3e0c972cc1e90960ae1edb"
 
 [Setup]
 ShowLanguageDialog=yes

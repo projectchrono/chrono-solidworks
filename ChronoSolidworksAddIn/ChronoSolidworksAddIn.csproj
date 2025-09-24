@@ -135,8 +135,14 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\AngleSet.cs">
       <Link>Chrono\AngleSet.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\BoxShape.cs">
+      <Link>Chrono\BoxShape.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\BroadphaseCallback.cs">
       <Link>Chrono\BroadphaseCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\BushingData.cs">
+      <Link>Chrono\BushingData.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\CameraVerticalDir.cs">
       <Link>Chrono\CameraVerticalDir.cs</Link>
@@ -201,6 +207,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChBodyFrame.cs">
       <Link>Chrono\ChBodyFrame.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChBodyGeometry.cs">
+      <Link>Chrono\ChBodyGeometry.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChBox.cs">
       <Link>Chrono\ChBox.cs</Link>
     </Compile>
@@ -261,6 +270,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChCollisionShapeEllipsoid.cs">
       <Link>Chrono\ChCollisionShapeEllipsoid.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChCollisionShapeInstance.cs">
+      <Link>Chrono\ChCollisionShapeInstance.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChCollisionShapePath2D.cs">
       <Link>Chrono\ChCollisionShapePath2D.cs</Link>
     </Compile>
@@ -294,6 +306,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChColor.cs">
       <Link>Chrono\ChColor.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChColormap.cs">
+      <Link>Chrono\ChColormap.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChCone.cs">
       <Link>Chrono\ChCone.cs</Link>
     </Compile>
@@ -302,9 +317,6 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChContactable.cs">
       <Link>Chrono\ChContactable.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChContactable1vars6.cs">
-      <Link>Chrono\ChContactable1vars6.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChContactContainer.cs">
       <Link>Chrono\ChContactContainer.cs</Link>
@@ -525,6 +537,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChIndexedParticles.cs">
       <Link>Chrono\ChIndexedParticles.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChIntAABB.cs">
+      <Link>Chrono\ChIntAABB.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChIntegrable.cs">
       <Link>Chrono\ChIntegrable.cs</Link>
     </Compile>
@@ -572,6 +587,9 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChIterativeSolverVI.cs">
       <Link>Chrono\ChIterativeSolverVI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChJoint.cs">
+      <Link>Chrono\ChJoint.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChLine.cs">
       <Link>Chrono\ChLine.cs</Link>
@@ -945,6 +963,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChObj.cs">
       <Link>Chrono\ChObj.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChOutput.cs">
+      <Link>Chrono\ChOutput.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChParticleBase.cs">
       <Link>Chrono\ChParticleBase.cs</Link>
     </Compile>
@@ -1299,8 +1320,20 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChTriangleMeshSoup.cs">
       <Link>Chrono\ChTriangleMeshSoup.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChTSDAGeometry.cs">
+      <Link>Chrono\ChTSDAGeometry.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChUniformDistribution.cs">
       <Link>Chrono\ChUniformDistribution.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVector2d.cs">
+      <Link>Chrono\ChVector2d.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVector2f.cs">
+      <Link>Chrono\ChVector2f.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVector2i.cs">
+      <Link>Chrono\ChVector2i.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVector3d.cs">
       <Link>Chrono\ChVector3d.cs</Link>
@@ -1349,6 +1382,9 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVisualShapeFEA.cs">
       <Link>Chrono\ChVisualShapeFEA.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVisualShapeInstance.cs">
+      <Link>Chrono\ChVisualShapeInstance.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChVisualShapeLine.cs">
       <Link>Chrono\ChVisualShapeLine.cs</Link>
@@ -1413,14 +1449,23 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ChZhangDistribution.cs">
       <Link>Chrono\ChZhangDistribution.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\CollisionShapeInstance.cs">
+      <Link>Chrono\CollisionShapeInstance.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ColorCallback.cs">
       <Link>Chrono\ColorCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ConeShape.cs">
+      <Link>Chrono\ConeShape.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ContactsDrawMode.cs">
       <Link>Chrono\ContactsDrawMode.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ContactsLabelMode.cs">
       <Link>Chrono\ContactsLabelMode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ConvexHullsShape.cs">
+      <Link>Chrono\ConvexHullsShape.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\CScreenQuad.cs">
       <Link>Chrono\CScreenQuad.cs</Link>
@@ -1430,6 +1475,9 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\CustomCollisionCallback.cs">
       <Link>Chrono\CustomCollisionCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\CylinderShape.cs">
+      <Link>Chrono\CylinderShape.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\DepthShaderCB.cs">
       <Link>Chrono\DepthShaderCB.cs</Link>
@@ -1521,14 +1569,14 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\E_TRANSFORMATION_STATE.cs">
       <Link>Chrono\E_TRANSFORMATION_STATE.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\Files.cs">
+      <Link>Chrono\Files.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\float_ptr.cs">
       <Link>Chrono\float_ptr.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ForceFunctor.cs">
       <Link>Chrono\ForceFunctor.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\HeightColorCallback.cs">
-      <Link>Chrono\HeightColorCallback.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ICameraSceneNode.cs">
       <Link>Chrono\ICameraSceneNode.cs</Link>
@@ -1581,6 +1629,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\Level.cs">
       <Link>Chrono\Level.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\LineShape.cs">
+      <Link>Chrono\LineShape.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\LinkDrawMode.cs">
       <Link>Chrono\LinkDrawMode.cs</Link>
     </Compile>
@@ -1632,6 +1683,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SDefineExp.cs">
       <Link>Chrono\SDefineExp.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SegmentShape.cs">
+      <Link>Chrono\SegmentShape.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SEvent.cs">
       <Link>Chrono\SEvent.cs</Link>
     </Compile>
@@ -1640,9 +1694,6 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\ShadowShaderCB.cs">
       <Link>Chrono\ShadowShaderCB.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\ShapeInstance.cs">
-      <Link>Chrono\ShapeInstance.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SJoystickEvent.cs">
       <Link>Chrono\SJoystickEvent.cs</Link>
@@ -1668,6 +1719,12 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SOverrideMaterial.cs">
       <Link>Chrono\SOverrideMaterial.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SphereShape.cs">
+      <Link>Chrono\SphereShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SpringShape.cs">
+      <Link>Chrono\SpringShape.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SShadowLight.cs">
       <Link>Chrono\SShadowLight.cs</Link>
     </Compile>
@@ -1689,8 +1746,14 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChColor.cs">
       <Link>Chrono\SWIGTYPE_p_ChColor.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChConstraintTuple.cs">
+      <Link>Chrono\SWIGTYPE_p_ChConstraintTuple.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChConstraintTwoBodies.cs">
       <Link>Chrono\SWIGTYPE_p_ChConstraintTwoBodies.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChContactMethod.cs">
+      <Link>Chrono\SWIGTYPE_p_ChContactMethod.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChFrameT_t.cs">
       <Link>Chrono\SWIGTYPE_p_ChFrameT_t.cs</Link>
@@ -1709,6 +1772,9 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChMatrix44T_t.cs">
       <Link>Chrono\SWIGTYPE_p_ChMatrix44T_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChOutput.cs">
+      <Link>Chrono\SWIGTYPE_p_ChOutput.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChProperty.cs">
       <Link>Chrono\SWIGTYPE_p_ChProperty.cs</Link>
@@ -1752,14 +1818,8 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChVariablesShaft.cs">
       <Link>Chrono\SWIGTYPE_p_ChVariablesShaft.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChVariableTupleCarrier_1varsT_6_t__type_constraint_tuple.cs">
-      <Link>Chrono\SWIGTYPE_p_ChVariableTupleCarrier_1varsT_6_t__type_constraint_tuple.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChVector2d.cs">
-      <Link>Chrono\SWIGTYPE_p_ChVector2d.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChVector2f.cs">
-      <Link>Chrono\SWIGTYPE_p_ChVector2f.cs</Link>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_ChVisualMaterialSharedPtr.cs">
+      <Link>Chrono\SWIGTYPE_p_ChVisualMaterialSharedPtr.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_core__dimension2dT_irr__u32_t.cs">
       <Link>Chrono\SWIGTYPE_p_core__dimension2dT_irr__u32_t.cs</Link>
@@ -2268,6 +2328,12 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_ChNodeFEAbase_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChNodeFEAbase_t.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChBody_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChBody_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChJoint__BushingData_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChJoint__BushingData_t.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChParticleCloud__ColorCallback_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChParticleCloud__ColorCallback_t.cs</Link>
     </Compile>
@@ -2280,11 +2346,20 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChStaticNonLinearRheonomicAnalysis__IterationCallback_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChStaticNonLinearRheonomicAnalysis__IterationCallback_t.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_chrono__utils__ChTSDAGeometry__SegmentShape_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__utils__ChTSDAGeometry__SegmentShape_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_chrono__utils__ChTSDAGeometry__SpringShape_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__utils__ChTSDAGeometry__SpringShape_t.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_ChShaft_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChShaft_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_ChSystemDescriptor_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChSystemDescriptor_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_ChVisualShape_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChVisualShape_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__shared_ptrT_RSDATorqueFunctor_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_RSDATorqueFunctor_t.cs</Link>
@@ -2307,11 +2382,20 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__unique_ptrT_chrono__ChSystemSMC__ChContactForceTorqueSMC_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__unique_ptrT_chrono__ChSystemSMC__ChContactForceTorqueSMC_t.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__unordered_mapT_chrono__ChColormap__Type_chrono__ChColormap__Files_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__unordered_mapT_chrono__ChColormap__Type_chrono__ChColormap__Files_t.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_ChColor_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_ChColor_t.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_ChContactMaterialData_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_ChContactMaterialData_t.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_ChProperty_p_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_ChProperty_p_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_chrono__ChCollisionShapeInstance_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChCollisionShapeInstance_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_chrono__ChColor_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChColor_t.cs</Link>
@@ -2328,11 +2412,14 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_chrono__ChTriangle_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChTriangle_t.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_chrono__ChVisualShapeInstance_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__ChVisualShapeInstance_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_chrono__utils__ChBodyGeometry__ConeShape_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_chrono__utils__ChBodyGeometry__ConeShape_t.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_ChVariables_p_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_ChVariables_p_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_ChVector2d_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_ChVector2d_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_double_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_double_t.cs</Link>
@@ -2342,9 +2429,6 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__arrayT_int_4_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__arrayT_int_4_t_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__pairT_std__shared_ptrT_chrono__ChVisualShape_t_chrono__ChFrameT_double_t_t_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__pairT_std__shared_ptrT_chrono__ChVisualShape_t_chrono__ChFrameT_double_t_t_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChContactSurface_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChContactSurface_t_t.cs</Link>
@@ -2367,8 +2451,29 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLine_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLine_t_t.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkMotorLinear_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkMotorLinear_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkMotorRotation_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkMotorRotation_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkRSDA_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkRSDA_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkTSDA_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLinkTSDA_t_t.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLoadBase_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLoadBase_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLoadBodyBody_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChLoadBodyBody_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChShaftsCouple_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChShaftsCouple_t_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChShaft_t_t.cs">
+      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChShaft_t_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChVisualShapeFEA_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChVisualShapeFEA_t_t.cs</Link>
@@ -2412,6 +2517,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\TorqueFunctor.cs">
       <Link>Chrono\TorqueFunctor.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\TrimeshShape.cs">
+      <Link>Chrono\TrimeshShape.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\TSDAForceFunctor.cs">
       <Link>Chrono\TSDAForceFunctor.cs</Link>
     </Compile>
@@ -2430,8 +2538,14 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector3di.cs">
       <Link>Chrono\vector3di.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_BoxShape.cs">
+      <Link>Chrono\vector_BoxShape.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChBody.cs">
       <Link>Chrono\vector_ChBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChContactMaterialData.cs">
+      <Link>Chrono\vector_ChContactMaterialData.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChCoordsysd.cs">
       <Link>Chrono\vector_ChCoordsysd.cs</Link>
@@ -2451,6 +2565,15 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChPhysicsItem.cs">
       <Link>Chrono\vector_ChPhysicsItem.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChVector2d.cs">
+      <Link>Chrono\vector_ChVector2d.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChVector2f.cs">
+      <Link>Chrono\vector_ChVector2f.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChVector2i.cs">
+      <Link>Chrono\vector_ChVector2i.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChVector3d.cs">
       <Link>Chrono\vector_ChVector3d.cs</Link>
     </Compile>
@@ -2460,20 +2583,38 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ChVector3i.cs">
       <Link>Chrono\vector_ChVector3i.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ShapeInstance.cs">
-      <Link>Chrono\vector_ShapeInstance.cs</Link>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_CollisionShapeInstance.cs">
+      <Link>Chrono\vector_CollisionShapeInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_ConvexHullsShape.cs">
+      <Link>Chrono\vector_ConvexHullsShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_CylinderShape.cs">
+      <Link>Chrono\vector_CylinderShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_LineShape.cs">
+      <Link>Chrono\vector_LineShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_SphereShape.cs">
+      <Link>Chrono\vector_SphereShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_TrimeshShape.cs">
+      <Link>Chrono\vector_TrimeshShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_vector_ChVector2d.cs">
+      <Link>Chrono\vector_vector_ChVector2d.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\vector_vector_ChVector3d.cs">
       <Link>Chrono\vector_vector_ChVector3d.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\mix\VelocityColorCallback.cs">
-      <Link>Chrono\VelocityColorCallback.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\VisibilityCallback.cs">
       <Link>Chrono\VisibilityCallback.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\mix\VisualizationCallback.cs">
       <Link>Chrono\VisualizationCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\mix\VisualizationType.cs">
+      <Link>Chrono\VisualizationType.cs</Link>
     </Compile>
     <Compile Include="ChModelExporter.cs" />
     <Compile Include="ChModelExporterCpp.cs" />
@@ -2582,6 +2723,18 @@
     <Content Include="..\..\chrono_build\bin\Release\Chrono_irrlicht.dll">
       <Link>Chrono_irrlicht.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\chrono_build\chrono_csharp\mix\ChModuleCore_csharpCSHARP_wrap.cxx">
+      <Link>Chrono\ChModuleCore_csharpCSHARP_wrap.cxx</Link>
+    </Content>
+    <Content Include="..\..\chrono_build\chrono_csharp\mix\ChModuleCore_csharpCSHARP_wrap.h">
+      <Link>Chrono\ChModuleCore_csharpCSHARP_wrap.h</Link>
+    </Content>
+    <Content Include="..\..\chrono_build\chrono_csharp\mix\ChModuleIrrlicht_csharpCSHARP_wrap.cxx">
+      <Link>Chrono\ChModuleIrrlicht_csharpCSHARP_wrap.cxx</Link>
+    </Content>
+    <Content Include="..\..\chrono_build\chrono_csharp\mix\ChModuleIrrlicht_csharpCSHARP_wrap.h">
+      <Link>Chrono\ChModuleIrrlicht_csharpCSHARP_wrap.h</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

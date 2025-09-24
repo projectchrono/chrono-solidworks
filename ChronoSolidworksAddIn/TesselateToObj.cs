@@ -59,7 +59,7 @@ namespace ChronoEngine_SwAddin
                 int iNumTesselatedBodies = 0;
 
 
-                if (iNumBodies >0)
+                if (iNumBodies > 0)
                     asciitext += "# Wavefront .OBJ file for tesselated shape: " + swComp.Name2 + " path: " + swModel.GetPathName() + "\n\n";
 
                 int group_vstride = 0;
@@ -78,16 +78,10 @@ namespace ChronoEngine_SwAddin
                     if (nBodyType == (int)swBodyType_e.swSolidBody)
                         iNumSolidBodies++;
 
-                    if ((nBodyType == (int)swBodyType_e.swSheetBody ||
-                         nBodyType == (int)swBodyType_e.swSolidBody) &&
+                    if ((nBodyType == (int)swBodyType_e.swSheetBody || nBodyType == (int)swBodyType_e.swSolidBody) &&
                          (
-                          (for_visualshapes && 
-                             (!swBody.Name.StartsWith("COLL.") && 
-                             swBody.Visible)) 
-                             ||
-                          (for_collshapes &&
-                             (swBody.Name.StartsWith("COLLMESH"))
-                          )
+                          (for_visualshapes && (!swBody.Name.StartsWith("COLL.") && swBody.Visible)) ||  
+                          (for_collshapes && swBody.Name.StartsWith("COLLMESH"))
                          )
                        )
                     {
@@ -96,7 +90,7 @@ namespace ChronoEngine_SwAddin
                         CultureInfo bz = new CultureInfo("en-BZ");
 
                         //asciitext += "g body_" + iNumTesselatedBodies + "\n";
-                        textbuilder.Append("g body_" + iNumTesselatedBodies + "\n");            
+                        textbuilder.Append("g body_" + iNumTesselatedBodies + "\n");
 
                         Face2 swFace = null;
                         Tessellation swTessellation = null;
@@ -130,7 +124,7 @@ namespace ChronoEngine_SwAddin
                         if (swProgress != null)
                             swProgress.UpdateTitle("Exporting (tesselate process) ...");
                         bResult = swTessellation.Tessellate();
-                        
+
                         // Get the number of vertices and facets
                         //System.Windows.Forms.MessageBox.Show("Body n." + j + " vert.num=" + swTessellation.GetVertexCount());
                         //Debug.Print("Number of vertices: " + swTessellation.GetVertexCount());
@@ -153,12 +147,12 @@ namespace ChronoEngine_SwAddin
 
                         for (int iv = 0; iv < numv; iv++)
                         {
-                            if ((swProgress != null)&&(iv%200==0))
+                            if ((swProgress != null) && (iv % 200 == 0))
                                 swProgress.UpdateTitle("Exporting (write " + iv + "-th vertex in .obj) ...");
                             aVertexCoords1 = (double[])swTessellation.GetVertexPoint(iv);
-                            mline = "v " +      (aVertexCoords1[0]*ChScale.L).ToString("f6", bz)
-                                        + " " + (aVertexCoords1[1]*ChScale.L).ToString("f6", bz)
-                                        + " " + (aVertexCoords1[2]*ChScale.L).ToString("f6", bz)
+                            mline = "v " + (aVertexCoords1[0] * ChScale.L).ToString("f6", bz)
+                                        + " " + (aVertexCoords1[1] * ChScale.L).ToString("f6", bz)
+                                        + " " + (aVertexCoords1[2] * ChScale.L).ToString("f6", bz)
                                         + "\n";
                             textbuilder.Append(mline);
                         }
@@ -167,9 +161,9 @@ namespace ChronoEngine_SwAddin
                         for (int iv = 0; iv < numv; iv++)
                         {
                             if ((swProgress != null) && (iv % 200 == 0))
-                                 swProgress.UpdateTitle("Exporting (write " + iv + "-th normal in .obj) ...");
+                                swProgress.UpdateTitle("Exporting (write " + iv + "-th normal in .obj) ...");
                             aNormal = (double[])swTessellation.GetVertexNormal(iv);
-                            mline = "vn " +     aNormal[0].ToString("f3", bz)
+                            mline = "vn " + aNormal[0].ToString("f3", bz)
                                         + " " + aNormal[1].ToString("f3", bz)
                                         + " " + aNormal[2].ToString("f3", bz)
                                         + "\n";
@@ -181,7 +175,7 @@ namespace ChronoEngine_SwAddin
                                 if ((swProgress != null) && (iv % 200 == 0))
                                     swProgress.UpdateTitle("Exporting (write " + iv + "-th normal in .obj) ...");
                                 aNormal = (double[])swTessellation.GetVertexNormal(iv);
-                                mline = "vn "     + (-aNormal[0]).ToString("f3", bz)
+                                mline = "vn " + (-aNormal[0]).ToString("f3", bz)
                                             + " " + (-aNormal[1]).ToString("f3", bz)
                                             + " " + (-aNormal[2]).ToString("f3", bz)
                                             + "\n";
@@ -193,11 +187,11 @@ namespace ChronoEngine_SwAddin
                             for (int iv = 0; iv < numv; iv++)
                             {
                                 if ((swProgress != null) && (iv % 200 == 0))
-                                     swProgress.UpdateTitle("Exporting (write " + iv + "-th UV in .obj) ...");
+                                    swProgress.UpdateTitle("Exporting (write " + iv + "-th UV in .obj) ...");
                                 aVertexParams = (double[])swTessellation.GetVertexParams(iv);
                                 mline = "vt " + aVertexParams[0].ToString("f4", bz)
                                             + " " + aVertexParams[1].ToString("f4", bz)
-                                            + " " + "0" 
+                                            + " " + "0"
                                             + "\n";
                                 textbuilder.Append(mline);
                             }
@@ -206,45 +200,6 @@ namespace ChronoEngine_SwAddin
                         // Loop over faces
                         swFace = (Face2)swBody.GetFirstFace();
                         while (swFace != null)
-                        {
-                            aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
-                            
-                            iNumFacetIds = aFacetIds.Length;
-
-                            for (int iFacetIdIdx = 0; iFacetIdIdx < iNumFacetIds; iFacetIdIdx++)
-                            {
-                                if ((swProgress != null) && (iFacetIdIdx % 100 == 0))
-                                     swProgress.UpdateTitle("Exporting (write " + iFacetIdIdx + "-th face in .obj) ...");
-
-                                mline = "f";
-                                
-                                aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
-
-                                // There should always be three fins per facet
-                                for (int iFinIdx = 0; iFinIdx < 3; iFinIdx++)
-                                {
-                                    aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
-
-                                    // Three fins per face, two vertexes each fin, 
-                                    // only the 1st vertex of two is needed (because of sharing)
-                                    if (saveUV)
-                                        mline += " " + (aVertexIds[0] + group_vstride +1) + "/"
-                                                     + (aVertexIds[0] + group_vstride +1) + "/" 
-                                                     + (aVertexIds[0] + group_nstride +1);
-                                    else
-                                        mline += " " + (aVertexIds[0] + group_vstride + 1) + "//"
-                                                     + (aVertexIds[0] + group_nstride + 1);
-                                }
-
-                                mline += "\n";
-                                textbuilder.Append(mline);
-                            }
-                            swFace = (Face2)swFace.GetNextFace();
-                        }
-
-                        swFace = (Face2)swBody.GetFirstFace();
-                        if (nBodyType == (int)swBodyType_e.swSheetBody)  // for sheets, save two-sided triangles
-                         while (swFace != null)
                         {
                             aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
 
@@ -259,23 +214,64 @@ namespace ChronoEngine_SwAddin
 
                                 aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
 
-                                for (int iFinIdx = 2; iFinIdx >= 0; iFinIdx--)
+                                // There should always be three fins per facet
+                                for (int iFinIdx = 0; iFinIdx < 3; iFinIdx++)
                                 {
                                     aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
 
+                                    // Three fins per face, two vertexes each fin, 
+                                    // only the 1st vertex of two is needed (because of sharing)
                                     if (saveUV)
                                         mline += " " + (aVertexIds[0] + group_vstride + 1) + "/"
                                                      + (aVertexIds[0] + group_vstride + 1) + "/"
-                                                     + (aVertexIds[0] + swTessellation.GetVertexCount() + group_nstride + 1);
+                                                     + (aVertexIds[0] + group_nstride + 1);
                                     else
                                         mline += " " + (aVertexIds[0] + group_vstride + 1) + "//"
-                                                     + (aVertexIds[0] + swTessellation.GetVertexCount() + group_nstride + 1);
+                                                     + (aVertexIds[0] + group_nstride + 1);
                                 }
 
                                 mline += "\n";
                                 textbuilder.Append(mline);
                             }
                             swFace = (Face2)swFace.GetNextFace();
+                        }
+
+                        swFace = (Face2)swBody.GetFirstFace();
+                        if (nBodyType == (int)swBodyType_e.swSheetBody) // for sheets, save two-sided triangles
+                        { 
+                            while (swFace != null)
+                            {
+                                aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
+
+                                iNumFacetIds = aFacetIds.Length;
+
+                                for (int iFacetIdIdx = 0; iFacetIdIdx < iNumFacetIds; iFacetIdIdx++)
+                                {
+                                    if ((swProgress != null) && (iFacetIdIdx % 100 == 0))
+                                        swProgress.UpdateTitle("Exporting (write " + iFacetIdIdx + "-th face in .obj) ...");
+
+                                    mline = "f";
+
+                                    aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
+
+                                    for (int iFinIdx = 2; iFinIdx >= 0; iFinIdx--)
+                                    {
+                                        aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
+
+                                        if (saveUV)
+                                            mline += " " + (aVertexIds[0] + group_vstride + 1) + "/"
+                                                         + (aVertexIds[0] + group_vstride + 1) + "/"
+                                                         + (aVertexIds[0] + swTessellation.GetVertexCount() + group_nstride + 1);
+                                        else
+                                            mline += " " + (aVertexIds[0] + group_vstride + 1) + "//"
+                                                         + (aVertexIds[0] + swTessellation.GetVertexCount() + group_nstride + 1);
+                                    }
+
+                                    mline += "\n";
+                                    textbuilder.Append(mline);
+                                }
+                                swFace = (Face2)swFace.GetNextFace();
+                            }
                         }
 
                         group_vstride += swTessellation.GetVertexCount();
@@ -289,7 +285,7 @@ namespace ChronoEngine_SwAddin
             } // not null body
 
             asciitext += textbuilder.ToString();
-        } 
+        }
 
     }
 }

@@ -110,16 +110,14 @@ int main(int argc, char* argv[]) {
             auto vis_vsg = chrono_types::make_shared<ChVisualSystemVSG>();
             vis_vsg->AttachSystem(&sys);
             vis_vsg->SetWindowTitle("ChronoSolidworksImportJSON");
-            vis_vsg->AddCamera(ChVector<>(2, 2, 2));
+            vis_vsg->AddCamera(ChVector3d(2, 2, 2));
             vis_vsg->SetWindowSize(ChVector2<int>(1024, 768));
             vis_vsg->SetWindowPosition(ChVector2<int>(100, 100));
-            vis_vsg->SetClearColor(ChColor(0.8f, 0.85f, 0.9f));
-            vis_vsg->SetUseSkyBox(true);  // use built-in path
+            vis_vsg->SetBackgroundColor(ChColor(0.8f, 0.85f, 0.9f));
             vis_vsg->SetCameraVertical(CameraVerticalDir::Y);
             vis_vsg->SetCameraAngleDeg(40.0);
             vis_vsg->SetLightIntensity(1.0f);
-            vis_vsg->SetLightDirection(1.5 * CH_C_PI_2, CH_C_PI_4);
-            vis_vsg->SetWireFrameMode(false);
+            vis_vsg->SetLightDirection(1.5 * CH_PI_2, CH_PI_4);
             vis_vsg->Initialize();
 
             vis = vis_vsg;
