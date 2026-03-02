@@ -15,7 +15,7 @@ using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
-using static ChronoGlobals;
+//using static ChronoGlobals;
 using System.Linq;
 using System.Runtime.Remoting.Metadata;
 
