@@ -170,7 +170,6 @@
             // 
             // button_convexdecomp
             // 
-            this.button_convexdecomp.Enabled = false;
             this.button_convexdecomp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.button_convexdecomp.Location = new System.Drawing.Point(9, 55);
             this.button_convexdecomp.Name = "button_convexdecomp";
