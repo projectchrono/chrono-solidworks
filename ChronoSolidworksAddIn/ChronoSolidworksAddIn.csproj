@@ -2706,6 +2706,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\libraries\irrlicht-1.8.5\bin\Win64-VisualStudio\Irrlicht.dll">
+      <Link>Irrlicht.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\chrono_build\bin\Release\Chrono_core.dll">
       <Link>Chrono_core.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2729,9 +2733,6 @@
     </Content>
     <Content Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChModuleIrrlicht_csharpCSHARP_wrap.h">
       <Link>Chrono\ChModuleIrrlicht_csharpCSHARP_wrap.h</Link>
-    </Content>
-    <Content Include="Irrlicht.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup />

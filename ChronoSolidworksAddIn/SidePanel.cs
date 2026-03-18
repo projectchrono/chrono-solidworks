@@ -1,31 +1,16 @@
 ﻿using System;
-using System.Collections;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Globalization;
-using System.Windows.Media.Media3D;
 using System.IO;
-
-using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swcommands;
-using SolidWorks.Interop.swconst;
-using SolidWorks.Interop.swpublished;
-using SolidWorksTools;
-using ChronoEngineAddin;
-
 using System.Reflection;
 
-using Microsoft.Win32;
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
+using ChronoEngineAddin;
 
-// for JSON export
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+// For JSON export
 using System.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
-using System.Security.Cryptography;
 //using static ChronoEngine_SwAddin.ConvertMates;
 
 
@@ -328,7 +313,7 @@ namespace ChronoEngine_SwAddin
         private void button_convexdecomp_Click(object sender, EventArgs e)
         {
 #if HAS_CHRONO_CSHARP
-
+            // Setup
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null)
@@ -345,236 +330,12 @@ namespace ChronoEngine_SwAddin
                 return;
             }
 
-            for (int isel = 1; isel <= swSelMgr.GetSelectedObjectCount2(-1); isel++)
+            // Convex decomposition
+            ConvexDecompForm convexDecompDialog = new ConvexDecompForm();
+            if (convexDecompDialog.ShowDialog() == DialogResult.OK)
             {
-                // Setup -------------------------------------------------------
-                if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
-                {
-                    MessageBox.Show("This function can be applied only to Solid Bodies.\nSelect one or more Solid Bodies before using it", "Warning");
-                    return;
-                }
-                /*
-                IComponent2 mcomponent = swSelMgr.GetSelectedObjectsComponent4(isel, -1);
-                object bodyInfo;
-                object[] bodies;
-                bodies = (object[])mcomponent.GetBodies3((int)swBodyType_e.swAllBodies, out bodyInfo);
-                if (bodies.Length == 1)
-                     System.Windows.Forms.MessageBox.Show("Warning! This is the only body in this part. It will converted to collision body -you will loose visualization and mass computation.");
-                */
-                //bool rbody_converted = false;
-                Body2 swBodyIn = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
-
-                // Perform body tessellation -----------------------------------
-                Face2 swFace = null;
-                Tessellation swTessellation = null;
-
-                // Pass in null so the whole body will be tessellated
-                swTessellation = (Tessellation)swBodyIn.GetTessellation(null);
-
-                // Set up the Tessellation object
-                swTessellation.NeedFaceFacetMap = true;
-                swTessellation.NeedVertexParams = true;
-                swTessellation.NeedVertexNormal = true;
-                swTessellation.ImprovedQuality = true;
-
-                // How to handle matches across common edges
-                swTessellation.MatchType = (int)swTesselationMatchType_e.swTesselationMatchFacetTopology;
-
-                // Execute tessellation
-                if (swProgress != null)
-                    swProgress.UpdateTitle("Tessellation process...");
-                bool bResult = swTessellation.Tessellate();
-
-                // Retrieve facet data -----------------------------------------
-                int numVerts = swTessellation.GetVertexCount();
-                int numTriangles = swTessellation.GetFacetCount();
-
-                // Get all vertices
-                ChVector3d[] tessVertices = new ChVector3d[numVerts];
-                ChTriangle[] tessTriangles = new ChTriangle[numTriangles];
-
-                for (int iv = 0; iv < numVerts; iv++)
-                {
-                    if ((swProgress != null) && (iv % 200 == 0))
-                        swProgress.UpdateTitle($"Vertices process: {iv}-th vertex...");
-
-                    double[] aVertexCoords1 = (double[])swTessellation.GetVertexPoint(iv);
-                    tessVertices[iv] = new ChVector3d(aVertexCoords1[0], aVertexCoords1[1], aVertexCoords1[2]);
-                }
-
-                // Loop over faces
-                swFace = (Face2)swBodyIn.GetFirstFace();
-                int group_vstride = 0;
-                int iface = 0;
-
-                while (swFace != null)
-                {
-                    int[] aFacetIds = (int[])swTessellation.GetFaceFacets(swFace);
-                    int iNumFacetIds = aFacetIds.Length;
-
-                    for (int iFacetIdIdx = 0; iFacetIdIdx < iNumFacetIds; iFacetIdIdx++)
-                    {
-                        if ((swProgress != null) && (iFacetIdIdx % 100 == 0))
-                            swProgress.UpdateTitle($"Faces process: {iFacetIdIdx}-th face...");
-
-                        int[] aFinIds = (int[])swTessellation.GetFacetFins(aFacetIds[iFacetIdIdx]);
-
-                        // There should always be three fins per facet
-                        int iFinIdx = 0;
-                        int[] aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
-                        
-                        int ip1 = aVertexIds[0] + group_vstride;
-                        iFinIdx = 1;
-                        aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
-                        int ip2 = aVertexIds[0] + group_vstride;
-                        iFinIdx = 2;
-                        aVertexIds = (int[])swTessellation.GetFinVertices(aFinIds[iFinIdx]);
-                        int ip3 = aVertexIds[0] + group_vstride;
-
-                        tessTriangles[iface] = new ChTriangle(tessVertices[ip1], tessVertices[ip2], tessVertices[ip3]);
-
-                        ++iface;
-                    }
-
-                    swFace = (Face2)swFace.GetNextFace();
-                }
-
-                // Chrono trimesh
-                ChTriangleMeshSoup modelMesh = new ChTriangleMeshSoup();
-                foreach (ChTriangle tri in tessTriangles)
-                {
-                    modelMesh.AddTriangle(tri);
-                }
-
-                group_vstride += swTessellation.GetVertexCount();
-
-                // HACDv2 convex decomposition ---------------------------------
-                // Create convex decomposition dialog
-                ConvexDecompForm convexDecompDialog = new ConvexDecompForm();
-                convexDecompDialog.SetMeshInfo(numTriangles, numVerts);
-
-                // Show the modal dialog
-                if (convexDecompDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Perform the convex decomposition using the desired parameters
-                    ChConvexDecompositionHACDv2 decompositionHACDv2 = new ChConvexDecompositionHACDv2();
-                    try
-                    {
-                        decompositionHACDv2.Reset();
-                        decompositionHACDv2.AddTriangleMesh(modelMesh);
-                        decompositionHACDv2.SetParameters(
-                            convexDecompDialog.maxHullCount,
-                            convexDecompDialog.maxHullMerge,
-                            convexDecompDialog.maxHullVertices,
-                            convexDecompDialog.maxConcavity,
-                            convexDecompDialog.smallClusterThreshold,
-                            convexDecompDialog.vertexFuseTolerance
-                        );
-                        decompositionHACDv2.ComputeConvexDecomposition();
-                        MessageBox.Show($"Convex decomposition successful.\nNumber of decomposed convex hulls: {decompositionHACDv2.GetHullCount()}", "Info");
-
-                    }
-                    catch (Exception exc)
-                    {
-                        MessageBox.Show($"Unable to perform convex decomposition\n{exc.Message}", "Error");
-                        return;
-                    }
-
-                    // Create Solidworks bodies corresponding to computed convex hulls
-                    if (convexDecompDialog.IsAddHullsChecked())
-                    {
-                        uint nhulls = decompositionHACDv2.GetHullCount();
-                        Body2 newSldwBody = null;
-                        IPartDoc mpart = null;
-
-                        if (nhulls > 0)
-                        {
-                            Configuration swConf;
-                            Component2 swRootComp;
-
-                            swConf = (Configuration)swModel.GetActiveConfiguration();
-                            swRootComp = (Component2)swConf.GetRootComponent3(true);
-
-                            if (swModel.GetType() == (int)swDocumentTypes_e.swDocPART)
-                            {
-                                mpart = (IPartDoc)swModel;
-                            }
-                        }
-
-                        Random rnd = new Random(); // for random chulls colors
-                        for (uint ic = 0; ic < nhulls; ic++)
-                        {
-                            ChTriangleMeshSoup hullMesh = new ChTriangleMeshSoup();
-                            decompositionHACDv2.GetConvexHullResult(ic, hullMesh);
-
-                            if (mpart != null)
-                            {
-                                newSldwBody = mpart.ICreateNewBody2();
-
-                                for (uint i = 0; i < hullMesh.GetNumTriangles(); ++i)
-                                {
-                                    double[] vPt = new double[9]; // flattened data of triangle three vertices (9 numbers)
-                                    vPt[0] = hullMesh.GetTriangle(i).p1.x;
-                                    vPt[1] = hullMesh.GetTriangle(i).p1.y;
-                                    vPt[2] = hullMesh.GetTriangle(i).p1.z;
-                                    vPt[3] = hullMesh.GetTriangle(i).p2.x;
-                                    vPt[4] = hullMesh.GetTriangle(i).p2.y;
-                                    vPt[5] = hullMesh.GetTriangle(i).p2.z;
-                                    vPt[6] = hullMesh.GetTriangle(i).p3.x;
-                                    vPt[7] = hullMesh.GetTriangle(i).p3.y;
-                                    vPt[8] = hullMesh.GetTriangle(i).p3.z;
-                                    newSldwBody.CreatePlanarTrimSurfaceDLL(vPt, null);
-                                }
-
-                                bool created = newSldwBody.CreateBodyFromSurfaces();
-                                if (created)
-                                {
-                                    ModelDocExtension swExt = swModel.Extension;
-                                    Feature feat = swExt.GetLastFeatureAdded(); // get feature representing last new body
-                                    double[] color = new double[9] { rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), 0.8, 0.8, 0.8, 16, 0.2, 0 }; // R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
-                                    feat.SetMaterialPropertyValues2(color, (int)swInConfigurationOpts_e.swThisConfiguration, null); // apply color to the feature
-
-                                    ////////////////////////////////////// OLD AT CODE
-
-                                    //ModelDocExtension swExt = swModel.Extension;
-                                    //Feature lastFeature = swExt.GetLastFeatureAdded();
-                                    //lastFeature.Select2(true, (int)ic); // does not append?
-
-                                    ////int material = newSldwBody.SetMaterialProperty("Default", "", "Air");
-                                    ////if (material != 1)
-                                    ////    material = newSldwBody.SetMaterialProperty("Default", "", "Aria");
-                                    ////if (material != 1)
-                                    ////    material = newSldwBody.SetMaterialProperty("Default", "", "Luft");
-                                    ////if (material != 1)
-                                    ////    MessageBox.Show($"Unable to assign 'air' material to collision shape: {newSldwBody.Name} \nThis can affect mass computations", "Warning");
-
-                                    //double[] color = new double[9] { 1, 0, 0, 1, 1, 1, 0, 0.7, 0 }; //  R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
-                                    //newSldwBody.MaterialPropertyValues2 = color; // it does not work
-                                }
-                            }
-                        } // end loop on computed convex hulls
-
-                        //swModel.GraphicsRedraw2();
-                        swModel.ForceRebuild3(false);
-
-                    } // end IsAddHullsChecked()
-
-                    // Save convex decomposition result to disk, if required
-                    if (convexDecompDialog.IsSaveChullsObjChecked())
-                    {
-                        String partName = Path.GetFileNameWithoutExtension(swModel.GetTitle());
-                        decompositionHACDv2.WriteConvexHullsAsWavefrontObj($"{convexDecompDialog.outputFolder}/{partName}_convex_decomp.obj");
-                    }
-
-                    if (convexDecompDialog.IsSaveChullsVertsChecked())
-                    {
-                        String partName = Path.GetFileNameWithoutExtension(swModel.GetTitle());
-                        decompositionHACDv2.WriteConvexHullsAsChullsFile($"{convexDecompDialog.outputFolder}/{partName}_convex_decomp.chulls");
-                    }
-
-                } // end if user choose OK to decompose
-
-            } // end loop on selected items
+                convexDecompDialog.PerformConvexDecomposition(swModel, swSelMgr, swProgress);
+            }
 
 #else
             MessageBox.Show("Chono::SolidWorks AddIn was built without C# support.\nConvex decomposition is not available.", "Info");
