@@ -33,7 +33,6 @@ Source: ..\..\chrono-solidworks_install\Chrono_irrlicht.dll; DestDir: {app};  Fl
 Source: ..\..\chrono-solidworks_install\Chrono_csharp_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Chrono_csharp_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
-Source: ..\..\chrono-solidworks_install\hacd_CLI.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
 
