@@ -1,10 +1,10 @@
 //#include "ModifyPath.iss"
 
-#define MyAppName "ChronoEngine SW Add-In"
-#define MyAppVersion "current"
+#define MyAppName "ChronoSolidworks Add-In"
 #define MyAppPublisher "DigitalDynamicsLab"
 #define MyAppURL "https://projectchrono.org/"
-#define UpdatedToChronoSWCommit "3213164f3d6ce77b51b0d22bc7f330238377bfe9"
+#define MyAppVersion "10.0"
+#define UpdatedToChronoSWCommit "dd4edbd96384ebaaa59cdfb261c1eca36498a018"
 
 [Setup]
 ShowLanguageDialog=yes
@@ -19,7 +19,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultGroupName={#MyAppName}
 DefaultDirName={autopf}\ChronoSolidworks
 WizardImageFile=SetupModern20.bmp
-;WizardSmallImageFile=../to_put_in_app_dir/ChronoEngineAddIn.bmp
+;WizardSmallImageFile=../to_put_in_app_dir/ChronoSolidworks.bmp
 PrivilegesRequired=admin
 ;Compression=none
 OutputDir=.
@@ -27,7 +27,7 @@ OutputBaseFilename=Chrono_SolidWorks_{#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source: ..\..\chrono-solidworks_install\ChronoEngineAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
+Source: ..\..\chrono-solidworks_install\ChronoSolidworksAddIn.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Chrono_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Chrono_irrlicht.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
 Source: ..\..\chrono-solidworks_install\Chrono_csharp_core.dll; DestDir: {app};  Flags: "sharedfile uninsnosharedfileprompt";
@@ -37,10 +37,10 @@ Source: ..\..\chrono-solidworks_install\Newtonsoft.Json.dll; DestDir: {app};  Fl
 Source: ..\..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestDir: {app};  Flags: recursesubdirs createallsubdirs;  
 
 [Run]
-Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoSolidworksAddIn.dll; WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoEngineAddIn.dll; WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden; RunOnceId: "ChronoEngineAddInUninstallTag"
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoSolidworksAddIn.dll; WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden; RunOnceId: "ChronoSolidworksAddInUninstallTag"
 
 
 
@@ -84,7 +84,7 @@ begin
   // ***NOTE**** the following code (that detects the directory where SW is 
   // installed) is NOT necessary anymore because in latest revisions this
   // add-in installer does not need such information (it just registers the 
-  // ChronoEngineAddIn.dll in the COM system)
+  // ChronoSolidworksAddIn.dll in the COM system)
 
   //***BEGIN OF NOT USED CODE*** Maybe to remove in future. Just for reference. 
 
@@ -153,6 +153,16 @@ begin
             mPathSolidWorks := mallDirSolidWorks; 
             mFoundSolidWorks := 1;
     end;
+    
+    // find 64 bit SW v.26:
+    if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+                      'SOFTWARE\SolidWorks\SolidWorks 2026\Setup',
+                      'SolidWorks Folder',
+                      mallDirSolidWorks) then
+    begin
+            mPathSolidWorks := mallDirSolidWorks; 
+            mFoundSolidWorks := 1;
+    end;
                 
   end 
   else
@@ -205,13 +215,16 @@ var
   S: String;
 begin
   { Fill the 'Ready Memo' with the normal settings and the custom settings }
-  S :=     'Assuming NET 4.8 framework is installed.' + NewLine + NewLine;
+  S :=     'Assuming NET 4.8 framework is available.' + NewLine + NewLine;
   S := S + 'After the installation:' + NewLine;
-  S := S + '- launch SolidWorks' + NewLine; 
-  S := S + '- in Tools/Add-in make sure Chrono add-in is activated' + NewLine;
-  S := S + 'The ChronoEngine SwAddin should be now visible as a new panel.' + NewLine;
+  S := S + '- launch SolidWorks' + NewLine;  
+  S := S + '- in Tools/Add-in menu make sure Chrono::Solidworks add-in is activated' + NewLine;
+  S := S + 'The Chrono::Solidworks add-in should now be visible as a new panel and accessible' + NewLine;
+  S := S + 'in the right part of the screen.' + NewLine;
   S := S + NewLine;
-  S := S + 'Installer updated to Chrono::SolidWorks commit: ' + '{#UpdatedToChronoSWCommit}' + NewLine; 
+  S := S + 'Installer info: ' + NewLine; 
+  S := S + '- version: ' + '{#MyAppVersion}' + NewLine; 
+  S := S + '- updated to Chrono::SolidWorks commit: ' + '{#UpdatedToChronoSWCommit}' + NewLine; 
 
   //if (mFoundSolidWorks = 1) then begin
   //  S := S + 'The SolidWorks dll directory is:' + NewLine;

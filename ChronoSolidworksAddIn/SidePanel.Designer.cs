@@ -987,9 +987,9 @@
             this.label13.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.label13.Location = new System.Drawing.Point(9, 38);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(107, 20);
+            this.label13.Size = new System.Drawing.Size(95, 20);
             this.label13.TabIndex = 52;
-            this.label13.Text = "Version 10.0.0";
+            this.label13.Text = "Version 10.0";
             // 
             // SWTaskpaneHost
             // 
