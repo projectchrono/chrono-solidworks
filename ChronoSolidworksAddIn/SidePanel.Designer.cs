@@ -86,6 +86,7 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.Model = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_envelope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_margin)).BeginInit();
@@ -116,7 +117,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(7, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(205, 25);
             this.label1.TabIndex = 1;
@@ -727,7 +728,7 @@
             // 
             this.tabControlMain.Controls.Add(this.Run);
             this.tabControlMain.Controls.Add(this.Model);
-            this.tabControlMain.Location = new System.Drawing.Point(10, 46);
+            this.tabControlMain.Location = new System.Drawing.Point(7, 63);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
             this.tabControlMain.Size = new System.Drawing.Size(266, 776);
@@ -979,6 +980,17 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Items";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.label13.Location = new System.Drawing.Point(9, 38);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(107, 20);
+            this.label13.TabIndex = 52;
+            this.label13.Text = "Version 10.0.0";
+            // 
             // SWTaskpaneHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -986,6 +998,7 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.label1);
             this.Name = "SWTaskpaneHost";
@@ -1079,5 +1092,6 @@
         private System.Windows.Forms.NumericUpDown nudGravAccZ;
         private System.Windows.Forms.NumericUpDown nudGravAccY;
         private System.Windows.Forms.NumericUpDown nudGravAccX;
+        private System.Windows.Forms.Label label13;
     }
 }
