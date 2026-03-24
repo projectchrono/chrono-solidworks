@@ -1,4 +1,16 @@
-#-------------------------------------------------------------------------------
+# =============================================================================
+# PROJECT CHRONO - http://projectchrono.org
+#
+# Copyright (c) 2019 projectchrono.org
+# All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license that can be found
+# in the LICENSE file at the top level of the distribution and at
+# http://projectchrono.org/license-chrono.txt.
+#
+# =============================================================================
+# Authors: Alessandro Tasora, Dario Fusai
+# =============================================================================
 #
 # This file shows how to simulate a spyder robot.
 #
@@ -7,10 +19,10 @@
 # REMARK: this is part of Chrono::Solidworks add-in
 #     - it assumes that you exported the .asm in this directory using the add-in
 #     - PyChrono must be installed in your Python environment
-#-------------------------------------------------------------------------------
+#
+# =============================================================================
 
 import pychrono as chrono
-
 import pychrono.irrlicht as chronoirr
  
 print ("Load a model exported by SolidWorks")
@@ -40,11 +52,12 @@ class SpiderRobotMotor(chrono.ChLinkMotorRotationAngle):
  
 mysystem = chrono.ChSystemNSC()
 mysystem.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
+mysystem.SetGravitationalAcceleration(chrono.ChVector3d(0, -9.81, 0))
+
 chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.05)
 chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.005)
 
 # Import model items from Solidworks and add to system 
-parts = chrono.ImportSolidWorksSystem('./spider_robot.py')
  
 for ib in parts:
     mysystem.Add(ib)
@@ -249,14 +262,15 @@ mysystem.Add(motor7_3)
 # Create a floor
 mymat = chrono.ChContactMaterialNSC()
 mymat.SetRestitution(0.0)
+mymat.SetFriction(0.5)
 
 mfloor = chrono.ChBodyEasyBox(20, 1, 20, 1000, True, True, mymat)
 mfloor.SetFixed(True)
 mfloor.SetPos(chrono.ChVector3d(0,0.5,0))
-mfloor.GetVisualShape(0).SetColor(chrono.ChColor(0.4, 0.4, 0.4))
+mfloor.GetVisualShape(0).SetColor(chrono.ChColor(0.1, 0.1, 0.1))
 mysystem.Add(mfloor)
 
- 
+
 # ---------------------------------------------------------------------
 #
 #  Create an Irrlicht application to visualize the system
@@ -271,7 +285,7 @@ vis.Initialize()
 vis.AddLogo(chrono.GetChronoDataFile('logo_pychrono_alpha.png'))
 vis.AddSkyBox()
 vis.AddCamera(chrono.ChVector3d(5, 5, -7.5), chrono.ChVector3d(-1.0, 0, -2.5))
-vis.AddLightWithShadow(chrono.ChVector3d(10,20,10), chrono.ChVector3d(0,2.6,0), 50, 10, 40, 60, 512)
+vis.AddTypicalLights()
 
 
 # ---------------------------------------------------------------------
@@ -281,11 +295,13 @@ vis.AddLightWithShadow(chrono.ChVector3d(10,20,10), chrono.ChVector3d(0,2.6,0), 
 
 solver = chrono.ChSolverBB()
 solver.SetMaxIterations(200)
-solver.SetTolerance(1e-6)
+solver.SetTolerance(1e-4)
 mysystem.SetSolver(solver)
 
-while(vis.Run()):
+timestep = 0.001
+
+while vis.Run():
     vis.BeginScene()
     vis.Render()
-    mysystem.DoStepDynamics(0.001)
+    mysystem.DoStepDynamics(timestep)
     vis.EndScene()

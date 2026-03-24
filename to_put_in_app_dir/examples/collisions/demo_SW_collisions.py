@@ -1,13 +1,26 @@
-#-------------------------------------------------------------------------------
+# =============================================================================
+# PROJECT CHRONO - http://projectchrono.org
+#
+# Copyright (c) 2019 projectchrono.org
+# All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license that can be found
+# in the LICENSE file at the top level of the distribution and at
+# http://projectchrono.org/license-chrono.txt.
+#
+# =============================================================================
+# Authors: Alessandro Tasora, Dario Fusai
+# =============================================================================
 #
 # This file shows how to simulate collision shapes
 #
-# Author: Alessandro Tasora
+# Author: 
 #
 # REMARK: this is part of Chrono::Solidworks add-in
 #     - it assumes that you exported the .asm in this directory using the add-in
 #     - PyChrono must be installed in your Python environment
-#-------------------------------------------------------------------------------
+#
+# =============================================================================
 
 import sys
 import pychrono as chrono
@@ -22,6 +35,7 @@ print(" 4) move this .py file in directory X and execute it.")
 
 # Create Chrono physical system, non-smooth contact method
 my_system = chrono.ChSystemNSC()
+my_system.SetGravitationalAcceleration(chrono.ChVector3d(0, -9.81, 0))
 
 # Set collision detection engine
 my_system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)

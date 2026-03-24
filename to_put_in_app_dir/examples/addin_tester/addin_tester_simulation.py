@@ -1,4 +1,16 @@
-#-------------------------------------------------------------------------------
+# =============================================================================
+# PROJECT CHRONO - http://projectchrono.org
+#
+# Copyright (c) 2019 projectchrono.org
+# All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license that can be found
+# in the LICENSE file at the top level of the distribution and at
+# http://projectchrono.org/license-chrono.txt.
+#
+# =============================================================================
+# Authors: Dario Fusai
+# =============================================================================
 #
 # Test simulation to check integrity of Chrono::Solidworks Addin exporter
 # with respect to:
@@ -8,8 +20,8 @@
 #     4) collision shapes
 #     5) markers
 #     6) rigid sub-assemblies, flexible sub-assemblies
-#
-#-------------------------------------------------------------------------------
+
+# =============================================================================
 
 import pychrono as chrono
 import pychrono.irrlicht as chronoirr
@@ -31,6 +43,7 @@ for ii in sys.GetBodies():
     if (ii.GetCollisionModel()):
         ii.GetCollisionModel().SetAllShapesMaterial(mat)
 
+# Uncomment the following lines to try the automatic removal of redundant constraints  
 # sys.RemoveRedundantConstraints(False, 1e-6, True)
 # sys.DoAssembly(chrono.FULL)
 

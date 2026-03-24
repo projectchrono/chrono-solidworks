@@ -1,13 +1,26 @@
-#-------------------------------------------------------------------------------
+# =============================================================================
+# PROJECT CHRONO - http://projectchrono.org
+#
+# Copyright (c) 2019 projectchrono.org
+# All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license that can be found
+# in the LICENSE file at the top level of the distribution and at
+# http://projectchrono.org/license-chrono.txt.
+#
+# =============================================================================
+# Authors: Alessandro Tasora, Dario Fusai
+# =============================================================================
 #
 # This file shows how to simulate a conveyor and a stack of pebbles
 #
-# Author: Alessandro Tasora
+# Authors: Alessandro Tasora, Dario Fusai
 #
 # REMARK: this is part of Chrono::Solidworks add-in
 #     - it assumes that you exported the .asm in this directory using the add-in
 #     - PyChrono must be installed in your Python environment
-#-------------------------------------------------------------------------------
+#
+# =============================================================================
 
 import math
 import random
@@ -25,13 +38,13 @@ print(" 4) move this .py file in directory X and execute it.")
 # Create Chrono physical system
 my_system = chrono.ChSystemNSC()
 my_system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
+my_system.SetGravitationalAcceleration(chrono.ChVector3d(0, -9.81, 0))
 
 # Set the default outward/inward shape margins for collision detection,
 # this is epecially important for very large or very small objects.
 # This is a global setting to be put BEFORE creating objects/systems
 chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.005)
 chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.005)
-
 
 # Load the CAD file
 exported_items = chrono.ImportSolidWorksSystem('./conveyor.py')
@@ -62,7 +75,7 @@ pebble_material.SetSpinningFriction(0.005)
 # Assign the surface material also to items made with CAD:
 my_bodyfloor = my_system.SearchBody('floor_box^assembly_conveyor-1')
 if not my_bodyfloor:
-    sys.exit('Error: cannot find floor_box from its name in the C::E system!')
+    sys.exit('Error: cannot find floor_box from its name in the Chrono system!')
 
 my_bodyfloor.GetCollisionModel().SetAllShapesMaterial(pebble_material)
 
