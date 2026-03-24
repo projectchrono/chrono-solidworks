@@ -13,7 +13,7 @@ using SolidWorks.Interop.swconst;
 using SolidWorks.Interop.swpublished;
 
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     public partial class EditCollisionParameters : Form
     {

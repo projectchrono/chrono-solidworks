@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     // Class for scaling output (lengths, masses, time)
     // when converting to a .py file

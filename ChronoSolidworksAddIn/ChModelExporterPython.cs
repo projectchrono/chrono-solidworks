@@ -1,4 +1,4 @@
-﻿using ChronoEngine_SwAddin;
+﻿using ChronoSolidworks_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
@@ -11,7 +11,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 /// Derived class for exporting a Solidworks assembly to a Chrono model.
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     internal class ChModelExporterPython : ChModelExporter
     {
@@ -22,7 +22,7 @@ namespace ChronoEngineAddin
         private Dictionary<string, string> m_exportNamesMap; // map solidworks names vs chrono script names, ie. map[slwd_name] = chrono_name;
 
 
-        public ChModelExporterPython(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+        public ChModelExporterPython(ChronoSolidworks_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
             : base(swIntegration, save_dir_shapes, save_filename) {
 
             m_exportNamesMap = new Dictionary<string, string>();
@@ -441,7 +441,7 @@ namespace ChronoEngineAddin
                             if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                                 m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateTitle("Exporting " + swComp.Name2 + " (tesselate) ...");
                             // Write the OBJ converted visualization shapes:
-                            TesselateToObj.Convert(swComp, ref asciiobj, m_swIntegration.m_taskpaneHost.GetCheckboxSaveUV().Checked, ref m_swIntegration.m_taskpaneHost.GetProgressBar(), true, false);
+                            TessellateToObj.Convert(swComp, ref asciiobj, m_swIntegration.m_taskpaneHost.GetCheckboxSaveUV().Checked, ref m_swIntegration.m_taskpaneHost.GetProgressBar(), true, false);
                             writer.Write(asciiobj);
                             writer.Flush();
                             ostream.Close();
@@ -711,7 +711,7 @@ namespace ChronoEngineAddin
                                     if (m_swIntegration.m_taskpaneHost.GetProgressBar() != null)
                                         m_swIntegration.m_taskpaneHost.GetProgressBar().UpdateTitle("Exporting collision shape" + swComp.Name2 + " (tesselate) ...");
                                     // Write the OBJ converted visualization shapes:
-                                    TesselateToObj.Convert(swComp, ref asciiobj, m_swIntegration.m_taskpaneHost.GetCheckboxSaveUV().Checked, ref m_swIntegration.m_taskpaneHost.GetProgressBar(), false, true);
+                                    TessellateToObj.Convert(swComp, ref asciiobj, m_swIntegration.m_taskpaneHost.GetCheckboxSaveUV().Checked, ref m_swIntegration.m_taskpaneHost.GetProgressBar(), false, true);
                                     writer.Write(asciiobj);
                                     writer.Flush();
                                     ostream.Close();

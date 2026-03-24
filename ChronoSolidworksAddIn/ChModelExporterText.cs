@@ -1,4 +1,4 @@
-﻿using ChronoEngine_SwAddin;
+﻿using ChronoSolidworks_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ChronoEngineAddin.ChModelExporter;
+using static ChronoSolidworksAddin.ChModelExporter;
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     internal class ChModelExporterText
     {
@@ -18,11 +18,11 @@ namespace ChronoEngineAddin
         string asciitext = "";
 
 
-        protected ChronoEngine_SwAddin.SWIntegration m_swIntegration;
+        protected ChronoSolidworks_SwAddin.SWIntegration m_swIntegration;
         protected string m_saveDirShapes = "";
         protected string m_saveFilename = "";
 
-        public ChModelExporterText(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+        public ChModelExporterText(ChronoSolidworks_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
         {
             m_saveDirShapes = save_dir_shapes;
             m_saveFilename = save_filename;

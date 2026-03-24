@@ -5,15 +5,15 @@ using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
 
-//using ChronoEngineAddIn;
+//using ChronoSolidworksAddIn;
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     public partial class EditChSDA : Form
     {
         //public ISldWorks m_SWApplication;
         SelectionMgr m_swSelMgr;
-        ChronoEngine_SwAddin.SWIntegration m_SWintegration;
+        ChronoSolidworks_SwAddin.SWIntegration m_SWintegration;
 
         Feature m_selectedMarker1;
         Feature m_selectedMarker2;
@@ -24,7 +24,7 @@ namespace ChronoEngineAddin
 
         ////////////////////////////////////////////////////////////////////////
 
-        public EditChSDA(ref SelectionMgr swSelMgr, ref ChronoEngine_SwAddin.SWIntegration SWintegration)
+        public EditChSDA(ref SelectionMgr swSelMgr, ref ChronoSolidworks_SwAddin.SWIntegration SWintegration)
         {
             InitializeComponent();
             m_swSelMgr = swSelMgr;

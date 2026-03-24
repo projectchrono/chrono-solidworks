@@ -1,0 +1,10 @@
+diff a/ChronoSolidworksAddIn/ChronoSolidworks_SwAddin.cs b/ChronoSolidworksAddIn/ChronoSolidworks_SwAddin.cs	(rejected hunks)
+@@ -18,7 +18,7 @@
+ using SWPublished;
+ */
+ 
+-namespace ChronoSolidworks_SwAddin
++namespace ChronoSolidworksAddIn
+ {
+ 
+ [ComVisible(true)]

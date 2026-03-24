@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SolidWorks ChronoEngine export")]
+[assembly: AssemblyTitle("SolidWorks ChronoSolidworks export")]
 [assembly: AssemblyDescription("Add-in for SolidWorks")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SolidWorks ChronoEngine export")]
+[assembly: AssemblyProduct("SolidWorks ChronoSolidworks export")]
 [assembly: AssemblyCopyright("Alessandro Tasora ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

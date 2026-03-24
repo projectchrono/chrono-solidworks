@@ -8,20 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using ChronoEngine_SwAddin;
+using ChronoSolidworks_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
 
-//using ChronoEngineAddIn;
+//using ChronoSolidworksAddIn;
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     public partial class EditChMotor : Form
     {
         //public ISldWorks m_SWApplication;
         SelectionMgr m_swSelMgr;
-        ChronoEngine_SwAddin.SWIntegration m_SWintegration;
+        ChronoSolidworks_SwAddin.SWIntegration m_SWintegration;
 
         SolidWorks.Interop.sldworks.Feature m_selectedMarker;
         SolidWorks.Interop.sldworks.Component2 m_selectedBody1;
@@ -30,7 +30,7 @@ namespace ChronoEngineAddin
 
         ////////////////////////////////////////////////////////////////////////
 
-        public EditChMotor(ref SelectionMgr swSelMgr, ref ChronoEngine_SwAddin.SWIntegration SWintegration)
+        public EditChMotor(ref SelectionMgr swSelMgr, ref ChronoSolidworks_SwAddin.SWIntegration SWintegration)
         {
             InitializeComponent();
             m_swSelMgr = swSelMgr;

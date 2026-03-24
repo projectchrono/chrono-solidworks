@@ -12,7 +12,7 @@ using SolidWorksTools;
 
 
 
-namespace ChronoEngine_SwAddin
+namespace ChronoSolidworks_SwAddin
 {
     class ConvertToCollisionShapes
     {

@@ -10,13 +10,13 @@ using SolidWorks.Interop.swcommands;
 using SolidWorks.Interop.swconst;
 using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
-using ChronoEngineAddin;
+using ChronoSolidworksAddin;
 
 
 
-namespace ChronoEngine_SwAddin
+namespace ChronoSolidworks_SwAddin
 {
-    class TesselateToObj
+    class TessellateToObj
     {
         /// Convert a SolidWorks component to Wavefront OBJ mesh
         /// 

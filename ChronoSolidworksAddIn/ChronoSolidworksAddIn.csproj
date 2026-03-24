@@ -8,8 +8,8 @@
     <ProjectGuid>{E615EBB3-8A0B-4A1D-A8DA-585BAFA8A8C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChronoEngineAddin</RootNamespace>
-    <AssemblyName>ChronoEngineAddIn</AssemblyName>
+    <RootNamespace>ChronoSolidworksAddIn</RootNamespace>
+    <AssemblyName>ChronoSolidworksAddIn</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -3029,7 +3029,7 @@
     <Compile Include="ChModelExporterCSharp.cs" />
     <Compile Include="ChModelExporterPython.cs" />
     <Compile Include="ChModelExporterText.cs" />
-    <Compile Include="ChronoEngine_SwAddin.cs" />
+    <Compile Include="ChronoSolidworks_SwAddin.cs" />
     <Compile Include="ChScale.cs" />
     <Compile Include="ConvexDecompForm.cs">
       <SubType>Form</SubType>
@@ -3060,7 +3060,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="TesselateToObj.cs" />
+    <Compile Include="TessellateToObj.cs" />
     <Compile Include="ConvertToCollisionShapes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SidePanel.cs">

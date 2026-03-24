@@ -3,18 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Media3D;
-using ChronoEngine_SwAddin;
+using ChronoSolidworks_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
 /// Base class for exporting a Solidworks assembly to a Chrono model.
 /// Derived classes must implement concrete methods for export in various languages.
 
-namespace ChronoEngineAddin
+namespace ChronoSolidworksAddin
 {
     abstract class ChModelExporter
     {
-        protected ChronoEngine_SwAddin.SWIntegration m_swIntegration;
+        protected ChronoSolidworks_SwAddin.SWIntegration m_swIntegration;
         protected Hashtable m_savedParts;
         protected Hashtable m_savedShapes;
         protected Hashtable m_savedCollisionMeshes;
@@ -53,7 +53,7 @@ namespace ChronoEngineAddin
 
         }
 
-        public ChModelExporter(ChronoEngine_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
+        public ChModelExporter(ChronoSolidworks_SwAddin.SWIntegration swIntegration, string save_dir_shapes, string save_filename)
         {
             m_saveDirShapes = save_dir_shapes;
             m_saveFilename = save_filename;

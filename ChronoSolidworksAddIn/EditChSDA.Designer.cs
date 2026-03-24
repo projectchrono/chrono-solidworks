@@ -1,4 +1,4 @@
-﻿namespace ChronoEngineAddin
+﻿namespace ChronoSolidworksAddin
 {
     partial class EditChSDA
     {

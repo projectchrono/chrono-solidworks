@@ -7,20 +7,20 @@ using System.Reflection;
 
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
-using ChronoEngineAddin;
+using ChronoSolidworksAddin;
 
 // For JSON export
 using System.Threading;
-//using static ChronoEngine_SwAddin.ConvertMates;
+//using static ChronoSolidworks_SwAddin.ConvertMates;
 
 
-namespace ChronoEngine_SwAddin
+namespace ChronoSolidworks_SwAddin
 {
     [ComVisible(true)]
     [ProgId(SWTASKPANE_PROGID)]
     public partial class SWTaskpaneHost : UserControl
     {
-        public const string SWTASKPANE_PROGID = "ChronoEngine.Taskpane";
+        public const string SWTASKPANE_PROGID = "ChronoSolidworks.Taskpane";
         public ISldWorks mSWApplication;
         public SWIntegration mSWintegration;
         internal System.Windows.Forms.SaveFileDialog m_saveFileDialog;

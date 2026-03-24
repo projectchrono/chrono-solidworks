@@ -1,4 +1,4 @@
-﻿namespace ChronoEngine_SwAddin
+﻿namespace ChronoSolidworks_SwAddin
 {
     partial class SWTaskpaneHost
     {

@@ -18,7 +18,7 @@ using SwConst;
 using SWPublished;
 */
 
-namespace ChronoEngine_SwAddin
+namespace ChronoSolidworks_SwAddin
 {
 
     [ComVisible(true)]
@@ -111,15 +111,15 @@ namespace ChronoEngine_SwAddin
             string addinPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string[] imagePaths = new string[6]
             {
-            addinPath+"/icons/ChronoEngineAddIn_20.png",
-            addinPath+"/icons/ChronoEngineAddIn_32.png",
-            addinPath+"/icons/ChronoEngineAddIn_40.png",
-            addinPath+"/icons/ChronoEngineAddIn_64.png",
-            addinPath+"/icons/ChronoEngineAddIn_96.png",
-            addinPath+"/icons/ChronoEngineAddIn_128.png"
+            addinPath+"/icons/ChronoSolidworksAddIn_20.png",
+            addinPath+"/icons/ChronoSolidworksAddIn_32.png",
+            addinPath+"/icons/ChronoSolidworksAddIn_40.png",
+            addinPath+"/icons/ChronoSolidworksAddIn_64.png",
+            addinPath+"/icons/ChronoSolidworksAddIn_96.png",
+            addinPath+"/icons/ChronoSolidworksAddIn_128.png"
             };
 
-            m_TaskpaneView = m_swApplication.CreateTaskpaneView3(imagePaths, "Chrono::Solidworks tools");
+            m_TaskpaneView = m_swApplication.CreateTaskpaneView3(imagePaths, "Chrono::Solidworks Add-In");
             m_taskpaneHost = (SWTaskpaneHost)m_TaskpaneView.AddControl(SWTaskpaneHost.SWTASKPANE_PROGID, "");
             m_taskpaneHost.mSWApplication = this.m_swApplication;
             m_taskpaneHost.mSWintegration = this;
@@ -140,7 +140,7 @@ namespace ChronoEngine_SwAddin
             using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(keyPath))
             {
                 rk.SetValue(null, 1); // Load at startup
-                rk.SetValue("Title", "ChronoEngine SwAddin"); // Title
+                rk.SetValue("Title", "ChronoSolidworks Add-In"); // Title
                 rk.SetValue("Description", "Add-in for modeling Chrono system with SolidWorks"); // Description
             }
         }
