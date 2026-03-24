@@ -7,7 +7,7 @@ using ChronoEngine_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
-/// Base class for exporting a Solidworks assembly to a Chrono::Engine model.
+/// Base class for exporting a Solidworks assembly to a Chrono model.
 /// Derived classes must implement concrete methods for export in various languages.
 
 namespace ChronoEngineAddin

@@ -8,7 +8,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows;
 
-/// Derived class for exporting a Solidworks assembly to a Chrono::Engine C++ model.
+/// Derived class for exporting a Solidworks assembly to a Chrono C++ model.
 
 namespace ChronoEngineAddin
 {
@@ -30,7 +30,7 @@ namespace ChronoEngineAddin
         private void ExportHeader()
         {
             m_asciiTextHeader = "";
-            m_asciiTextHeader = "// C++ Chrono::Engine model automatically generated using Chrono::SolidWorks add-in\n\n";
+            m_asciiTextHeader = "// C++ Chrono model automatically generated using Chrono::SolidWorks add-in\n\n";
             m_asciiTextHeader += "#ifndef CH_IMPORT_SLDW_CPP_" + System.IO.Path.GetFileNameWithoutExtension(m_saveFilename).ToUpper() + "_H\n";   // TODO: REMOVE POTENTIAL SPACES IN NAME
             m_asciiTextHeader += "#define CH_IMPORT_SLDW_CPP_" + System.IO.Path.GetFileNameWithoutExtension(m_saveFilename).ToUpper() + "_H\n\n"; // TODO: REMOVE POTENTIAL SPACES IN NAME
 
@@ -82,7 +82,7 @@ namespace ChronoEngineAddin
 
             // Write preamble
             m_asciiTextCpp = "";
-            m_asciiTextCpp += "// C++ Chrono::Engine model automatically generated using Chrono::SolidWorks add-in\n";
+            m_asciiTextCpp += "// C++ Chrono model automatically generated using Chrono::SolidWorks add-in\n";
             m_asciiTextCpp += "// Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             m_asciiTextCpp += "#include <string>\n";

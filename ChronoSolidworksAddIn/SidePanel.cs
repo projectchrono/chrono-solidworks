@@ -110,7 +110,7 @@ namespace ChronoEngine_SwAddin
 
                 // Do the conversion into a Python/C++/Json text block.
                 // This will scan the low level hierarchy of the assembly
-                // and its mating constraints and create the proper Chrono::Engine links.
+                // and its mating constraints and create the proper Chrono links.
                 if ((sender as Button).Name.ToString() == "button_ExportToPython")
                 {
                     ChModelExporterPython pythonExporter = new ChModelExporterPython(mSWintegration, save_dir_shapes, save_filename);

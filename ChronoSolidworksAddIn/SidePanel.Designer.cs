@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SWTaskpaneHost));
             this.label1 = new System.Windows.Forms.Label();
-            this.toolTipSavePython = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTipChrono = new System.Windows.Forms.ToolTip(this.components);
             this.button_setcollshape = new System.Windows.Forms.Button();
             this.numeric_dt = new System.Windows.Forms.NumericUpDown();
             this.button_convexdecomp = new System.Windows.Forms.Button();
@@ -118,13 +118,15 @@
             this.label1.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(168, 25);
+            this.label1.Size = new System.Drawing.Size(205, 25);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Chrono::Engine";
+            this.label1.Text = "Chrono::Solidworks";
             // 
-            // toolTipSavePython
+            // toolTipChrono
             // 
-            this.toolTipSavePython.ToolTipTitle = "Press this button to create a .py script with C::E assets";
+            this.toolTipChrono.AutoPopDelay = 10000;
+            this.toolTipChrono.InitialDelay = 500;
+            this.toolTipChrono.ReshowDelay = 100;
             // 
             // button_setcollshape
             // 
@@ -134,7 +136,7 @@
             this.button_setcollshape.Size = new System.Drawing.Size(110, 30);
             this.button_setcollshape.TabIndex = 5;
             this.button_setcollshape.Text = "Primitive Shape";
-            this.toolTipSavePython.SetToolTip(this.button_setcollshape, resources.GetString("button_setcollshape.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.button_setcollshape, resources.GetString("button_setcollshape.ToolTip"));
             this.button_setcollshape.UseVisualStyleBackColor = true;
             this.button_setcollshape.Click += new System.EventHandler(this.button_setPrimitiveCollShape_Click);
             // 
@@ -161,7 +163,7 @@
             this.numeric_dt.Name = "numeric_dt";
             this.numeric_dt.Size = new System.Drawing.Size(80, 20);
             this.numeric_dt.TabIndex = 11;
-            this.toolTipSavePython.SetToolTip(this.numeric_dt, "Timestep [s]");
+            this.toolTipChrono.SetToolTip(this.numeric_dt, "Timestep [s]");
             this.numeric_dt.Value = new decimal(new int[] {
             1,
             0,
@@ -176,7 +178,7 @@
             this.button_convexdecomp.Size = new System.Drawing.Size(224, 30);
             this.button_convexdecomp.TabIndex = 21;
             this.button_convexdecomp.Text = "Convex Decomposition";
-            this.toolTipSavePython.SetToolTip(this.button_convexdecomp, "To use this function: \r\nselect a solid body and press the button");
+            this.toolTipChrono.SetToolTip(this.button_convexdecomp, resources.GetString("button_convexdecomp.ToolTip"));
             this.button_convexdecomp.UseVisualStyleBackColor = true;
             this.button_convexdecomp.Click += new System.EventHandler(this.button_convexdecomp_Click);
             // 
@@ -188,7 +190,7 @@
             this.button_chrono_property.Size = new System.Drawing.Size(231, 30);
             this.button_chrono_property.TabIndex = 22;
             this.button_chrono_property.Text = "Collision Parameters";
-            this.toolTipSavePython.SetToolTip(this.button_chrono_property, "Open the Chrono properties associated to the selected body");
+            this.toolTipChrono.SetToolTip(this.button_chrono_property, "Open the Chrono properties associated to the selected body");
             this.button_chrono_property.UseVisualStyleBackColor = true;
             this.button_chrono_property.Click += new System.EventHandler(this.button_chrono_property_Click);
             // 
@@ -215,7 +217,7 @@
             this.numeric_envelope.Name = "numeric_envelope";
             this.numeric_envelope.Size = new System.Drawing.Size(80, 20);
             this.numeric_envelope.TabIndex = 27;
-            this.toolTipSavePython.SetToolTip(this.numeric_envelope, "Outward tolerance for detecting potential contacts. Too small, might miss contact" +
+            this.toolTipChrono.SetToolTip(this.numeric_envelope, "Outward tolerance for detecting potential contacts. Too small, might miss contact" +
         "s. Too large, cause false positives and high CPU times.");
             this.numeric_envelope.Value = new decimal(new int[] {
             3,
@@ -246,7 +248,7 @@
             this.numeric_margin.Name = "numeric_margin";
             this.numeric_margin.Size = new System.Drawing.Size(80, 20);
             this.numeric_margin.TabIndex = 29;
-            this.toolTipSavePython.SetToolTip(this.numeric_margin, "Inward tolerance for interpenetrating contacts. Too small might cause objects sin" +
+            this.toolTipChrono.SetToolTip(this.numeric_margin, "Inward tolerance for interpenetrating contacts. Too small might cause objects sin" +
         "king. Too large, cause false positives and high CPU times.");
             this.numeric_margin.Value = new decimal(new int[] {
             3,
@@ -272,7 +274,7 @@
             this.numeric_contactbreaking.Name = "numeric_contactbreaking";
             this.numeric_contactbreaking.Size = new System.Drawing.Size(80, 20);
             this.numeric_contactbreaking.TabIndex = 31;
-            this.toolTipSavePython.SetToolTip(this.numeric_contactbreaking, "Nonzero value cause contact persistence between frames when possible, that can he" +
+            this.toolTipChrono.SetToolTip(this.numeric_contactbreaking, "Nonzero value cause contact persistence between frames when possible, that can he" +
         "lp solver convergence. Too large, anyway, can lead to wrong contacts.");
             this.numeric_contactbreaking.Value = new decimal(new int[] {
             2,
@@ -298,7 +300,7 @@
             this.numeric_sphereswept.Name = "numeric_sphereswept";
             this.numeric_sphereswept.Size = new System.Drawing.Size(80, 20);
             this.numeric_sphereswept.TabIndex = 33;
-            this.toolTipSavePython.SetToolTip(this.numeric_sphereswept, resources.GetString("numeric_sphereswept.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.numeric_sphereswept, resources.GetString("numeric_sphereswept.ToolTip"));
             this.numeric_sphereswept.Value = new decimal(new int[] {
             1,
             0,
@@ -313,7 +315,7 @@
             this.butt_chronoMotors.Size = new System.Drawing.Size(224, 30);
             this.butt_chronoMotors.TabIndex = 37;
             this.butt_chronoMotors.Text = "Motor";
-            this.toolTipSavePython.SetToolTip(this.butt_chronoMotors, "Open the properties for Chrono motors");
+            this.toolTipChrono.SetToolTip(this.butt_chronoMotors, "Open a dialog to model Chrono motors.");
             this.butt_chronoMotors.UseVisualStyleBackColor = true;
             this.butt_chronoMotors.Click += new System.EventHandler(this.butt_chronoMotors_Click);
             // 
@@ -325,7 +327,7 @@
             this.button_settrimeshcoll.Size = new System.Drawing.Size(110, 30);
             this.button_settrimeshcoll.TabIndex = 34;
             this.button_settrimeshcoll.Text = "Mesh";
-            this.toolTipSavePython.SetToolTip(this.button_settrimeshcoll, resources.GetString("button_settrimeshcoll.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.button_settrimeshcoll, resources.GetString("button_settrimeshcoll.ToolTip"));
             this.button_settrimeshcoll.UseVisualStyleBackColor = true;
             this.button_settrimeshcoll.Click += new System.EventHandler(this.button_settrimeshcoll_Click);
             // 
@@ -337,7 +339,7 @@
             this.but_runSimulation.Size = new System.Drawing.Size(107, 30);
             this.but_runSimulation.TabIndex = 25;
             this.but_runSimulation.Text = "Run Simulation";
-            this.toolTipSavePython.SetToolTip(this.but_runSimulation, "Run a Chrono simulation of this assembly");
+            this.toolTipChrono.SetToolTip(this.but_runSimulation, "Run a Chrono simulation of this assembly");
             this.but_runSimulation.UseVisualStyleBackColor = true;
             this.but_runSimulation.Click += new System.EventHandler(this.but_runSimulation_Click);
             // 
@@ -363,7 +365,7 @@
             this.nud_numIterations.Name = "nud_numIterations";
             this.nud_numIterations.Size = new System.Drawing.Size(80, 20);
             this.nud_numIterations.TabIndex = 27;
-            this.toolTipSavePython.SetToolTip(this.nud_numIterations, "Duration of the test simulation [s]");
+            this.toolTipChrono.SetToolTip(this.nud_numIterations, "Duration of the test simulation [s]");
             this.nud_numIterations.Value = new decimal(new int[] {
             400,
             0,
@@ -379,7 +381,8 @@
             this.button_ExportToCpp.TabIndex = 36;
             this.button_ExportToCpp.Text = "Export to C++";
             this.button_ExportToCpp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_ExportToCpp, resources.GetString("button_ExportToCpp.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.button_ExportToCpp, "Export Chrono model as .h/.cpp script and, optionally, .obj visual/collision asse" +
+        "ts.");
             this.button_ExportToCpp.UseVisualStyleBackColor = true;
             this.button_ExportToCpp.Click += new System.EventHandler(this.ExportClick);
             // 
@@ -392,7 +395,8 @@
             this.button_ExportToJson.TabIndex = 35;
             this.button_ExportToJson.Text = "Export to JSON";
             this.button_ExportToJson.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_ExportToJson, resources.GetString("button_ExportToJson.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.button_ExportToJson, "Export Chrono model as .json script and, optionally, .obj visual/collision assets" +
+        ".\r\n");
             this.button_ExportToJson.UseVisualStyleBackColor = true;
             this.button_ExportToJson.Click += new System.EventHandler(this.ExportClick);
             // 
@@ -405,7 +409,7 @@
             this.button_ExportToPython.TabIndex = 0;
             this.button_ExportToPython.Text = "Export to Python";
             this.button_ExportToPython.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTipSavePython.SetToolTip(this.button_ExportToPython, resources.GetString("button_ExportToPython.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.button_ExportToPython, "Export Chrono model as .py script and, optionally, .obj visual/collision assets.");
             this.button_ExportToPython.UseVisualStyleBackColor = true;
             this.button_ExportToPython.Click += new System.EventHandler(this.ExportClick);
             // 
@@ -422,7 +426,7 @@
             this.numeric_scale_T.Name = "numeric_scale_T";
             this.numeric_scale_T.Size = new System.Drawing.Size(67, 20);
             this.numeric_scale_T.TabIndex = 20;
-            this.toolTipSavePython.SetToolTip(this.numeric_scale_T, "Scale factor for time, in measuring units of exported items (some exported quanti" +
+            this.toolTipChrono.SetToolTip(this.numeric_scale_T, "Scale factor for time, in measuring units of exported items (some exported quanti" +
         "ties depends on time scale, ex speed = [L]/[T] )");
             this.numeric_scale_T.Value = new decimal(new int[] {
             1,
@@ -441,7 +445,7 @@
             this.checkBox_surfaces.Size = new System.Drawing.Size(102, 17);
             this.checkBox_surfaces.TabIndex = 2;
             this.checkBox_surfaces.Text = "Export surfaces ";
-            this.toolTipSavePython.SetToolTip(this.checkBox_surfaces, resources.GetString("checkBox_surfaces.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.checkBox_surfaces, resources.GetString("checkBox_surfaces.ToolTip"));
             this.checkBox_surfaces.UseVisualStyleBackColor = true;
             // 
             // checkBox_collshapes
@@ -455,7 +459,7 @@
             this.checkBox_collshapes.Size = new System.Drawing.Size(131, 17);
             this.checkBox_collshapes.TabIndex = 3;
             this.checkBox_collshapes.Text = "Export collison shapes";
-            this.toolTipSavePython.SetToolTip(this.checkBox_collshapes, resources.GetString("checkBox_collshapes.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.checkBox_collshapes, resources.GetString("checkBox_collshapes.ToolTip"));
             this.checkBox_collshapes.UseVisualStyleBackColor = true;
             // 
             // numeric_scale_M
@@ -471,7 +475,7 @@
             this.numeric_scale_M.Name = "numeric_scale_M";
             this.numeric_scale_M.Size = new System.Drawing.Size(67, 20);
             this.numeric_scale_M.TabIndex = 17;
-            this.toolTipSavePython.SetToolTip(this.numeric_scale_M, "Scale factor for all masses. For example, if you set 0.1, an object that is 5kg h" +
+            this.toolTipChrono.SetToolTip(this.numeric_scale_M, "Scale factor for all masses. For example, if you set 0.1, an object that is 5kg h" +
         "eavy will be exported as 0.5kg.");
             this.numeric_scale_M.Value = new decimal(new int[] {
             1,
@@ -490,7 +494,8 @@
             this.checkBox_constraints.Size = new System.Drawing.Size(110, 17);
             this.checkBox_constraints.TabIndex = 4;
             this.checkBox_constraints.Text = "Export constraints";
-            this.toolTipSavePython.SetToolTip(this.checkBox_constraints, resources.GetString("checkBox_constraints.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.checkBox_constraints, "If checked, Chrono constraints will be exported to match\r\nMates present in the mo" +
+        "del.\r\nNote: advanced/mechanical mates are not supported.");
             this.checkBox_constraints.UseVisualStyleBackColor = true;
             // 
             // checkBox_separateobj
@@ -502,7 +507,7 @@
             this.checkBox_separateobj.Size = new System.Drawing.Size(172, 17);
             this.checkBox_separateobj.TabIndex = 6;
             this.checkBox_separateobj.Text = "Separate .obj per each subpart";
-            this.toolTipSavePython.SetToolTip(this.checkBox_separateobj, resources.GetString("checkBox_separateobj.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.checkBox_separateobj, resources.GetString("checkBox_separateobj.ToolTip"));
             this.checkBox_separateobj.UseVisualStyleBackColor = true;
             // 
             // checkBox_saveUV
@@ -516,7 +521,8 @@
             this.checkBox_saveUV.Size = new System.Drawing.Size(146, 17);
             this.checkBox_saveUV.TabIndex = 7;
             this.checkBox_saveUV.Text = "Save UV map information";
-            this.toolTipSavePython.SetToolTip(this.checkBox_saveUV, resources.GetString("checkBox_saveUV.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.checkBox_saveUV, "If checked, save UV texture coordinates data into the exported .obj asset files.\r" +
+        "\nNote: these UV coordinates are the ones automatically generated by Solidworks.");
             this.checkBox_saveUV.UseVisualStyleBackColor = true;
             // 
             // numeric_scale_L
@@ -532,7 +538,7 @@
             this.numeric_scale_L.Name = "numeric_scale_L";
             this.numeric_scale_L.Size = new System.Drawing.Size(67, 20);
             this.numeric_scale_L.TabIndex = 14;
-            this.toolTipSavePython.SetToolTip(this.numeric_scale_L, "Scale factor for all lengths. For example, if you set 0.1, an object that is 5m l" +
+            this.toolTipChrono.SetToolTip(this.numeric_scale_L, "Scale factor for all lengths. For example, if you set 0.1, an object that is 5m l" +
         "ong will be exported as 0.5m long.");
             this.numeric_scale_L.Value = new decimal(new int[] {
             1,
@@ -549,8 +555,8 @@
             this.checkBox_scale.Size = new System.Drawing.Size(85, 17);
             this.checkBox_scale.TabIndex = 18;
             this.checkBox_scale.Text = "Scale export";
-            this.toolTipSavePython.SetToolTip(this.checkBox_scale, "If checked, you can set a reduction or enlargement scale for lenghts (L), masses " +
-        "(M) and times (T) when exporting output.");
+            this.toolTipChrono.SetToolTip(this.checkBox_scale, "If checked, you can set a reduction or enlargement scale factor\r\nfor lenghts (L)," +
+        " masses (M) and times (T) when exporting output.");
             this.checkBox_scale.UseVisualStyleBackColor = true;
             // 
             // but_chronoSDA
@@ -561,7 +567,7 @@
             this.but_chronoSDA.Size = new System.Drawing.Size(224, 30);
             this.but_chronoSDA.TabIndex = 38;
             this.but_chronoSDA.Text = "Spring-Damper-Actuator";
-            this.toolTipSavePython.SetToolTip(this.but_chronoSDA, "Open the properties for Chrono motors");
+            this.toolTipChrono.SetToolTip(this.but_chronoSDA, "Open a dialog to model Chrono spring-damper-actuators.");
             this.but_chronoSDA.UseVisualStyleBackColor = true;
             this.but_chronoSDA.Click += new System.EventHandler(this.but_chronoSDA_Click);
             // 
@@ -578,7 +584,7 @@
             this.cbSolver.Size = new System.Drawing.Size(80, 21);
             this.cbSolver.TabIndex = 28;
             this.cbSolver.Text = "PSOR";
-            this.toolTipSavePython.SetToolTip(this.cbSolver, resources.GetString("cbSolver.ToolTip"));
+            this.toolTipChrono.SetToolTip(this.cbSolver, resources.GetString("cbSolver.ToolTip"));
             // 
             // label2
             // 
@@ -875,9 +881,9 @@
             this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label19.Location = new System.Drawing.Point(6, 28);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(135, 13);
+            this.label19.Size = new System.Drawing.Size(161, 13);
             this.label19.TabIndex = 51;
-            this.label19.Text = "Gravity Acceleration [m/s2]";
+            this.label19.Text = "Gravitational Acceleration [m/s2]";
             this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // groupBox3
@@ -984,7 +990,6 @@
             this.Controls.Add(this.label1);
             this.Name = "SWTaskpaneHost";
             this.Size = new System.Drawing.Size(284, 853);
-            this.toolTipSavePython.SetToolTip(this, resources.GetString("$this.ToolTip"));
             ((System.ComponentModel.ISupportInitialize)(this.numeric_dt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_envelope)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_margin)).EndInit();
@@ -1019,7 +1024,7 @@
 
         #endregion
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ToolTip toolTipSavePython;
+        private System.Windows.Forms.ToolTip toolTipChrono;
         private System.Windows.Forms.Button button_setcollshape;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numeric_dt;

@@ -119,7 +119,7 @@ namespace ChronoEngine_SwAddin
             addinPath+"/icons/ChronoEngineAddIn_128.png"
             };
 
-            m_TaskpaneView = m_swApplication.CreateTaskpaneView3(imagePaths, "Chrono::Engine tools");
+            m_TaskpaneView = m_swApplication.CreateTaskpaneView3(imagePaths, "Chrono::Solidworks tools");
             m_taskpaneHost = (SWTaskpaneHost)m_TaskpaneView.AddControl(SWTaskpaneHost.SWTASKPANE_PROGID, "");
             m_taskpaneHost.mSWApplication = this.m_swApplication;
             m_taskpaneHost.mSWintegration = this;
@@ -141,7 +141,7 @@ namespace ChronoEngine_SwAddin
             {
                 rk.SetValue(null, 1); // Load at startup
                 rk.SetValue("Title", "ChronoEngine SwAddin"); // Title
-                rk.SetValue("Description", "Add-in for modeling Chrono::Engine system with SolidWorks"); // Description
+                rk.SetValue("Description", "Add-in for modeling Chrono system with SolidWorks"); // Description
             }
         }
 

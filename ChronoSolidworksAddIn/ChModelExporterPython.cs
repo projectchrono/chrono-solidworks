@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
-/// Derived class for exporting a Solidworks assembly to a Chrono::Engine  model.
+/// Derived class for exporting a Solidworks assembly to a Chrono model.
 
 namespace ChronoEngineAddin
 {

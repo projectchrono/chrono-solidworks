@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolTipSavePython.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>494, 44</value>
+  <metadata name="toolTipChrono.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
   <data name="button_setcollshape.ToolTip" xml:space="preserve">
     <value>Select a Solid Body (not a Part) before clicking here.
@@ -128,6 +128,17 @@ Primitive shapes are the faster and more robust to compute.
 The body material will be changed to air since often
 these shapes are used as wrapping collision shapes.
 The body will change color to confirm the flag.</value>
+  </data>
+  <data name="button_convexdecomp.ToolTip" xml:space="preserve">
+    <value>Select a Solid Body (not a Part) before clicking here.
+A Dialog will be displayed to setup the parameters of an
+automatic convex decomposition algorithm.
+Upon success, the user can
+- add the resulting convex hulls directly into current 
+Solidworks model; these can subsequently be flagged as
+'Primitive' collision shapes
+- export resulting convex hulls on disk in a Chrono-compatible
+format</value>
   </data>
   <data name="numeric_sphereswept.ToolTip" xml:space="preserve">
     <value>By inflating the thickness of triangles in meshes for collisions (if used), this enhances robustness of contact detection.  Too large can cause unnaturally "fat" invisible layer around triangle meshes.</value>
@@ -142,91 +153,24 @@ Bigger radius means more robustness,
 but also inflated and rounded shapes.
 Body color will change to confirm the flag.</value>
   </data>
-  <data name="button_ExportToCpp.ToolTip" xml:space="preserve">
-    <value>Pressing this button you will perform these actions at once:
-
--  save a .cpp file containing a function that will store
-   the SolidWorks system into a list of bodies and links;
-   later, this function can be included in a C++ project
-   to populate a Chrono::Engine system.
-
--  create a directory for saving 'assets', that are the shapes
-   for rendering and visualization, that can be used in C::E
-   postprocessing. Shapes are saved in the directory in .OBJ
-   format.</value>
-  </data>
-  <data name="button_ExportToJson.ToolTip" xml:space="preserve">
-    <value>Pressing this button you will perform these actions at once:
-
--  save a .py file that contains functions that, once executed 
-   in Python, will create a Chrono::Engine system.
-
--  create a directory for saving 'assets', that are the shapes
-   for rendering and visualization, that can be used in C::E
-   postprocessing. Shapes are saved in the directory in .OBJ
-   format.</value>
-  </data>
-  <data name="button_ExportToPython.ToolTip" xml:space="preserve">
-    <value>Pressing this button you will perform these actions at once:
-
--  save a .py file that contains functions that, once executed 
-   in Python, will create a Chrono::Engine system.
-
--  create a directory for saving 'assets', that are the shapes
-   for rendering and visualization, that can be used in C::E
-   postprocessing. Shapes are saved in the directory in .OBJ
-   format.</value>
-  </data>
   <data name="checkBox_surfaces.ToolTip" xml:space="preserve">
-    <value>If turned ON, the a xxxyyy_shapes directory will be created in the same 
-place where you save the xxxyyy.py file. This directory will contain the
-triangle meshes representing the visualization shapes of the parts.
-All shapes are save separately as Wavefront .OBJ files.
-
-The xxxyyy.py file will contain the statements to link those OBJ files
-to the ChBody objects in the system, so you can easily render animations
-using the Chrono::Engine post processing unit.</value>
+    <value>If checked, export Chrono visual shapes assets alongside model descriptor file.
+A 'xxxyyy_shapes' directory will be created and populated with .obj 
+triangle meshes, corresponding to skin tessellation of Parts.
+Useful for subsequent rendering of model.</value>
   </data>
   <data name="checkBox_collshapes.ToolTip" xml:space="preserve">
-    <value>  The generated xxxyyy.py file will contain statements that define
-collision shapes for the ChBody parts. 
-
-  Collision shapes must be created in SolidWorks, by creating 'solid bodies' 
-in SolidEdge parts, for example a rod part can contain two cylinder and a
-box solid bodies, approximating the collision geometry of the rod. 
-
-  Each collision shape must be previously marked using the 
- 'Set body as collision shape' button.</value>
-  </data>
-  <data name="checkBox_constraints.ToolTip" xml:space="preserve">
-    <value>If turned ON, the .py exported file will contain also
-the statements that create Chrono::Engine constraints 
-between the parts.
-Most basic 'mate' constraints in SolidWorks are translated
-into Chrono::Engine constraints of ChLinkMate type; but
-some advanced SolidWorks constraints might not be
-translated.</value>
+    <value>If checked, export Chrono collision shapes assets alongside model descriptor file.
+Prerequisite: Solid Bodies corresponding to collision shapes must already be
+flagged as such in the dedicated GUI tab of this Add-In.</value>
   </data>
   <data name="checkBox_separateobj.ToolTip" xml:space="preserve">
-    <value>A part or a subsassebly in SolidWorks, that will be converted to 
-a single Chrono::Engine rigid body, can consist of multiple
-closed surfaces, for instance a 'wheel' subassembly can have
-surfaces for bolts, screws, etc. If this button is checked, all
-those surfaces will be saved separately in different .obj files. 
-if not checked, surfaces will be saved in a single .obj, that will
-correspond to the entire Chrono::Engine rigid body.
-If you plan to modify/texture/edit the .obj files, maybe that
-one option or the other can be more confortable to you.
+    <value>If checked, separately save all closed subshapes belonging to the 
+same Chrono body into dedicated .obj files.
+If not checked, merge all subshapes belonging to the same 
+Chrono body into a single .obj file.
 
 </value>
-  </data>
-  <data name="checkBox_saveUV.ToolTip" xml:space="preserve">
-    <value>If checked, the .OBJ files that contain the geometry of the shapes will also
-contain the UV coordinates for UV texture mapping.
-The UV coordinates are defaults generated by SolidWorks: maybe that you need 
-to modify them if you do some advanced texture mapping afterward,
-for example editing/modifying/texturing the generated OBJ files using
-some other 3d modeling software.</value>
   </data>
   <data name="cbSolver.ToolTip" xml:space="preserve">
     <value>Select the solver used:
@@ -235,17 +179,6 @@ some other 3d modeling software.</value>
 - MINRES: for mechanisms with no collisions; high accuracy</value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>25</value>
+    <value>46</value>
   </metadata>
-  <data name="$this.ToolTip" xml:space="preserve">
-    <value>It can happen that a single SolidWorks part or subassembly, that will
-be converted to a single Chrono::Engine rigid body, could contain multiple
-separate shapes. For example a wheel can contain bolts, screws, etc.
-- if this button is checked,  .obj files is generated per each separable surface
-   in each Chrono::Engine rigid body,
-- if this button is not checked, a single .obj file is generated per each 
-   Chrono::Engine rigid body.
-The former or the latter option can be more confortable depending on 
-how you plan to modify/edit/texture the .obj files. </value>
-  </data>
 </root>
