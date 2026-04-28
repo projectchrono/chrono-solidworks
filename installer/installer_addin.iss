@@ -40,7 +40,7 @@ Source: ..\..\chrono-solidworks_install\*; Excludes: "*\.svn,*.git,*.dll"; DestD
 Filename:"{dotnet40}\RegAsm.exe"; Parameters: /codebase ChronoSolidworksAddIn.dll; WorkingDir: {app}; StatusMsg: "Registering controls ..."; Flags: runhidden;
  
 [UninstallRun]
-Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoSolidworksAddIn.dll; WorkingDir: {app}; StatusMsg: "Unegistering controls ..."; Flags: runhidden; RunOnceId: "ChronoSolidworksAddInUninstallTag"
+Filename:"{dotnet40}\RegAsm.exe"; Parameters: /unregister ChronoSolidworksAddIn.dll; WorkingDir: {app}; StatusMsg: "Unregistering controls ..."; Flags: runhidden; RunOnceId: "ChronoSolidworksAddInUninstallTag"
 
 
 

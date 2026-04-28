@@ -31,7 +31,7 @@ namespace ChronoSolidworksAddin
             m_SWintegration = SWintegration;
         }
 
-        private void butt_selectSlaveMarker_Click(object sender, EventArgs e)
+        private void butt_selectMarker1_Click(object sender, EventArgs e)
         {
             if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1) == swSelectType_e.swSelCOORDSYS)
             {
@@ -41,7 +41,7 @@ namespace ChronoSolidworksAddin
             }
         }
 
-        private void but_selectMasterMarker_Click(object sender, EventArgs e)
+        private void but_selectMarker2_Click(object sender, EventArgs e)
         {
             if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1) == swSelectType_e.swSelCOORDSYS)
             {
@@ -79,14 +79,14 @@ namespace ChronoSolidworksAddin
                             byte[] selBody2Ref = (byte[])GetIDFromString(swModel, sdaBody2);
                             Component2 selectedBody2 = (Component2)GetObjectFromID(swModel, selBody2Ref);
                             m_selectedBody2 = selectedBody2;
-                            txt_bodyMasterSelected.Text = selectedBody2.Name;
+                            txt_body2Selected.Text = selectedBody2.Name;
                         }
                         else
                         {
-                            txt_bodyMasterSelected.Text = "SLDW_GROUND";
+                            txt_body2Selected.Text = "SLDW_GROUND";
                             cbMasterGround.CheckState = CheckState.Checked;
-                            txt_bodyMasterSelected.Enabled = false;
-                            butt_selectMasterBody.Enabled = false;
+                            txt_body2Selected.Enabled = false;
+                            butt_selectBody2.Enabled = false;
                         }
 
                         byte[] selMarker1Ref = (byte[])GetIDFromString(swModel, sdaMarker1);
@@ -100,7 +100,7 @@ namespace ChronoSolidworksAddin
                         txt_actuatorForce.Text = sdaActuatorForce;
                         txt_restLength.Text = sdaRestLength;
                         txt_markerSlaveSelected.Text = selectedMarker1.Name;
-                        txt_bodySlaveSelected.Text = selectedBody1.Name;
+                        txt_body1Selected.Text = selectedBody1.Name;
                     }
                     catch (Exception exc)
                     {
@@ -110,7 +110,7 @@ namespace ChronoSolidworksAddin
             }
         }
 
-        private void butt_selectSlaveBody_Click(object sender, EventArgs e)
+        private void butt_selectBody1_Click(object sender, EventArgs e)
         {
             if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1) == swSelectType_e.swSelCOMPONENTS)
             {
@@ -118,7 +118,7 @@ namespace ChronoSolidworksAddin
                 if (swPart != null)
                 {
                     m_selectedBody1 = swPart;
-                    txt_bodySlaveSelected.Text = swPart.Name;
+                    txt_body1Selected.Text = swPart.Name;
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace ChronoSolidworksAddin
             }
         }
 
-        private void butt_selectMasterBody_Click(object sender, EventArgs e)
+        private void butt_selectBody2_Click(object sender, EventArgs e)
         {
             if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1) == swSelectType_e.swSelCOMPONENTS)
             {
@@ -135,7 +135,7 @@ namespace ChronoSolidworksAddin
                 if (swPart != null)
                 {
                     m_selectedBody2 = swPart;
-                    txt_bodyMasterSelected.Text = swPart.Name;
+                    txt_body2Selected.Text = swPart.Name;
                 }
                 else
                 {
@@ -149,15 +149,15 @@ namespace ChronoSolidworksAddin
             // Use default assembly 'ground' body as master
             if (cbMasterGround.Checked)
             {
-                txt_bodyMasterSelected.Text = "SLDW_GROUND";
-                txt_bodyMasterSelected.Enabled = false;
-                butt_selectMasterBody.Enabled = false;
+                txt_body2Selected.Text = "SLDW_GROUND";
+                txt_body2Selected.Enabled = false;
+                butt_selectBody2.Enabled = false;
             }
             else
             {
-                txt_bodyMasterSelected.Text = "";
-                txt_bodyMasterSelected.Enabled = true;
-                butt_selectMasterBody.Enabled = true;
+                txt_body2Selected.Text = "";
+                txt_body2Selected.Enabled = true;
+                butt_selectBody2.Enabled = true;
             }
         }
 

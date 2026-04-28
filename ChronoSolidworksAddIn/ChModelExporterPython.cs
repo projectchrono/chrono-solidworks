@@ -123,7 +123,7 @@ namespace ChronoSolidworksAddin
             // Write on file
             System.IO.File.WriteAllText(m_saveFilename, m_asciiText);
 
-            System.Windows.Forms.MessageBox.Show("Export to Python completed.");
+            System.Windows.Forms.MessageBox.Show("Export to Python completed.", "Info");
         }
 
         public override bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates)

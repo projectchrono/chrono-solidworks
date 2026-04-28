@@ -32,7 +32,7 @@
             this.cb_motorType = new System.Windows.Forms.ComboBox();
             this.cb_motionLaw = new System.Windows.Forms.ComboBox();
             this.lab_motionlaw = new System.Windows.Forms.Label();
-            this.butt_addBodyMaster = new System.Windows.Forms.Button();
+            this.butt_addBody2 = new System.Windows.Forms.Button();
             this.butt_createMotor = new System.Windows.Forms.Button();
             this.butt_addMarker = new System.Windows.Forms.Button();
             this.gp_motorConfig = new System.Windows.Forms.GroupBox();
@@ -45,9 +45,9 @@
             this.lab_motorName = new System.Windows.Forms.Label();
             this.gb_entitySelection = new System.Windows.Forms.GroupBox();
             this.cbMasterGround = new System.Windows.Forms.CheckBox();
-            this.butt_bodySlaveSelected = new System.Windows.Forms.Button();
-            this.txt_bodyMasterSelected = new System.Windows.Forms.TextBox();
-            this.txt_bodySlaveSelected = new System.Windows.Forms.TextBox();
+            this.butt_body1Selected = new System.Windows.Forms.Button();
+            this.txt_body2Selected = new System.Windows.Forms.TextBox();
+            this.txt_body1Selected = new System.Windows.Forms.TextBox();
             this.txt_markerSelected = new System.Windows.Forms.TextBox();
             this.gp_motorConfig.SuspendLayout();
             this.gb_entitySelection.SuspendLayout();
@@ -104,15 +104,15 @@
             this.lab_motionlaw.TabIndex = 6;
             this.lab_motionlaw.Text = "Motion law:";
             // 
-            // butt_addBodyMaster
+            // butt_addBody2
             // 
-            this.butt_addBodyMaster.Location = new System.Drawing.Point(11, 95);
-            this.butt_addBodyMaster.Name = "butt_addBodyMaster";
-            this.butt_addBodyMaster.Size = new System.Drawing.Size(140, 30);
-            this.butt_addBodyMaster.TabIndex = 8;
-            this.butt_addBodyMaster.Text = "Select Master Body";
-            this.butt_addBodyMaster.UseVisualStyleBackColor = true;
-            this.butt_addBodyMaster.Click += new System.EventHandler(this.butt_addBodyMaster_Click);
+            this.butt_addBody2.Location = new System.Drawing.Point(11, 95);
+            this.butt_addBody2.Name = "butt_addBody2";
+            this.butt_addBody2.Size = new System.Drawing.Size(140, 30);
+            this.butt_addBody2.TabIndex = 8;
+            this.butt_addBody2.Text = "Select Body 2";
+            this.butt_addBody2.UseVisualStyleBackColor = true;
+            this.butt_addBody2.Click += new System.EventHandler(this.butt_addBodyMaster_Click);
             // 
             // butt_createMotor
             // 
@@ -218,12 +218,12 @@
             // gb_entitySelection
             // 
             this.gb_entitySelection.Controls.Add(this.cbMasterGround);
-            this.gb_entitySelection.Controls.Add(this.butt_bodySlaveSelected);
-            this.gb_entitySelection.Controls.Add(this.txt_bodyMasterSelected);
-            this.gb_entitySelection.Controls.Add(this.txt_bodySlaveSelected);
+            this.gb_entitySelection.Controls.Add(this.butt_body1Selected);
+            this.gb_entitySelection.Controls.Add(this.txt_body2Selected);
+            this.gb_entitySelection.Controls.Add(this.txt_body1Selected);
             this.gb_entitySelection.Controls.Add(this.txt_markerSelected);
             this.gb_entitySelection.Controls.Add(this.butt_addMarker);
-            this.gb_entitySelection.Controls.Add(this.butt_addBodyMaster);
+            this.gb_entitySelection.Controls.Add(this.butt_addBody2);
             this.gb_entitySelection.Location = new System.Drawing.Point(15, 234);
             this.gb_entitySelection.Name = "gb_entitySelection";
             this.gb_entitySelection.Size = new System.Drawing.Size(356, 164);
@@ -236,37 +236,37 @@
             this.cbMasterGround.AutoSize = true;
             this.cbMasterGround.Location = new System.Drawing.Point(172, 128);
             this.cbMasterGround.Name = "cbMasterGround";
-            this.cbMasterGround.Size = new System.Drawing.Size(154, 17);
+            this.cbMasterGround.Size = new System.Drawing.Size(128, 17);
             this.cbMasterGround.TabIndex = 17;
-            this.cbMasterGround.Text = "Set ground as Master Body";
+            this.cbMasterGround.Text = "Set ground as Body 2";
             this.cbMasterGround.UseVisualStyleBackColor = true;
             this.cbMasterGround.CheckedChanged += new System.EventHandler(this.cbMasterGround_CheckedChanged);
             // 
-            // butt_bodySlaveSelected
+            // butt_body1Selected
             // 
-            this.butt_bodySlaveSelected.Location = new System.Drawing.Point(11, 58);
-            this.butt_bodySlaveSelected.Name = "butt_bodySlaveSelected";
-            this.butt_bodySlaveSelected.Size = new System.Drawing.Size(140, 30);
-            this.butt_bodySlaveSelected.TabIndex = 15;
-            this.butt_bodySlaveSelected.Text = "Select Slave Body";
-            this.butt_bodySlaveSelected.UseVisualStyleBackColor = true;
-            this.butt_bodySlaveSelected.Click += new System.EventHandler(this.butt_bodySlaveSelected_Click);
+            this.butt_body1Selected.Location = new System.Drawing.Point(11, 58);
+            this.butt_body1Selected.Name = "butt_body1Selected";
+            this.butt_body1Selected.Size = new System.Drawing.Size(140, 30);
+            this.butt_body1Selected.TabIndex = 15;
+            this.butt_body1Selected.Text = "Select Body 1";
+            this.butt_body1Selected.UseVisualStyleBackColor = true;
+            this.butt_body1Selected.Click += new System.EventHandler(this.butt_body1Selected_Click);
             // 
-            // txt_bodyMasterSelected
+            // txt_body2Selected
             // 
-            this.txt_bodyMasterSelected.Location = new System.Drawing.Point(171, 102);
-            this.txt_bodyMasterSelected.Name = "txt_bodyMasterSelected";
-            this.txt_bodyMasterSelected.ReadOnly = true;
-            this.txt_bodyMasterSelected.Size = new System.Drawing.Size(179, 20);
-            this.txt_bodyMasterSelected.TabIndex = 14;
+            this.txt_body2Selected.Location = new System.Drawing.Point(171, 102);
+            this.txt_body2Selected.Name = "txt_body2Selected";
+            this.txt_body2Selected.ReadOnly = true;
+            this.txt_body2Selected.Size = new System.Drawing.Size(179, 20);
+            this.txt_body2Selected.TabIndex = 14;
             // 
-            // txt_bodySlaveSelected
+            // txt_body1Selected
             // 
-            this.txt_bodySlaveSelected.Location = new System.Drawing.Point(171, 64);
-            this.txt_bodySlaveSelected.Name = "txt_bodySlaveSelected";
-            this.txt_bodySlaveSelected.ReadOnly = true;
-            this.txt_bodySlaveSelected.Size = new System.Drawing.Size(179, 20);
-            this.txt_bodySlaveSelected.TabIndex = 13;
+            this.txt_body1Selected.Location = new System.Drawing.Point(171, 64);
+            this.txt_body1Selected.Name = "txt_body1Selected";
+            this.txt_body1Selected.ReadOnly = true;
+            this.txt_body1Selected.Size = new System.Drawing.Size(179, 20);
+            this.txt_body1Selected.TabIndex = 13;
             // 
             // txt_markerSelected
             // 
@@ -302,15 +302,15 @@
         private System.Windows.Forms.ComboBox cb_motorType;
         private System.Windows.Forms.ComboBox cb_motionLaw;
         private System.Windows.Forms.Label lab_motionlaw;
-        private System.Windows.Forms.Button butt_addBodyMaster;
+        private System.Windows.Forms.Button butt_addBody2;
         private System.Windows.Forms.Button butt_createMotor;
         private System.Windows.Forms.Button butt_addMarker;
         private System.Windows.Forms.GroupBox gp_motorConfig;
         private System.Windows.Forms.GroupBox gb_entitySelection;
         private System.Windows.Forms.TextBox txt_markerSelected;
-        private System.Windows.Forms.TextBox txt_bodyMasterSelected;
-        private System.Windows.Forms.TextBox txt_bodySlaveSelected;
-        private System.Windows.Forms.Button butt_bodySlaveSelected;
+        private System.Windows.Forms.TextBox txt_body2Selected;
+        private System.Windows.Forms.TextBox txt_body1Selected;
+        private System.Windows.Forms.Button butt_body1Selected;
         private System.Windows.Forms.TextBox txt_motorName;
         private System.Windows.Forms.Label lab_motorName;
         private System.Windows.Forms.Label lab_motorConstraints;

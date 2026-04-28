@@ -66,7 +66,7 @@ namespace ChronoSolidworksAddin
                         byte[] selBody1Ref = (byte[])GetIDFromString(swModel, motorBody1);
                         Component2 selectedBody1 = (Component2)GetObjectFromID(swModel, selBody1Ref);
                         m_selectedBody1 = selectedBody1;
-                        txt_bodySlaveSelected.Text = selectedBody1.Name;
+                        txt_body1Selected.Text = selectedBody1.Name;
 
                         if (motorBody2 != "SLDW_GROUND")
                         {
@@ -76,10 +76,10 @@ namespace ChronoSolidworksAddin
                         }   
                         else
                         {
-                            txt_bodyMasterSelected.Text = "SLDW_GROUND";
+                            txt_body2Selected.Text = "SLDW_GROUND";
                             cbMasterGround.CheckState = CheckState.Checked;
-                            txt_bodyMasterSelected.Enabled = false;
-                            butt_addBodyMaster.Enabled = false;
+                            txt_body2Selected.Enabled = false;
+                            butt_addBody2.Enabled = false;
                         }
 
                         txt_motorName.Text = motorName;
@@ -100,7 +100,7 @@ namespace ChronoSolidworksAddin
             }
         }
 
-        private void butt_bodySlaveSelected_Click(object sender, EventArgs e)
+        private void butt_body1Selected_Click(object sender, EventArgs e)
         {
             if ((swSelectType_e)m_swSelMgr.GetSelectedObjectType3(1, -1) == swSelectType_e.swSelCOMPONENTS)
             {
@@ -108,11 +108,11 @@ namespace ChronoSolidworksAddin
                 if (swPart != null)
                 {
                     m_selectedBody1 = swPart;
-                    txt_bodySlaveSelected.Text = swPart.Name;
+                    txt_body1Selected.Text = swPart.Name;
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Error in Part selection.");
+                    MessageBox.Show("Error in Part selection.");
                 }
             }
         }
@@ -125,11 +125,11 @@ namespace ChronoSolidworksAddin
                 if (swPart != null)
                 {
                     m_selectedBody2 = swPart;
-                    txt_bodyMasterSelected.Text = swPart.Name;
+                    txt_body2Selected.Text = swPart.Name;
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Error in Part selection.");
+                    MessageBox.Show("Error in Part selection.");
                 }
             }
         }
@@ -310,15 +310,15 @@ namespace ChronoSolidworksAddin
         {
             if (cbMasterGround.Checked)
             {
-                txt_bodyMasterSelected.Text = "SLDW_GROUND";
-                txt_bodyMasterSelected.Enabled = false;
-                butt_addBodyMaster.Enabled = false;
+                txt_body2Selected.Text = "SLDW_GROUND";
+                txt_body2Selected.Enabled = false;
+                butt_addBody2.Enabled = false;
             }
             else
             {
-                txt_bodyMasterSelected.Text = "";
-                txt_bodyMasterSelected.Enabled = true;
-                butt_addBodyMaster.Enabled = true;
+                txt_body2Selected.Text = "";
+                txt_body2Selected.Enabled = true;
+                butt_addBody2.Enabled = true;
             }
         }
     } // end form

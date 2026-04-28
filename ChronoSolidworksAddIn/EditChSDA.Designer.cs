@@ -28,22 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.butt_selectMasterBody = new System.Windows.Forms.Button();
+            this.butt_selectBody2 = new System.Windows.Forms.Button();
             this.butt_createSDA = new System.Windows.Forms.Button();
-            this.butt_selectSlaveMarker = new System.Windows.Forms.Button();
+            this.butt_selectMarker1 = new System.Windows.Forms.Button();
             this.gb_entitySelection = new System.Windows.Forms.GroupBox();
             this.txt_markerMasterSelected = new System.Windows.Forms.TextBox();
-            this.but_selectMasterMarker = new System.Windows.Forms.Button();
+            this.but_selectMarker2 = new System.Windows.Forms.Button();
             this.cbMasterGround = new System.Windows.Forms.CheckBox();
-            this.butt_selectSlaveBody = new System.Windows.Forms.Button();
-            this.txt_bodyMasterSelected = new System.Windows.Forms.TextBox();
-            this.txt_bodySlaveSelected = new System.Windows.Forms.TextBox();
+            this.butt_selectBody1 = new System.Windows.Forms.Button();
+            this.txt_body2Selected = new System.Windows.Forms.TextBox();
+            this.txt_body1Selected = new System.Windows.Forms.TextBox();
             this.txt_markerSlaveSelected = new System.Windows.Forms.TextBox();
             this.cb_sdaType = new System.Windows.Forms.ComboBox();
             this.lab_motorType = new System.Windows.Forms.Label();
             this.lab_motorName = new System.Windows.Forms.Label();
             this.txt_sdaName = new System.Windows.Forms.TextBox();
             this.gp_motorConfig = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.txt_restLength = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txt_actuatorForce = new System.Windows.Forms.TextBox();
@@ -52,20 +53,19 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txt_springCoeff = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.gb_entitySelection.SuspendLayout();
             this.gp_motorConfig.SuspendLayout();
             this.SuspendLayout();
             // 
-            // butt_selectMasterBody
+            // butt_selectBody2
             // 
-            this.butt_selectMasterBody.Location = new System.Drawing.Point(11, 127);
-            this.butt_selectMasterBody.Name = "butt_selectMasterBody";
-            this.butt_selectMasterBody.Size = new System.Drawing.Size(140, 30);
-            this.butt_selectMasterBody.TabIndex = 8;
-            this.butt_selectMasterBody.Text = "Select Master Body";
-            this.butt_selectMasterBody.UseVisualStyleBackColor = true;
-            this.butt_selectMasterBody.Click += new System.EventHandler(this.butt_selectMasterBody_Click);
+            this.butt_selectBody2.Location = new System.Drawing.Point(11, 127);
+            this.butt_selectBody2.Name = "butt_selectBody2";
+            this.butt_selectBody2.Size = new System.Drawing.Size(140, 30);
+            this.butt_selectBody2.TabIndex = 8;
+            this.butt_selectBody2.Text = "Select Body 2";
+            this.butt_selectBody2.UseVisualStyleBackColor = true;
+            this.butt_selectBody2.Click += new System.EventHandler(this.butt_selectBody2_Click);
             // 
             // butt_createSDA
             // 
@@ -77,27 +77,27 @@
             this.butt_createSDA.UseVisualStyleBackColor = true;
             this.butt_createSDA.Click += new System.EventHandler(this.butt_createSDA_Click);
             // 
-            // butt_selectSlaveMarker
+            // butt_selectMarker1
             // 
-            this.butt_selectSlaveMarker.Location = new System.Drawing.Point(11, 19);
-            this.butt_selectSlaveMarker.Name = "butt_selectSlaveMarker";
-            this.butt_selectSlaveMarker.Size = new System.Drawing.Size(140, 30);
-            this.butt_selectSlaveMarker.TabIndex = 12;
-            this.butt_selectSlaveMarker.Text = "Select Slave Marker";
-            this.butt_selectSlaveMarker.UseVisualStyleBackColor = true;
-            this.butt_selectSlaveMarker.Click += new System.EventHandler(this.butt_selectSlaveMarker_Click);
+            this.butt_selectMarker1.Location = new System.Drawing.Point(11, 19);
+            this.butt_selectMarker1.Name = "butt_selectMarker1";
+            this.butt_selectMarker1.Size = new System.Drawing.Size(140, 30);
+            this.butt_selectMarker1.TabIndex = 12;
+            this.butt_selectMarker1.Text = "Select Marker 1";
+            this.butt_selectMarker1.UseVisualStyleBackColor = true;
+            this.butt_selectMarker1.Click += new System.EventHandler(this.butt_selectMarker1_Click);
             // 
             // gb_entitySelection
             // 
             this.gb_entitySelection.Controls.Add(this.txt_markerMasterSelected);
-            this.gb_entitySelection.Controls.Add(this.but_selectMasterMarker);
+            this.gb_entitySelection.Controls.Add(this.but_selectMarker2);
             this.gb_entitySelection.Controls.Add(this.cbMasterGround);
-            this.gb_entitySelection.Controls.Add(this.butt_selectSlaveBody);
-            this.gb_entitySelection.Controls.Add(this.txt_bodyMasterSelected);
-            this.gb_entitySelection.Controls.Add(this.txt_bodySlaveSelected);
+            this.gb_entitySelection.Controls.Add(this.butt_selectBody1);
+            this.gb_entitySelection.Controls.Add(this.txt_body2Selected);
+            this.gb_entitySelection.Controls.Add(this.txt_body1Selected);
             this.gb_entitySelection.Controls.Add(this.txt_markerSlaveSelected);
-            this.gb_entitySelection.Controls.Add(this.butt_selectSlaveMarker);
-            this.gb_entitySelection.Controls.Add(this.butt_selectMasterBody);
+            this.gb_entitySelection.Controls.Add(this.butt_selectMarker1);
+            this.gb_entitySelection.Controls.Add(this.butt_selectBody2);
             this.gb_entitySelection.Location = new System.Drawing.Point(15, 256);
             this.gb_entitySelection.Name = "gb_entitySelection";
             this.gb_entitySelection.Size = new System.Drawing.Size(356, 189);
@@ -113,52 +113,52 @@
             this.txt_markerMasterSelected.Size = new System.Drawing.Size(179, 20);
             this.txt_markerMasterSelected.TabIndex = 18;
             // 
-            // but_selectMasterMarker
+            // but_selectMarker2
             // 
-            this.but_selectMasterMarker.Location = new System.Drawing.Point(11, 55);
-            this.but_selectMasterMarker.Name = "but_selectMasterMarker";
-            this.but_selectMasterMarker.Size = new System.Drawing.Size(140, 30);
-            this.but_selectMasterMarker.TabIndex = 19;
-            this.but_selectMasterMarker.Text = "Select Master Marker";
-            this.but_selectMasterMarker.UseVisualStyleBackColor = true;
-            this.but_selectMasterMarker.Click += new System.EventHandler(this.but_selectMasterMarker_Click);
+            this.but_selectMarker2.Location = new System.Drawing.Point(11, 55);
+            this.but_selectMarker2.Name = "but_selectMarker2";
+            this.but_selectMarker2.Size = new System.Drawing.Size(140, 30);
+            this.but_selectMarker2.TabIndex = 19;
+            this.but_selectMarker2.Text = "Select Marker 2";
+            this.but_selectMarker2.UseVisualStyleBackColor = true;
+            this.but_selectMarker2.Click += new System.EventHandler(this.but_selectMarker2_Click);
             // 
             // cbMasterGround
             // 
             this.cbMasterGround.AutoSize = true;
             this.cbMasterGround.Location = new System.Drawing.Point(172, 159);
             this.cbMasterGround.Name = "cbMasterGround";
-            this.cbMasterGround.Size = new System.Drawing.Size(154, 17);
+            this.cbMasterGround.Size = new System.Drawing.Size(128, 17);
             this.cbMasterGround.TabIndex = 17;
-            this.cbMasterGround.Text = "Set ground as Master Body";
+            this.cbMasterGround.Text = "Set ground as Body 2";
             this.cbMasterGround.UseVisualStyleBackColor = true;
             this.cbMasterGround.CheckedChanged += new System.EventHandler(this.cbMasterGround_CheckedChanged);
             // 
-            // butt_selectSlaveBody
+            // butt_selectBody1
             // 
-            this.butt_selectSlaveBody.Location = new System.Drawing.Point(11, 91);
-            this.butt_selectSlaveBody.Name = "butt_selectSlaveBody";
-            this.butt_selectSlaveBody.Size = new System.Drawing.Size(140, 30);
-            this.butt_selectSlaveBody.TabIndex = 15;
-            this.butt_selectSlaveBody.Text = "Select Slave Body";
-            this.butt_selectSlaveBody.UseVisualStyleBackColor = true;
-            this.butt_selectSlaveBody.Click += new System.EventHandler(this.butt_selectSlaveBody_Click);
+            this.butt_selectBody1.Location = new System.Drawing.Point(11, 91);
+            this.butt_selectBody1.Name = "butt_selectBody1";
+            this.butt_selectBody1.Size = new System.Drawing.Size(140, 30);
+            this.butt_selectBody1.TabIndex = 15;
+            this.butt_selectBody1.Text = "Select Body 1";
+            this.butt_selectBody1.UseVisualStyleBackColor = true;
+            this.butt_selectBody1.Click += new System.EventHandler(this.butt_selectBody1_Click);
             // 
-            // txt_bodyMasterSelected
+            // txt_body2Selected
             // 
-            this.txt_bodyMasterSelected.Location = new System.Drawing.Point(172, 133);
-            this.txt_bodyMasterSelected.Name = "txt_bodyMasterSelected";
-            this.txt_bodyMasterSelected.ReadOnly = true;
-            this.txt_bodyMasterSelected.Size = new System.Drawing.Size(179, 20);
-            this.txt_bodyMasterSelected.TabIndex = 14;
+            this.txt_body2Selected.Location = new System.Drawing.Point(172, 133);
+            this.txt_body2Selected.Name = "txt_body2Selected";
+            this.txt_body2Selected.ReadOnly = true;
+            this.txt_body2Selected.Size = new System.Drawing.Size(179, 20);
+            this.txt_body2Selected.TabIndex = 14;
             // 
-            // txt_bodySlaveSelected
+            // txt_body1Selected
             // 
-            this.txt_bodySlaveSelected.Location = new System.Drawing.Point(170, 97);
-            this.txt_bodySlaveSelected.Name = "txt_bodySlaveSelected";
-            this.txt_bodySlaveSelected.ReadOnly = true;
-            this.txt_bodySlaveSelected.Size = new System.Drawing.Size(179, 20);
-            this.txt_bodySlaveSelected.TabIndex = 13;
+            this.txt_body1Selected.Location = new System.Drawing.Point(170, 97);
+            this.txt_body1Selected.Name = "txt_body1Selected";
+            this.txt_body1Selected.ReadOnly = true;
+            this.txt_body1Selected.Size = new System.Drawing.Size(179, 20);
+            this.txt_body1Selected.TabIndex = 13;
             // 
             // txt_markerSlaveSelected
             // 
@@ -228,6 +228,17 @@
             this.gp_motorConfig.TabIndex = 13;
             this.gp_motorConfig.TabStop = false;
             this.gp_motorConfig.Text = "SDA Configuration";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label2.Location = new System.Drawing.Point(8, 185);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(300, 13);
+            this.label2.TabIndex = 30;
+            this.label2.Text = "Optional: if empty, automatically calculated from initial positions";
             // 
             // txt_restLength
             // 
@@ -300,17 +311,6 @@
             this.label3.TabIndex = 22;
             this.label3.Text = "Spring coefficient:";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label2.Location = new System.Drawing.Point(8, 185);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(300, 13);
-            this.label2.TabIndex = 30;
-            this.label2.Text = "Optional: if empty, automatically calculated from initial positions";
-            // 
             // EditChSDA
             // 
             this.ClientSize = new System.Drawing.Size(387, 494);
@@ -332,17 +332,17 @@
 
 
         #endregion
-        private System.Windows.Forms.Button butt_selectMasterBody;
+        private System.Windows.Forms.Button butt_selectBody2;
         private System.Windows.Forms.Button butt_createSDA;
-        private System.Windows.Forms.Button butt_selectSlaveMarker;
+        private System.Windows.Forms.Button butt_selectMarker1;
         private System.Windows.Forms.GroupBox gb_entitySelection;
         private System.Windows.Forms.TextBox txt_markerSlaveSelected;
-        private System.Windows.Forms.TextBox txt_bodyMasterSelected;
-        private System.Windows.Forms.TextBox txt_bodySlaveSelected;
-        private System.Windows.Forms.Button butt_selectSlaveBody;
+        private System.Windows.Forms.TextBox txt_body2Selected;
+        private System.Windows.Forms.TextBox txt_body1Selected;
+        private System.Windows.Forms.Button butt_selectBody1;
         private System.Windows.Forms.CheckBox cbMasterGround;
         private System.Windows.Forms.TextBox txt_markerMasterSelected;
-        private System.Windows.Forms.Button but_selectMasterMarker;
+        private System.Windows.Forms.Button but_selectMarker2;
         private System.Windows.Forms.ComboBox cb_sdaType;
         private System.Windows.Forms.Label lab_motorType;
         private System.Windows.Forms.Label lab_motorName;

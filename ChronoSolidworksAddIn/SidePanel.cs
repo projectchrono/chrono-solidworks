@@ -20,6 +20,8 @@ namespace ChronoSolidworks_SwAddin
     [ProgId(SWTASKPANE_PROGID)]
     public partial class SWTaskpaneHost : UserControl
     {
+        public const string CH_SLDW_VERSION = "10.1"; // <--- CURRENT VERSION OF CHRONO::SOLIDWORKS ADD-IN
+
         public const string SWTASKPANE_PROGID = "ChronoSolidworks.Taskpane";
         public ISldWorks mSWApplication;
         public SWIntegration mSWintegration;
@@ -34,6 +36,8 @@ namespace ChronoSolidworks_SwAddin
             InitializeComponent();
             this.m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.m_folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+
+            lab_ChSldwVersion.Text = "Version " + CH_SLDW_VERSION; // DISPLAY VERSION
 
             // Use customized culture info to avoid problems with different decimal separators
             CultureInfo currentCI = System.Globalization.CultureInfo.CurrentCulture;
@@ -561,7 +565,8 @@ namespace ChronoSolidworks_SwAddin
             swConf = (Configuration)swConfMgr.ActiveConfiguration;
             swRootComp = (Component2)swConf.GetRootComponent3(true);
 
-            asciitext = "# Dump hierarchy from SolidWorks \n" +
+            asciitext = "# Dump hierarchy from SolidWorks\n" +
+                        "# Exported with Chrono::Solidworks version: " + SWTaskpaneHost.CH_SLDW_VERSION + "\n" +
                         "# Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             // The root component (root assembly) cannot work in DumpTraverseComponent() 

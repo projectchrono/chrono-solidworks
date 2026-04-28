@@ -168,9 +168,7 @@ namespace ChronoSolidworksAddin
 
             chrono_system.SerializeToJSON(m_saveFilename);
 
-            System.Windows.Forms.MessageBox.Show("Export to JSON completed.");
-
-
+            System.Windows.Forms.MessageBox.Show("Export to JSON completed.", "Info");
         }
 
         public ChBodyFrame GetChBodyFrameFromEntity(MateEntity2 swEntity)

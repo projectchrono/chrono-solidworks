@@ -1,13 +1,7 @@
 ﻿using ChronoSolidworks_SwAddin;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static ChronoSolidworksAddin.ChModelExporter;
 
 namespace ChronoSolidworksAddin
@@ -41,7 +35,8 @@ namespace ChronoSolidworksAddin
             swConf = (Configuration)swConfMgr.ActiveConfiguration;
             swRootComp = (Component2)swConf.GetRootComponent3(true);
 
-            asciitext = "# Dump hierarchy from SolidWorks \n" +
+            asciitext = "# Dump hierarchy from SolidWorks\n" +
+                        "# Exported with Chrono::Solidworks version: " + SWTaskpaneHost.CH_SLDW_VERSION + "\n" +
                         "# Assembly: " + swModel.GetPathName() + "\n\n\n";
 
             // The root component (root assembly) cannot work in DumpTraverseComponent() 

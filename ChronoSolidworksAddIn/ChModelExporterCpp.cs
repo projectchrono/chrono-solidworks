@@ -187,7 +187,7 @@ namespace ChronoSolidworksAddin
             System.IO.File.WriteAllText(m_saveFilename, m_asciiTextCpp); // .cpp
             System.IO.File.WriteAllText(m_saveFilename.Replace(".cpp", ".h"), m_asciiTextHeader); // .h
 
-            System.Windows.Forms.MessageBox.Show("Export to C++ completed.");
+            System.Windows.Forms.MessageBox.Show("Export to C++ completed.", "Info");
         }
 
         public override bool ConvertMate(in Feature swMateFeature, in MathTransform roottrasf, in Component2 assemblyofmates)
