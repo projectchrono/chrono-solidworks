@@ -3,8 +3,8 @@
 #define MyAppName "ChronoSolidworks Add-In"
 #define MyAppPublisher "DigitalDynamicsLab"
 #define MyAppURL "https://projectchrono.org/"
-#define MyAppVersion "10.0"
-#define UpdatedToChronoSWCommit "dd4edbd96384ebaaa59cdfb261c1eca36498a018"
+#define MyAppVersion "10.1"
+#define UpdatedToChronoSWCommit "065792a52663ed6f2752b5023846154683ea70a8"
 
 [Setup]
 ShowLanguageDialog=yes
