@@ -378,6 +378,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChConvexDecompositionHACDv2.cs">
       <Link>Chrono\ChConvexDecompositionHACDv2.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChConvexDecompositionVHACD.cs">
+      <Link>Chrono\ChConvexDecompositionVHACD.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChConveyor.cs">
       <Link>Chrono\ChConveyor.cs</Link>
     </Compile>
@@ -948,9 +951,6 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChMatrix_dense_version_tag.cs">
       <Link>Chrono\ChMatrix_dense_version_tag.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChMesh.cs">
-      <Link>Chrono\ChMesh.cs</Link>
-    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChMotionFilter.cs">
       <Link>Chrono\ChMotionFilter.cs</Link>
     </Compile>
@@ -1389,9 +1389,6 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChVisualShapeEllipsoid.cs">
       <Link>Chrono\ChVisualShapeEllipsoid.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChVisualShapeFEA.cs">
-      <Link>Chrono\ChVisualShapeFEA.cs</Link>
-    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChVisualShapeInstance.cs">
       <Link>Chrono\ChVisualShapeInstance.cs</Link>
     </Compile>
@@ -1811,12 +1808,6 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_chrono__utils__TypesT_double_t__PointVector.cs">
       <Link>Chrono\SWIGTYPE_p_chrono__utils__TypesT_double_t__PointVector.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_ChState.cs">
-      <Link>Chrono\SWIGTYPE_p_ChState.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_ChStateDelta.cs">
-      <Link>Chrono\SWIGTYPE_p_ChStateDelta.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_ChSystemDescriptor.cs">
       <Link>Chrono\SWIGTYPE_p_ChSystemDescriptor.cs</Link>
@@ -2313,6 +2304,9 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__default_random_engine.cs">
       <Link>Chrono\SWIGTYPE_p_std__default_random_engine.cs</Link>
     </Compile>
+    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__filesystem__path.cs">
+      <Link>Chrono\SWIGTYPE_p_std__filesystem__path.cs</Link>
+    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__functionT_bool_fchrono__ChBody_const_RF_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__functionT_bool_fchrono__ChBody_const_RF_t.cs</Link>
     </Compile>
@@ -2337,32 +2331,14 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChBasisToolsBSpline_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChBasisToolsBSpline_t.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChContactSurface_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChContactSurface_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChElementBase_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChElementBase_t.cs</Link>
-    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChFunction_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChFunction_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChMeshSurface_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChMeshSurface_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChNodeBase_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChNodeBase_t.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_ChNodeFEAbase_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_ChNodeFEAbase_t.cs</Link>
-    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChBody_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChBody_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChFeaDomain_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChFeaDomain_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChFeaFieldBase_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChFeaFieldBase_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__shared_ptrT_chrono__ChJoint__BushingData_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__shared_ptrT_chrono__ChJoint__BushingData_t.cs</Link>
@@ -2454,18 +2430,6 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__pairT_double_double_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__pairT_double_double_t_t.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChContactSurface_t_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChContactSurface_t_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChElementBase_t_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChElementBase_t_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChMeshSurface_t_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChMeshSurface_t_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChNodeFEAbase_t_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChNodeFEAbase_t_t.cs</Link>
-    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChCamera_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChCamera_t_t.cs</Link>
     </Compile>
@@ -2495,9 +2459,6 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChShaft_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChShaft_t_t.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChVisualShapeFEA_t_t.cs">
-      <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_chrono__ChVisualShapeFEA_t_t.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChShaft_t_t.cs">
       <Link>Chrono\SWIGTYPE_p_std__vectorT_std__shared_ptrT_ChShaft_t_t.cs</Link>
@@ -2582,9 +2543,6 @@
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\vector_ChLoadable.cs">
       <Link>Chrono\vector_ChLoadable.cs</Link>
-    </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\vector_ChMesh.cs">
-      <Link>Chrono\vector_ChMesh.cs</Link>
     </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\vector_ChPhysicsItem.cs">
       <Link>Chrono\vector_ChPhysicsItem.cs</Link>

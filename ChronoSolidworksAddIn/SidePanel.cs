@@ -20,7 +20,7 @@ namespace ChronoSolidworks_SwAddin
     [ProgId(SWTASKPANE_PROGID)]
     public partial class SWTaskpaneHost : UserControl
     {
-        public const string CH_SLDW_VERSION = "10.1"; // <--- CURRENT VERSION OF CHRONO::SOLIDWORKS ADD-IN
+        public const string CH_SLDW_VERSION = "10.2"; // <--- CURRENT VERSION OF CHRONO::SOLIDWORKS ADD-IN: TODO BUMP AT EACH UPDATE
 
         public const string SWTASKPANE_PROGID = "ChronoSolidworks.Taskpane";
         public ISldWorks mSWApplication;
@@ -37,7 +37,7 @@ namespace ChronoSolidworks_SwAddin
             this.m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.m_folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
 
-            lab_ChSldwVersion.Text = "Version " + CH_SLDW_VERSION; // DISPLAY VERSION
+            lab_ChSldwVersion.Text = "Version " + CH_SLDW_VERSION; // display version in main panel
 
             // Use customized culture info to avoid problems with different decimal separators
             CultureInfo currentCI = System.Globalization.CultureInfo.CurrentCulture;
