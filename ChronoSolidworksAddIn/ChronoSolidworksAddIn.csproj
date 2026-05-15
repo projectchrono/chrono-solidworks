@@ -372,9 +372,6 @@
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChConvexDecomposition.cs">
       <Link>Chrono\ChConvexDecomposition.cs</Link>
     </Compile>
-    <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChConvexDecompositionHACD.cs">
-      <Link>Chrono\ChConvexDecompositionHACD.cs</Link>
-    </Compile>
     <Compile Include="..\..\chrono_build\chrono_csharp\core_irrlicht_mix\ChConvexDecompositionHACDv2.cs">
       <Link>Chrono\ChConvexDecompositionHACDv2.cs</Link>
     </Compile>

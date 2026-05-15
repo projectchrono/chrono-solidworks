@@ -50,10 +50,9 @@
             this.bt_selectOutFolder = new System.Windows.Forms.Button();
             this.gb_output = new System.Windows.Forms.GroupBox();
             this.gb_HACDv2 = new System.Windows.Forms.GroupBox();
-            this.rb_HACDv2 = new System.Windows.Forms.RadioButton();
-            this.rb_VHACD = new System.Windows.Forms.RadioButton();
-            this.label2 = new System.Windows.Forms.Label();
             this.gb_VHACD = new System.Windows.Forms.GroupBox();
+            this.cb_shrinkWrap = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.tb_maxRecursionDepth = new System.Windows.Forms.TextBox();
@@ -64,8 +63,9 @@
             this.tb_maxVertsPerChull = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.tb_maxChullCount = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.cb_shrinkWrap = new System.Windows.Forms.CheckBox();
+            this.rb_HACDv2 = new System.Windows.Forms.RadioButton();
+            this.rb_VHACD = new System.Windows.Forms.RadioButton();
+            this.label2 = new System.Windows.Forms.Label();
             this.gb_output.SuspendLayout();
             this.gb_HACDv2.SuspendLayout();
             this.gb_VHACD.SuspendLayout();
@@ -154,7 +154,7 @@
             this.cb_addHulls.Checked = true;
             this.cb_addHulls.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cb_addHulls.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.cb_addHulls.Location = new System.Drawing.Point(12, 268);
+            this.cb_addHulls.Location = new System.Drawing.Point(15, 280);
             this.cb_addHulls.Name = "cb_addHulls";
             this.cb_addHulls.Size = new System.Drawing.Size(175, 17);
             this.cb_addHulls.TabIndex = 18;
@@ -296,37 +296,6 @@
             this.gb_HACDv2.TabStop = false;
             this.gb_HACDv2.Text = "HACDv2 settings";
             // 
-            // rb_HACDv2
-            // 
-            this.rb_HACDv2.AutoSize = true;
-            this.rb_HACDv2.Checked = true;
-            this.rb_HACDv2.Location = new System.Drawing.Point(116, 37);
-            this.rb_HACDv2.Name = "rb_HACDv2";
-            this.rb_HACDv2.Size = new System.Drawing.Size(67, 17);
-            this.rb_HACDv2.TabIndex = 33;
-            this.rb_HACDv2.TabStop = true;
-            this.rb_HACDv2.Text = "HACDv2";
-            this.rb_HACDv2.UseVisualStyleBackColor = true;
-            // 
-            // rb_VHACD
-            // 
-            this.rb_VHACD.AutoSize = true;
-            this.rb_VHACD.Location = new System.Drawing.Point(207, 37);
-            this.rb_VHACD.Name = "rb_VHACD";
-            this.rb_VHACD.Size = new System.Drawing.Size(62, 17);
-            this.rb_VHACD.TabIndex = 34;
-            this.rb_VHACD.Text = "VHACD";
-            this.rb_VHACD.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 39);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(85, 13);
-            this.label2.TabIndex = 35;
-            this.label2.Text = "Select algorithm:";
-            // 
             // gb_VHACD
             // 
             this.gb_VHACD.Controls.Add(this.cb_shrinkWrap);
@@ -348,6 +317,25 @@
             this.gb_VHACD.TabStop = false;
             this.gb_VHACD.Text = "VHACD settings";
             this.gb_VHACD.Visible = false;
+            // 
+            // cb_shrinkWrap
+            // 
+            this.cb_shrinkWrap.AutoSize = true;
+            this.cb_shrinkWrap.Location = new System.Drawing.Point(203, 156);
+            this.cb_shrinkWrap.Name = "cb_shrinkWrap";
+            this.cb_shrinkWrap.Size = new System.Drawing.Size(64, 17);
+            this.cb_shrinkWrap.TabIndex = 28;
+            this.cb_shrinkWrap.Text = "enabled";
+            this.cb_shrinkWrap.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(13, 157);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(63, 13);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "Shrink wrap";
             // 
             // label3
             // 
@@ -432,26 +420,38 @@
             this.tb_maxChullCount.Name = "tb_maxChullCount";
             this.tb_maxChullCount.Size = new System.Drawing.Size(133, 20);
             this.tb_maxChullCount.TabIndex = 21;
-            this.tb_maxChullCount.Text = "256";
+            this.tb_maxChullCount.Text = "32";
             // 
-            // label10
+            // rb_HACDv2
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(13, 157);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(63, 13);
-            this.label10.TabIndex = 27;
-            this.label10.Text = "Shrink wrap";
+            this.rb_HACDv2.AutoSize = true;
+            this.rb_HACDv2.Checked = true;
+            this.rb_HACDv2.Location = new System.Drawing.Point(116, 37);
+            this.rb_HACDv2.Name = "rb_HACDv2";
+            this.rb_HACDv2.Size = new System.Drawing.Size(67, 17);
+            this.rb_HACDv2.TabIndex = 33;
+            this.rb_HACDv2.TabStop = true;
+            this.rb_HACDv2.Text = "HACDv2";
+            this.rb_HACDv2.UseVisualStyleBackColor = true;
             // 
-            // cb_shrinkWrap
+            // rb_VHACD
             // 
-            this.cb_shrinkWrap.AutoSize = true;
-            this.cb_shrinkWrap.Location = new System.Drawing.Point(203, 156);
-            this.cb_shrinkWrap.Name = "cb_shrinkWrap";
-            this.cb_shrinkWrap.Size = new System.Drawing.Size(64, 17);
-            this.cb_shrinkWrap.TabIndex = 28;
-            this.cb_shrinkWrap.Text = "enabled";
-            this.cb_shrinkWrap.UseVisualStyleBackColor = true;
+            this.rb_VHACD.AutoSize = true;
+            this.rb_VHACD.Location = new System.Drawing.Point(207, 37);
+            this.rb_VHACD.Name = "rb_VHACD";
+            this.rb_VHACD.Size = new System.Drawing.Size(62, 17);
+            this.rb_VHACD.TabIndex = 34;
+            this.rb_VHACD.Text = "VHACD";
+            this.rb_VHACD.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 39);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(85, 13);
+            this.label2.TabIndex = 35;
+            this.label2.Text = "Select algorithm:";
             // 
             // ConvexDecompForm
             // 

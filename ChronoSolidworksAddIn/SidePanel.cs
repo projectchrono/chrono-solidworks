@@ -4,14 +4,12 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Threading; // for JSON expor
 
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
-using ChronoSolidworksAddin;
 
-// For JSON export
-using System.Threading;
-//using static ChronoSolidworks_SwAddin.ConvertMates;
+using ChronoSolidworksAddin;
 
 
 namespace ChronoSolidworks_SwAddin
@@ -20,7 +18,7 @@ namespace ChronoSolidworks_SwAddin
     [ProgId(SWTASKPANE_PROGID)]
     public partial class SWTaskpaneHost : UserControl
     {
-        public const string CH_SLDW_VERSION = "10.2"; // <--- CURRENT VERSION OF CHRONO::SOLIDWORKS ADD-IN: TODO BUMP AT EACH UPDATE
+        public const string CH_SLDW_VERSION = "10.3"; // <--- CURRENT VERSION OF CHRONO::SOLIDWORKS ADD-IN: TODO BUMP AT EACH UPDATE
 
         public const string SWTASKPANE_PROGID = "ChronoSolidworks.Taskpane";
         public ISldWorks mSWApplication;
@@ -46,7 +44,6 @@ namespace ChronoSolidworks_SwAddin
             customCI.NumberFormat.NumberGroupSeparator = " ";
             Thread.CurrentThread.CurrentCulture = customCI;
         }
-
 
 
         // ============================================================================================================
@@ -111,7 +108,6 @@ namespace ChronoSolidworks_SwAddin
 
                 }
 
-
                 // Do the conversion into a Python/C++/Json text block.
                 // This will scan the low level hierarchy of the assembly
                 // and its mating constraints and create the proper Chrono links.
@@ -157,14 +153,13 @@ namespace ChronoSolidworks_SwAddin
             }
         }
 
-
         private void button_setPrimitiveCollShape_Click(object sender, EventArgs e)
         {
             ModelDoc2 swModel;
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null)
             {
-                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body.");
+                MessageBox.Show("Please open a part and select a solid body.", "Info");
                 return;
             }
 
@@ -172,12 +167,12 @@ namespace ChronoSolidworks_SwAddin
 
             if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
             {
-                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies.");
+                MessageBox.Show("Please select one or more solid bodies.", "Info");
                 return;
             }
 
             /* TEST
-            // stub for code to try to convert whole body:
+            // Stub for code to try to convert whole body:
             ModelDoc2 selpart;
             Component2 selcomp;
             
@@ -190,7 +185,7 @@ namespace ChronoSolidworks_SwAddin
                     {
                         selpart = (ModelDoc2)selcomp.GetModelDoc2();
                         String partinfo = "Component2! Part/assembly name:" + selcomp.Name + "\n" + "Config:" + selcomp.ReferencedConfiguration + "\n" + "Path:" + selpart.GetPathName();
-                        System.Windows.Forms.MessageBox.Show(partinfo);
+                        MessageBox.Show(partinfo);
                     }
                 }
             }
@@ -201,82 +196,77 @@ namespace ChronoSolidworks_SwAddin
             {
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
                 {
-                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies. Select one or more bodies before using it.");
+                    MessageBox.Show("This function can be applied only to Solid Bodies. Select one or more Solid Bdies before using it.", "Warning");
                     return;
                 }
 
                 bool rbody_converted = false;
                 Body2 swBody = (Body2)swSelMgr.GetSelectedObject6(isel, -1);
-
-
-                // ----- Try to see if this is a sphere
-
+                
+                // ----- Check if this is a sphere
                 if (ConvertToCollisionShapes.SWbodyToSphere(swBody))
                 {
-                    string mname = swBody.Name;
-                    mname.Replace("COLL.SPHERE-", "");
-                    swBody.Name = "COLL.SPHERE-" + mname;
+                    string name = swBody.Name;
+                    name.Replace("COLL.SPHERE-", "");
+                    swBody.Name = "COLL.SPHERE-" + name;
                     rbody_converted = true;
                 }
 
-                // ----- Try to see if this is a box
-
+                // ----- Check if this is a box
                 if (ConvertToCollisionShapes.SWbodyToBox(swBody))
                 {
-                    string mname = swBody.Name;
-                    mname.Replace("COLL.BOX-", "");
-                    swBody.Name = "COLL.BOX-" + mname;
+                    string name = swBody.Name;
+                    name.Replace("COLL.BOX-", "");
+                    swBody.Name = "COLL.BOX-" + name;
                     rbody_converted = true;
                 }
 
-                // ----- Try to see if this is a cylinder
-
+                // ----- Check if this is a cylinder
                 if (ConvertToCollisionShapes.SWbodyToCylinder(swBody))
                 {
-                    string mname = swBody.Name;
-                    mname.Replace("COLL.CYLINDER-", "");
-                    swBody.Name = "COLL.CYLINDER-" + mname;
+                    string name = swBody.Name;
+                    name.Replace("COLL.CYLINDER-", "");
+                    swBody.Name = "COLL.CYLINDER-" + name;
                     rbody_converted = true;
                 }
 
-                // ----- Try to see if this is a convex hull (except if already converted bacause it's a box)
-
+                // ----- Check if this is a convex hull (except a box, which has already been converted as such)
                 if (ConvertToCollisionShapes.SWbodyToConvexHull(swBody, 30) && !rbody_converted)
                 {
-                    string mname = swBody.Name;
-                    mname.Replace("COLL.CONV.HULL-", "");
-                    swBody.Name = "COLL.CONV.HULL-" + mname;
+                    string name = swBody.Name;
+                    name.Replace("COLL.CONV.HULL-", "");
+                    swBody.Name = "COLL.CONV.HULL-" + name;
                     rbody_converted = true;
                 }
-
 
                 // Change color of the body if it can be used as collision shape
                 if (rbody_converted)
                 {
-                    //int materr = swBody.SetMaterialProperty("Default", "Materiali personalizzati.sldmat", "CollisionShapeMaterial");
                     int materr = swBody.SetMaterialProperty("Default", "", "Air");
                     if (materr != 1)
                         materr = swBody.SetMaterialProperty("Default", "", "Aria");
                     if (materr != 1)
                         materr = swBody.SetMaterialProperty("Default", "", "Luft");
                     if (materr != 1)
-                        System.Windows.Forms.MessageBox.Show("Warning! could not assign 'air' material to the collision shape: " + swBody.Name + "\n This can affect mass computations.");
+                        MessageBox.Show("Warning: could not assign 'Air' material to the collision shape: " + swBody.Name + "\nThis can affect mass computations.", "Warning");
 
                     double[] mcolor = new double[9] { 1, 0, 0, 1, 1, 1, 0, 0.7, 0 }; //  R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
                     swBody.MaterialPropertyValues2 = mcolor;
 
-                    // must force rebuild otherwise one cannot see in the design tree that an 'air' material has been added to collision bodies, etc.
-                    //swModel.Rebuild((int)swRebuildOptions_e.swForceRebuildAll);
-                    swModel.ForceRebuild3(false);
+                    //// SUPPRESSED (DF): moved after loop to allow conversion of all selected elements in one shot (?)
+                    //// Must force rebuild otherwise one cannot see in the design tree that an 'air' material has been added to collision bodies, etc.
+                    //swModel.ForceRebuild3(false);
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Selected solid body is not of cylinder/box/sphere/convexhull type. Cannot convert to collision shape. Fallback solution: use concave tri-mesh collision (slower, less robust).");
+                    MessageBox.Show("Selected solid body is not of cylinder/box/sphere/convexhull type. Cannot convert to primitive collision shape.\nFallback solution: try using concave collision trimesh (slower, less robust).", "Warning");
                     return;
                 }
 
             } // end loop on selected items
 
+            // Must force rebuild otherwise one cannot see in the design tree that an 'air' material has been added to collision bodies, etc.
+            swModel.ForceRebuild3(false);
         }
 
         private void checkBox_surfaces_CheckedChanged(object sender, EventArgs e)
@@ -352,7 +342,7 @@ namespace ChronoSolidworks_SwAddin
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null)
             {
-                System.Windows.Forms.MessageBox.Show("Please open an assembly and select a part!");
+                MessageBox.Show("Please open an assembly and select a Part.", "Warning");
                 return;
             }
 
@@ -360,7 +350,7 @@ namespace ChronoSolidworks_SwAddin
 
             if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
             {
-                System.Windows.Forms.MessageBox.Show("Please select one or more parts!");
+                MessageBox.Show("Please select one or more Parts.", "Warning");
                 return;
             }
             /*
@@ -372,7 +362,7 @@ namespace ChronoSolidworks_SwAddin
             Component2 swPart = (Component2)swSelMgr.GetSelectedObject6(1, -1);
             ModelDoc2 swPartModel = (ModelDoc2)swPart.GetModelDoc2();
             //ModelDoc2 swModel = (ModelDoc2)this.ActiveDoc;
-             System.Windows.Forms.MessageBox.Show("attach, v CreateInstance5");
+             MessageBox.Show("attach, v CreateInstance5");
              SolidWorks.Interop.sldworks.Attribute myattr = defattr_test.CreateInstance5(swModel, swPart, "test_data", 0, (int)swInConfigurationOpts_e.swAllConfiguration);
             */
 
@@ -402,7 +392,7 @@ namespace ChronoSolidworks_SwAddin
 
             if (!selected_part)
             {
-                System.Windows.Forms.MessageBox.Show("Chrono properties can be edited only for parts! Select one or more parts before using it.");
+                MessageBox.Show("Chrono properties can be edited only for Parts. Select one or more Parts before using it.", "Warning");
                 return;
             }
         }
@@ -413,17 +403,15 @@ namespace ChronoSolidworks_SwAddin
             swModel = (ModelDoc2)this.mSWApplication.ActiveDoc;
             if (swModel == null)
             {
-                System.Windows.Forms.MessageBox.Show("Please open a part and select a solid body!");
+                MessageBox.Show("Please open a Part and select a Solid Body.", "Info");
                 return;
             }
 
             SelectionMgr swSelMgr = (SelectionMgr)swModel.SelectionManager;
 
-
-
             if (swSelMgr.GetSelectedObjectCount2(-1) == 0)
             {
-                System.Windows.Forms.MessageBox.Show("Please select one or more solid bodies!");
+                MessageBox.Show("Please select one or more Solid Bodies.", "Info");
                 return;
             }
 
@@ -433,7 +421,7 @@ namespace ChronoSolidworks_SwAddin
             {
                 if ((swSelectType_e)swSelMgr.GetSelectedObjectType3(isel, -1) != swSelectType_e.swSelSOLIDBODIES)
                 {
-                    System.Windows.Forms.MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
+                    MessageBox.Show("This function can be applied only to solid bodies! Select one or more bodies before using it.");
                     return;
                 }
 
@@ -546,8 +534,6 @@ namespace ChronoSolidworks_SwAddin
         {
             return ref numeric_sphereswept;
         }
-
-
 
 
         // ============================================================================================================
@@ -682,7 +668,7 @@ namespace ChronoSolidworks_SwAddin
             }
             else
             {
-                MessageBox.Show("ERROR: Cannot create directory: " + directoryPath);
+                MessageBox.Show("Cannot create directory: " + directoryPath, "Error");
             }
 
         }
@@ -698,10 +684,7 @@ namespace ChronoSolidworks_SwAddin
             try
             {
                 using (FileStream fs = File.Create(
-                    Path.Combine(
-                        save_directory,
-                        Path.GetRandomFileName()
-                    ),
+                    Path.Combine(save_directory, Path.GetRandomFileName()),
                     1,
                     FileOptions.DeleteOnClose)
                 )
@@ -721,7 +704,7 @@ namespace ChronoSolidworks_SwAddin
 
                 if (result != DialogResult.OK)
                 {
-                    MessageBox.Show("Simulation cancelled.");
+                    MessageBox.Show("Simulation cancelled.", "Info");
                 }
                 save_directory = m_folderBrowserDialog.SelectedPath;
             }
@@ -776,7 +759,7 @@ namespace ChronoSolidworks_SwAddin
             }
 
 #else
-            MessageBox.Show("Chrono::SolidWorks Simulation can run only with C# module enabled")
+            MessageBox.Show("Chrono::SolidWorks Simulation can run only with C# module enabled.", "Info")
 #endif
         }
 

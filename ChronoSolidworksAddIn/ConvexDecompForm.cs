@@ -152,7 +152,7 @@ namespace ChronoSolidworksAddin
 
                 group_vstride += swTessellation.GetVertexCount();
 
-                // HACDv2 convex decomposition ---------------------------------
+                // Convex decomposition ----------------------------------------
                 label_meshinfo.Text = $"Mesh info: {numTriangles} faces, {numVerts} vertices\n";
 
                 // Perform the convex decomposition using the desired algorithm and parameters
@@ -259,7 +259,7 @@ namespace ChronoSolidworksAddin
                             {
                                 ModelDocExtension swExt = swModel.Extension;
                                 Feature lastFeature = swExt.GetLastFeatureAdded(); // get feature representing last new body
-                                double[] color = new double[9] { rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), 0.8, 0.8, 0.8, 16, 0.2, 0 }; // R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
+                                double[] color = new double[9] { rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), 0.8, 0.8, 0.8, 16, 0.1, 0 }; // R, G, B, Ambient, Diffuse, Specular, Shininess, Transparency, Emission 
                                 lastFeature.SetMaterialPropertyValues2(color, (int)swInConfigurationOpts_e.swThisConfiguration, null);
                             }
                         }
